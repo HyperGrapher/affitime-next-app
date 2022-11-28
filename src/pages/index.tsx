@@ -7,6 +7,7 @@ import { trpc } from "../utils/trpc";
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
+  // const { data } = trpc.auth.getSecretMessage.useQuery()
 
   return (
     <>
@@ -19,7 +20,9 @@ const Home: NextPage = () => {
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-5xl font-extrabold tracking-tight text-white sm:text-[5rem]">
             Create <span className="text-[hsl(280,100%,70%)]">T3</span> App
+          {/* {JSON.stringify(data)} */}
           </h1>
+          
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-8">
             <Link
               className="flex max-w-xs flex-col gap-4 rounded-xl bg-white/10 p-4 text-white hover:bg-white/20"
@@ -47,6 +50,13 @@ const Home: NextPage = () => {
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
             <AuthShowcase />
+
+            <button className="bg-lime-500 py-4 px-12 text-slate-50" onClick={() => {
+              signIn()
+            }}>Login </button>
+            <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={() => {
+              signOut()
+            }}>Signout </button>
           </div>
         </div>
       </main>
