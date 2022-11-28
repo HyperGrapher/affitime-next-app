@@ -1,12 +1,16 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// COMMANDS
+// npx prisma migrate dev --name init
+// npx prisma format
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   // NOTE: When using postgresql, mysql or sqlserver, uncomment the @db.Text annotations in model Account below
   // Further reading:
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
@@ -27,12 +31,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String? // @db.Text
-  access_token      String? // @db.Text
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String? // @db.Text
+  id_token          String? @db.Text
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
@@ -52,9 +56,13 @@ model User {
   name          String?
   email         String?   @unique
   emailVerified DateTime?
-  image         String?
+  image         String?   @db.Text
   accounts      Account[]
   sessions      Session[]
+  vendor        Vendor?
+  partner       Partner?
+  active        Boolean?  @default(true)
+  trial         Boolean?  @default(true)
 }
 
 model VerificationToken {
@@ -63,4 +71,61 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model Vendor {
+  id        String    @id @default(cuid())
+  fname     String?
+  lname     String?
+  user      User      @relation(fields: [userId], references: [id])
+  userId    String    @unique
+  product   Product[]
+  link      Link[]
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Partner {
+  id        String   @id @default(cuid())
+  fname     String?
+  lname     String?
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  link      Link[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Product {
+  id                String   @id @default(cuid())
+  title             String?  @db.Text
+  desc              String?  @db.Text
+  price             Float?
+  vendor            Vendor   @relation(fields: [vendor_profile_id], references: [id])
+  vendor_profile_id String
+  vendor_user_id    String?
+  store_url         String?  @db.Text
+  image             String?  @db.Text
+  links             Link[]   @relation("ProductLinks")
+  published         Boolean? @default(true)
+  active            Boolean? @default(true)
+  listing_info      Json?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Link {
+  id              String   @id @default(cuid())
+  product         Product  @relation("ProductLinks", fields: [product_id], references: [id])
+  product_id      String
+  partner         Partner  @relation(fields: [partner_id], references: [id])
+  partner_id      String
+  partner_user_id String?
+  vendor          Vendor   @relation(fields: [vendor_id], references: [id])
+  vendor_id       String
+  vendor_user_id  String?
+  visits          Int      @default(0)
+  active          Boolean? @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
