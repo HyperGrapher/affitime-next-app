@@ -44,6 +44,7 @@ const Home: NextPage = () => {
             <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={() => {
               signOut()
             }}>Signout </button>
+            <Link className="bg-orange-500 py-4 px-12 text-slate-50" href={'/auth/signin'}>Custom Login</Link>
           </div>
         </div>
       </main>
