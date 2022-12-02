@@ -10,6 +10,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -59,6 +60,7 @@ model User {
   name          String?
   email         String?   @unique
   password      String?
+  role          String?
   emailVerified DateTime?
   image         String?   @db.Text
   accounts      Account[]
