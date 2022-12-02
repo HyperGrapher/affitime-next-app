@@ -6,6 +6,7 @@
 // COMMANDS
 // npx prisma migrate dev --name init
 // npx prisma format
+// npx prisma generate
 // npx prisma studio
 // npx prisma db push
 
@@ -42,7 +43,7 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id])
 
   @@unique([provider, providerAccountId])
   @@index([userId])
@@ -51,9 +52,14 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
+  role         String?
+  trial        String?
+  active       String?
+  vendorId     String?
+  partnerId    String?
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user         User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }

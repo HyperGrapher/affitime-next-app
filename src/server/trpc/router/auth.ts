@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
-import { resolve } from "path";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {

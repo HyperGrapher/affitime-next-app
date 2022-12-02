@@ -4,13 +4,34 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { getCookie, setCookies, removeCookies, deleteCookie } from 'cookies-next';
 
 import { trpc } from "../utils/trpc";
+
+// export const getServerSideProps = ({ req: NextApiRequest, res }) => {
+//   setCookies('test', 'value', { req, res, maxAge: 60 * 6 * 24 });
+//   getCookie('test', { req, res});
+//   getCookies({ req, res});
+//   removeCookies('test', { req, res});
+// return { props: {}};
+// }
+
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
   const { data: secretMsg } = trpc.auth.getSecretMessage.useQuery()
-  const {data, status} = useSession()
+  const { data: sess } = trpc.auth.getSession.useQuery()
+  const { data: sessionData, status } = useSession();
+
+
+  const userCookie = getCookie('user');
+
+  const logUserOut = () => {
+    deleteCookie('user');
+    signOut({redirect: true, callbackUrl: '/'})
+  }
+
+  
 
   return (
     <>
@@ -22,29 +43,42 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem]">
-          {JSON.stringify(secretMsg)}
+            {secretMsg}
           </h1>
 
 
-          <div className='mt-6 text-white'>
-              {JSON.stringify({data, status})}
-          </div>
+          { status === 'authenticated' ? <div className='mt-6 text-white'>
+            {JSON.stringify(sessionData, null, 4)}
+            <br />
+            <br />
+            {JSON.stringify(status, null, 4)}
 
-          
+          </div> : null}
+
+
+
+
 
           <div className="flex flex-col items-center gap-2">
             <p className="text-2xl text-white">
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
-            <AuthShowcase />
+            {/* <AuthShowcase /> */}
+s
+            <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={logUserOut}>Signout</button>
 
-            <button className="bg-lime-500 py-4 px-12 text-slate-50" onClick={() => {
-              signIn()
-            }}>Login </button>
-            <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={() => {
-              signOut()
-            }}>Signout </button>
+
             <Link className="bg-orange-500 py-4 px-12 text-slate-50" href={'/auth/signin'}>Custom Login</Link>
+            <Link className="bg-blue-500 py-4 px-12 text-slate-50" href={'/welcome'}>Welcome</Link>
+          </div>
+
+
+          <div className='mt-6 text-white'>
+
+            {userCookie ? <p>
+              {userCookie}
+            </p> : null}
+
           </div>
         </div>
       </main>

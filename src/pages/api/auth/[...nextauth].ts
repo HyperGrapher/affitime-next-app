@@ -6,6 +6,7 @@ import { getToken } from "next-auth/jwt";
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { setCookie } from "cookies-next";
 
 /*
 If you are using findUnique() method then as the function name suggests 
@@ -35,7 +36,6 @@ import { User } from "@prisma/client";
 // https://branche.online/next-auth-credentials-provider-with-the-database-session-strategy/
 // https://stackoverflow.com/questions/73308329/next-js-setup-next-auth-role-based-credentials-auth-with-prisma-ikm-error
 export const authOptions: NextAuthOptions = {
-
   session: {
     strategy: "jwt",
   },
@@ -83,22 +83,16 @@ export const authOptions: NextAuthOptions = {
           return userDB;
         }
         console.log("\n");
-        console.log('No User found');
+        console.log("No User found");
         console.log("\n");
-        return null
-        
+        return null;
 
         // SIGNUP
         // if (credentials?.callbackUrl.includes("auth/signup")) {
         console.log("\n");
-        console.log(
-          "-------------- callbackURL is SIGNUP",
-          credentials?.callbackUrl,
-          { userRole, password }
-        );
+        console.log("-------------- callbackURL is SIGNUP", credentials?.callbackUrl, { userRole, password });
         console.log("\n");
 
-        console.log("No User With provided Email -> Creating One");
 
         // const resultUser = await prisma.user.create({
         //   data: {
@@ -111,8 +105,6 @@ export const authOptions: NextAuthOptions = {
         //     name: "myvendor",
         //   },
         // });
-
-
 
         // if (userRole === "vendor") {
         //   const vendor = await prisma.vendor.create({
@@ -132,7 +124,6 @@ export const authOptions: NextAuthOptions = {
         //   });
         // }
 
-
         // }
         // else if (credentials?.callbackUrl.includes("auth/signin")) {
         //   // LOGIN USER
@@ -143,7 +134,6 @@ export const authOptions: NextAuthOptions = {
         //   );
         //   console.log("\n");
         // }
-
 
         // Add logic here to look up the user from the credentials supplied
         // const user = { id: "1", name: "J Smith", email };
@@ -165,8 +155,8 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   callbacks: {
-
     session({ session, user }) {
+      // https://stackoverflow.com/questions/67749917/custom-session-next-js-next-auth
       console.log("--------  SESSION callback ------ ", { session, user });
 
       return session;
@@ -182,43 +172,53 @@ export const authOptions: NextAuthOptions = {
 
       return token;
     },
-    
 
     // If OAuth provider is used, it contains the full OAuth
     // * "profile" returned by your provider.
     async signIn({ user, account, profile, email, credentials }) {
+      const myUser = user as User;
+      console.log("\n");
+      console.log("\n");
+      console.log("\n");
       console.log("-------- SIGN IN CALLBACK---------");
+      console.log("-------- SIGN IN CALLBACK---------");
+      console.log("-------- SIGN IN CALLBACK---------");
+      console.log("\n");
       console.log({ user, account, profile, email, credentials });
 
       if (user) {
-        const sessionToken = randomBytes(32).toString("hex");// Implement a function to generate the session token (you can use randomUUID as an example)
-        const sessionExpiry =  new Date(Date.now() + 3600000); // Implement a function to calculate the session cookie expiry date
+        const sessionToken = randomBytes(32).toString("hex"); // Implement a function to generate the session token (you can use randomUUID as an example)
+        const sessionExpiry = new Date(Date.now() + 3600000); // Implement a function to calculate the session cookie expiry date
 
+        // const userDb = await PrismaAdapter(prisma).getUser(user.id);
+        // console.log({ userDb });
+
+        // https://stackoverflow.com/questions/67749917/custom-session-next-js-next-auth
         await PrismaAdapter(prisma).createSession({
           sessionToken: sessionToken,
           userId: user.id,
           expires: sessionExpiry, // TODO: ileri bir tarih
         });
 
-        //  const cookies = new Cookies()
-
-        //  cookies.set('next-auth.session-token', sessionToken, {
-        //      expires: sessionExpiry
-        //  })
-
         return true;
       }
 
-      console.log('No USER In SIGNIN CALLBASCK');
-      
+      console.log("No USER In SIGNIN CALLBASCK");
+
       return false;
     },
   },
-
-
 };
 
 export default NextAuth(authOptions);
+
+const da = {
+  data: {
+    user: { name: "vendor-name", email: "vendor@email.com", image: null },
+    expires: "2023-01-01T14:53:45.842Z",
+  },
+  status: "authenticated",
+};
 
 /*
 

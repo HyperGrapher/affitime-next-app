@@ -4,33 +4,62 @@ import { NextPage } from 'next'
 import { signIn, signOut, useSession } from "next-auth/react";
 import { RegisterFormElement } from '../../interface/auth.interface';
 import { trpc } from '../../utils/trpc';
+import { setCookie } from 'cookies-next';
 
 // interface Props {}
 // https://tailwindcss.com/docs/flex-direction
 
 
 const SignUp: NextPage = (): JSX.Element => {
-    
-    const {mutateAsync} = trpc.auth.createUser.useMutation()
+
+    const { mutateAsync } = trpc.auth.createUser.useMutation()
 
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
         e.preventDefault();
-        
+
         console.log({
             my_email: e.currentTarget.elements.email.value,
             el_password: e.currentTarget.elements.password.value,
         });
-        
-        
+
+
         const res = await mutateAsync({
-            email: e.currentTarget.elements.email.value, 
+            email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
             role: 'vendor'
 
         })
 
-        console.log({res});
+
+        console.log({ res });
+
+        if (res?.id) {
+
+            // Don't trust this data
+            const data = {
+                id: res?.id,
+                name: res.name,
+                email: res.email,
+                role: res.role,
+                emailVerified: res.emailVerified,
+                image: res.image,
+                active: res.active,
+                trial: res.trial
+            }
+
+            setCookie('user', data);
+
+            signIn('credentials', {
+                redirect: true,
+                email: res?.email,
+                password: res?.password,
+                callbackUrl: "http://localhost:3000/welcome"
+
+            })
+        }
+
+
 
 
     }
