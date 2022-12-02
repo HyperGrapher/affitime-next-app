@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
