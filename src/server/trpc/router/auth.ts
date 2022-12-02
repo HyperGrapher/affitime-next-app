@@ -1,4 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { z } from "zod";
+import { resolve } from "path";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
@@ -7,4 +10,30 @@ export const authRouter = router({
   getSecretMessage: protectedProcedure.query(() => {
     return "you can now see this secret message!";
   }),
+  createUser: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(8),
+        role: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { email, password, role } = input;
+
+      try {
+        console.log({ email, password, role } );
+       
+        return await ctx.prisma.user.create({
+          data: {
+            email: email,
+            password: password,
+            role: role,
+            name: "vendor-name",
+          },
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }),
 });

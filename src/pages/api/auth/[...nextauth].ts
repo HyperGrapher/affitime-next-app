@@ -169,9 +169,6 @@ export const authOptions: NextAuthOptions = {
     session({ session, user }) {
       console.log("--------  SESSION callback ------ ", { session, user });
 
-      if (session.user) {
-        session.user.id = user.id;
-      }
       return session;
     },
 
@@ -194,13 +191,13 @@ export const authOptions: NextAuthOptions = {
       console.log({ user, account, profile, email, credentials });
 
       if (user) {
-        const sessionToken = "jijsaij"; // Implement a function to generate the session token (you can use randomUUID as an example)
-        const sessionExpiry = new Date(); // Implement a function to calculate the session cookie expiry date
+        const sessionToken = randomBytes(32).toString("hex");// Implement a function to generate the session token (you can use randomUUID as an example)
+        const sessionExpiry =  new Date(Date.now() + 3600000); // Implement a function to calculate the session cookie expiry date
 
         await PrismaAdapter(prisma).createSession({
           sessionToken: sessionToken,
           userId: user.id,
-          expires: sessionExpiry,
+          expires: sessionExpiry, // TODO: ileri bir tarih
         });
 
         //  const cookies = new Cookies()

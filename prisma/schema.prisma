@@ -7,10 +7,10 @@
 // npx prisma migrate dev --name init
 // npx prisma format
 // npx prisma studio
+// npx prisma db push
 
 generator client {
   provider = "prisma-client-js"
-  previewFeatures = ["interactiveTransactions"]
 }
 
 datasource db {
@@ -45,6 +45,7 @@ model Account {
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
@@ -53,6 +54,8 @@ model Session {
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model User {
@@ -118,6 +121,8 @@ model Product {
   listing_info      Json?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+
+  @@index([vendor_profile_id])
 }
 
 model Link {
@@ -134,4 +139,8 @@ model Link {
   active          Boolean? @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+
+  @@index([vendor_id])
+  @@index([partner_id])
+  @@index([product_id])
 }

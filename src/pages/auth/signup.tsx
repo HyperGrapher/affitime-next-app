@@ -3,12 +3,16 @@
 import { NextPage } from 'next'
 import { signIn, signOut, useSession } from "next-auth/react";
 import { RegisterFormElement } from '../../interface/auth.interface';
+import { trpc } from '../../utils/trpc';
 
 // interface Props {}
 // https://tailwindcss.com/docs/flex-direction
 
 
 const SignUp: NextPage = (): JSX.Element => {
+    
+    const {mutateAsync} = trpc.auth.createUser.useMutation()
+
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
         e.preventDefault();
@@ -17,16 +21,16 @@ const SignUp: NextPage = (): JSX.Element => {
             my_email: e.currentTarget.elements.email.value,
             el_password: e.currentTarget.elements.password.value,
         });
-
-
-        const getLoginStatus = await signIn("credentials", {
-            redirect: false,
-            email: e.currentTarget.elements.email.value,
+        
+        
+        const res = await mutateAsync({
+            email: e.currentTarget.elements.email.value, 
             password: e.currentTarget.elements.password.value,
-            userRole: "vendor"
+            role: 'vendor'
+
         })
 
-        console.log(getLoginStatus);
+        console.log({res});
 
 
     }

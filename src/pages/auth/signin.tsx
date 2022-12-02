@@ -3,8 +3,11 @@
 import { NextPage } from 'next'
 import { RegisterFormElement } from '../../interface/auth.interface';
 import { signIn, signOut, useSession } from "next-auth/react";
+import Link from 'next/link';
 
 const Signin: NextPage = (): JSX.Element => {
+
+    const {data, status} = useSession()
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
         e.preventDefault();
@@ -36,6 +39,17 @@ const Signin: NextPage = (): JSX.Element => {
                     <input className='py-2 bg-slate-100' type="password" name="password" id="password" placeholder='Password' />
                     <input className='bg-lime-500 py-4 px-12 text-slate-50' type="submit" value="Login" />
                 </form>
+
+                <button className='bg-red-500 py-4 px-12 text-slate-50 mt-2' onClick={() => signOut()}>LOGOUT</button>
+
+                <div className='mt-6'>
+
+                    <Link className='bg-blue-500 py-4 px-12 text-slate-50 mt-6'  href={'/'}>HOME</Link>
+                </div>
+
+                <div className='mt-6'>
+                    {JSON.stringify({data, status})}
+                </div>
 
             </div>
         </div>
