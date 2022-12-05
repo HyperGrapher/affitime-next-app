@@ -32,24 +32,7 @@ const SignUp: NextPage = (): JSX.Element => {
 
         })
 
-
-        console.log({ res });
-
         if (res?.id) {
-
-            // Don't trust this data
-            const data = {
-                id: res?.id,
-                name: res.name,
-                email: res.email,
-                role: res.role,
-                emailVerified: res.emailVerified,
-                image: res.image,
-                active: res.active,
-                trial: res.trial
-            }
-
-            setCookie('user', data);
 
             signIn('credentials', {
                 redirect: true,

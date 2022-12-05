@@ -3,6 +3,7 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getToken } from "next-auth/jwt";
+import { trpc } from "../../../utils/trpc";
 
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
@@ -54,6 +55,7 @@ export const authOptions: NextAuthOptions = {
             email: email,
             // password: password,
           },
+          include: { vendor: true, partner: true },
         });
 
         if (userDB) {
@@ -68,13 +70,35 @@ export const authOptions: NextAuthOptions = {
     // ...add more providers here
   ],
   callbacks: {
-    session({ session, user, token }) {
+    async session({ session, user, token }) {
       console.log("--------  SESSION callback ------ ", {
         session,
         user,
         token,
       }); // token created before session CB
-      // session.user = token.user as any;
+      console.log("--------- NOW ----------");
+
+      const email = session.user?.email;
+
+      if (!email) return session;
+
+      const userDB = (await PrismaAdapter(prisma).getUserByEmail(
+        email
+      )) as User;
+
+      if (!userDB) return session;
+
+      session.id = token.id as string;
+      session.token = token.id as string;
+      session.role = userDB.role as string;
+      session.email = userDB.email as string;
+      session.image = userDB.image as string;
+      session.emailVerified = userDB.emailVerified as Date;
+      session.active = userDB.active as boolean;
+      session.trial = userDB.trial as boolean;
+      // session.partnerId = userDB.partner?.id as string
+      // session.vendorId = userDB.vendor?.id as string
+
       return session;
     },
 
@@ -125,14 +149,6 @@ export const authOptions: NextAuthOptions = {
 };
 
 export default NextAuth(authOptions);
-
-const da = {
-  data: {
-    user: { name: "vendor-name", email: "vendor@email.com", image: null },
-    expires: "2023-01-01T14:53:45.842Z",
-  },
-  status: "authenticated",
-};
 
 /*
 

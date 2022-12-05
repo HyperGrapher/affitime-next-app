@@ -13,11 +13,7 @@ const Home: NextPage = () => {
   const { data: secretMsg, isLoading: isLoadingSecret,  } = trpc.auth.getSecretMessage.useQuery()
   const { data: sessionData, status: sessionStatus } = useSession();
 
-
-  const userCookie = getCookie('user');
-
   const logUserOut = () => {
-    deleteCookie('user');
     signOut({ redirect: true, callbackUrl: '/' })
   }
 
@@ -66,10 +62,6 @@ const Home: NextPage = () => {
 
 
           <div className='mt-6 text-white'>
-
-            {userCookie ? <p>
-              {userCookie}
-            </p> : null}
 
           </div>
         </div>

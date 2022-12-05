@@ -6,11 +6,14 @@ declare module "next-auth" {
    * https://stackoverflow.com/a/73099744
    */
   interface Session {
+    email: string;
     role: string;
+    emailVerified: Date;
     vendorId: string | null;
     partnerId: string | null;
     trial: boolean;
     active: boolean;
+    [key: string]: string;
     user?: {
       id: string;
       role: string;
@@ -18,6 +21,7 @@ declare module "next-auth" {
       partnerId: string | null;
       trial: boolean;
       active: boolean;
+      // [key: string]: string;
     } & DefaultSession["user"];
   }
 }

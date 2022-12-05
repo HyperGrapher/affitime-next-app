@@ -4,32 +4,25 @@ import { NextPage } from 'next'
 import { RegisterFormElement } from '../../interface/auth.interface';
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from 'next/link';
-import { setCookie } from 'cookies-next';
 
 const Signin: NextPage = (): JSX.Element => {
 
-    const {data, status} = useSession()
+    const { data, status } = useSession()
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
         e.preventDefault();
 
         console.log({
-            my_email: e.currentTarget.elements.email.value,
-            el_password: e.currentTarget.elements.password.value,
+            email: e.currentTarget.elements.email.value,
+            password: e.currentTarget.elements.password.value,
         });
 
-        // TODO call find user here and assign user cookie if it exist
-
-
-        const getLoginStatus = await signIn("credentials", {
+        await signIn("credentials", {
             redirect: true,
             email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
             callbackUrl: '/welcome'
         })
-
-        console.log({getLoginStatus}); // Always undefined
-
 
 
 
@@ -50,11 +43,11 @@ const Signin: NextPage = (): JSX.Element => {
 
                 <div className='mt-6'>
 
-                    <Link className='bg-blue-500 py-4 px-12 text-slate-50 mt-6'  href={'/'}>HOME</Link>
+                    <Link className='bg-blue-500 py-4 px-12 text-slate-50 mt-6' href={'/'}>HOME</Link>
                 </div>
 
                 <div className='mt-6'>
-                    {JSON.stringify({data, status})}
+                    {JSON.stringify({ data, status })}
                 </div>
 
             </div>

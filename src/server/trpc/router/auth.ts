@@ -1,10 +1,62 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
     return ctx.session;
+  }),
+  getUserByEmail: publicProcedure
+    .input(z.object({ email: z.string().nullish() }))
+    .query(({ ctx, input }) => {
+      const { email } = input;
+
+      if (!email) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return ctx.prisma.user.findUnique({
+        where: {
+          email,
+        },
+        select: {
+          id: true,
+          role: true,
+          email: true,
+          image: true,
+          name: true,
+          password: false,
+          trial: true,
+          active: true,
+          emailVerified: true,
+          vendor: true,
+          partner: true,
+        },
+      });
+    }),
+  getSessionUser: protectedProcedure.query(({ ctx }) => {
+    const { email } = ctx.session.user;
+
+    if (!email) throw new TRPCError({ code: "NOT_FOUND" });
+
+    return ctx.prisma.user.findUnique({
+      where: {
+        email,
+      },
+      // include: {vendor: true, partner: true},
+      select: {
+        id: true,
+        role: true,
+        email: true,
+        image: true,
+        name: true,
+        password: false,
+        trial: true,
+        active: true,
+        emailVerified: true,
+        vendor: true,
+        partner: true,
+      },
+    });
   }),
   getSecretMessage: protectedProcedure.query(() => {
     return "Secret message!";
@@ -21,9 +73,9 @@ export const authRouter = router({
       const { email, password, role } = input;
 
       try {
-        console.log({ email, password, role } );
-       
-        return await ctx.prisma.user.create({
+        console.log({ email, password, role });
+
+        const user = await ctx.prisma.user.create({
           data: {
             email: email,
             password: password,
@@ -31,8 +83,56 @@ export const authRouter = router({
             name: "vendor-name",
           },
         });
+
+        if (role === "vendor") {
+          const vendor = await ctx.prisma.vendor.create({
+            data: {
+              userId: user.id,
+              fname: "fname",
+              lname: "lname",
+            },
+          });
+        } else if (role === "partner") {
+          const partner = await ctx.prisma.partner.create({
+            data: {
+              userId: user.id,
+              fname: "fname",
+              lname: "lname",
+            },
+          });
+        }
+
+        const resultUser = await ctx.prisma.user.findUnique({
+          where: {
+            email,
+          },
+          include: { vendor: role === "vendor", partner: role === "partner" },
+        });
+
+        return resultUser;
       } catch (error) {
         console.log(error);
       }
     }),
 });
+
+
+/*
+      const ssds=  await ctx.prisma.$transaction(async (tx: any) => {
+
+        const userTr = await tx.user.create({
+          data: {
+            email: email,
+            password: password,
+            role: role,
+            name: "vendor-name",
+          },
+        });
+
+
+        return userTr
+
+
+      })
+
+*/
