@@ -17,7 +17,7 @@ import FadingLoader from "../components/loader/FadingLoader";
 // })
 
 
-const dashboard: NextPage = () => {
+const Dashboard: NextPage = () => {
 
     const { data: secretMsg, isLoading: isLoadingSecret, } = trpc.auth.getSecretMessage.useQuery()
     const { data: sessionData, status: sessionStatus } = useSession();
@@ -52,4 +52,4 @@ const dashboard: NextPage = () => {
     )
 }
 
-export default dashboard
+export default Dashboard
