@@ -1,8 +1,181 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { HiBookOpen, HiX } from 'react-icons/hi'
+import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { signOut, useSession } from 'next-auth/react'
+import { Fragment } from 'react'
+import Image from 'next/image'
+import classNames from '../../utils/classnames'
+import logo from '../../assets/tw_logo.svg'
+import profileImg from '../../assets/profile.webp'
+import Link from 'next/link'
+
 // https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
-const Navbar = () => {
+
+
+const Navbar: React.FC = () => {
+
+  const { data: sessionData } = useSession()
+
+  const logUserOut = () => {
+    signOut({ redirect: true, callbackUrl: '/' })
+  }
+
+
+
   return (
-    <div>Navbar</div>
+    <Disclosure as='nav' className='h-16 bg-gray-800'>
+      {({ open }) => (
+        <>
+          <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8'>
+            <div className='relative flex h-16 items-center justify-between'>
+              <div className='absolute inset-y-0 left-0 flex items-center sm:hidden'>
+                {/* Mobile menu button*/}
+                <Disclosure.Button className='inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white'>
+                  <span className='sr-only'>Open main menu</span>
+                  {open ? (
+                    <HiX className='block h-6 w-6' aria-hidden='true' />
+                  ) : (
+                    <HiBookOpen className='block h-6 w-6' aria-hidden='true' />
+                  )}
+                </Disclosure.Button>
+              </div>
+              <div className='flex flex-1 items-center justify-center sm:items-stretch sm:justify-start'>
+                <div className='flex flex-shrink-0 items-center'>
+                  <Image
+                    className='block h-8 w-auto lg:hidden'
+                    src={logo}
+                    alt='Your Company'
+                    height={50}
+                    width={50}
+                  />
+                  <Image
+                    className='hidden h-8 w-auto lg:block'
+                    src={logo}
+                    alt='Your Company'
+                    width={50}
+                    height={50}
+                  />
+                </div>
+              </div>
+              <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
+                {/* dashboard dropdown */}
+                <p className='text-white text-xs'>{sessionData?.email}</p>
+                <Menu as='div' className='relative ml-3'>
+                  <div>
+                    <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
+                      <span className='sr-only'>Open user menu</span>
+                      <Image className='h-8 w-8 rounded-full' src={sessionData?.image ?? profileImg} alt='dashboard image' />
+                    </Menu.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter='transition ease-out duration-100'
+                    enterFrom='transform opacity-0 scale-95'
+                    enterTo='transform opacity-100 scale-100'
+                    leave='transition ease-in duration-75'
+                    leaveFrom='transform opacity-100 scale-100'
+                    leaveTo='transform opacity-0 scale-95'>
+                    <Menu.Items className='absolute right-0 z-10 mt-5 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
+
+                      <Menu.Item>
+                        {({ active }) => (
+                          <Link
+                            href='/'
+                            className={classNames(
+                              active ? 'bg-gray-100' : '',
+                              'block px-4 py-2 text-sm text-gray-700'
+                            )}>
+                            Home
+                          </Link>
+                        )}
+                      </Menu.Item>
+
+                      {!sessionData ? <Fragment>
+
+                        <Menu.Item>
+                          {({ active }) => (
+                            <Link
+                              href='/auth/signin'
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700'
+                              )}>
+                              Giriş Yap
+                            </Link>
+                          )}
+                        </Menu.Item>
+
+                        <Menu.Item>
+                          {({ active }) => (
+                            <Link
+                              href='/auth/signup'
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700'
+                              )}>
+                              Kayıt Ol
+                            </Link>
+                          )}
+                        </Menu.Item>
+
+                      </Fragment> :
+
+                        <Fragment>
+
+                          <Menu.Item>
+                            {({ active }) => (
+                              <Link
+                                href='/welcome'
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block px-4 py-2 text-sm text-gray-700'
+                                )}>
+                                Welcome
+                              </Link>
+                            )}
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            {({ active }) => (
+                              <Link
+                                href='/dashboard'
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block px-4 py-2 text-sm text-gray-700'
+                                )}>
+                                Your dashboard
+                              </Link>
+                            )}
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            {({ active }) => (
+                              <button
+                                type='button'
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                )}
+                                onClick={logUserOut}>
+                                Sign out
+                              </button>
+                            )}
+                          </Menu.Item>
+                        </Fragment>
+
+                      }
+
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </Disclosure>
   )
 }
 

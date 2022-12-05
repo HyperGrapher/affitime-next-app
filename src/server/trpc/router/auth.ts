@@ -59,7 +59,7 @@ export const authRouter = router({
     });
   }),
   getSecretMessage: protectedProcedure.query(() => {
-    return "Secret message!";
+    return "Authanticated";
   }),
   createUser: publicProcedure
     .input(
@@ -115,7 +115,6 @@ export const authRouter = router({
       }
     }),
 });
-
 
 /*
       const ssds=  await ctx.prisma.$transaction(async (tx: any) => {
