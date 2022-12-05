@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { trpc } from '../utils/trpc';
 import { deleteCookie, getCookie } from 'cookies-next';
 import Link from 'next/link';
-import { env } from '../env/client.mjs';
 
 
 

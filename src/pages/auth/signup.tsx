@@ -8,6 +8,7 @@ import { setCookie } from 'cookies-next';
 
 // interface Props {}
 // https://tailwindcss.com/docs/flex-direction
+// https://youtu.be/Rh1MOyfQo14?t=1783
 
 
 const SignUp: NextPage = (): JSX.Element => {

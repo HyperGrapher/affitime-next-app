@@ -7,34 +7,11 @@ import { getToken } from "next-auth/jwt";
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { setCookie } from "cookies-next";
-
-/*
-If you are using findUnique() method then as the function name suggests 
-you are querying your database using some Unique field; so you need to give 
-a unique field as condition in findUnique function as well. 
-And as you were getting that error then that means 
-you didn't declare your email field as Unique in your Schema. 
-So thats the reason why making email Field unique solved your error. 
-https://stackoverflow.com/questions/66465315/unknown-arg-email-in-where-email-for-type-userwhereuniqueinput-graphql-node
-
- const user = await User.findOne({
-          email,
-          // becasue in pre.save I excluded returning password in api response
-        }).select("+password");
-*/
-
-import { env } from "../../../env/server.mjs";
 import { prisma } from "../../../server/db/client";
 import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt/types.js";
 import { randomBytes } from "node:crypto";
 import { User } from "@prisma/client";
-// https://stackoverflow.com/questions/71956621/next-auth-4-session-returns-null-next-js
-// https://stackoverflow.com/q/70474736
-// https://github.com/nextauthjs/next-auth/discussions/4394
-// https://next-auth.js.org/providers/auth0
-// https://tailwindcss.com/docs/flex-direction
-// https://branche.online/next-auth-credentials-provider-with-the-database-session-strategy/
-// https://stackoverflow.com/questions/73308329/next-js-setup-next-auth-role-based-credentials-auth-with-prisma-ikm-error
+
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
@@ -86,79 +63,18 @@ export const authOptions: NextAuthOptions = {
         console.log("No User found");
         console.log("\n");
         return null;
-
-        // SIGNUP
-        // if (credentials?.callbackUrl.includes("auth/signup")) {
-        console.log("\n");
-        console.log("-------------- callbackURL is SIGNUP", credentials?.callbackUrl, { userRole, password });
-        console.log("\n");
-
-
-        // const resultUser = await prisma.user.create({
-        //   data: {
-        //     email: email,
-        //     password: password,
-        //     role: userRole,
-        //     trial: true,
-        //     active: true,
-        //     image: 'http://myimage.com',
-        //     name: "myvendor",
-        //   },
-        // });
-
-        // if (userRole === "vendor") {
-        //   const vendor = await prisma.vendor.create({
-        //     data: {
-        //       userId: resultUser.id,
-        //       fname: "fname",
-        //       lname: "lname",
-        //     },
-        //   });
-        // } else if (userRole === "partner") {
-        //   const partner = await prisma.partner.create({
-        //     data: {
-        //       userId: resultUser.id,
-        //       fname: "fname",
-        //       lname: "lname",
-        //     },
-        //   });
-        // }
-
-        // }
-        // else if (credentials?.callbackUrl.includes("auth/signin")) {
-        //   // LOGIN USER
-        //   console.log("\n");
-        //   console.log(
-        //     "-------------- callbackURL is LOGIN",
-        //     credentials?.callbackUrl
-        //   );
-        //   console.log("\n");
-        // }
-
-        // Add logic here to look up the user from the credentials supplied
-        // const user = { id: "1", name: "J Smith", email };
-
-        // if (user) {
-        //   console.log("\n");
-        //   console.log("*-*-*-*-*-*-* authorize return user *-*-*-*-*-*-*-*-");
-
-        //   // Any object returned will be saved in `user` property of the JWT
-        //   return user;
-        // } else {
-        //   // If you return null then an error will be displayed advising the user to check their details.
-        // return null;
-
-        //   // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
-        // }
       },
     }),
     // ...add more providers here
   ],
   callbacks: {
-    session({ session, user }) {
-      // https://stackoverflow.com/questions/67749917/custom-session-next-js-next-auth
-      console.log("--------  SESSION callback ------ ", { session, user });
-
+    session({ session, user, token }) {
+      console.log("--------  SESSION callback ------ ", {
+        session,
+        user,
+        token,
+      }); // token created before session CB
+      // session.user = token.user as any;
       return session;
     },
 
@@ -167,6 +83,8 @@ export const authOptions: NextAuthOptions = {
       console.log({ token, user, account, profile, isNewUser });
 
       if (user) {
+        console.log("setting token id as user id: ", user.id);
+
         token.id = user.id;
       }
 
@@ -178,13 +96,9 @@ export const authOptions: NextAuthOptions = {
     async signIn({ user, account, profile, email, credentials }) {
       const myUser = user as User;
       console.log("\n");
-      console.log("\n");
-      console.log("\n");
       console.log("-------- SIGN IN CALLBACK---------");
-      console.log("-------- SIGN IN CALLBACK---------");
-      console.log("-------- SIGN IN CALLBACK---------");
-      console.log("\n");
       console.log({ user, account, profile, email, credentials });
+      console.log("\n");
 
       if (user) {
         const sessionToken = randomBytes(32).toString("hex"); // Implement a function to generate the session token (you can use randomUUID as an example)

@@ -1,37 +1,27 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type NextPage } from "next";
+import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { signIn, signOut, useSession } from "next-auth/react";
 import { getCookie, setCookies, removeCookies, deleteCookie } from 'cookies-next';
-
 import { trpc } from "../utils/trpc";
-
-// export const getServerSideProps = ({ req: NextApiRequest, res }) => {
-//   setCookies('test', 'value', { req, res, maxAge: 60 * 6 * 24 });
-//   getCookie('test', { req, res});
-//   getCookies({ req, res});
-//   removeCookies('test', { req, res});
-// return { props: {}};
-// }
 
 
 const Home: NextPage = () => {
   const hello = trpc.example.hello.useQuery({ text: "from tRPC" });
-  const { data: secretMsg } = trpc.auth.getSecretMessage.useQuery()
-  const { data: sess } = trpc.auth.getSession.useQuery()
-  const { data: sessionData, status } = useSession();
+  const { data: secretMsg, isLoading: isLoadingSecret,  } = trpc.auth.getSecretMessage.useQuery()
+  const { data: sessionData, status: sessionStatus } = useSession();
 
 
   const userCookie = getCookie('user');
 
   const logUserOut = () => {
     deleteCookie('user');
-    signOut({redirect: true, callbackUrl: '/'})
+    signOut({ redirect: true, callbackUrl: '/' })
   }
 
-  
+
 
   return (
     <>
@@ -43,15 +33,15 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
         <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
           <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem]">
-            {secretMsg}
+            {(sessionStatus === 'loading')  ? "Loading.." : secretMsg}
           </h1>
 
 
-          { status === 'authenticated' ? <div className='mt-6 text-white'>
+          {sessionStatus === 'authenticated' ? <div className='mt-6 text-white'>
             {JSON.stringify(sessionData, null, 4)}
             <br />
             <br />
-            {JSON.stringify(status, null, 4)}
+            {JSON.stringify(sessionStatus, null, 4)}
 
           </div> : null}
 
@@ -64,8 +54,10 @@ const Home: NextPage = () => {
               {hello.data ? hello.data.greeting : "Loading tRPC query..."}
             </p>
             {/* <AuthShowcase /> */}
-s
-            <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={logUserOut}>Signout</button>
+
+
+            {sessionData ? <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={logUserOut}>Signout</button> : null}
+
 
 
             <Link className="bg-orange-500 py-4 px-12 text-slate-50" href={'/auth/signin'}>Custom Login</Link>

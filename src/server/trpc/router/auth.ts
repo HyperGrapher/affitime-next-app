@@ -7,7 +7,7 @@ export const authRouter = router({
     return ctx.session;
   }),
   getSecretMessage: protectedProcedure.query(() => {
-    return "you can now see this secret message!";
+    return "Secret message!";
   }),
   createUser: publicProcedure
     .input(
