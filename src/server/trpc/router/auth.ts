@@ -7,32 +7,6 @@ export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
     return ctx.session;
   }),
-  getUserByEmail: publicProcedure
-    .input(z.object({ email: z.string().nullish() }))
-    .query(({ ctx, input }) => {
-      const { email } = input;
-
-      if (!email) throw new TRPCError({ code: "NOT_FOUND" });
-
-      return ctx.prisma.user.findUnique({
-        where: {
-          email,
-        },
-        select: {
-          id: true,
-          role: true,
-          email: true,
-          image: true,
-          name: true,
-          password: false,
-          trial: true,
-          active: true,
-          emailVerified: true,
-          vendor: true,
-          partner: true,
-        },
-      });
-    }),
   getSessionUser: protectedProcedure.query(({ ctx }) => {
     const { email } = ctx.session.user;
 
@@ -42,7 +16,6 @@ export const authRouter = router({
       where: {
         email,
       },
-      // include: {vendor: true, partner: true},
       select: {
         id: true,
         role: true,
@@ -115,23 +88,3 @@ export const authRouter = router({
       }
     }),
 });
-
-/*
-      const ssds=  await ctx.prisma.$transaction(async (tx: any) => {
-
-        const userTr = await tx.user.create({
-          data: {
-            email: email,
-            password: password,
-            role: role,
-            name: "vendor-name",
-          },
-        });
-
-
-        return userTr
-
-
-      })
-
-*/

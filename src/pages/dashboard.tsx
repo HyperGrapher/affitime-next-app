@@ -1,14 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import type { GetServerSideProps } from "next";
 import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
-import FadingLoader from "../components/loader/FadingLoader";
-
+import getClientIp from "../utils/getClientIp";
 // import dynamic from 'next/dynamic'
 // import { Suspense } from 'react'
 
@@ -20,14 +20,20 @@ import FadingLoader from "../components/loader/FadingLoader";
 const Dashboard: NextPage = () => {
 
     const { data: secretMsg, isLoading: isLoadingSecret, } = trpc.auth.getSecretMessage.useQuery()
+    const updateIp = trpc.user.upsertUserIp.useMutation()
     const { data: sessionData, status: sessionStatus } = useSession();
-    const router = useRouter()
 
 
     useEffect(() => {
-        if (sessionStatus === 'unauthenticated') router.push("/");
-    }, [sessionData]);
+        const getip = async () => {
+            const userIp = await getClientIp()
+            const ipRes = await updateIp.mutateAsync(userIp)
+            console.log({ ipRes });
+        }
 
+        getip()
+
+    }, [])
 
     return (
         <div>
@@ -53,3 +59,19 @@ const Dashboard: NextPage = () => {
 }
 
 export default Dashboard
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: '/auth/signin',
+            permanent: false
+        }
+    }
+
+    return { props: { session } }
+
+}

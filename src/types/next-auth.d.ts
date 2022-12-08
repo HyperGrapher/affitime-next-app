@@ -13,6 +13,7 @@ declare module "next-auth" {
     partnerId: string | null;
     trial: boolean;
     active: boolean;
+    ipdata: unknown;
     [key: string]: string;
     user?: {
       id: string;
