@@ -6,6 +6,7 @@ declare module "next-auth" {
    * https://stackoverflow.com/a/73099744
    */
   interface Session {
+    id: string;
     email: string;
     role: string;
     emailVerified: Date;

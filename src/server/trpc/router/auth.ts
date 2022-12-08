@@ -65,12 +65,26 @@ export const authRouter = router({
               lname: "lname",
             },
           });
+
+          await ctx.prisma.user.update({
+            where: { id: user.id },
+            data: {
+              vendor_id: vendor.id,
+            },
+          });
         } else if (role === "partner") {
           const partner = await ctx.prisma.partner.create({
             data: {
               userId: user.id,
               fname: "fname",
               lname: "lname",
+            },
+          });
+
+          await ctx.prisma.user.update({
+            where: { id: user.id },
+            data: {
+              partner_id: partner.id,
             },
           });
         }

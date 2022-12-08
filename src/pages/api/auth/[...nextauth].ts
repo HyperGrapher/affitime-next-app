@@ -38,7 +38,7 @@ export const authOptions: NextAuthOptions = {
 
       async authorize(credentials, req) {
         console.log("authorize");
-        console.log(credentials);
+        // console.log(credentials);
 
         const { email, password, userRole } = credentials as {
           email: string;
@@ -61,9 +61,9 @@ export const authOptions: NextAuthOptions = {
         if (userDB) {
           return userDB;
         }
-        console.log("\n");
-        console.log("No User found");
-        console.log("\n");
+        // console.log("\n");
+        // console.log("No User found");
+        // console.log("\n");
         return null;
       },
     }),
@@ -71,11 +71,11 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, user, token }) {
-      console.log("--------  SESSION callback ------ ", {
-        session,
-        user,
-        token,
-      }); // token created before session CB
+      // console.log("--------  SESSION callback ------ ", {
+      //   session,
+      //   user,
+      //   token,
+      // }); // token created before session CB
       console.log("--------- NOW ----------");
 
       const email = session.user?.email;
@@ -96,18 +96,18 @@ export const authOptions: NextAuthOptions = {
       session.emailVerified = userDB.emailVerified as Date;
       session.active = userDB.active as boolean;
       session.trial = userDB.trial as boolean;
-      // session.partnerId = userDB.partner?.id as string
-      // session.vendorId = userDB.vendor?.id as string
+      session.partnerId = userDB.partner_id as string;
+      session.vendorId = userDB.vendor_id as string;
 
       return session;
     },
 
     async jwt({ token, user, account, profile, isNewUser }) {
       console.log("-------- JWT CALLBACK ---------");
-      console.log({ token, user, account, profile, isNewUser });
+      // console.log({ token, user, account, profile, isNewUser });
 
       if (user) {
-        console.log("setting token id as user id: ", user.id);
+        // console.log("setting token id as user id: ", user.id);
 
         token.id = user.id;
       }
@@ -119,10 +119,10 @@ export const authOptions: NextAuthOptions = {
     // * "profile" returned by your provider.
     async signIn({ user, account, profile, email, credentials }) {
       const myUser = user as User;
-      console.log("\n");
+      // console.log("\n");
       console.log("-------- SIGN IN CALLBACK---------");
-      console.log({ user, account, profile, email, credentials });
-      console.log("\n");
+      // console.log({ user, account, profile, email, credentials });
+      // console.log("\n");
 
       if (user) {
         const sessionToken = randomBytes(32).toString("hex"); // Implement a function to generate the session token (you can use randomUUID as an example)
@@ -141,7 +141,7 @@ export const authOptions: NextAuthOptions = {
         return true;
       }
 
-      console.log("No USER In SIGNIN CALLBASCK");
+      // console.log("No USER In SIGNIN CALLBASCK");
 
       return false;
     },

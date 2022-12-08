@@ -70,6 +70,8 @@ model User {
   email         String?   @unique
   password      String?
   role          String?
+  vendor_id     String?
+  partner_id    String?
   emailVerified DateTime?
   image         String?   @db.Text
   accounts      Account[]
@@ -95,8 +97,8 @@ model Vendor {
   lname     String?
   user      User      @relation(fields: [userId], references: [id])
   userId    String    @unique
-  product   Product[]
-  link      Link[]
+  products  Product[]
+  links     Link[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
 }
@@ -107,7 +109,7 @@ model Partner {
   lname     String?
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @unique
-  link      Link[]
+  links     Link[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

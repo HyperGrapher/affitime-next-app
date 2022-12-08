@@ -2,26 +2,37 @@
 import { HiBookOpen, HiX } from 'react-icons/hi'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
-import { Fragment } from 'react'
+import { Fragment, useEffect } from 'react'
 import Image from 'next/image'
 import classNames from '../../utils/classnames'
 import logo from '../../assets/tw_logo.svg'
 import profileImg from '../../assets/profile.webp'
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 // https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
 
+const pathsToExlude = [
+  '/no-navbar'
+]
 
 const Navbar: React.FC = () => {
 
   const { data: sessionData } = useSession()
+  const { pathname } = useRouter()
 
   const logUserOut = () => {
     signOut({ redirect: true, callbackUrl: '/' })
   }
 
+  if (pathsToExlude.includes(pathname)) return null
 
+  for (const excluded of pathsToExlude) {
+
+    if (pathname.startsWith(excluded)) return null
+
+  }
 
   return (
     <Disclosure as='nav' className='h-16 bg-gray-800'>
@@ -144,7 +155,20 @@ const Navbar: React.FC = () => {
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
                                 )}>
-                                Your dashboard
+                                Dashboard
+                              </Link>
+                            )}
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            {({ active }) => (
+                              <Link
+                                href='/product'
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block px-4 py-2 text-sm text-gray-700'
+                                )}>
+                                Urunler
                               </Link>
                             )}
                           </Menu.Item>

@@ -44,9 +44,10 @@ const Home: NextPage = () => {
 
           <div className="flex flex-col items-center gap-2">
             {/* <AuthShowcase /> */}
-            <Link className="bg-green-500 py-4 px-12 text-slate-50" href={'/dashboard'}>dashboard</Link>
-            <Link className="bg-blue-500 py-4 px-12 text-slate-50" href={'/welcome'}>Welcome</Link>
-            {sessionData ? <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={logUserOut}>Signout</button> : <Link className="bg-orange-500 py-4 px-12 text-slate-50" href={'/auth/signin'}>Custom Login</Link>}
+            <Link className="bg-green-500 py-2 text-sm px-6 text-slate-50" href={'/dashboard'}>dashboard</Link>
+            <Link className="bg-indigo-500 py-2 text-sm px-6 text-slate-50" href={'/product'}>Products</Link>
+            <Link className="bg-blue-500 py-2 text-sm px-6 text-slate-50" href={'/welcome'}>Welcome</Link>
+            {sessionData ? <button className="bg-red-500 py-2 text-sm px-6 text-slate-50" onClick={logUserOut}>Signout</button> : <Link className="bg-orange-500 py-4 px-12 text-slate-50" href={'/auth/signin'}>Custom Login</Link>}
 
           </div>
 
