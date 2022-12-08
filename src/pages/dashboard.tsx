@@ -7,8 +7,9 @@ import Link from "next/link";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import getClientIp from "../utils/getClientIp";
+import usePersistedState from "../hooks/usePersistedState";
 // import dynamic from 'next/dynamic'
 // import { Suspense } from 'react'
 
@@ -21,19 +22,24 @@ const Dashboard: NextPage = () => {
 
     const { data: secretMsg, isLoading: isLoadingSecret, } = trpc.auth.getSecretMessage.useQuery()
     const updateIp = trpc.user.upsertUserIp.useMutation()
+    const [isPending, startTransition] = useTransition();
     const { data: sessionData, status: sessionStatus } = useSession();
+    const [_, setPersistedIp] = usePersistedState('ip', '')
+    const [__, setData] = usePersistedState('data', {})
 
+    const setUserIp = async () => {
+        const userIp = await getClientIp()
+        const ipRes = await updateIp.mutateAsync(userIp)
+        console.log({ ipRes });
 
-    useEffect(() => {
-        const getip = async () => {
-            const userIp = await getClientIp()
-            const ipRes = await updateIp.mutateAsync(userIp)
-            console.log({ ipRes });
-        }
+        startTransition(() => {
+            setPersistedIp(userIp?.ip)
+            setData(userIp)
+        });
 
-        getip()
+    }
 
-    }, [])
+    useEffect(() => { setUserIp() }, [])
 
     return (
         <div>
