@@ -20,21 +20,21 @@ const Home: NextPage = () => {
 
 
   return (
-    <>
+    <div className="">
       <Head>
         <title>Affitime Anasayfa</title>
         <meta name="description" content="Affiliate uygulamasi" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
+        <div className="container mx-auto sm:w-3/6 lg:w-2/6">
           <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem]">
             {(sessionStatus === 'loading') ? "Loading.." : secretMsg}
           </h1>
 
 
           {sessionStatus === 'authenticated' ? <div className='mt-6 text-white'>
-            {JSON.stringify(sessionData, null, 4)}
+            <pre>{JSON.stringify(sessionData, null, 4)}</pre>
             <br />
             <br />
             {JSON.stringify(sessionStatus, null, 4)}
@@ -45,7 +45,7 @@ const Home: NextPage = () => {
           <div className="flex flex-col items-center gap-2">
             {/* <AuthShowcase /> */}
             <Link className="bg-green-500 py-2 text-sm px-6 text-slate-50" href={'/dashboard'}>dashboard</Link>
-            <Link className="bg-indigo-500 py-2 text-sm px-6 text-slate-50" href={'/product'}>Products</Link>
+            <Link className="bg-indigo-500 py-2 text-sm px-6 text-slate-50" href={'/products'}>Products</Link>
             <Link className="bg-blue-500 py-2 text-sm px-6 text-slate-50" href={'/welcome'}>Welcome</Link>
             {sessionData ? <button className="bg-red-500 py-2 text-sm px-6 text-slate-50" onClick={logUserOut}>Signout</button> : <Link className="bg-orange-500 py-4 px-12 text-slate-50" href={'/auth/signin'}>Custom Login</Link>}
 
@@ -57,7 +57,7 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-    </>
+    </div>
   );
 };
 

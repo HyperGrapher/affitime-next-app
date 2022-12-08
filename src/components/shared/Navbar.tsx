@@ -160,10 +160,10 @@ const Navbar: React.FC = () => {
                             )}
                           </Menu.Item>
 
-                          <Menu.Item>
+                          {sessionData.role === 'vendor' ? <Menu.Item>
                             {({ active }) => (
                               <Link
-                                href='/product'
+                                href='/products'
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
@@ -171,7 +171,7 @@ const Navbar: React.FC = () => {
                                 Urunler
                               </Link>
                             )}
-                          </Menu.Item>
+                          </Menu.Item> : null}
 
                           <Menu.Item>
                             {({ active }) => (
