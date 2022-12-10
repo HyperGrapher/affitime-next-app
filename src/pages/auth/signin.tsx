@@ -21,7 +21,7 @@ const Signin: NextPage = (): JSX.Element => {
             redirect: true,
             email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
-            callbackUrl: '/welcome'
+            callbackUrl: '/dashboard'
         })
 
 

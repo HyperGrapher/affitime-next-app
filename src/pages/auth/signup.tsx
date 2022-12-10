@@ -41,7 +41,7 @@ const SignUp: NextPage = (): JSX.Element => {
                 redirect: true,
                 email: res?.email,
                 password: res?.password,
-                callbackUrl: "http://localhost:3000/welcome"
+                callbackUrl: "http://localhost:3000/dashboard?reg=true"
 
             })
         }

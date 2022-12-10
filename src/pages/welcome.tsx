@@ -5,27 +5,29 @@ import Link from 'next/link';
 import type { GetServerSideProps } from "next";
 import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
+import TopBarProgress from "react-topbar-progress-indicator";
 
 
 
 const Welcome: NextPage = () => {
 
-  const { data, status } = useSession()
+  const { data, status: sessionStatus } = useSession()
   // const {data: userData} = trpc.auth.getSessionUser.useQuery()
 
   const logUserOut = () => {
     signOut({ redirect: true, callbackUrl: "/" })
   }
 
-  if (status === 'loading') return <div>Loading</div>
 
   return (
     <div className="">
+      {(sessionStatus === 'loading') && <TopBarProgress />}
+
       <main className='container mx-auto'>
         <h2 className='text-4xl'>welcome</h2>
 
         <pre>{JSON.stringify(data, null, 4)}</pre>
-        <pre>{JSON.stringify(status, null, 4)}</pre>
+        <pre>{JSON.stringify(sessionStatus, null, 4)}</pre>
 
         <div className="flex flex-col items-center gap-2">
 

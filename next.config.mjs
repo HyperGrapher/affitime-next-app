@@ -13,5 +13,11 @@ const config = {
     locales: ["en"],
     defaultLocale: "en",
   },
+  images: { remotePatterns: [
+    {
+      protocol: 'https',
+      hostname: 'cdn.dsmcdn.com',
+    },
+  ], formats: ['image/avif', 'image/webp'], },
 };
 export default config;

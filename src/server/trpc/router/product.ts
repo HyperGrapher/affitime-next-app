@@ -2,7 +2,7 @@
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
-
+// https://youtu.be/_K34O0NcKAM?t=395
 export const productRouter = router({
   // TODO: To be implemented
   getProductById: protectedProcedure

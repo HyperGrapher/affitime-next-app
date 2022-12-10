@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useEffect, useTransition } from "react";
 import getClientIp from "../utils/getClientIp";
 import usePersistedState from "../hooks/usePersistedState";
+import TopBarProgress from "react-topbar-progress-indicator";
 // import dynamic from 'next/dynamic'
 // import { Suspense } from 'react'
 
@@ -43,6 +44,8 @@ const Dashboard: NextPage = () => {
 
     return (
         <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+            {(sessionStatus === 'loading' && window !== undefined) && <TopBarProgress />}
+
             <Head>
                 <title>Affitime {sessionData?.email} dashboard</title>
                 <meta name="description" content="Affiliate uygulamasi" />

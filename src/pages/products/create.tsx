@@ -8,6 +8,7 @@ import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import { Product, Vendor } from '@prisma/client';
 import { useState } from 'react';
 import { useRouter } from 'next/router'
+import TopBarProgress from 'react-topbar-progress-indicator';
 
 
 const ptitles = [
@@ -23,6 +24,7 @@ const pdescs = [
 
 const ProductCreate: NextPage = () => {
 
+
     const { data, status } = useSession()
     const [createdProduct, setCreatedProduct] = useState<Product | undefined>()
     const [error, setError] = useState('')
@@ -31,6 +33,7 @@ const ProductCreate: NextPage = () => {
     const { back } = useRouter()
 
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onCreateProduct = async (e: React.FormEvent<any>) => {
         setBusy(true)
         e.preventDefault()
@@ -65,9 +68,9 @@ const ProductCreate: NextPage = () => {
     if (status === 'loading') return <div>Loading</div>
 
     return (
-        <div className=''>
+        <div className='bg-zinc-800 min-h-screen'>
             <main className='container mx-auto sm:w-3/6 lg:w-2/6'>
-                <h2 className='text-4xl text-center'>Create Product</h2>
+                <h2 className='text-4xl text-center text-white font-bold'>Create Product</h2>
                 <div className="flex flex-col items-center gap-2 mt-6">
 
                     <Link className="bg-green-500 py-2 px-8 text-slate-50 text-xs" href={'/products'}>Back</Link>
