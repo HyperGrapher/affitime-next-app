@@ -47,7 +47,7 @@ const Dashboard: NextPage = () => {
             {(sessionStatus === 'loading' && window !== undefined) && <TopBarProgress />}
 
             <Head>
-                <title>Affitime {sessionData?.email} dashboard</title>
+                <title>Affitime Dashboard</title>
                 <meta name="description" content="Affiliate uygulamasi" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>

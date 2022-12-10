@@ -1,8 +1,6 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// https://github.com/BerkeKaragoz/nextjs-muiv5-typeorm-ts-boilerplate/tree/main/src
-
 // COMMANDS
 // npx prisma migrate dev --name init
 // npx prisma format
@@ -21,12 +19,6 @@ datasource db {
   // https://next-auth.js.org/adapters/prisma#create-the-prisma-schema
   // https://www.prisma.io/docs/reference/api-reference/prisma-schema-reference#string
   url      = env("DATABASE_URL")
-}
-
-model Example {
-  id        String   @id @default(cuid())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 }
 
 // Necessary for Next auth
@@ -49,14 +41,23 @@ model Account {
   @@index([userId])
 }
 
+enum Role {
+  PARTNER
+  VENDOR
+  ADMIN
+  MODERATOR
+}
+
+enum PackageType {
+  BASIC
+  MEDIUM
+  ADVANCED
+  OTHER
+}
+
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique
-  role         String?
-  trial        String?
-  active       String?
-  vendorId     String?
-  partnerId    String?
   userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id])
@@ -64,23 +65,45 @@ model Session {
   @@index([userId])
 }
 
+model Payment {
+  id          String       @id @default(cuid())
+  userId      String
+  amount      Float
+  packageType PackageType? @default(BASIC)
+  user        User         @relation(fields: [userId], references: [id])
+  error       Boolean      @default(false)
+  errorReason String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  @@index([id, userId])
+}
+
 model User {
-  id            String    @id @default(cuid())
+  id            String       @id @default(cuid())
   name          String?
-  email         String?   @unique
-  password      String?
-  role          String?
+  email         String       @unique
+  password      String
+  role          Role         @default(PARTNER)
   vendor_id     String?
   partner_id    String?
   emailVerified DateTime?
-  image         String?   @db.Text
+  image         String?      @db.Text
   accounts      Account[]
   sessions      Session[]
+  payments      Payment[]
   vendor        Vendor?
   partner       Partner?
-  active        Boolean?  @default(true)
-  trial         Boolean?  @default(true)
+  active        Boolean      @default(true)
+  trial         Boolean      @default(true)
+  pro           Boolean      @default(false)
+  packageType   PackageType? @default(BASIC)
+  proDetails    Json?
   ipdata        Json?
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @updatedAt
+
+  @@index([id, email])
 }
 
 model VerificationToken {
@@ -101,6 +124,8 @@ model Vendor {
   links     Link[]
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
+
+  @@index([id, userId])
 }
 
 model Partner {
@@ -112,6 +137,8 @@ model Partner {
   links     Link[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  @@index([id, userId])
 }
 
 model Product {
@@ -131,7 +158,7 @@ model Product {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  @@index([vendor_profile_id])
+  @@index([id, vendor_profile_id])
 }
 
 model Link {
@@ -149,7 +176,5 @@ model Link {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@index([vendor_id])
-  @@index([partner_id])
-  @@index([product_id])
+  @@index([id])
 }

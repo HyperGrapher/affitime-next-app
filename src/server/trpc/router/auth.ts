@@ -2,6 +2,7 @@
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import { UserRoles } from "../../../interface/auth.interface";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
@@ -39,7 +40,7 @@ export const authRouter = router({
       z.object({
         email: z.string().email(),
         password: z.string().min(8),
-        role: z.enum(['vendor', 'partner']),
+        role: z.enum(['VENDOR', 'PARTNER']),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -57,7 +58,7 @@ export const authRouter = router({
           },
         });
 
-        if (role === "vendor") {
+        if (role === UserRoles.VENDOR) {
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
@@ -72,7 +73,7 @@ export const authRouter = router({
               vendor_id: vendor.id,
             },
           });
-        } else if (role === "partner") {
+        } else if (role === UserRoles.PARTNER) {
           const partner = await ctx.prisma.partner.create({
             data: {
               userId: user.id,
@@ -93,7 +94,7 @@ export const authRouter = router({
           where: {
             email,
           },
-          include: { vendor: role === "vendor", partner: role === "partner" },
+          include: { vendor: role === UserRoles.VENDOR, partner: role === UserRoles.PARTNER },
         });
 
         return resultUser;
