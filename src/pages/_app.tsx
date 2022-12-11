@@ -5,7 +5,8 @@ import { SessionProvider } from "next-auth/react";
 import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
-import Navbar from "../components/shared/Navbar";
+import Sidenav from "../components/shared/Sidenav";
+import MiniDrawer from "../components/shared/MiniDrawer";
 import TopBarProgress from "react-topbar-progress-indicator";
 
 const MyApp: AppType<{ session: Session | null }> = ({
@@ -23,10 +24,9 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   return (
     <SessionProvider session={session}>
-      <Navbar />
-      <div className="bg-slate-100 h-screen">
+      <MiniDrawer />
+      <div className="bg-slate-100 h-screen pt-16">
         <Component {...pageProps} />
-
       </div>
     </SessionProvider>
   );

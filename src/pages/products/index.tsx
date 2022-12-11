@@ -22,10 +22,10 @@ const Products: NextPage<{ data: User[] }> = (props) => {
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
 
     return (
-        <div className="bg-zinc-800 min-h-screen" >
+        <div className="" >
             {prodStatus === 'loading' && <TopBarProgress />}
-            <main className='container mx-auto sm:w-5/6 lg:w-4/6'>
-                <h2 className='text-4xl text-center text-slate-200'>Products</h2>
+            <main className='mx-auto sm:w-5/6 lg:w-4/6'>
+                <h2 className='text-4xl text-center text-slate-700'>Products</h2>
 
                 <div className="flex flex-col items-center gap-2 mt-6">
 

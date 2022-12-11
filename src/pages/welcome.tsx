@@ -6,6 +6,7 @@ import type { GetServerSideProps } from "next";
 import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
+import { Container } from '@mui/material';
 
 
 
@@ -20,10 +21,10 @@ const Welcome: NextPage = () => {
 
 
   return (
-    <div className="">
+    <Container maxWidth="sm">
       {(sessionStatus === 'loading') && <TopBarProgress />}
 
-      <main className='container mx-auto'>
+      <main className='mx-auto ml-8'>
         <h2 className='text-4xl'>welcome</h2>
 
         <pre>{JSON.stringify(data, null, 4)}</pre>
@@ -36,7 +37,7 @@ const Welcome: NextPage = () => {
         </div>
 
       </main>
-    </div>
+    </Container>
   )
 }
 
