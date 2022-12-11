@@ -11,6 +11,8 @@ import { useEffect, useTransition } from "react";
 import getClientIp from "../utils/getClientIp";
 import usePersistedState from "../hooks/usePersistedState";
 import TopBarProgress from "react-topbar-progress-indicator";
+import { z } from "zod";
+
 // import dynamic from 'next/dynamic'
 // import { Suspense } from 'react'
 
@@ -18,25 +20,49 @@ import TopBarProgress from "react-topbar-progress-indicator";
 //   suspense: true,
 // })
 
+const IpSchema = z
+    .object({
+        ip: z.string(),
+        network: z.string().optional(),
+        city: z.string().optional(),
+        region: z.string().optional(),
+        country: z.string().optional(),
+        country_name: z.string().optional(),
+        currency: z.string().optional(),
+        latitude: z.number().optional(),
+        longitude: z.number().optional(),
+        org: z.string().optional(),
+        in_eu: z.boolean().optional(),
+    })
 
 const Dashboard: NextPage = () => {
 
     const { data: secretMsg, isLoading: isLoadingSecret, } = trpc.auth.getSecretMessage.useQuery()
-    const updateIp = trpc.user.upsertUserIp.useMutation()
+    const updateIp = trpc.user.updateUserIp.useMutation()
     const [isPending, startTransition] = useTransition();
     const { data: sessionData, status: sessionStatus } = useSession();
     const [_, setPersistedIp] = usePersistedState('ip', '')
     const [__, setData] = usePersistedState('data', {})
+    const { pathname, query } = useRouter()
+    const { reg } = query // is user just registered?
+  
 
     const setUserIp = async () => {
-        const userIp = await getClientIp()
-        const ipRes = await updateIp.mutateAsync(userIp)
-        console.log({ ipRes });
 
-        startTransition(() => {
-            setPersistedIp(userIp?.ip)
-            setData(userIp)
-        });
+        try {
+            const userIp = await getClientIp()
+            const ipData = IpSchema.parse(userIp)
+            const ipRes = await updateIp.mutateAsync(ipData)
+            console.log({ ipRes });
+
+            startTransition(() => {
+                setPersistedIp(userIp?.ip)
+                setData(userIp)
+            });
+        } catch (error) {
+            console.log(error);
+        }
+
 
     }
 
@@ -81,6 +107,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    return { props: { session } }
+    return { props: { success: true } }
 
 }

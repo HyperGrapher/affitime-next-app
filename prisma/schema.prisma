@@ -49,6 +49,7 @@ enum Role {
 }
 
 enum PackageType {
+  NONE
   BASIC
   MEDIUM
   ADVANCED

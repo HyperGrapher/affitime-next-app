@@ -9,6 +9,7 @@ import { Product, Vendor } from '@prisma/client';
 import { useState } from 'react';
 import { useRouter } from 'next/router'
 import TopBarProgress from 'react-topbar-progress-indicator';
+import { UserRoles } from '../../interface/auth.interface';
 
 
 const ptitles = [
@@ -151,7 +152,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
-    if (session.role !== 'vendor') return {
+    if (session.role !== UserRoles.VENDOR) return {
         redirect: {
             destination: '/dashboard',
             permanent: false

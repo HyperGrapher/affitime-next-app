@@ -3,10 +3,13 @@
 import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { signIn, signOut, useSession } from "next-auth/react";
 import { getCookie, setCookies, removeCookies, deleteCookie } from 'cookies-next';
 import { trpc } from "../utils/trpc";
-
+import { UserRoles } from '../interface/auth.interface';
+import { prisma } from "../server/db/client";
+import type { GetServerSideProps } from "next";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
+import { Product, User, Vendor } from '@prisma/client';
 
 const Home: NextPage = () => {
 
@@ -60,6 +63,66 @@ const Home: NextPage = () => {
     </div>
   );
 };
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+  const session = await getSession(context)
+  const query = context.query.id
+
+  // ! DON'T Use api calls on getServerSideProps
+  // const res = await fetch('http://localhost:3000/api/examples', {
+  //     headers: {
+  //       cookie: context.req.headers.cookie || "",
+  //     },
+  //   })
+  // const veri = await res.json() ?? null
+
+
+
+  if (!session) return {
+    redirect: {
+      destination: '/auth/signin',
+      permanent: false
+    }
+  }
+
+  if (session.role !== UserRoles.VENDOR) return {
+    redirect: {
+      destination: '/dashboard',
+      permanent: false
+    }
+  }
+
+  const data = await prisma.user.findMany({
+    select: {
+      id: true,
+      role: true,
+      email: true,
+      image: true,
+      name: true,
+      password: false,
+      pro: true,
+      trial: true,
+      active: true,
+      emailVerified: true,
+      vendor: true,
+      partner: true,
+    }
+  });
+
+  prisma.$disconnect()
+
+
+  if (!data) return {
+    redirect: {
+      destination: '/dashboard',
+      permanent: false
+    }
+  }
+
+  return { props: { veri: JSON.parse(JSON.stringify(data)) } }
+
+}
 
 export default Home;
 

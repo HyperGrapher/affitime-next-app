@@ -9,6 +9,7 @@ import logo from '../../assets/tw_logo.svg'
 import profileImg from '../../assets/profile.webp'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
+import { UserRoles } from '../../interface/auth.interface'
 
 // https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
@@ -20,11 +21,7 @@ const pathsToExlude = [
 const Navbar: React.FC = () => {
 
   const { data: sessionData } = useSession()
-  const { pathname, query } = useRouter()
-  const { reg } = query
-
-  console.log({reg});
-  
+  const { pathname } = useRouter()
 
   const logUserOut = () => {
     signOut({ redirect: true, callbackUrl: '/' })
@@ -164,7 +161,7 @@ const Navbar: React.FC = () => {
                             )}
                           </Menu.Item>
 
-                          {sessionData.role === 'vendor' ? <Menu.Item>
+                          {sessionData.role === UserRoles.VENDOR ? <Menu.Item>
                             {({ active }) => (
                               <Link
                                 href='/products'

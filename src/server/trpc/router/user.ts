@@ -57,48 +57,45 @@ export const userRouter = router({
         },
       });
     }),
-  upsertUserIp: protectedProcedure
+  updateUserIp: protectedProcedure
     .input(
-      z
-        .object({
-          ip: z.string().optional(),
-          network: z.string().optional(),
-          city: z.string().optional(),
-          region: z.string().optional(),
-          country: z.string().optional(),
-          country_name: z.string().optional(),
-          currency: z.string().optional(),
-          latitude: z.number().optional(),
-          longitude: z.number().optional(),
-          org: z.string().optional(),
-          in_eu: z.boolean().optional(),
-        })
-        .partial()
+      z.object({
+        ip: z.string(),
+        network: z.string().optional(),
+        city: z.string().optional(),
+        region: z.string().optional(),
+        country: z.string().optional(),
+        country_name: z.string().optional(),
+        currency: z.string().optional(),
+        latitude: z.number().optional(),
+        longitude: z.number().optional(),
+        org: z.string().optional(),
+        in_eu: z.boolean().optional(),
+      })
     )
     .mutation(async ({ ctx, input }) => {
-      const { email } = ctx.session.user;
+      const id = ctx.session.id;
 
       const ip = input;
 
-      if (!email)
+      if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "Email not found" });
 
-      if (!ip)
+      if (!ip.ip)
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
 
       try {
-        await ctx.prisma.user.upsert({
-          where: { email },
-          update: {
-            ipdata: { ...ip },
-          },
-          create: {
+        await ctx.prisma.user.update({
+          where: { id },
+          data: {
             ipdata: { ...ip },
           },
         });
 
         return { error: false, message: "ok" };
       } catch (error) {
+        console.log(error);
+
         return { error: true, message: "IP upsert failed" };
       }
     }),
