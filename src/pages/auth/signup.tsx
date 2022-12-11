@@ -12,6 +12,8 @@ import { User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../../components/shared/ErrorMessage';
+import { QueryClient } from '@tanstack/react-query';
+import Loader from '../../components/loader/Loader';
 
 // interface Props {}
 // https://tailwindcss.com/docs/flex-direction
@@ -20,71 +22,64 @@ import ErrorMessage from '../../components/shared/ErrorMessage';
 
 const SignUp: NextPage = (): JSX.Element => {
 
-    const { mutateAsync } = trpc.auth.createUser.useMutation()
+    const createUser = trpc.auth.createUser.useMutation()
     const [enabled, setEnabled] = useState(false)
     const [busy, setBusy] = useState(false)
     const [error, setError] = useState("")
     const router = useRouter()
-
+    const client = new QueryClient()
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
+
+        setBusy(true)
         e.preventDefault();
 
         console.log({
-            my_email: e.currentTarget.elements.email.value,
-            el_password: e.currentTarget.elements.password.value,
+            email: e.currentTarget.elements.email.value,
+            password: e.currentTarget.elements.password.value,
         });
 
-
-        const mutateAsyncRes = mutateAsync({
+        createUser.mutate({
             email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
             role: enabled ? UserRoles.VENDOR : UserRoles.PARTNER
-        }).then(async (response: any) => {
-            console.log({ response });
-            console.log(typeof response);
+        },
+            {
+                onSuccess: async (data, variables, context) => {
+                    console.log('Success');
+                    console.log({ data, variables, context });
 
-            //! Doesnt work
-            if (response instanceof TRPCError) {
-                console.log({ msg: response?.message });
-                setError(response?.message)
+                    const { email, password } = variables
+                    const signinResult = await signIn('credentials', {
+                        redirect: false,
+                        email: email,
+                        password: password,
+                        callbackUrl: "/dashboard?reg=true"
 
-                return
-            } else console.log('NOT TRPCERROR');
+                    })
 
+                    console.log({ signinResult });
+                    if (signinResult?.ok) router.replace('/dashboard?reg=true')
 
-            if (response?.name === "TRPCError") {
-                console.log({ TRPCErrorMessage: response?.message });
-                setError(response?.message)
+                    // client.invalidateQueries(['useQuery([queryName])'])
 
-                return
+                },
+                onError(error, variables, context) {
+                    setError(error.message)
+                },
+                onSettled: () => {
+                    console.log("OnSettled");
+                    setBusy(false)
+                }
             }
 
-            const { email, password } = response as User
-            const signinResult = await signIn('credentials', {
-                redirect: false,
-                email: email,
-                password: password,
-                callbackUrl: "/dashboard?reg=true"
-
-            })
-
-            console.log({ signinResult });
-            if (!signinResult?.error) router.replace('/dashboard?reg=true')
-
-
-
-        }).catch((err: TRPCError) => {
-            console.log(err);
-
-        })
-
-
-
-
-
+        )
 
     }
+
+
+
+
 
     return (
         <div className='flex justify-center pt-24'>
@@ -110,9 +105,31 @@ const SignUp: NextPage = (): JSX.Element => {
                 </div>
 
                 <form className='flex flex-col gap-8' onSubmit={handleSubmit}>
-                    <input className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm' type="email" name="email" id="email" placeholder='Email' />
-                    <input className='block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm' type="password" name="password" id="password" placeholder='Password' />
-                    <input className='rounded-full bg-indigo-700 px-10 py-3 font-semibold text-white no-underline transition hover:bg-indigo-500' type="submit" value="Kayıt Ol" />
+                    <input
+                        className='disabled:bg-slate-200 block w-full 
+                        rounded-md border-gray-300 shadow-sm 
+                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        disabled={busy}
+                        type="email"
+                        name="email"
+                        id="email"
+                        placeholder='Email' />
+                    <input
+                        className='disabled:bg-slate-200 block w-full 
+                        rounded-md border-gray-300 shadow-sm 
+                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        disabled={busy}
+                        type="password"
+                        name="password"
+                        id="password"
+                        placeholder='Password' />
+                    <input
+                        className='disabled:bg-indigo-400 shadow-lg disabled:shadow-none 
+                        rounded-full bg-indigo-700 px-10 py-3 font-semibold text-white no-underline transition 
+                        hover:bg-indigo-500'
+                        type="submit"
+                        disabled={busy}
+                        value="Kayıt Ol" />
                 </form>
 
                 <Link className='text-center text-blue-600' href={'/auth/signin'}>Giris Yap</Link>
@@ -123,6 +140,9 @@ const SignUp: NextPage = (): JSX.Element => {
                         message={error} />
                 </div>
 
+                {busy ? <div className="fixed inset-0 mt-16 backdrop-blur-nope-sm bg-black/10 flex justify-center items-center">
+                    <Loader scale={0.9} />
+                </div> : null}
 
             </div>
         </div>

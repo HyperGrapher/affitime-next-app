@@ -62,7 +62,7 @@ export const authOptions: NextAuthOptions = {
 
         if (!user) throw new Error("User not found!!");
 
-        const result = comparePassword(password, user.password);
+        const result = await comparePassword(password, user.password);
         console.log({ result });
 
         if (!result) throw new Error("Wrong Credentials!!");

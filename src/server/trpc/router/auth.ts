@@ -53,7 +53,7 @@ export const authRouter = router({
         },
       });
 
-      if(isExist) return new TRPCError({ message: 'Bu email zaten kayıtlı', code: 'CONFLICT', cause: 'Email Conflict'})
+      if(isExist) throw new TRPCError({ message: 'Bu email zaten kayıtlı', code: 'CONFLICT', cause: 'Email Conflict'})
 
       try {
         const salt = await bcrypt.genSalt(10);
