@@ -70,7 +70,7 @@ const Dashboard: NextPage = () => {
 
     return (
         <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-            {(sessionStatus === 'loading' && window !== undefined) && <TopBarProgress />}
+            {(sessionStatus === 'loading') && <TopBarProgress />}
 
             <Head>
                 <title>Affitime Dashboard</title>

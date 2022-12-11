@@ -3,6 +3,7 @@ import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { UserRoles } from "../../../interface/auth.interface";
+import bcrypt from "bcrypt";
 
 export const authRouter = router({
   getSession: publicProcedure.query(({ ctx }) => {
@@ -40,19 +41,22 @@ export const authRouter = router({
       z.object({
         email: z.string().email(),
         password: z.string().min(8),
-        role: z.enum(['VENDOR', 'PARTNER']),
+        role: z.enum(["VENDOR", "PARTNER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { email, password, role } = input;
 
+      
       try {
-        console.log({ email, password, role });
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(password, salt);
+        console.log({ email, password, role, hash });
 
         const user = await ctx.prisma.user.create({
           data: {
             email: email,
-            password: password,
+            password: hash,
             role: role,
             name: "vendor-name",
           },
@@ -94,7 +98,10 @@ export const authRouter = router({
           where: {
             email,
           },
-          include: { vendor: role === UserRoles.VENDOR, partner: role === UserRoles.PARTNER },
+          include: {
+            vendor: role === UserRoles.VENDOR,
+            partner: role === UserRoles.PARTNER,
+          },
         });
 
         return resultUser;

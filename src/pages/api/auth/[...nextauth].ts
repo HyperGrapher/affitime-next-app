@@ -3,19 +3,20 @@
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { getToken } from "next-auth/jwt";
-import { trpc } from "../../../utils/trpc";
-
 // Prisma adapter for NextAuth, optional and can be removed
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import { setCookie } from "cookies-next";
 import { prisma } from "../../../server/db/client";
 import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt/types.js";
 import { randomBytes } from "node:crypto";
-import { User } from "@prisma/client";
+import { comparePassword } from "../../../utils/comparePassword";
 
+const expireDays = 60;
+const updateAgeHour = 1;
 export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
+    maxAge: 60 * 24 * 60 * expireDays,
+    updateAge: 60 * 60 * updateAgeHour, // 24 hours
   },
   // Include user.id on session
   adapter: PrismaAdapter(prisma),
@@ -26,12 +27,8 @@ export const authOptions: NextAuthOptions = {
       type: "credentials",
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        email: {
-          label: "Email",
-          type: "email",
-          placeholder: "Email adresiniz",
-        },
-        password: { label: "Password", type: "password" },
+        email: {},
+        password: {},
         userRole: {},
         callbackUrl: {},
       },
@@ -40,51 +37,46 @@ export const authOptions: NextAuthOptions = {
         console.log("authorize");
         // console.log(credentials);
 
-        const { email, password, userRole } = credentials as {
+        const { email, password } = credentials as {
           email: string;
           password: string;
-          userRole: string;
         };
+        console.log("authorize", { email, password });
 
         if (!email || !password) {
-          throw new Error("please enter email or password");
+          throw new Error("please enter email and password");
         }
 
-        const userDB = await prisma.user.findFirst({
+        const user = await prisma.user.findFirst({
           where: {
             email: email,
-            // password: password,
           },
           include: { vendor: true, partner: true },
         });
 
-        if (userDB) {
-          return userDB;
-        }
-        // console.log("\n");
-        // console.log("No User found");
-        // console.log("\n");
-        return null;
+        console.log({ user });
+
+        if (!user) throw new Error("User not found!!");
+
+        const result = comparePassword(password, user.password);
+        console.log({ result });
+
+        if (!result) throw new Error("Wrong Credentials!!");
+        else return user;
       },
     }),
     // ...add more providers here
   ],
   callbacks: {
     async session({ session, user, token }) {
-      // console.log("--------  SESSION callback ------ ", {
-      //   session,
-      //   user,
-      //   token,
-      // }); // token created before session CB
-      console.log("--------- NOW ----------");
-
+      console.log("--------  SESSION callback ------ ");
       const email = session.user?.email;
 
       if (!email) return session;
 
-      const userDB = (await PrismaAdapter(prisma).getUserByEmail(
-        email
-      )) as User;
+      const userDB = await prisma.user.findUnique({
+        where: { email },
+      });
 
       if (!userDB) return session;
 
@@ -107,7 +99,7 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account, profile, isNewUser }) {
       console.log("-------- JWT CALLBACK ---------");
       // console.log({ token, user, account, profile, isNewUser });
-
+      // Sadece token data iceriyor
       if (user) {
         // console.log("setting token id as user id: ", user.id);
 
@@ -120,30 +112,21 @@ export const authOptions: NextAuthOptions = {
     // If OAuth provider is used, it contains the full OAuth
     // * "profile" returned by your provider.
     async signIn({ user, account, profile, email, credentials }) {
-      const myUser = user as User;
-      // console.log("\n");
       console.log("-------- SIGN IN CALLBACK---------");
       // console.log({ user, account, profile, email, credentials });
-      // console.log("\n");
 
       if (user) {
-        const sessionToken = randomBytes(32).toString("hex"); // Implement a function to generate the session token (you can use randomUUID as an example)
-        const sessionExpiry = new Date(Date.now() + 3600000); // Implement a function to calculate the session cookie expiry date
-
-        // const userDb = await PrismaAdapter(prisma).getUser(user.id);
-        // console.log({ userDb });
-
-        // https://stackoverflow.com/questions/67749917/custom-session-next-js-next-auth
+        const sessionToken = randomBytes(32).toString("hex");
+        // Implement a function to generate the session token (you can use randomUUID as an example)
+        const sessionExpiry = new Date(Date.now() + 3600); // cookie uzerinde etkisi yok
         await PrismaAdapter(prisma).createSession({
           sessionToken: sessionToken,
           userId: user.id,
-          expires: sessionExpiry, // TODO: ileri bir tarih
+          expires: sessionExpiry,
         });
 
         return true;
       }
-
-      // console.log("No USER In SIGNIN CALLBASCK");
 
       return false;
     },
@@ -153,10 +136,9 @@ export const authOptions: NextAuthOptions = {
 export default NextAuth(authOptions);
 
 /*
-
-
-
-
+    https://stackoverflow.com/a/73197592
+    https://next-auth.js.org/configuration/options#jwt
+    https://next-auth.js.org/configuration/options#override-jwt-encode-and-decode-methods
   session: {
     strategy: "jwt",
     maxAge: 60 * 24 * 60 * 60, // 60days
@@ -166,9 +148,7 @@ export default NextAuth(authOptions);
     },
   },
   jwt: {
-    // https://stackoverflow.com/a/73197592
-    // https://next-auth.js.org/configuration/options#jwt
-    // https://next-auth.js.org/configuration/options#override-jwt-encode-and-decode-methods
+
     encode: async function (params: JWTEncodeParams): Promise<string> {
       console.log("------------>  encode", params);
 
@@ -180,96 +160,11 @@ export default NextAuth(authOptions);
       return "" as unknown as JWT;
     },
   },
-  callbacks: {
-    session({ session, user }) {
-      console.log("--------  SESSION callback ------ ", { session, user });
-
-      if (session.user) {
-        session.user.id = user.id;
-      }
-      return session;
-    },
-
-    async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("-------- JWT CALLBACK ---------");
-      console.log({ token, user, account, profile, isNewUser });
-
-      if (user) {
-        token.id = user.id;
-      }
-
-      return token;
-    },
-    // If OAuth provider is used, it contains the full OAuth
-    // * "profile" returned by your provider.
-    async signIn({ user, account, profile, email, credentials }) {
-      console.log("-------- SIGN IN CALLBACK---------");
-      console.log({ user, account, profile, email, credentials });
-
-      if (user) {
-        const sessionToken = "jijsaij"; // Implement a function to generate the session token (you can use randomUUID as an example)
-        const sessionExpiry = new Date(); // Implement a function to calculate the session cookie expiry date
-
-        await PrismaAdapter(prisma).createSession({
-          sessionToken: sessionToken,
-          userId: user.id,
-          expires: sessionExpiry,
-        });
-
-        //  const cookies = new Cookies()
-
-        //  cookies.set('next-auth.session-token', sessionToken, {
-        //      expires: sessionExpiry
-        //  })
-
-        return true;
-      }
-      return false;
-    },
-  },
 
 
 
-
-****************************************************
-
-
- return await prisma.$transaction(async (tx) => {
-              console.log('\n');
-              console.log('TRANS');
-              
-              const user = await tx.user.create({
-                data: {
-                  email: email,
-                  password: password,
-                  role: userRole,
-                },
-              });
-
-              if (userRole === "vendor") {
-                const vendor = await tx.vendor.create({
-                  data: {
-                    userId: user.id,
-                    fname: "fname",
-                    lname: "lname",
-                  },
-                });
-              } else if (userRole === "partner") {
-                const partner = await tx.partner.create({
-                  data: {
-                    userId: user.id,
-                    fname: "fname",
-                    lname: "lname",
-                  },
-                });
-              }
-
-              return user;
-            });
-
-
-
-****************************************************
+***************************************************
+***************************************************
 
 
 authorize
