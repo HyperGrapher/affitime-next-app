@@ -20,7 +20,7 @@ const Home: NextPage = () => {
     signOut({ redirect: true, callbackUrl: '/' })
   }
 
-  // return <h1 className="text-center text-4xl pt-8">Affitime Server</h1>
+  return <h1 className="text-center text-4xl pt-8">Affitime Server</h1>
 
 
   return (
