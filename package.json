@@ -7,8 +7,10 @@
     "dev": "next dev",
     "postinstall": "prisma generate",
     "lint": "next lint",
-    "start": "next start",
-    "seed:prod": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\" ./scripts/products.seed.mjs"
+    "start": "next start"
+  },
+  "prisma": {
+    "seed": "node --loader ts-node/esm prisma/seed.ts"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

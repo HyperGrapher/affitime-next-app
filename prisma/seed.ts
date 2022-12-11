@@ -1,18 +1,20 @@
-import { prisma } from "../src/server/db/client";
-// "ts-node": "ts-node --compiler-options \"{\\\"module\\\":\\\"commonjs\\\"}\"",
+import { PrismaClient } from "@prisma/client";
+const prisma = new PrismaClient();
 
-const getUser = async () => {
+// TODO create partner, vendor, product, link
+
+const getVendorUser = async () => {
   return await prisma.user.findFirst({
     where: { active: true },
     include: { vendor: true },
   });
 };
 
-export const seedProducts = async () => {
-  const u = await getUser();
+const seedProducts = async () => {
+  const u = await getVendorUser();
 
-  const vendor_user_id = u?.id ?? "";
-  const vendor_profile_id = u?.vendor_id ?? "";
+  const vendor_user_id = u?.id ?? "abc";
+  const vendor_profile_id = u?.vendor_id ?? "abc";
 
   const prods = [
     {
@@ -79,4 +81,11 @@ export const seedProducts = async () => {
   console.log({ productCreation });
 };
 
-seedProducts();
+seedProducts()
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });
