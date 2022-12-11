@@ -23,6 +23,10 @@ import MenuIcon from '@mui/icons-material/Menu';
 import MailIcon from '@mui/icons-material/Mail';
 import Link from 'next/link';
 // import { HiBookOpen, HiX, HiChevronRight, HiChevronLeft, HiHome, HiCollection, HiMenu, HiInbox } from 'react-icons/hi'
+import { signOut, useSession } from 'next-auth/react'
+
+import { useRouter } from 'next/router'
+
 
 const drawerWidth = 240;
 
@@ -98,6 +102,13 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function MiniDrawer() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+
+    const { data: sessionData } = useSession()
+    const { pathname } = useRouter()
+
+    const logUserOut = () => {
+        signOut({ redirect: true, callbackUrl: '/' })
+    }
 
     const handleDrawerOpen = () => {
         setOpen(true);

@@ -128,6 +128,7 @@ model Vendor {
   updatedAt DateTime  @updatedAt
 
   @@index([id, userId])
+  @@map("user_vendor")
 }
 
 model Partner {
@@ -141,6 +142,7 @@ model Partner {
   updatedAt DateTime @updatedAt
 
   @@index([id, userId])
+  @@map("user_partner")
 }
 
 model Product {

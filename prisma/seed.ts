@@ -1,11 +1,31 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
+import bcrypt from "bcrypt";
+import { vendors, partners } from "./user-list";
 
-// TODO create partner, vendor, product, link
+// TODO Use Faker - create partner, vendor, product
+
+const createVendorUsers = async () => {
+  for (const v of vendors) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash("bm123456", salt);
+    v.password = hash;
+    await prisma.user.create({ data: v });
+  }
+};
+
+const createPartnerUsers = async () => {
+  for (const p of partners) {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash("bm123456", salt);
+    p.password = hash;
+    await prisma.user.create({ data: p });
+  }
+};
 
 const getVendorUser = async () => {
   return await prisma.user.findFirst({
-    where: { active: true },
+    where: { active: true, role: "VENDOR" },
     include: { vendor: true },
   });
 };
@@ -88,4 +108,22 @@ seedProducts()
   })
   .finally(() => {
     prisma.$disconnect();
+
+    // createPartnerUsers()
+    //   .catch((e) => {
+    //     console.log(e);
+    //     process.exit(1);
+    //   })
+    //   .finally(() => {
+    //     prisma.$disconnect();
+
+    //     seedProducts()
+    //       .catch((e) => {
+    //         console.log(e);
+    //         process.exit(1);
+    //       })
+    //       .finally(() => {
+    //         prisma.$disconnect();
+    //       });
+    //   });
   });

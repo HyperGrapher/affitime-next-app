@@ -78,6 +78,10 @@ export const authRouter = router({
             },
           });
 
+          console.log('-* *- * - * VENDOR');
+          console.log(vendor);
+          
+
           await ctx.prisma.user.update({
             where: { id: user.id },
             data: {
