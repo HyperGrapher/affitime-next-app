@@ -47,7 +47,14 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { email, password, role } = input;
 
-      
+      const isExist = await ctx.prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if(isExist) return new TRPCError({ message: 'Bu email zaten kayıtlı', code: 'CONFLICT', cause: 'Email Conflict'})
+
       try {
         const salt = await bcrypt.genSalt(10);
         const hash = await bcrypt.hash(password, salt);

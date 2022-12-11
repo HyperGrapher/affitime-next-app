@@ -8,6 +8,10 @@ import { setCookie } from 'cookies-next';
 import { Switch } from '@headlessui/react'
 import { useState } from 'react';
 import Link from 'next/link';
+import { User } from '@prisma/client';
+import { TRPCError } from '@trpc/server';
+import { useRouter } from 'next/router';
+import ErrorMessage from '../../components/shared/ErrorMessage';
 
 // interface Props {}
 // https://tailwindcss.com/docs/flex-direction
@@ -19,6 +23,8 @@ const SignUp: NextPage = (): JSX.Element => {
     const { mutateAsync } = trpc.auth.createUser.useMutation()
     const [enabled, setEnabled] = useState(false)
     const [busy, setBusy] = useState(false)
+    const [error, setError] = useState("")
+    const router = useRouter()
 
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
@@ -30,22 +36,50 @@ const SignUp: NextPage = (): JSX.Element => {
         });
 
 
-        const res = await mutateAsync({
+        const mutateAsyncRes = mutateAsync({
             email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
             role: enabled ? UserRoles.VENDOR : UserRoles.PARTNER
-        })
+        }).then(async (response: any) => {
+            console.log({ response });
+            console.log(typeof response);
 
-        if (res?.id) {
+            //! Doesnt work
+            if (response instanceof TRPCError) {
+                console.log({ msg: response?.message });
+                setError(response?.message)
 
-            signIn('credentials', {
-                redirect: true,
-                email: res?.email,
-                password: res?.password,
+                return
+            } else console.log('NOT TRPCERROR');
+
+
+            if (response?.name === "TRPCError") {
+                console.log({ TRPCErrorMessage: response?.message });
+                setError(response?.message)
+
+                return
+            }
+
+            const { email, password } = response as User
+            const signinResult = await signIn('credentials', {
+                redirect: false,
+                email: email,
+                password: password,
                 callbackUrl: "/dashboard?reg=true"
 
             })
-        }
+
+            console.log({ signinResult });
+            if (!signinResult?.error) router.replace('/dashboard?reg=true')
+
+
+
+        }).catch((err: TRPCError) => {
+            console.log(err);
+
+        })
+
+
 
 
 
@@ -82,6 +116,12 @@ const SignUp: NextPage = (): JSX.Element => {
                 </form>
 
                 <Link className='text-center text-blue-600' href={'/auth/signin'}>Giris Yap</Link>
+
+                <div>
+                    <ErrorMessage
+                        state={!!error}
+                        message={error} />
+                </div>
 
 
             </div>
