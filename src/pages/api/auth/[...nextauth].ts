@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("please enter email and password");
         }
 
-        const user = await prisma.user.findFirst({
+        const user = await prisma.user.findUnique({
           where: {
             email: email,
           },

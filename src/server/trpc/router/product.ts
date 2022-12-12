@@ -42,7 +42,7 @@ export const productRouter = router({
         title: z.string(),
         desc: z.string(),
         price: z.number(),
-        store_url: z.string(),
+        product_url: z.string(),
         image: z.string(),
       })
     )
@@ -50,8 +50,6 @@ export const productRouter = router({
       const { vendorId } = ctx.session;
 
       console.log({ vendorIdFromSession: vendorId });
-
-      const data = input;
 
       if (!vendorId)
         throw new TRPCError({
@@ -71,10 +69,11 @@ export const productRouter = router({
 
         const product = await ctx.prisma.product.create({
           data: {
-            title: data.title,
-            desc: data.desc,
-            image: data.image,
-            price: data.price,
+            title: input.title,
+            desc: input.desc,
+            image: input.image,
+            price: input.price,
+            product_url: input.product_url,
             vendor_user_id: vendor.userId,
             vendor_profile_id: vendor.id,
           },

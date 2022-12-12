@@ -42,6 +42,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
 
                 <div className="bg-salmon-200 text-sm mt-2">
                     <p className="text-stone-200 text-sm mb-2"><b>Fiyat: </b>{p.price} TL</p>
+                    <p className="text-stone-200 text-sm mb-2"><b>Link: </b>{p.product_url} TL</p>
                     <p className="text-stone-200 text-sm">{p.desc}</p>
                 </div>
             </div>

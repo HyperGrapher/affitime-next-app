@@ -95,7 +95,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             role: true,
             email: true,
             image: true,
-            name: true,
             password: false,
             pro: true,
             trial: true,

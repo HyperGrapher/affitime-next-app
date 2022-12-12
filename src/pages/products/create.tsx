@@ -42,7 +42,7 @@ const ProductCreate: NextPage = () => {
         const p = {
             title: e.currentTarget?.title?.value,
             desc: e.currentTarget?.desc?.value,
-            store_url: e.currentTarget?.store_url?.value,
+            product_url: e.currentTarget?.product_url?.value,
             image: e.currentTarget?.image?.value,
             price: e.currentTarget?.price?.valueAsNumber,
         }
@@ -105,8 +105,8 @@ const ProductCreate: NextPage = () => {
                         <input className='block w-full rounded-md border-gray-300 shadow-sm 
                             focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                             type="text"
-                            name="store_url"
-                            id="store_url"
+                            name="product_url"
+                            id="product_url"
                             placeholder='Urun Magaza Linki'
                         />
 

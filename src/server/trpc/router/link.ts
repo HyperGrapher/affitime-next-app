@@ -66,7 +66,7 @@ export const linkRouter = router({
         await ctx.prisma.link.update({
           where: { id: "" },
           data: {
-            visits: {
+            count: {
               increment: 1,
             },
           },

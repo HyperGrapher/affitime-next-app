@@ -23,7 +23,6 @@ export const authRouter = router({
         role: true,
         email: true,
         image: true,
-        name: true,
         password: false,
         trial: true,
         active: true,
@@ -53,7 +52,12 @@ export const authRouter = router({
         },
       });
 
-      if(isExist) throw new TRPCError({ message: 'Bu email zaten kayıtlı', code: 'CONFLICT', cause: 'Email Conflict'})
+      if (isExist)
+        throw new TRPCError({
+          message: "Bu email zaten kayıtlı",
+          code: "CONFLICT",
+          cause: "Email Conflict",
+        });
 
       try {
         const salt = await bcrypt.genSalt(10);
@@ -65,7 +69,6 @@ export const authRouter = router({
             email: email,
             password: hash,
             role: role,
-            name: "vendor-name",
           },
         });
 
@@ -73,14 +76,11 @@ export const authRouter = router({
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
-              fname: "fname",
-              lname: "lname",
             },
           });
 
-          console.log('-* *- * - * VENDOR');
+          console.log("-* *- * - * VENDOR");
           console.log(vendor);
-          
 
           await ctx.prisma.user.update({
             where: { id: user.id },
@@ -92,8 +92,6 @@ export const authRouter = router({
           const partner = await ctx.prisma.partner.create({
             data: {
               userId: user.id,
-              fname: "fname",
-              lname: "lname",
             },
           });
 
