@@ -11,18 +11,56 @@ import ProductList from '../../components/products/ProductList';
 import TopBarProgress from "react-topbar-progress-indicator";
 import { UserRoles } from '../../interface/auth.interface';
 import { prisma } from "../../server/db/client";
+import useNavbarMenuStore from '../../store/menu.store'
+import { styled, useTheme } from '@mui/material/styles';
+import type { CSSObject, Theme } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Container from '@mui/material/Container';
+import Paper from '@mui/material/Paper';
+import type { PaperProps as MuiPaperProps } from '@mui/material/Paper';
 
 
-const Products: NextPage<{ data: User[] }> = (props) => {
+const drawerWidth = 240;
 
-    console.log(props);
+
+interface PaperProps extends MuiPaperProps {
+    open?: boolean;
+}
+
+
+const SlideContainer = styled(Paper, {
+    shouldForwardProp: (prop) => prop !== 'open',
+})<PaperProps>(({ theme, open }) => ({
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: "transparent", // "rgb(241 245 249 / var(--tw-bg-opacity))", // theme.palette.primary.dark,
+    // position: 'absolute',
+    // inset: 0,
+    // left: drawerWidth,
+    transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    ...(open && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
+
+
+const Products: NextPage = () => {
+
+    const sideOpen = useNavbarMenuStore(store => store.sideOpen)
 
     // const { data: sessionData, status } = useSession()
     const [error, setError] = useState('')
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
 
     return (
-        <div className="" >
+        <SlideContainer sx={{ border: 'none', bgcolor: 'transparent' }} elevation={0} variant="elevation" open={sideOpen}>
             {prodStatus === 'loading' && <TopBarProgress />}
             <main className='mx-auto sm:w-5/6 lg:w-4/6'>
                 <h2 className='text-4xl text-center text-slate-700'>Products</h2>
@@ -38,10 +76,8 @@ const Products: NextPage<{ data: User[] }> = (props) => {
                     <ProductList prod={vendor?.products} refetch={refetchProducts} />
 
                 </section>
-
-                {props?.data?.map((v) => <div className='text-white' key={v.id}>{v.email}</div>)}
             </main>
-        </div>
+        </SlideContainer>
     )
 }
 
@@ -89,32 +125,33 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    const data = await prisma.user.findMany({
-        select: {
-            id: true,
-            role: true,
-            email: true,
-            image: true,
-            password: false,
-            pro: true,
-            trial: true,
-            active: true,
-            emailVerified: true,
-            vendor: true,
-            partner: true,
-        }
-    });
+    // const data = await prisma.user.findMany({
+    //     select: {
+    //         id: true,
+    //         role: true,
+    //         email: true,
+    //         image: true,
+    //         password: false,
+    //         pro: true,
+    //         trial: true,
+    //         active: true,
+    //         emailVerified: true,
+    //         vendor: true,
+    //         partner: true,
+    //     }
+    // });
 
-    prisma.$disconnect()
+    // prisma.$disconnect()
 
 
-    if (!data) return {
-        redirect: {
-            destination: '/dashboard',
-            permanent: false
-        }
-    }
+    // if (!data) return {
+    //     redirect: {
+    //         destination: '/dashboard',
+    //         permanent: false
+    //     }
+    // }
 
-    return { props: { data: JSON.parse(JSON.stringify(data)) } }
+    return { props: {} }
+    // return { props: { data: JSON.parse(JSON.stringify(data)) } }
 
 }

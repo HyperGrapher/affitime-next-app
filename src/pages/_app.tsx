@@ -38,6 +38,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
         dark: '#ba000d',
         contrastText: '#000',
       },
+      // Paper propschages DrawerMenu backgroud
+      background: { 
+        paper: '#fff',
+        default: "red"
+      }
     },
   });
 

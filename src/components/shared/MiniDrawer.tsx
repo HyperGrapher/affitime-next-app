@@ -19,11 +19,13 @@ import ListItemText from '@mui/material/ListItemText';
 import type { CSSObject, Theme } from '@mui/material/styles';
 import { styled, useTheme } from '@mui/material/styles';
 import Toolbar from '@mui/material/Toolbar';
+import type { TypographyProps } from '@mui/material/Typography';
 import Typography from '@mui/material/Typography';
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import * as React from 'react';
+import useNavbarMenuStore from '../../store/menu.store';
 
 
 const drawerWidth = 240;
@@ -35,6 +37,22 @@ const openedMixin = (theme: Theme): CSSObject => ({
         duration: theme.transitions.duration.enteringScreen,
     }),
     overflowX: 'hidden',
+});
+
+const openedOpacityMixin = (theme: Theme): CSSObject => ({
+    transition: theme.transitions.create('all', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.enteringScreen,
+    }),
+    opacity: 0
+});
+
+const closedOpacityMixin = (theme: Theme): CSSObject => ({
+    transition: theme.transitions.create('all', {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    opacity: 1,
 });
 
 const closedMixin = (theme: Theme): CSSObject => ({
@@ -64,6 +82,10 @@ interface AppBarProps extends MuiAppBarProps {
     open?: boolean;
 }
 
+interface TypoProp extends TypographyProps {
+    open?: boolean;
+}
+
 const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
@@ -82,6 +104,18 @@ const AppBar = styled(MuiAppBar, {
         }),
     }),
 }));
+
+const LogoComp = styled(Typography, { shouldForwardProp: (prop) => prop !== 'open' })
+    <TypoProp>(({ theme, open }) => ({
+        whiteSpace: 'nowrap',
+        ...(open && {
+            ...openedOpacityMixin(theme),
+        }),
+        ...(!open && {
+            ...closedOpacityMixin(theme),
+        }),
+    }),
+    );
 
 const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
     ({ theme, open }) => ({
@@ -103,6 +137,8 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 export default function MiniDrawer() {
     const theme = useTheme();
     const [open, setOpen] = React.useState(false);
+    const setSideOpen = useNavbarMenuStore(store => store.setSideOpen)
+
 
     const { data: sessionData } = useSession()
     const { pathname } = useRouter()
@@ -113,10 +149,12 @@ export default function MiniDrawer() {
 
     const handleDrawerOpen = () => {
         setOpen(true);
+        setSideOpen(true)
     };
 
     const handleDrawerClose = () => {
         setOpen(false);
+        setSideOpen(false)
     };
 
     return (
@@ -136,9 +174,9 @@ export default function MiniDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography className="text-fuchsia-300" variant="h6" noWrap component="div">
+                    <LogoComp open={open} className="text-fuchsia-300" variant="h6" noWrap >
                         Affitime
-                    </Typography>
+                    </LogoComp>
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
