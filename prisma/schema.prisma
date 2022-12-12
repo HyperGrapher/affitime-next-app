@@ -83,7 +83,8 @@ model Payment {
 
 model User {
   id            String       @id @default(cuid())
-  name          String?
+  fname         String?
+  lname         String?
   email         String       @unique
   password      String
   role          Role         @default(PARTNER)
@@ -118,8 +119,6 @@ model VerificationToken {
 
 model Vendor {
   id        String    @id @default(cuid())
-  fname     String?
-  lname     String?
   user      User      @relation(fields: [userId], references: [id])
   userId    String    @unique
   products  Product[]
@@ -133,8 +132,6 @@ model Vendor {
 
 model Partner {
   id        String   @id @default(cuid())
-  fname     String?
-  lname     String?
   user      User     @relation(fields: [userId], references: [id])
   userId    String   @unique
   links     Link[]
@@ -145,24 +142,52 @@ model Partner {
   @@map("user_partner")
 }
 
+enum CommissionType {
+  CASH
+  PERC
+}
+
 model Product {
-  id                String   @id @default(cuid())
-  title             String?  @db.Text
-  desc              String?  @db.Text
+  id                String         @id @default(cuid())
+  title             String?        @db.Text
+  desc              String?        @db.Text
+  fullDesc          String?        @db.Text
   price             Float?
-  vendor            Vendor   @relation(fields: [vendor_profile_id], references: [id])
+  cookieLife        Int            @default(60)
+  perClick          Float?
+  perClickType      CommissionType @default(CASH)
+  perSale           Float?
+  perSaleType       CommissionType @default(CASH)
+  vendor            Vendor         @relation(fields: [vendor_profile_id], references: [id])
   vendor_profile_id String
   vendor_user_id    String?
-  store_url         String?  @db.Text
-  image             String?  @db.Text
-  links             Link[]   @relation("ProductLinks")
-  published         Boolean? @default(true)
-  active            Boolean? @default(true)
-  listing_info      Json?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  product_url       String?        @db.Text
+  image             String?        @db.Text
+  links             Link[]         @relation("ProductLinks")
+  published         Boolean?       @default(true)
+  active            Boolean?       @default(true)
+  extra_info        Json?
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   @@index([id, vendor_profile_id])
+}
+
+model Visit {
+  id         String   @id @default(cuid())
+  link       Link     @relation("LinkVisits", fields: [link_id], references: [id])
+  link_id    String
+  partner_id String?
+  vendor_id  String?
+  visiterIp  String?
+  ipInfo     Json?
+  cookieInfo Json?
+  isSold     Boolean  @default(false)
+  isUnique   Boolean  @default(true)
+  params     String? // Link query extras
+  dubious    Boolean? //
+  paid       Boolean?
+  createdAt  DateTime @default(now())
 }
 
 model Link {
@@ -175,7 +200,11 @@ model Link {
   vendor          Vendor   @relation(fields: [vendor_id], references: [id])
   vendor_id       String
   vendor_user_id  String?
-  visits          Int      @default(0)
+  platform        String?
+  visits          Visit[]  @relation("LinkVisits")
+  count           Int      @default(0)
+  declined        Int      @default(0)
+  repeated        Int      @default(0)
   active          Boolean? @default(true)
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt

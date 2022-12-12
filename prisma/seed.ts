@@ -10,7 +10,13 @@ const createVendorUsers = async () => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash("bm123456", salt);
     v.password = hash;
-    await prisma.user.create({ data: v });
+    const user = await prisma.user.create({ data: v });
+    const vendor = await prisma.vendor.create({ data: { userId: user.id } });
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { vendor_id: vendor.id },
+    });
+    console.log("Vendor: ", v.email);
   }
 };
 
@@ -19,7 +25,13 @@ const createPartnerUsers = async () => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash("bm123456", salt);
     p.password = hash;
-    await prisma.user.create({ data: p });
+    const user = await prisma.user.create({ data: p });
+    const partner = await prisma.partner.create({ data: { userId: user.id } });
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { partner_id: partner.id },
+    });
+    console.log("Partner: ", p.email);
   }
 };
 
@@ -101,7 +113,7 @@ const seedProducts = async () => {
   console.log({ productCreation });
 };
 
-seedProducts()
+createPartnerUsers()
   .catch((e) => {
     console.log(e);
     process.exit(1);
@@ -109,21 +121,21 @@ seedProducts()
   .finally(() => {
     prisma.$disconnect();
 
-    // createPartnerUsers()
-    //   .catch((e) => {
-    //     console.log(e);
-    //     process.exit(1);
-    //   })
-    //   .finally(() => {
-    //     prisma.$disconnect();
+    createVendorUsers()
+      .catch((e) => {
+        console.log(e);
+        process.exit(1);
+      })
+      .finally(() => {
+        prisma.$disconnect();
 
-    //     seedProducts()
-    //       .catch((e) => {
-    //         console.log(e);
-    //         process.exit(1);
-    //       })
-    //       .finally(() => {
-    //         prisma.$disconnect();
-    //       });
-    //   });
+        seedProducts()
+          .catch((e) => {
+            console.log(e);
+            process.exit(1);
+          })
+          .finally(() => {
+            prisma.$disconnect();
+          });
+      });
   });
