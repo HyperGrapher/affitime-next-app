@@ -1,31 +1,28 @@
-import * as React from 'react';
-import type { Theme, CSSObject } from '@mui/material/styles';
-import { styled, useTheme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import MuiDrawer from '@mui/material/Drawer';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
+import MailIcon from '@mui/icons-material/Mail';
+import MenuIcon from '@mui/icons-material/Menu';
+import InboxIcon from '@mui/icons-material/MoveToInbox';
 import type { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
 import MuiAppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import List from '@mui/material/List';
+import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
-import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
+import MuiDrawer from '@mui/material/Drawer';
 import IconButton from '@mui/material/IconButton';
+import List from '@mui/material/List';
 import ListItem from '@mui/material/ListItem';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
-import InboxIcon from '@mui/icons-material/MoveToInbox';
-
-import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
-import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import MenuIcon from '@mui/icons-material/Menu';
-import MailIcon from '@mui/icons-material/Mail';
+import type { CSSObject, Theme } from '@mui/material/styles';
+import { styled, useTheme } from '@mui/material/styles';
+import Toolbar from '@mui/material/Toolbar';
+import Typography from '@mui/material/Typography';
+import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-// import { HiBookOpen, HiX, HiChevronRight, HiChevronLeft, HiHome, HiCollection, HiMenu, HiInbox } from 'react-icons/hi'
-import { signOut, useSession } from 'next-auth/react'
-
-import { useRouter } from 'next/router'
+import { useRouter } from 'next/router';
+import * as React from 'react';
 
 
 const drawerWidth = 240;
@@ -51,10 +48,12 @@ const closedMixin = (theme: Theme): CSSObject => ({
     },
 });
 
-const DrawerHeader = styled('div')(({ theme }) => ({
+const DrawerHeader = styled('main')(({ theme }) => ({
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
+    color: 'white',
+    backgroundColor: theme.palette.primary.dark,
     padding: theme.spacing(0, 1),
     // necessary for content to be below app bar
     ...theme.mixins.toolbar,
@@ -68,6 +67,7 @@ const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
 })<AppBarProps>(({ theme, open }) => ({
     zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: theme.palette.primary.dark,
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -135,8 +135,8 @@ export default function MiniDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <Typography variant="h6" noWrap component="div">
-                        Mini variant drawer
+                    <Typography className="text-fuchsia-300" variant="h6" noWrap component="div">
+                        Affitime
                     </Typography>
                 </Toolbar>
             </AppBar>

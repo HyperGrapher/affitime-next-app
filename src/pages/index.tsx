@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
+import type { GetServerSideProps } from "next";
+import { type NextPage } from "next";
+import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { getCookie, setCookies, removeCookies, deleteCookie } from 'cookies-next';
-import { trpc } from "../utils/trpc";
 import { UserRoles } from '../interface/auth.interface';
 import { prisma } from "../server/db/client";
-import type { GetServerSideProps } from "next";
-import { getSession, signIn, signOut, useSession } from "next-auth/react";
-import { Product, User, Vendor } from '@prisma/client';
+import { trpc } from "../utils/trpc";
+import Container from "@mui/material/Container";
+// import { Product, User, Vendor } from '@prisma/client';
 
 const Home: NextPage = () => {
 
@@ -22,31 +22,20 @@ const Home: NextPage = () => {
 
   // return <h1 className="text-center text-4xl pt-8">Affitime Server</h1>
 
-
   return (
-    <div className="">
+    <Container maxWidth={'md'}>
       <Head>
         <title>Affitime Anasayfa</title>
         <meta name="description" content="Affiliate uygulamasi" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-[#2e026d] to-[#15162c]">
-        <div className="container mx-auto sm:w-3/6 lg:w-2/6">
-          <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem]">
-            {(sessionStatus === 'loading') ? "Loading.." : secretMsg}
+      <main className="min-h-screen  bg-slate-200">
+        <div className="h-full mx-auto ">
+          <h1 className="text-2xl font-extrabold tracking-tight text-slate-700 sm:text-[2rem]">
+            {(sessionStatus === 'loading') ? "Loading.." : secretMsg} adad
           </h1>
 
-
-          {sessionStatus === 'authenticated' ? <div className='mt-6 text-white'>
-            <pre>{JSON.stringify(sessionData, null, 4)}</pre>
-            <br />
-            <br />
-            {JSON.stringify(sessionStatus, null, 4)}
-
-          </div> : null}
-
-
-          <div className="flex flex-col items-center gap-2">
+          <div className="flex flex-col items-center gap-2 bg-purple-300">
             {/* <AuthShowcase /> */}
             <Link className="bg-green-500 py-2 text-sm px-6 text-slate-50" href={'/dashboard'}>dashboard</Link>
             <Link className="bg-indigo-500 py-2 text-sm px-6 text-slate-50" href={'/products'}>Products</Link>
@@ -61,24 +50,23 @@ const Home: NextPage = () => {
           </div>
         </div>
       </main>
-    </div>
+    </Container>
   );
 };
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const session = await getSession(context)
   const query = context.query.id
 
-  // ! DON'T Use api calls on getServerSideProps
+  // ? DON'T Use api calls on getServerSideProps
   // const res = await fetch('http://localhost:3000/api/examples', {
   //     headers: {
   //       cookie: context.req.headers.cookie || "",
   //     },
   //   })
   // const veri = await res.json() ?? null
-
-
 
   if (!session) return {
     redirect: {
@@ -127,7 +115,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 export default Home;
 
 const AuthShowcase: React.FC = () => {
-  const { data: sessionData } = useSession();
+  const { data: sessionData, status: sessionStatus } = useSession();
 
   const { data: secretMessage } = trpc.auth.getSecretMessage.useQuery(
     undefined, // no input
@@ -139,9 +127,22 @@ const AuthShowcase: React.FC = () => {
       <p className="text-center text-2xl text-white">
         {sessionData && <span>Logged in as {sessionData.user?.name}</span>}
         {secretMessage && <span> - {secretMessage}</span>}
+
+
+
+        {sessionStatus === 'authenticated' ? <div className='mt-6 text-slate-700'>
+          <pre>{JSON.stringify(sessionData, null, 4)}</pre>
+          <br />
+          <br />
+          {JSON.stringify(sessionStatus, null, 4)}
+
+        </div> : null}
+
+
+
       </p>
       <button
-        className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+        className="rounded-full bg-white/10 hover:bg-white/20 px-10 py-3 font-semibold text-white no-underline transition"
         onClick={sessionData ? () => signOut() : () => signIn()}
       >
         {sessionData ? "Sign out" : "Sign in"}
