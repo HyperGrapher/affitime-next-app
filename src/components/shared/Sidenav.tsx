@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import logo from '../../assets/tw_logo.svg'
-import { HiBookOpen, HiX, HiChevronRight, HiHome, HiCollection } from 'react-icons/hi'
+import { HiChevronRight, HiHome, HiCollection } from 'react-icons/hi'
 import Link from 'next/link'
 import useNavbarMenuStore from '../../store/menu.store'
 
