@@ -87,8 +87,8 @@ const Dashboard: NextPage = () => {
 
                     <div className='mt-6 text-slate-500'>
                         Role: {sessionData?.role}
-                        <Link href={'/'}>Home</Link>
                     </div>
+                    <Link className="underline text-blue-500" href={'/'}>Home</Link>
                 </div>
             </main>
         </div>

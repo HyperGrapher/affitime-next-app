@@ -41,7 +41,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       // Paper propschages DrawerMenu backgroud
       background: { 
         paper: '#fff',
-        default: "red"
+        default: "#fff"
       }
     },
   });
@@ -51,7 +51,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
         <MiniDrawer />
-        <div className="bg-slate-100 h-screen pt-16">
+        <div className="bg-slate-100 min-h-screen pt-16">
           <Component {...pageProps} />
         </div>
       </ThemeProvider>

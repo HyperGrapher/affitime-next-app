@@ -86,53 +86,7 @@ interface TypoProp extends TypographyProps {
     open?: boolean;
 }
 
-const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})<AppBarProps>(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: theme.palette.primary.dark,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
 
-const LogoComp = styled(Typography, { shouldForwardProp: (prop) => prop !== 'open' })
-    <TypoProp>(({ theme, open }) => ({
-        whiteSpace: 'nowrap',
-        ...(open && {
-            ...openedOpacityMixin(theme),
-        }),
-        ...(!open && {
-            ...closedOpacityMixin(theme),
-        }),
-    }),
-    );
-
-const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-        width: drawerWidth,
-        flexShrink: 0,
-        whiteSpace: 'nowrap',
-        boxSizing: 'border-box',
-        ...(open && {
-            ...openedMixin(theme),
-            '& .MuiDrawer-paper': openedMixin(theme),
-        }),
-        ...(!open && {
-            ...closedMixin(theme),
-            '& .MuiDrawer-paper': closedMixin(theme),
-        }),
-    }),
-);
 
 export default function MiniDrawer() {
     const theme = useTheme();
@@ -174,20 +128,20 @@ export default function MiniDrawer() {
                     >
                         <MenuIcon />
                     </IconButton>
-                    <LogoComp open={open} className="text-fuchsia-300" variant="h6" noWrap >
+                    <LogoComp open={open} className="text-fuchsia-200" variant="h6" noWrap >
                         Affitime
                     </LogoComp>
                 </Toolbar>
             </AppBar>
             <Drawer variant="permanent" open={open}>
                 <DrawerHeader>
-                    <IconButton onClick={handleDrawerClose}>
+                    <IconButton sx={{color: 'rgba(255, 255, 255, 0.808)', width: '36px', height: '36px', transform: "scale(1.5)"}} onClick={handleDrawerClose}>
                         {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
                     </IconButton>
                 </DrawerHeader>
                 <Divider />
                 <List>
-                    {['dashboard', 'products', 'welcome', 'Drafts'].map((text, index) => (
+                    {['dashboard', 'products', 'welcome', 'Linkler!'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <Link href={`/${text}`}>
                                 <ListItemButton
@@ -215,7 +169,7 @@ export default function MiniDrawer() {
                 </List>
                 <Divider />
                 <List>
-                    {['All mail', 'Trash', 'Spam'].map((text, index) => (
+                    {['Hesap', 'Ayarlar', 'Cikis'].map((text, index) => (
                         <ListItem key={text} disablePadding sx={{ display: 'block' }}>
                             <ListItemButton
                                 sx={{
@@ -243,3 +197,54 @@ export default function MiniDrawer() {
         </Box>
     );
 }
+
+
+const LogoComp = styled(Typography, { shouldForwardProp: (prop) => prop !== 'open' })
+    <TypoProp>(({ theme, open }) => ({
+        whiteSpace: 'nowrap',
+        ...(open && {
+            ...openedOpacityMixin(theme),
+        }),
+        ...(!open && {
+            ...closedOpacityMixin(theme),
+        }),
+    }),
+    );
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+    ({ theme, open }) => ({
+        width: drawerWidth,
+        flexShrink: 0,
+        whiteSpace: 'nowrap',
+        boxSizing: 'border-box',
+        ...(open && {
+            ...openedMixin(theme),
+            '& .MuiDrawer-paper': openedMixin(theme),
+        }),
+        ...(!open && {
+            ...closedMixin(theme),
+            '& .MuiDrawer-paper': closedMixin(theme),
+        }),
+    }),
+);
+
+const AppBar = styled(MuiAppBar, {
+    shouldForwardProp: (prop) => prop !== 'open',
+})<AppBarProps>(({ theme, open }) => ({
+    zIndex: theme.zIndex.drawer + 1,
+    backgroundColor: theme.palette.primary.dark,
+    transition: theme.transitions.create(['width', 'margin'], {
+        easing: theme.transitions.easing.sharp,
+        duration: theme.transitions.duration.leavingScreen,
+    }),
+    ...(open && {
+        marginLeft: drawerWidth,
+        width: `calc(100% - ${drawerWidth}px)`,
+        transition: theme.transitions.create(['width', 'margin'], {
+            easing: theme.transitions.easing.sharp,
+            duration: theme.transitions.duration.enteringScreen,
+        }),
+    }),
+}));
+
+
