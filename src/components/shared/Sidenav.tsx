@@ -38,15 +38,15 @@ const Sidenav = () => {
 
                 </div>
             </header>
-            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-400 hover:bg-violet-500 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-600"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
+            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-500 hover:bg-violet-400 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
             <div id="menu-bar" className='mt-16'>
                 <div id="menu" className="">
-                    <ul id="menu-links" className="">
+                    <ul id="menu-links" className="space-y-4">
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.HOME
-                                ? "bg-violet-400 hover:bg-violet-500 text-white"
-                                : "bg-slate-100 hover:bg-slate-200 text-zinc-600",
-                                "h-10 rounded-md mt-3 pl-4 flex items-center",
+                                ? "bg-violet-500 hover:bg-violet-400 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
                                 "cursor-pointer transition-colors"
                             )}>
 
@@ -67,13 +67,33 @@ const Sidenav = () => {
                         </li>
 
                         <li id='nav-link'
-                            className={classNames(asPath === AppRoutes.PRODUCTS
-                                ? "bg-violet-400 hover:bg-violet-500 text-white"
-                                : "bg-slate-100 hover:bg-slate-200 text-zinc-600",
-                                "h-10 rounded-md mt-3 pl-4 flex items-center",
+                            className={classNames(asPath === AppRoutes.DASHBOARD
+                                ? "bg-violet-500 hover:bg-violet-400 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
                                 "cursor-pointer transition-colors"
                             )}>
-                            <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={'/products'} >
+                            <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={AppRoutes.DASHBOARD} >
+
+                                <HiCollection
+                                    id='toggle'
+                                    className='h-6 w-6 p-1
+                                             text-violet-50 bg-violet-600 rounded-full'
+                                    aria-hidden='true' />
+
+                                <span className="font-medium text-sm">Dashboard</span>
+
+                            </Link>
+                        </li>
+
+                        <li id='nav-link'
+                            className={classNames(asPath === AppRoutes.PRODUCTS
+                                ? "bg-violet-500 hover:bg-violet-400 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
+                            <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={AppRoutes.PRODUCTS} >
 
                                 <HiCollection
                                     id='toggle'

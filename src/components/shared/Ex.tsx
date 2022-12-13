@@ -6,6 +6,9 @@ const Ex = () => {
 
             <div className="flex flex-row justify-center items-center"></div>
 
+            <div className="max-lg:p-8" /> {/* <!-- Will apply `p-8` until the `lg` breakpoint kicks in --> */}
+            <div className="min-[712px]:max-[877px]:right-16 ..." />
+
             <nav className='fixed top-0 left-0'></nav>
 
             <main className="sm:w-3/6 lg:w-2/6 "></main>
