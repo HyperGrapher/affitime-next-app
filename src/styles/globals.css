@@ -2,6 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+    --shadow-card: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+	/* --shadow-menu: 0 0.075rem 0.25rem rgba(0, 0, 0, 0.1); */
+	--border-card: 1px solid rgba(0, 0, 0, 0.1);
+}
+
 body {
     @apply bg-slate-100
 }

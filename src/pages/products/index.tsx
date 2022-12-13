@@ -6,6 +6,7 @@ import { getSession } from "next-auth/react";
 import Link from 'next/link';
 import { useState } from 'react';
 import TopBarProgress from "react-topbar-progress-indicator";
+import PageCard from "../../components/card/Card";
 import ProductList from '../../components/products/ProductList';
 import SlideContainer from '../../components/shared/SlideContainer';
 import { UserRoles } from '../../interface/auth.interface';
@@ -23,19 +24,23 @@ const Products: NextPage = () => {
     return (
         <main className="">
             {prodStatus === 'loading' && <TopBarProgress />}
-            <h2 className='text-4xl text-center text-slate-700'>Products</h2>
+            {/* <h2 className='text-4xl text-center text-slate-700'>Products</h2>
 
             <div className="flex flex-col items-center gap-2 mt-6">
 
                 <Link className="bg-blue-500 py-2 px-8 text-slate-50 text-xs" href={'/products/create'}>Create Product</Link>
                 <Link className="bg-green-500 py-2 px-8 text-slate-50 text-xs" href={'/'}>Home</Link>
-            </div>
+            </div> */}
 
-            <section className="mt-12">
+            <PageCard>
 
-                <ProductList prod={vendor?.products} refetch={refetchProducts} />
+                <section className="">
 
-            </section>
+                    <ProductList prod={vendor?.products} refetch={refetchProducts} />
+
+                </section>
+
+            </PageCard>
         </main>
     )
 }

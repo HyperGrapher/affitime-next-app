@@ -8,30 +8,18 @@ type Props = {
 }
 
 const PageCard: React.FC<Props> = ({ children }) => {
-    const isTabletMobileAndPortrait = useMQ({
-        maxWidth: 640,
+    const isMobile = useMQ({
+        maxWidth: 450,
         orientation: 'portrait'
     })
 
     return (
         <Stack
-            style={{
-                backgroundColor: '#fff',
-                boxShadow: isTabletMobileAndPortrait ? 'none' : 'var(--shadow-menu)',
-                padding: isTabletMobileAndPortrait ? '0.5rem' : '1.5rem',
-                borderRadius: isTabletMobileAndPortrait ? '0' : '1rem',
-                border: isTabletMobileAndPortrait ? 'initial' : 'var(--border-card)',
-                position: 'relative',
-                zIndex: "0",
-                maxWidth: '1280px',
-                margin: '0 auto',
-                marginBottom: '4rem',
-            }}
-            flexDirection={'column'}
-            alignItems={'center'}
-            justifyContent={'center'}
-        >
+            className='lg:shadow-lg bg-white p-4 rounded-lg lg:border 
+            lg:w-full border-slate-200 max-w-[700px] my-16 mx-auto' >
+
             {children}
+
         </Stack>
     )
 }

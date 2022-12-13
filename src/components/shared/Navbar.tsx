@@ -36,7 +36,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <Disclosure as='nav' className='h-16 bg-indigo-800 z-50 relative'>
+    <Disclosure as='nav' className='h-16 bg-violet-700 fixed top-0 left-0 right-0 shadow-lg z-10'>
       {({ open }) => (
         <>
           <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 '>
