@@ -22,7 +22,7 @@ const Welcome: NextPage = () => {
 
 
   return (
-    <SlideContainer>
+    <main>
       {(sessionStatus === 'loading') && <TopBarProgress />}
 
       <h2 className='text-4xl'>welcome</h2>
@@ -36,7 +36,7 @@ const Welcome: NextPage = () => {
         <Link className="bg-green-500 py-4 px-12 text-slate-50" href={'/'}>Home</Link>
       </div>
 
-    </SlideContainer>
+    </main>
   )
 }
 

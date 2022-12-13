@@ -10,6 +10,7 @@ import Sidenav from "../components/shared/Sidenav";
 import SideMenu from "../components/shared/sidemenu/SideMenu";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
+import Navbar from "../components/shared/Navbar";
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -46,12 +47,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
     },
   });
 
-
+// sidenav icin iki yerde degisiklik gerekli
+// Ilki burasi digeri sidebar
   return (
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
-        <SideMenu />
-        <div className="bg-slate-100 min-h-screen pt-16">
+        <Sidenav />
+        <Navbar />
+        <div className="ml-0 lg:ml-64 min-h-screen pt-16">
           <Component {...pageProps} />
         </div>
       </ThemeProvider>

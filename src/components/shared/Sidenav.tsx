@@ -14,7 +14,7 @@ const Sidenav = () => {
     return (
         <nav
             id='sidebar'
-            className='fixed top-0 left-0 h-full w-64 bg-slate-100 py-2 px-2'>
+            className='hidden lg:block fixed top-0 left-0 h-full w-64  bg-white py-2 px-2'>
             <header className='relative'>
                 <div id="image-text" className="flex items-center">
                     <span id="image" className="max-w-[60px] flex flex-col">

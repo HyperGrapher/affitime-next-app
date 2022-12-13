@@ -2,17 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-
-.sidebar-ex {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 250px
-
-}
-
-.sidebar .image-text img {
-    width: 40px;
-
+body {
+    @apply bg-slate-100
 }

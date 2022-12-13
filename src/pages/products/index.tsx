@@ -21,7 +21,7 @@ const Products: NextPage = () => {
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
 
     return (
-        <SlideContainer>
+        <main className="">
             {prodStatus === 'loading' && <TopBarProgress />}
             <h2 className='text-4xl text-center text-slate-700'>Products</h2>
 
@@ -36,7 +36,7 @@ const Products: NextPage = () => {
                 <ProductList prod={vendor?.products} refetch={refetchProducts} />
 
             </section>
-        </SlideContainer>
+        </main>
     )
 }
 
