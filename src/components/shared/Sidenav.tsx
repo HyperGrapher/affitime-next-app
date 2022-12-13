@@ -6,6 +6,7 @@ import { HiHome, HiCollection } from 'react-icons/hi'
 import Link from 'next/link'
 import { useRouter } from "next/router";
 import { AppRoutes } from '../../config/appRoutes'
+import classNames from '../../utils/classnames'
 
 const Sidenav = () => {
 
@@ -14,8 +15,9 @@ const Sidenav = () => {
 
     return (
         <nav
-            id='sidebar'
-            className='hidden lg:block fixed top-0 left-0 h-full w-64 border border-slate-200  bg-white py-2 px-2'>
+            className={classNames(
+                'hidden lg:block fixed top-0 left-0',
+                'h-full w-64 border border-slate-200  bg-white py-2 px-2')}>
             <header className='relative'>
                 <div id="image-text" className="flex items-center">
                     <span id="image" className="max-w-[60px] flex flex-col">
@@ -36,11 +38,17 @@ const Sidenav = () => {
 
                 </div>
             </header>
-
+            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-400 hover:bg-violet-500 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-600"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
             <div id="menu-bar" className='mt-16'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="">
-                        <li id='nav-link' className={` ${asPath === AppRoutes.HOME ? "bg-violet-400 hover:bg-violet-500 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-600"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors`}>
+                        <li id='nav-link'
+                            className={classNames(asPath === AppRoutes.HOME
+                                ? "bg-violet-400 hover:bg-violet-500 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-600",
+                                "h-10 rounded-md mt-3 pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
 
                             <Link
                                 id=""
@@ -58,7 +66,13 @@ const Sidenav = () => {
                             </Link>
                         </li>
 
-                        <li id='nav-link' className={` ${asPath === AppRoutes.PRODUCTS ? "bg-violet-400 hover:bg-violet-500 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-600"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors`}>
+                        <li id='nav-link'
+                            className={classNames(asPath === AppRoutes.PRODUCTS
+                                ? "bg-violet-400 hover:bg-violet-500 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-600",
+                                "h-10 rounded-md mt-3 pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
                             <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={'/products'} >
 
                                 <HiCollection
