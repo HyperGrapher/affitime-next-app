@@ -72,7 +72,6 @@ const Dashboard: NextPage = () => {
     return (
         <div className="">
             {(sessionStatus === 'loading') && <TopBarProgress />}
-
             <Head>
                 <title>Affitime Dashboard</title>
                 <meta name="description" content="Affiliate uygulamasi" />

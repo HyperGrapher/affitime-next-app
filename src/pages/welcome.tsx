@@ -7,6 +7,7 @@ import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next
 import { getSession, signIn, signOut, useSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { Container } from '@mui/material';
+import SlideContainer from '../components/shared/SlideContainer';
 
 
 
@@ -21,23 +22,21 @@ const Welcome: NextPage = () => {
 
 
   return (
-    <Container maxWidth="sm">
+    <SlideContainer>
       {(sessionStatus === 'loading') && <TopBarProgress />}
 
-      <main className='mx-auto ml-8'>
-        <h2 className='text-4xl'>welcome</h2>
+      <h2 className='text-4xl'>welcome</h2>
 
-        <pre>{JSON.stringify(data, null, 4)}</pre>
-        <pre>{JSON.stringify(sessionStatus, null, 4)}</pre>
+      <pre>{JSON.stringify(data, null, 4)}</pre>
+      <pre>{JSON.stringify(sessionStatus, null, 4)}</pre>
 
-        <div className="flex flex-col items-center gap-2">
+      <div className="flex flex-col items-center gap-2">
 
-          <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={logUserOut}>Signout</button>
-          <Link className="bg-green-500 py-4 px-12 text-slate-50" href={'/'}>Home</Link>
-        </div>
+        <button className="bg-red-500 py-4 px-12 text-slate-50" onClick={logUserOut}>Signout</button>
+        <Link className="bg-green-500 py-4 px-12 text-slate-50" href={'/'}>Home</Link>
+      </div>
 
-      </main>
-    </Container>
+    </SlideContainer>
   )
 }
 

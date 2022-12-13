@@ -1,55 +1,16 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { trpc } from '../../utils/trpc';
-import Link from 'next/link';
 import type { GetServerSideProps } from "next";
-import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
-import { getSession, signIn, signOut, useSession } from "next-auth/react";
-import { Product, User, Vendor } from '@prisma/client';
+import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
+import { getSession } from "next-auth/react";
+import Link from 'next/link';
 import { useState } from 'react';
-import ProductList from '../../components/products/ProductList';
 import TopBarProgress from "react-topbar-progress-indicator";
+import ProductList from '../../components/products/ProductList';
+import SlideContainer from '../../components/shared/SlideContainer';
 import { UserRoles } from '../../interface/auth.interface';
-import { prisma } from "../../server/db/client";
-import useNavbarMenuStore from '../../store/menu.store'
-import { styled, useTheme } from '@mui/material/styles';
-import type { CSSObject, Theme } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import Container from '@mui/material/Container';
-import Paper from '@mui/material/Paper';
-import type { PaperProps as MuiPaperProps } from '@mui/material/Paper';
-
-
-const drawerWidth = 240;
-
-
-interface PaperProps extends MuiPaperProps {
-    open?: boolean;
-}
-
-
-const SlideContainer = styled(Paper, {
-    shouldForwardProp: (prop) => prop !== 'open',
-})<PaperProps>(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: "transparent", // "rgb(241 245 249 / var(--tw-bg-opacity))", // theme.palette.primary.dark,
-    // position: 'absolute',
-    // inset: 0,
-    // left: drawerWidth,
-    transition: theme.transitions.create(['width', 'margin'], {
-        easing: theme.transitions.easing.sharp,
-        duration: theme.transitions.duration.leavingScreen,
-    }),
-    ...(open && {
-        marginLeft: drawerWidth,
-        width: `calc(100% - ${drawerWidth}px)`,
-        transition: theme.transitions.create(['width', 'margin'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.enteringScreen,
-        }),
-    }),
-}));
-
+import useNavbarMenuStore from '../../store/menu.store';
+import { trpc } from '../../utils/trpc';
 
 const Products: NextPage = () => {
 
@@ -60,23 +21,21 @@ const Products: NextPage = () => {
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
 
     return (
-        <SlideContainer sx={{ border: 'none', bgcolor: 'transparent' }} elevation={0} variant="elevation" open={sideOpen}>
+        <SlideContainer>
             {prodStatus === 'loading' && <TopBarProgress />}
-            <main className='mx-auto sm:w-5/6 lg:w-4/6'>
-                <h2 className='text-4xl text-center text-slate-700'>Products</h2>
+            <h2 className='text-4xl text-center text-slate-700'>Products</h2>
 
-                <div className="flex flex-col items-center gap-2 mt-6">
+            <div className="flex flex-col items-center gap-2 mt-6">
 
-                    <Link className="bg-blue-500 py-2 px-8 text-slate-50 text-xs" href={'/products/create'}>Create Product</Link>
-                    <Link className="bg-green-500 py-2 px-8 text-slate-50 text-xs" href={'/'}>Home</Link>
-                </div>
+                <Link className="bg-blue-500 py-2 px-8 text-slate-50 text-xs" href={'/products/create'}>Create Product</Link>
+                <Link className="bg-green-500 py-2 px-8 text-slate-50 text-xs" href={'/'}>Home</Link>
+            </div>
 
-                <section className="mt-12">
+            <section className="mt-12">
 
-                    <ProductList prod={vendor?.products} refetch={refetchProducts} />
+                <ProductList prod={vendor?.products} refetch={refetchProducts} />
 
-                </section>
-            </main>
+            </section>
         </SlideContainer>
     )
 }
@@ -88,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context)
     const query = context.query.id
 
-    // ! DON'T Use api calls on getServerSideProps
+    // ? DON'T Use api calls on getServerSideProps
     // const res = await fetch('http://localhost:3000/api/examples', {
     //     headers: {
     //       cookie: context.req.headers.cookie || "",

@@ -7,7 +7,7 @@ import { trpc } from "../utils/trpc";
 
 import "../styles/globals.css";
 import Sidenav from "../components/shared/Sidenav";
-import MiniDrawer from "../components/shared/MiniDrawer";
+import SideMenu from "../components/shared/sidemenu/SideMenu";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
@@ -50,7 +50,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <ThemeProvider theme={theme}>
-        <MiniDrawer />
+        <SideMenu />
         <div className="bg-slate-100 min-h-screen pt-16">
           <Component {...pageProps} />
         </div>
