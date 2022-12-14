@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
 import { vendors, partners } from "./user-list";
+import { PackageType, Role, CommissionType } from "@prisma/client";
 
 // TODO Use Faker - create partner, vendor, product
 
@@ -53,6 +54,11 @@ const seedProducts = async () => {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
       price: 1500.99,
+      perClick: 0.50,
+      perClickType: CommissionType.CASH,
+      perSale: 12,
+      perSaleType: CommissionType.PERC,
+      active: true,
       product_url:
         "https://www.trendyol.com/philips/hue-play-2-li-paket-siyah-915005733901-p-37663683?boutiqueId=614296&merchantId=109635",
       image:
@@ -64,6 +70,11 @@ const seedProducts = async () => {
       title: "Delonghi Dedica Manuel Espresso Makinesi",
       desc: "Delonghi Dedica Manuel Espresso Makinesi, 15 cm Genişlik, 1 L Kapasite, 1350W, 15 Bar Basınç, Paslanmaz Çelik (EC 685.M).",
       price: 8785.85,
+      perClick: 0.25,
+      perClickType: CommissionType.CASH,
+      perSale: 7,
+      perSaleType: CommissionType.PERC,
+      active: true,
       product_url:
         "https://www.amazon.com.tr/Espresso-ve-Kapu%C3%A7ino-Makineleri-Delonghi-Kahve/s?rh=n%3A13511569031%2Cp_89%3ADelonghi",
       image:
@@ -75,6 +86,11 @@ const seedProducts = async () => {
       title: "Philips Hue Lightstrip Gradient Tv 75 inch Akıllı Led Şerit",
       desc: "Kolay akıllı aydınlatma Philips Hue ile sinemanın heyecanını evinizde yaşayın Degrade ışık şeridi oynayın. tepki veren birden çok ışık rengi elde edin. • Renkleri Sorunsuz Bir Şekilde Karıştırın • Çevre Aydınlatma Efektleri • Oyunu Değiştiren Ev Eğlencesi • Kolay kurulum • Hue Sync ve Hue Bridge Gerekli • Mükemmel uyum için üç boyut",
       price: 4199.0,
+      perClick: 0,
+      perClickType: CommissionType.CASH,
+      perSale: 12,
+      perSaleType: CommissionType.PERC,
+      active: true,
       product_url:
         "https://www.trendyol.com/philips/hue-lightstrip-gradient-tv-75-akilli-led-serit-p-165028794",
       image:
@@ -86,6 +102,11 @@ const seedProducts = async () => {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
       desc: "Philips TAR4406/12 alarmlı saat/kronometre Dijital çalar saat Beyaz",
       price: 849.99,
+      perClick: 0.10,
+      perClickType: CommissionType.CASH,
+      perSale: 16,
+      perSaleType: CommissionType.PERC,
+      active: true,
       product_url:
         "https://www.trendyol.com/philips/tar4406-12-alarmli-saatli-radyo-p-310677433",
       image:
@@ -95,8 +116,13 @@ const seedProducts = async () => {
     },
     {
       title: "Caterpillar Kadın Bej Colorado Bot",
-      desc: "",
+      desc: "Kadın Bot",
       price: 1749.0,
+      perClick: 0.50,
+      perClickType: CommissionType.PERC,
+      perSale: 8,
+      perSaleType: CommissionType.PERC,
+      active: true,
       product_url:
         "https://www.trendyol.com/caterpillar/kadin-bej-colorado-bot-015g100095-p-65496097",
       image:

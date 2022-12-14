@@ -70,7 +70,7 @@ export const authOptions: NextAuthOptions = {
 
       if (!userDB) return session;
 
-      session.id = token.id as string;
+      session.id = userDB.id as string;
       session.token = token.id as string;
       session.role = userDB.role as string;
       session.email = userDB.email as string;

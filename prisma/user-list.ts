@@ -1,4 +1,4 @@
-import { PackageType, Role } from "@prisma/client";
+import { PackageType, Role, CommissionType } from "@prisma/client";
 
 export const partners = [
   {

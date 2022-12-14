@@ -16,7 +16,7 @@ const PageCard: React.FC<Props> = ({ children }) => {
     return (
         <Stack
             className='lg:shadow-lg bg-white p-4 rounded-lg lg:border 
-            lg:w-full border-slate-200 max-w-[700px] my-16 mx-auto' >
+            lg:w-full border-slate-200 maxos-w-[700px] my-16 mx-auto' >
 
             {children}
 
