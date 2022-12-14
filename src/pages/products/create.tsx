@@ -85,8 +85,7 @@ const ProductCreate: NextPage = () => {
 
     const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.PERC)
     const [perSaleType, setPerSaleType] = useState<CommissionType>(CommissionType.PERC)
-    const { data, status } = useSession()
-    const [createdProduct, setCreatedProduct] = useState<Product | undefined>()
+    const { status } = useSession()
     const [error, setError] = useState('')
     const [busy, setBusy] = useState(false)
     const createProduct = trpc.product.createProduct.useMutation()
@@ -103,9 +102,12 @@ const ProductCreate: NextPage = () => {
         data.perClickType = perClickType
         data.perSaleType = perSaleType
 
+        console.log(data);
+
         const prodRes = await createProduct.mutateAsync(data)
 
         if (!prodRes) {
+            console.log('error', prodRes);
             setBusy(false)
             setError('Cannot create product')
             return
@@ -115,45 +117,15 @@ const ProductCreate: NextPage = () => {
         back()
         return
 
-        await new Promise(async (resolve) => {
-            setTimeout(() => {
-                console.log(data);
-                resolve(undefined);
-                setBusy(false)
-                // back()
-            }, 3000);
-        });
+        // await new Promise(async (resolve) => {
+        //     setTimeout(() => {
+        //         console.log(data);
+        //         resolve(undefined);
+        //         setBusy(false)
+        //         // back()
+        //     }, 3000);
+        // });
     };
-
-
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onCreateProduct = async (e: React.FormEvent<any>) => {
-        setBusy(true)
-        e.preventDefault()
-
-        const p = {
-            title: e.currentTarget?.title?.value,
-            desc: e.currentTarget?.desc?.value,
-            product_url: e.currentTarget?.product_url?.value,
-            image: e.currentTarget?.image?.value,
-            price: e.currentTarget?.price?.valueAsNumber,
-        }
-
-        const prodRes = await createProduct.mutateAsync(p)
-
-        if (!prodRes) {
-            setBusy(false)
-            setError('Cannot create product')
-            return
-        }
-
-        setBusy(false)
-        back()
-        // setCreatedProduct(prodRes)
-
-
-    }
 
     // const handlePerClickChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 

@@ -1,3 +1,4 @@
+import { CommissionType } from "@prisma/client";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
@@ -32,7 +33,11 @@ export const productRouter = router({
       where: {
         id: vendorId,
       },
-      select: { products: true },
+      select: { products: {
+        orderBy: {
+          createdAt: 'desc'
+        }
+      } },
     });
   }),
 
@@ -41,9 +46,15 @@ export const productRouter = router({
       z.object({
         title: z.string(),
         desc: z.string(),
+        product_url: z.string().url(),
+        image: z.string().url().optional().nullable(),
         price: z.number(),
-        product_url: z.string(),
-        image: z.string(),
+        perSale: z.number(),
+        perClick: z.number(),
+        perClickType: z.string(),
+        perSaleType: z.string(),
+        // perClickType: z.enum([CommissionType.CASH, CommissionType.PERC]).optional(),
+        // perSaleType: z.enum([CommissionType.CASH, CommissionType.PERC]).optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -72,6 +83,10 @@ export const productRouter = router({
             title: input.title,
             desc: input.desc,
             image: input.image,
+            perClickType: input.perClickType as CommissionType,
+            perClick: input.perClick,
+            perSaleType: input.perSaleType as CommissionType,
+            perSale: input.perSale,
             price: input.price,
             product_url: input.product_url,
             vendor_user_id: vendor.userId,
