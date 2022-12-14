@@ -14,6 +14,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import EditIcon from '@mui/icons-material/EditOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import Chip from '@mui/material/Chip';
+import classNames from "../../utils/classnames";
 
 // import { useState, useEffect } from 'react';
 // import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
@@ -29,10 +30,13 @@ type ItemProps = {
 const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
 
     return (
-        <li className="border hover:border-black/5 w-full 
-        py-2 px-2 bg-slate-100 hover:bg-slate-50 rounded-md 
-        shadow hover:shadow-md transition-all shadow-slate-300 
-        ">
+        <li className={
+            classNames(
+                "border hover:border-black/5 w-full",
+                "py-2 px-2 bg-slate-100 hover:bg-slate-50 rounded-md",
+                "shadow hover:shadow-md transition-all shadow-slate-300",
+                ""
+            )}>
 
             {/* IMAGE */}
             <div className="flex gap-4 items-center justify-between">
@@ -45,7 +49,11 @@ const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
                             src={p.image}
                             alt={p.title!} />
                         : <Image
-                            className="object-cover rounded  hover:shadow  object-center w-12 h-12 aspect-square border border-1 border-stone-300"
+                            className={classNames(
+                                "object-cover rounded hover:shadow object-center",
+                                "w-12 h-12 aspect-square",
+                                "border border-1 border-stone-300"
+                            )}
                             width={"85"}
                             height={"85"}
                             src={product}

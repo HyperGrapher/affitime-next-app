@@ -28,7 +28,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
   const [error, setError] = useState('')
 
 
-  const deleteProduct = async (id: string) => {
+  const handleDelete = async (id: string) => {
 
     const deleteRes = await deleteProd.mutateAsync({ id })
 
@@ -46,7 +46,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
       <ProductListHeader />
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
-        {prod?.map(p => (<ProductItem key={p.id} p={p} deleteProduct={deleteProduct} />))}
+        {prod?.map(p => (<ProductItem key={p.id} p={p} deleteProduct={handleDelete} />))}
       </ul>
     </>
     )}

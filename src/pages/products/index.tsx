@@ -13,7 +13,7 @@ import { UserRoles } from '../../interface/auth.interface';
 import useNavbarMenuStore from '../../store/menu.store';
 import { trpc } from '../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../components/link-button/LinkButton";
+import LinkButton from "../../components/buttons/LinkButton";
 
 const Products: NextPage = () => {
 

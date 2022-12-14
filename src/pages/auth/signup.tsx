@@ -16,7 +16,7 @@ import { QueryClient } from '@tanstack/react-query';
 import Loader from '../../components/loader/Loader';
 import { useForm, SubmitHandler } from "react-hook-form";
 import PageCard from '../../components/card/Card';
-import LinkButton from "../../components/link-button/LinkButton";
+import LinkButton from "../../components/buttons/LinkButton";
 import classNames from '../../utils/classnames';
 import { RadioGroup } from '@headlessui/react'
 import { zodResolver } from '@hookform/resolvers/zod';

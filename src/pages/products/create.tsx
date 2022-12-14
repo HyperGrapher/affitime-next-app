@@ -12,7 +12,7 @@ import { useRouter } from 'next/router'
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { UserRoles } from '../../interface/auth.interface';
 import PageCard from '../../components/card/Card';
-import LinkButton from "../../components/link-button/LinkButton";
+import LinkButton from "../../components/buttons/LinkButton";
 import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import classNames from '../../utils/classnames';
 import { HiPlus, HiCheck } from 'react-icons/hi'

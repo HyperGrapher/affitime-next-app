@@ -51,6 +51,37 @@ const seedProducts = async () => {
 
   const prods = [
     {
+      title: "LG 38 inch Ultrawide Monitor",
+      desc: "LG 38 inch Ultrawide Monitor",
+      price: 24500,
+      perClick: 3,
+      perClickType: CommissionType.CASH,
+      perSale: 12,
+      perSaleType: CommissionType.PERC,
+      active: false,
+      product_url: "https://www.lg.com/us/ultrawide-monitors",
+      image:
+        "https://www.lg.com/us/images/monitors/md06121837/gallery/1100-01.jpg",
+      vendor_profile_id,
+      vendor_user_id,
+    },
+    {
+      title: "1974 Fender Stratocaster, Sunburst",
+      desc: "Wonderful 1974 Fender Stratocaster in three-tone Sunburst, with Rosewood fingerboard, large headstock, bullet trussrod, staggered pole pickups all in excellent condition complete with bridge cover and tremolo arm at a good price thanks to a replacement neck pickup.",
+      price: 80800,
+      perClick: 1,
+      perClickType: CommissionType.CASH,
+      perSale: 8,
+      perSaleType: CommissionType.PERC,
+      active: true,
+      product_url:
+        "https://www.vintageandrareguitars.com/products/1974-fender-stratocaster-sunburst",
+      image:
+        "https://guitarpoint.de/app/uploads/products/1974-fender-stratocaster-3t-sunburst-mapleneck-3/Fender74Strat3tSBMN574421_18.jpg",
+      vendor_profile_id,
+      vendor_user_id,
+    },
+    {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
       price: 1500.99,
