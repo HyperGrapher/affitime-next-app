@@ -3,7 +3,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { type Product } from "@prisma/client";
-import React from "react";
 import Image from "next/image";
 import product from '../../assets/product.png';
 import { numberWithCommas } from "../../utils/helpers";

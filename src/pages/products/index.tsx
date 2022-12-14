@@ -12,6 +12,8 @@ import SlideContainer from '../../components/shared/SlideContainer';
 import { UserRoles } from '../../interface/auth.interface';
 import useNavbarMenuStore from '../../store/menu.store';
 import { trpc } from '../../utils/trpc';
+import { HiPlus } from 'react-icons/hi2'
+import LinkButton from "../../components/link-button/LinkButton";
 
 const Products: NextPage = () => {
 
@@ -22,17 +24,23 @@ const Products: NextPage = () => {
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
 
     return (
-        <main className="">
+        <main className="px-1">
             {prodStatus === 'loading' && <TopBarProgress />}
-            {/* <h2 className='text-4xl text-center text-slate-700'>Products</h2>
-
-            <div className="flex flex-col items-center gap-2 mt-6">
-
-                <Link className="bg-blue-500 py-2 px-8 text-slate-50 text-xs" href={'/products/create'}>Create Product</Link>
-                <Link className="bg-green-500 py-2 px-8 text-slate-50 text-xs" href={'/'}>Home</Link>
-            </div> */}
 
             <PageCard>
+
+                <div className="flex items-center mb-6">
+
+                    <h2 className="font-bold text-xl text-slate-700 ml-2">Kampanya Ürünleri</h2>
+
+                    <LinkButton
+                        title={"Ürün Oluştur"}
+                        href={'/products/create'}
+                        icon={<HiPlus color="white" size="16px" />}
+                        twClasses="ml-auto w-44" />
+
+                </div>
+
 
                 <section className="">
 

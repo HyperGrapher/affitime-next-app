@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import logo from '../../assets/tw_logo.svg'
-import { HiHome, HiCollection } from 'react-icons/hi'
+import { HiHome, HiChartPie, HiShoppingBag } from 'react-icons/hi'
 import Link from 'next/link'
 import { useRouter } from "next/router";
 import { AppRoutes } from '../../config/appRoutes'
@@ -38,13 +38,13 @@ const Sidenav = () => {
 
                 </div>
             </header>
-            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-500 hover:bg-violet-400 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
+            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-600 hover:bg-violet-700 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
             <div id="menu-bar" className='mt-16'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.HOME
-                                ? "bg-violet-500 hover:bg-violet-400 text-white"
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
                                 "cursor-pointer transition-colors"
@@ -61,21 +61,21 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm ">Home</span>
+                                <span className="font-medium text-sm ">Anasayfa</span>
 
                             </Link>
                         </li>
 
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.DASHBOARD
-                                ? "bg-violet-500 hover:bg-violet-400 text-white"
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
                                 "cursor-pointer transition-colors"
                             )}>
                             <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={AppRoutes.DASHBOARD} >
 
-                                <HiCollection
+                                <HiChartPie
                                     id='toggle'
                                     className='h-6 w-6 p-1
                                              text-violet-50 bg-violet-600 rounded-full'
@@ -88,20 +88,20 @@ const Sidenav = () => {
 
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.PRODUCTS
-                                ? "bg-violet-500 hover:bg-violet-400 text-white"
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
                                 "cursor-pointer transition-colors"
                             )}>
                             <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={AppRoutes.PRODUCTS} >
 
-                                <HiCollection
+                                <HiShoppingBag
                                     id='toggle'
                                     className='h-6 w-6 p-1
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Products</span>
+                                <span className="font-medium text-sm text-zincXXX-600">Kampanya Ürünleri</span>
 
                             </Link>
                         </li>

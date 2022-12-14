@@ -44,7 +44,6 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
     {prod?.length === 0 ? <p className='text-center'>Henüz ürün eklemediniz</p> : (<>
 
-      <Link className="bg-blue-500 py-2 px-8 text-slate-50 text-xs" href={'/products/create'}>Create Product</Link>
       <ProductListHeader />
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (<ProductItem key={p.id} p={p} deleteProduct={deleteProduct} />))}

@@ -40,10 +40,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
         contrastText: '#000',
       },
       // Paper propschages DrawerMenu backgroud
-      background: { 
-        paper: '#fff',
-        default: "#fff"
-      }
+      // background: { 
+      //   paper: '#fff',
+      //   default: "#fff"
+      // }
     },
   });
 
@@ -51,13 +51,13 @@ const MyApp: AppType<{ session: Session | null }> = ({
 // Ilki burasi digeri sidebar
   return (
     <SessionProvider session={session}>
-      <ThemeProvider theme={theme}>
+      {/* <ThemeProvider theme={theme}> */}
         <Sidenav />
         <Navbar />
         <div className="ml-0 lg:ml-64 min-h-screen pt-16">
           <Component {...pageProps} />
         </div>
-      </ThemeProvider>
+      {/* </ThemeProvider> */}
     </SessionProvider>
   );
 };

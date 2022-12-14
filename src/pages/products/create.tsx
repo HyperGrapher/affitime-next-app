@@ -69,9 +69,9 @@ const ProductCreate: NextPage = () => {
     if (status === 'loading') return <div>Loading</div>
 
     return (
-        <div className='bg-zinc-800 min-h-screen'>
+        <div className='min-h-screen'>
             <main className='container mx-auto sm:w-3/6 lg:w-2/6'>
-                <h2 className='text-4xl text-center text-white font-bold'>Create Product</h2>
+                <h2 className='text-4xl text-center font-bold'>Create Product</h2>
                 <div className="flex flex-col items-center gap-2 mt-6">
 
                     <Link className="bg-green-500 py-2 px-8 text-slate-50 text-xs" href={'/products'}>Back</Link>

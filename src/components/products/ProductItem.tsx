@@ -120,7 +120,9 @@ const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
                         target="_blank"
                         rel="noreferrer">
 
-                        {p.product_url!.length > 25 ? p.product_url!.substring(0, 25) + " ..." : p.product_url}
+                        {p.product_url ? <>{p.product_url!.length > 25
+                            ? p.product_url!.substring(0, 25) + " ..." : p.product_url}</>
+                            : <span className="w-[50px]">Lutfen bir ürün linki Ekleyiniz!</span>}
                     </a>
                 </div>
 
