@@ -11,6 +11,8 @@ import styled from '@emotion/styled'
 import Image from "next/image";
 import profileImg from '../../assets/profile.webp'
 import ProductItem from "./ProductItem";
+import ProductListHeader from "./ProductListHeader";
+import Button from "@mui/material/Button";
 // import { getSession, signIn, signOut, useSession } from "next-auth/react";
 // import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 
@@ -40,10 +42,14 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
   return (<>
 
-    {prod?.length === 0 ? <p className='text-center'>Henüz ürün eklemediniz</p> : (
+    {prod?.length === 0 ? <p className='text-center'>Henüz ürün eklemediniz</p> : (<>
+
+      <Link className="bg-blue-500 py-2 px-8 text-slate-50 text-xs" href={'/products/create'}>Create Product</Link>
+      <ProductListHeader />
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (<ProductItem key={p.id} p={p} deleteProduct={deleteProduct} />))}
       </ul>
+    </>
     )}
 
   </>);

@@ -25,7 +25,7 @@ type ItemProps = {
     p: Product;
     deleteProduct: (id: string) => void;
 }
-// 810px ve asgisi icin layout degis
+// 812px ve asgisi icin layout degis
 const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
 
     return (
@@ -131,9 +131,9 @@ const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
 
 
                 {/* STATUS */}
-                <div className="text-center min-w-[5ch]">
+                <div className="text-center min-w-[5ch] ">
 
-                    <b className={`text-${p.active ? "green" : "red"}-600 text-xs font-bold whitespace-nowrap`}>
+                    <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
                         {p.active ? "Aktif" : "Pasif"}
                     </b>
 
