@@ -1,4 +1,4 @@
-import { CommissionType } from "@prisma/client";
+import type { CommissionType } from "@prisma/client";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";

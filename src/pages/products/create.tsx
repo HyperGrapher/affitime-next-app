@@ -381,7 +381,7 @@ const ProductCreate: NextPage = () => {
                         )}>
 
 
-                            <div className="flex flex-col items-center flex-1 xw-2/4 xbg-red-200">
+                            <div className="flex flex-col items-center flex-1 w-2/4 sm:w-auto xbg-red-200">
 
                                 <FormControl>
                                     <FormFieldWrapper>
@@ -395,7 +395,7 @@ const ProductCreate: NextPage = () => {
 
                                         <RadioGroup
                                             aria-labelledby="perClicka"
-                                            className='text-xs bg-red-0'
+                                            className='text-xs bg-red-0 scale-90 xsm:scale-100'
                                             value={perClickType} >
 
 
@@ -410,7 +410,7 @@ const ProductCreate: NextPage = () => {
                                                     value={"PERC"}
                                                     onChange={() => setPerClickType(CommissionType.PERC)}
                                                     control={<Radio size="small" />}
-                                                    label="Yuzde" />
+                                                    label="Yüzde" />
 
                                             </div>
                                         </RadioGroup>
@@ -423,14 +423,14 @@ const ProductCreate: NextPage = () => {
 
                                     <label
                                         className={classNames(
-                                            "font-medium text-sm text-center mb-4"
+                                            "font-medium text-sm text-center mb-2 mt-4"
                                         )}
                                         htmlFor="title">
                                         Tıklama Komisyonu
                                     </label>
 
                                     <input
-                                        className='block w-48 mx-auto rounded-md border-gray-300 shadow-sm 
+                                        className='block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
                                         disabled:bg-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                         type="number"
                                         disabled={busy}
@@ -450,13 +450,13 @@ const ProductCreate: NextPage = () => {
 
 
 
-                            <div className="flex flex-col items-center flex-1 xw-2/4 xbg-sky-200">
+                            <div className="flex flex-col items-center flex-1 w-2/4 sm:w-auto xbg-sky-200">
 
                                 <FormControl>
                                     <FormFieldWrapper>
                                         <label
                                             className={classNames(
-                                                "font-medium text-sm text-center mb-4"
+                                                "font-medium text-sm text-center mb-4 "
                                             )}
                                             htmlFor="product_url">
                                             Satış Bedeli
@@ -464,7 +464,7 @@ const ProductCreate: NextPage = () => {
 
                                         <RadioGroup
                                             aria-labelledby="perSalex"
-                                            className='text-xs bg-red-0'
+                                            className='text-xs bg-red-0 scale-90 xsm:scale-100'
                                             value={perSaleType}>
 
                                             <div className="flex">
@@ -478,7 +478,7 @@ const ProductCreate: NextPage = () => {
                                                     value={"PERC"}
                                                     onChange={() => setPerSaleType(CommissionType.PERC)}
                                                     control={<Radio size="small" />}
-                                                    label="Yuzde" />
+                                                    label="Yüzde" />
 
                                             </div>
                                         </RadioGroup>
@@ -491,14 +491,14 @@ const ProductCreate: NextPage = () => {
 
                                     <label
                                         className={classNames(
-                                            "font-medium text-sm text-center mb-4"
+                                            "font-medium text-sm text-center mb-2 mt-4"
                                         )}
                                         htmlFor="title">
                                         Satış Komisyonu
                                     </label>
 
                                     <input
-                                        className='block w-48 mx-auto rounded-md border-gray-300 shadow-sm 
+                                        className='block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
                                         disabled:bg-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                         type="number"
                                         disabled={busy}
