@@ -6,7 +6,7 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import ErrorMessage from '../../components/shared/ErrorMessage';
+import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import Loader from '../../components/loader/Loader';
 
 const Signin: NextPage = (): JSX.Element => {

@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import React from 'react'
 import logo from '../../assets/tw_logo.svg'
-import { HiHome, HiChartPie, HiShoppingBag } from 'react-icons/hi'
+import { HiHome, HiChartPie, HiShoppingBag, HiInbox, HiMail, HiCog } from 'react-icons/hi'
 import Link from 'next/link'
 import { useRouter } from "next/router";
 import { AppRoutes } from '../../config/appRoutes'
@@ -102,6 +102,45 @@ const Sidenav = () => {
                                     aria-hidden='true' />
 
                                 <span className="font-medium text-sm text-zincXXX-600">Kampanya Ürünleri</span>
+
+                            </Link>
+                        </li>
+
+                        <li id='nav-link'
+                            className={classNames(asPath === "/bil" /* AppRoutes.PRODUCTS */
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
+                            <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={AppRoutes.PRODUCTS} >
+
+                                <HiMail
+                                    id='toggle'
+                                    className='h-6 w-6 p-1
+                                             text-violet-50 bg-violet-600 rounded-full'
+                                    aria-hidden='true' />
+
+                                <span className="font-medium text-sm text-zincXXX-600">Bildirimler</span>
+
+                            </Link>
+                        </li>
+                        <li id='nav-link'
+                            className={classNames(asPath === "/settings" /* AppRoutes.PRODUCTS */
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
+                            <Link id="" className='flex items-center space-x-6 bg-redo-100 w-full h-full' href={AppRoutes.PRODUCTS} >
+
+                                <HiCog
+                                    id='toggle'
+                                    className='h-6 w-6 p-1
+                                             text-violet-50 bg-violet-600 rounded-full'
+                                    aria-hidden='true' />
+
+                                <span className="font-medium text-sm text-zincXXX-600">Kullanıcı Ayarları</span>
 
                             </Link>
                         </li>

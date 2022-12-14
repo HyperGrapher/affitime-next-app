@@ -11,13 +11,34 @@ import Link from 'next/link';
 import { User } from '@prisma/client';
 import { TRPCError } from '@trpc/server';
 import { useRouter } from 'next/router';
-import ErrorMessage from '../../components/shared/ErrorMessage';
+import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import { QueryClient } from '@tanstack/react-query';
 import Loader from '../../components/loader/Loader';
+import { useForm, SubmitHandler } from "react-hook-form";
+import PageCard from '../../components/card/Card';
+import LinkButton from "../../components/link-button/LinkButton";
+import classNames from '../../utils/classnames';
+import { RadioGroup } from '@headlessui/react'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod'
+
 
 // interface Props {}
 // https://tailwindcss.com/docs/flex-direction
 // https://youtu.be/Rh1MOyfQo14?t=1783
+
+
+
+// https://www.austinshelby.com/blog/build-a-react-form-with-react-hook-form-and-zod
+const FormSchema = z.object({
+    email: z.string().email(),
+    accept: z.literal(true, {
+        invalid_type_error: "You must accept Terms and Conditions.",
+    }),
+    tier: z
+        .string({ invalid_type_error: "Please select a payment tier." })
+        .refine((val) => [{ id: "BRONZE" }, { id: "SILVER" }, { id: "GOLD" }].map((item) => item.id).includes(val)),
+});
 
 
 const SignUp: NextPage = (): JSX.Element => {

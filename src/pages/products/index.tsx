@@ -12,7 +12,7 @@ import SlideContainer from '../../components/shared/SlideContainer';
 import { UserRoles } from '../../interface/auth.interface';
 import useNavbarMenuStore from '../../store/menu.store';
 import { trpc } from '../../utils/trpc';
-import { HiPlus } from 'react-icons/hi2'
+import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../components/link-button/LinkButton";
 
 const Products: NextPage = () => {
@@ -34,10 +34,10 @@ const Products: NextPage = () => {
                     <h2 className="font-bold text-xl text-slate-700 ml-2">Kampanya Ürünleri</h2>
 
                     <LinkButton
-                        title={"Ürün Oluştur"}
+                        title={"Ürün Ekle"}
                         href={'/products/create'}
                         icon={<HiPlus color="white" size="16px" />}
-                        twClasses="ml-auto w-44" />
+                        twClasses="ml-auto w-38" />
 
                 </div>
 
