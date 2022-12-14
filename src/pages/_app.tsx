@@ -11,6 +11,11 @@ import SideMenu from "../components/shared/sidemenu/SideMenu";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import Navbar from "../components/shared/Navbar";
+import { Toaster } from 'react-hot-toast';
+import * as timeago from 'timeago.js';
+import tr from 'timeago.js/lib/lang/tr';
+
+timeago.register('tr', tr);
 
 const MyApp: AppType<{ session: Session | null }> = ({
   Component,
@@ -47,16 +52,22 @@ const MyApp: AppType<{ session: Session | null }> = ({
     },
   });
 
-// sidenav icin iki yerde degisiklik gerekli
-// Ilki burasi digeri sidebar
+  // sidenav icin iki yerde degisiklik gerekli
+  // Ilki burasi digeri sidebar
   return (
     <SessionProvider session={session}>
       {/* <ThemeProvider theme={theme}> */}
-        <Sidenav />
-        <Navbar />
-        <div className="ml-0 lg:ml-64 min-h-screen pt-16">
-          <Component {...pageProps} />
-        </div>
+      <Sidenav />
+      <Navbar />
+      <div className="ml-0 lg:ml-64 min-h-screen pt-16">
+        <Component {...pageProps} />
+        <Toaster containerStyle={{
+          top: 60,
+          left: 20,
+          bottom: 20,
+          right: 20,
+        }} />
+      </div>
       {/* </ThemeProvider> */}
     </SessionProvider>
   );

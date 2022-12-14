@@ -13,6 +13,7 @@ import profileImg from '../../assets/profile.webp'
 import ProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
 import Button from "@mui/material/Button";
+import { notifyError, notifySuccess } from "../../utils/notifications";
 // import { getSession, signIn, signOut, useSession } from "next-auth/react";
 // import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 
@@ -34,8 +35,11 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
     if (deleteRes.error) {
       setError('Cannot delete product')
+      notifyError('Silme işlemi başarısız!');
+
       return
     }
+    notifySuccess("Silme işlemi başarılı!")
     refetch()
 
   }

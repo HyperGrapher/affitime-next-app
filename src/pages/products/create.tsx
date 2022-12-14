@@ -27,6 +27,7 @@ import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import FormLabel from '@mui/material/FormLabel';
+import { notifyError, notifySuccess } from '../../utils/notifications';
 
 
 const ptitles = [
@@ -110,9 +111,10 @@ const ProductCreate: NextPage = () => {
             console.log('error', prodRes);
             setBusy(false)
             setError('Cannot create product')
+            notifyError('Hata. Kampanya ürünü eklenemedi!')
             return
         }
-
+        notifySuccess("Kampanya ürünü eklendi!")
         setBusy(false)
         back()
         return
