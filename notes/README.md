@@ -1,3 +1,6 @@
+## TODO:
+- product duzenlenirken product_url'nin link relationinda da duznleme gerekli olabilir. Check etmeli.
+
 ## Product
 
 - Product olustururken perClick ve perSale default olarak null degeri alir.

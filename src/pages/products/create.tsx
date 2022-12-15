@@ -1,12 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { trpc } from '../../utils/trpc';
-import Link from 'next/link';
 import type { GetServerSideProps } from "next";
-import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
-import { getSession, signIn, signOut, useSession } from "next-auth/react";
-import { Product, Vendor } from '@prisma/client';
-import { useEffect, useMemo, useState } from 'react';
+import { type NextPage } from "next";
+import { getSession } from "next-auth/react";
+import { useState } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from 'next/router'
 import TopBarProgress from 'react-topbar-progress-indicator';
@@ -15,36 +13,20 @@ import PageCard from '../../components/card/Card';
 import LinkButton from "../../components/buttons/LinkButton";
 import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import classNames from '../../utils/classnames';
-import { HiPlus, HiCheck } from 'react-icons/hi'
-import ErrorMessage from '../../components/error-messages/ErrorMessage';
-import FormError, { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import { HiPlus, HiPencil } from 'react-icons/hi'
+import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
 import { CommissionType } from "@prisma/client";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod'
-import Commissons from '../../components/products/Commissons';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
-import { notifyError, notifySuccess } from '../../utils/notifications';
+import { notifyError, notifySuccessTC, notifySuccessBR } from '../../utils/notifications';
 
-
-const ptitles = [
-    'NCMOTORS 2020 BAYİ AMG GT43 DESIGNO HEAD UP BURMESTR AIRMTC 360°',
-    'LG 38 inch Ultrawide Monitor',
-    'Fender Stratocaster 1974'
-]
-const pdescs = [
-    'NC MOTORSTAN BAYİ ÇIKIŞLI 2020 MERCEDES AMG GT43+ 4MATIC 2024 KASIM AYINA KADAR GARANTİLİ',
-    'Best LG Ultrawide screen',
-    'Great Fender start from 1974 in good condition'
-]
-{/* {capitalizeFirstLetter(errorMsg)} */ }
-
-{/* <FormError state={true} message="Bu alani doldurmalisiniz" /> */ }
 
 interface IProductFormData {
+    id: string;
     title: string;
     desc: string;
     product_url: string;
@@ -56,26 +38,17 @@ interface IProductFormData {
     perSaleType: string;
 }
 
-const FormSchema = z.object({
-    email: z.string().email(),
-    accept: z.literal(true, {
-        invalid_type_error: "You must accept Terms and Conditions.",
-    }),
-    tier: z
-        .string({ invalid_type_error: "Please select a payment tier." })
-        .refine((val) => [{ id: "BRONZE" }, { id: "SILVER" }, { id: "GOLD" }].map((item) => item.id).includes(val)),
-});
-
 // https://blog.logrocket.com/schema-validation-typescript-zod/
 // https://www.austinshelby.com/blog/build-a-react-form-with-react-hook-form-and-zod
 const validationSchema = z.object({
+    id: z.string().optional().nullable(),
     title: z.string().trim().min(5, "En az 5 karakter olmalı!"),
-    desc: z.string().trim().min(20, "Lütfen ürün hakkında açıklayıcı bilgi giriniz"),
+    desc: z.string().trim().min(20, "Lütfen ürün hakkında açıklayıcı bir bilgi giriniz"),
     product_url: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!"),
     image: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!").optional().nullable(),
     price: z.number()?.positive("Pozitif bir rakam giriniz"),
-    perSale: z.number()?.positive("Pozitif bir rakam giriniz"),
-    perClick: z.number()?.positive("Pozitif bir rakam giriniz"),
+    perSale: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
+    perClick: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
     perClickType: z.string().optional().nullable(),
     perSaleType: z.string().optional().nullable()
 }).required();
@@ -86,64 +59,96 @@ const ProductCreate: NextPage = () => {
 
     const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.PERC)
     const [perSaleType, setPerSaleType] = useState<CommissionType>(CommissionType.PERC)
-    const { status } = useSession()
-    const [error, setError] = useState('')
     const [busy, setBusy] = useState(false)
-    const createProduct = trpc.product.createProduct.useMutation()
-    const { back } = useRouter()
+    const { back, query } = useRouter()
+    const id = query.pid as string
+    const edit = query.edit === "true"
 
-    const { register, handleSubmit, watch, formState: { errors } } = useForm<IProductFormData>({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IProductFormData>({
         resolver: zodResolver(validationSchema),
         reValidateMode: 'onBlur',
         mode: 'onBlur',
     });
 
+    const createProduct = trpc.product.createProduct.useMutation()
+    const updateProduct = trpc.product.updateProduct.useMutation()
+    trpc.product.getProductById.useQuery({ id }, {
+        enabled: edit && id?.length > 20,
+        onSuccess(data) {
+            setValue("title", data?.title ?? "")
+            setValue("desc", data?.desc ?? "")
+            setValue("price", data?.price ?? 10)
+            setValue("product_url", data?.product_url ?? "")
+            setValue("image", data?.image ?? "")
+            setValue("perClick", data?.perClick ?? 0)
+            setValue("perSale", data?.perSale ?? 0)
+
+            const PCT = data?.perClickType as CommissionType
+            const PST = data?.perSaleType as CommissionType
+            setPerClickType(PCT)
+            setPerSaleType(PST)
+
+        },
+        onSettled() {
+            console.log('onSettled');
+
+        },
+    })
+
+
+
+
     const onSubmit: SubmitHandler<IProductFormData> = async (data) => {
         setBusy(true)
-        data.perClickType = perClickType
-        data.perSaleType = perSaleType
+        data.perClickType = perClickType // fixes a bug where data is causing field null error
+        data.perSaleType = perSaleType // fixes a bug where data is causing field null error
 
-        console.log(data);
+        if (edit) {
 
-        const prodRes = await createProduct.mutateAsync(data)
+            if (!id) return notifyError("Bir hata oluştu! [pid error]")
+            data.id = id
 
-        if (!prodRes) {
-            console.log('error', prodRes);
-            setBusy(false)
-            setError('Cannot create product')
-            notifyError('Hata. Kampanya ürünü eklenemedi!')
-            return
+            updateProduct.mutate(data, {
+                onSuccess: () => {
+                    console.log(data);
+                    // notifySuccess("Düzenleme başarılı!")
+                    notifySuccessTC("Düzenleme başarılı!", true)
+
+                    setBusy(false)
+                    back()
+
+                },
+                onError(error, variables, context) {
+                    console.log(error)
+                    notifyError('Hata. Kampanya ürünü düzenlenemedi!')
+                    setBusy(false)
+
+                },
+            })
+
+        } else {
+
+            createProduct.mutate(data, {
+                onSuccess(data, variables, context) {
+                    console.log(data);
+                    notifySuccessBR("Kampanya ürünü eklendi!")
+                    setBusy(false)
+                    back()
+                },
+                onError(error, variables, context) {
+                    console.log(error)
+                    setBusy(false)
+                    notifyError('Hata. Kampanya ürünü eklenemedi!')
+                },
+            })
+
+
+
         }
-        notifySuccess("Kampanya ürünü eklendi!")
-        setBusy(false)
-        back()
-        return
 
-        // await new Promise(async (resolve) => {
-        //     setTimeout(() => {
-        //         console.log(data);
-        //         resolve(undefined);
-        //         setBusy(false)
-        //         // back()
-        //     }, 3000);
-        // });
+
     };
 
-    // const handlePerClickChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-    //     const val = (event.target as HTMLInputElement).value as CommissionType
-    //     setPerClickType(val);
-    // };
-
-
-    // const handlePerSaleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
-    //     const val = (event.target as HTMLInputElement).value as CommissionType
-    //     setPerSaleType(val);
-    // };
-
-
-    if (status === 'loading') return <div>Loading</div>
 
     return (
         <div className='px-1'>
@@ -153,7 +158,9 @@ const ProductCreate: NextPage = () => {
 
                 <div className="flex items-center mb-6">
 
-                    <h2 className="font-bold text-xl text-slate-700 ml-2">Ürün Ekle</h2>
+                    <h2 className="font-bold text-xl text-slate-700 ml-2">
+                        {edit ? "Ürünü Düzenle" : "Ürün Ekle"}
+                    </h2>
 
                     <LinkButton
                         title={"Geri Git"}
@@ -167,8 +174,6 @@ const ProductCreate: NextPage = () => {
                 <main className=''>
 
                     <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)} >
-
-
 
                         {/* Title */}
                         <section className={classNames(
@@ -192,7 +197,7 @@ const ProductCreate: NextPage = () => {
 
                                 <input
                                     className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200
+                                    disabled:bg-slate-200 transition-colors
                                       `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                     type="text"
                                     disabled={busy}
@@ -231,7 +236,7 @@ const ProductCreate: NextPage = () => {
 
                                 <input
                                     className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200
+                                    disabled:bg-slate-200 transition-colors
                                       `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                     type="text"
                                     disabled={busy}
@@ -270,7 +275,7 @@ const ProductCreate: NextPage = () => {
 
                                 <input
                                     className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200
+                                    disabled:bg-slate-200 transition-colors
                                       `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                     type="number"
                                     defaultValue={10}
@@ -296,7 +301,7 @@ const ProductCreate: NextPage = () => {
                         {/* Product Link */}
                         <section className={classNames(
                             "bg-slate-100 hover:bg-slate-50",
-                            "w-full rounded-md  py-2 px-2   ",
+                            "w-full rounded-md py-2 px-2 ",
                             "shadow hover:shadow-md shadow-slate-300 transition-all",
                             "border hover:border-black/5 space-y-2 pb-8 "
 
@@ -315,7 +320,7 @@ const ProductCreate: NextPage = () => {
 
                                 <input
                                     className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200
+                                    disabled:bg-slate-200 transition-colors
                                       `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                     type="text"
                                     disabled={busy}
@@ -432,7 +437,7 @@ const ProductCreate: NextPage = () => {
                                     </label>
 
                                     <input
-                                        className='block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
+                                        className='transition-colors block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
                                         disabled:bg-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                         type="number"
                                         disabled={busy}
@@ -500,7 +505,7 @@ const ProductCreate: NextPage = () => {
                                     </label>
 
                                     <input
-                                        className='block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
+                                        className='transition-colors block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
                                         disabled:bg-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
                                         type="number"
                                         disabled={busy}
@@ -530,7 +535,7 @@ const ProductCreate: NextPage = () => {
                             disabled={busy}
                             type='submit'
                             className={classNames(
-                                "bg-violet-600 hover:bg-violet-700 transition",
+                                "bg-violet-600 hover:bg-violet-700 transition-colors",
                                 "flex items-center justify-center flex-nowrap space-x-2",
                                 "shadow-sm hover:shadow-lg rounded-md ",
                                 "py-2 px-8",
@@ -539,10 +544,10 @@ const ProductCreate: NextPage = () => {
 
                         >
 
-                            <HiPlus color="white" size="16px" />
+                            {edit ? <HiPencil color="white" size="16px" /> : <HiPlus color="white" size="16px" />}
 
                             <span className="text-slate-50 text-xs font-medium tracking-wide text-center">
-                                Create Product
+                                {edit ? "Ürünü Düzenle" : "Ürün Ekle"}
                             </span>
                         </button>
 

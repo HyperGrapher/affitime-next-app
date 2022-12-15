@@ -1,4 +1,4 @@
-import type { CommissionType } from "@prisma/client";
+import { CommissionType } from "@prisma/client";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
@@ -33,11 +33,13 @@ export const productRouter = router({
       where: {
         id: vendorId,
       },
-      select: { products: {
-        orderBy: {
-          createdAt: 'desc'
-        }
-      } },
+      select: {
+        products: {
+          orderBy: {
+            createdAt: "desc",
+          },
+        },
+      },
     });
   }),
 
@@ -135,32 +137,42 @@ export const productRouter = router({
       }
     }),
 
-  // TODO: To be implemented
-  updateLink: publicProcedure
+  updateProduct: publicProcedure
     .input(
       z.object({
         id: z.string(),
+        title: z.string(),
+        desc: z.string(),
+        product_url: z.string().url(),
+        image: z.string().url().optional().nullable(),
+        price: z.number(),
+        perSale: z.number(),
+        perClick: z.number(),
+        perClickType: z.string(),
+        perSaleType: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const data = input;
+      if (!input.id)
+        throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
 
-      if (!data)
-        throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
-      // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update-a-number-field
+      // ? WTF Typescript!
+      const PCT = input.perClickType as CommissionType;
+      const PST = input.perSaleType as CommissionType;
+
       try {
-        // await ctx.prisma.link.update({
-        //   where: { id: "" },
-        //   data: {
-        //     visits: {
-        //       increment: 1,
-        //     },
-        //   },
-        // });
+        await ctx.prisma.product.update({
+          where: { id: input.id },
+          data: {
+            ...input,
+            perClickType: PCT,
+            perSaleType: PST,
+          },
+        });
 
         return { error: false, message: "ok" };
       } catch (error) {
-        return { error: true, message: "" };
+        return { error: true, message: "Update error" };
       }
     }),
 });

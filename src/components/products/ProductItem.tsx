@@ -15,6 +15,8 @@ import EditIcon from '@mui/icons-material/EditOutlined';
 import SendIcon from '@mui/icons-material/Send';
 import Chip from '@mui/material/Chip';
 import classNames from "../../utils/classnames";
+import { useRouter } from "next/router";
+import { AppRoutes } from "../../config/appRoutes";
 
 // import { useState, useEffect } from 'react';
 // import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
@@ -28,6 +30,7 @@ type ItemProps = {
 }
 // 812px ve asgisi icin layout degis
 const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
+    const { push } = useRouter()
 
     return (
         <li className={
@@ -180,12 +183,14 @@ const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
                             <IconButton
                                 size="small"
                                 onClick={() => deleteProduct(p.id)}
+                                title="Sil"
                                 aria-label="Sil">
                                 <DeleteIcon className="text-red-400 w-4 h-4" />
                             </IconButton>
                             <IconButton
                                 size="small"
-                                onClick={() => deleteProduct(p.id)}
+                                title="Düzenle"
+                                onClick={() => push(`${AppRoutes.CREATE_PRODUCT}?edit=true&pid=${p.id}`)}
                                 aria-label="Düzenle">
                                 <EditIcon className="text-blue-400 w-4 h-4" />
                             </IconButton>

@@ -3,24 +3,16 @@
 import type { GetServerSideProps } from "next";
 import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
 import { getSession } from "next-auth/react";
-import Link from 'next/link';
-import { useState } from 'react';
 import TopBarProgress from "react-topbar-progress-indicator";
 import PageCard from "../../components/card/Card";
 import ProductList from '../../components/products/ProductList';
-import SlideContainer from '../../components/shared/SlideContainer';
 import { UserRoles } from '../../interface/auth.interface';
-import useNavbarMenuStore from '../../store/menu.store';
 import { trpc } from '../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../components/buttons/LinkButton";
 
 const Products: NextPage = () => {
 
-    const sideOpen = useNavbarMenuStore(store => store.sideOpen)
-
-    // const { data: sessionData, status } = useSession()
-    const [error, setError] = useState('')
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
 
     return (

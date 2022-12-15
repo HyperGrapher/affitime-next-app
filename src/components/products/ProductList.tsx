@@ -13,7 +13,7 @@ import profileImg from '../../assets/profile.webp'
 import ProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
 import Button from "@mui/material/Button";
-import { notifyError, notifySuccess } from "../../utils/notifications";
+import { notifyError, notifySuccessBR } from "../../utils/notifications";
 // import { getSession, signIn, signOut, useSession } from "next-auth/react";
 // import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 
@@ -26,26 +26,21 @@ type Props = {
 const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
   const deleteProd = trpc.product.deleteProduct.useMutation()
-  const [error, setError] = useState('')
-
 
   const handleDelete = async (id: string) => {
 
     const deleteRes = await deleteProd.mutateAsync({ id })
 
-    if (deleteRes.error) {
-      setError('Cannot delete product')
-      notifyError('Silme işlemi başarısız!');
+    if (deleteRes.error) return notifyError('Silme işlemi başarısız!');
 
-      return
-    }
-    notifySuccess("Silme işlemi başarılı!")
+    notifySuccessBR("Silme işlemi başarılı!")
     refetch()
 
   }
 
   return (<>
 
+    {/* TODO: EMPTY STATE */}
     {prod?.length === 0 ? <p className='text-center'>Henüz ürün eklemediniz</p> : (<>
 
       <ProductListHeader />

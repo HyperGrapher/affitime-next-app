@@ -36,7 +36,7 @@ const ProductListHeader: React.FC = () => {
                 <div className="min-w-[20ch] h-full">
 
                     <b className="text-xs whitespace-nowrap " >
-                        Urun Ismi
+                        Ürün Ismi
                     </b>
 
 
@@ -70,7 +70,7 @@ const ProductListHeader: React.FC = () => {
                 <div className=" translate-x-8">
 
                     <b className="text-xs whitespace-nowrap" >
-                        Hedef Urun Linki
+                        Hedef Ürün Linki
                     </b>
                 </div>
 
