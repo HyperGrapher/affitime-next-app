@@ -11,6 +11,7 @@ import TopBarProgress from 'react-topbar-progress-indicator';
 import { UserRoles } from '../../interface/auth.interface';
 import PageCard from '../../components/card/Card';
 import LinkButton from "../../components/buttons/LinkButton";
+import IconButton from '../../components/buttons/IconButton';
 import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import classNames from '../../utils/classnames';
 import { HiPlus, HiPencil } from 'react-icons/hi'
@@ -159,17 +160,28 @@ const ProductCreate: NextPage = () => {
                 <div className="flex items-center mb-6">
 
                     <h2 className="font-bold text-xl text-slate-700 ml-2">
-                        {edit ? "Ürünü Düzenle" : "Ürün Ekle"}
+                        {edit ? "Ürün Düzenle" : "Ürün Ekle"}
                     </h2>
 
-                    <LinkButton
+                    <IconButton
                         title={"Geri Git"}
                         disabled={busy}
-                        href={'/products'}
                         icon={<BackIcon color="white" size="16px" />}
-                        twClasses="ml-auto w-38" />
+                        twClasses="ml-auto w-38"
+                        fn={back} />
 
                 </div>
+
+                {edit ? null : <div className='mb-6 ml-2 w-1/2 md:w-1/3'>
+                    <p className="text-slate-400 text-sm font- leading-tight">
+                        Asagıdakı formu doldurarak Kampanya ürünü olusturun.
+                        Daha sonra her bir urun icin affiliate kullanicilarina atanacak
+                        paylasim linki olusturabilirsiniz.
+                    </p>
+                </div>}
+
+                {edit ? null : <hr />}
+
 
                 <main className=''>
 

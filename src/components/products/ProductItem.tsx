@@ -12,6 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import EditIcon from '@mui/icons-material/EditOutlined';
+import LinkIcon from '@mui/icons-material/Link';
 import SendIcon from '@mui/icons-material/Send';
 import Chip from '@mui/material/Chip';
 import classNames from "../../utils/classnames";
@@ -186,6 +187,13 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                         <div className=" flex flex-nowrap gap-2 ml-auto h-full place-self-center">
+                            <IconButton
+                                size="small"
+                                onClick={() => push(`${AppRoutes.CREATE_LINK}?pid=${p.id}`)}
+                                title="Link Oluştur"
+                                aria-label="Link oluştur">
+                                <LinkIcon className="text-indigo-600 w-4 h-4" />
+                            </IconButton>
                             <IconButton
                                 size="small"
                                 onClick={() => del(p.id)}
