@@ -43,7 +43,7 @@ interface IProductFormData {
 const validationSchema = z.object({
     id: z.string().optional().nullable(),
     title: z.string().trim().min(5, "En az 5 karakter olmalı!"),
-    desc: z.string().trim().min(20, "Lütfen ürün hakkında açıklayıcı bir bilgi giriniz"),
+    desc: z.string().trim().min(20, "Lütfen ürün hakkında açıklayıcı bilgi giriniz"),
     product_url: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!"),
     image: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!").optional().nullable(),
     price: z.number()?.positive("Pozitif bir rakam giriniz"),
@@ -196,9 +196,11 @@ const ProductCreate: NextPage = () => {
                                 </label>
 
                                 <input
-                                    className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200 transition-colors
-                                      `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    className={classNames(
+                                        'block w-full rounded-md shadow-sm sm:text-sm',
+                                        'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                        'focus:border-indigo-500 focus:ring-indigo-500'
+                                    )}
                                     type="text"
                                     disabled={busy}
                                     placeholder='Ürün Başlığı'
@@ -235,9 +237,11 @@ const ProductCreate: NextPage = () => {
                                 </label>
 
                                 <input
-                                    className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200 transition-colors
-                                      `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    className={classNames(
+                                        'block w-full rounded-md shadow-sm sm:text-sm',
+                                        'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                        'focus:border-indigo-500 focus:ring-indigo-500'
+                                    )}
                                     type="text"
                                     disabled={busy}
                                     placeholder='Ürün Açıklaması'
@@ -274,9 +278,11 @@ const ProductCreate: NextPage = () => {
                                 </label>
 
                                 <input
-                                    className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200 transition-colors
-                                      `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    className={classNames(
+                                        'block w-full rounded-md shadow-sm sm:text-sm',
+                                        'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                        'focus:border-indigo-500 focus:ring-indigo-500'
+                                    )}
                                     type="number"
                                     defaultValue={10}
                                     min={10}
@@ -319,9 +325,11 @@ const ProductCreate: NextPage = () => {
                                 </label>
 
                                 <input
-                                    className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200 transition-colors
-                                      `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    className={classNames(
+                                        'block w-full rounded-md shadow-sm sm:text-sm',
+                                        'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                        'focus:border-indigo-500 focus:ring-indigo-500'
+                                    )}
                                     type="text"
                                     disabled={busy}
                                     placeholder='https://'
@@ -355,13 +363,15 @@ const ProductCreate: NextPage = () => {
                                         "font-medium text-sm pl-2 mb-4"
                                     )}
                                     htmlFor="product_url">
-                                    Ürün Fotoğrafı
+                                    Ürün Görseli
                                 </label>
 
                                 <input
-                                    className='block w-full rounded-md border-gray-300 shadow-sm 
-                                    disabled:bg-slate-200
-                                      `focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    className={classNames(
+                                        'block w-full rounded-md shadow-sm sm:text-sm',
+                                        'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                        'focus:border-indigo-500 focus:ring-indigo-500'
+                                    )}
                                     type="text"
                                     disabled={busy}
                                     placeholder='https://'
@@ -437,8 +447,11 @@ const ProductCreate: NextPage = () => {
                                     </label>
 
                                     <input
-                                        className='transition-colors block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
-                                        disabled:bg-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                        className={classNames(
+                                            'block w-36 sm:w-60 mx-auto rounded-md sm:text-sm',
+                                            'disabled:bg-slate-200 border-gray-300 shadow-sm',
+                                            'transition-colors focus:border-indigo-500 focus:ring-indigo-500 '
+                                        )}
                                         type="number"
                                         disabled={busy}
                                         placeholder={perClickType === CommissionType.CASH ? "TL" : "%"}
@@ -505,8 +518,11 @@ const ProductCreate: NextPage = () => {
                                     </label>
 
                                     <input
-                                        className='transition-colors block w-36 sm:w-60 mx-auto rounded-md border-gray-300 shadow-sm 
-                                        disabled:bg-slate-200 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                        className={classNames(
+                                            'block w-36 sm:w-60 mx-auto rounded-md sm:text-sm',
+                                            'disabled:bg-slate-200 border-gray-300 shadow-sm',
+                                            'transition-colors focus:border-indigo-500 focus:ring-indigo-500 '
+                                        )}
                                         type="number"
                                         disabled={busy}
                                         placeholder={perSaleType === CommissionType.CASH ? "TL" : "%"}

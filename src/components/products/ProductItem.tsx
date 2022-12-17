@@ -26,11 +26,17 @@ import { AppRoutes } from "../../config/appRoutes";
 
 type ItemProps = {
     p: Product;
-    deleteProduct: (id: string) => void;
+    confirmModal: () => void;
+    setDeleteId: (id: string) => void;
 }
 // 812px ve asgisi icin layout degis
-const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
+const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
     const { push } = useRouter()
+
+    function del(id: string) {
+        setDeleteId(id);
+        confirmModal()
+    }
 
     return (
         <li className={
@@ -182,7 +188,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, deleteProduct }) => {
                         <div className=" flex flex-nowrap gap-2 ml-auto h-full place-self-center">
                             <IconButton
                                 size="small"
-                                onClick={() => deleteProduct(p.id)}
+                                onClick={() => del(p.id)}
                                 title="Sil"
                                 aria-label="Sil">
                                 <DeleteIcon className="text-red-400 w-4 h-4" />

@@ -4,10 +4,28 @@
 
 :root {
     --shadow-card: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-	/* --shadow-menu: 0 0.075rem 0.25rem rgba(0, 0, 0, 0.1); */
-	--border-card: 1px solid rgba(0, 0, 0, 0.1);
+    --shadow-menu: 0 0.075rem 0.25rem rgba(0, 0, 0, 0.1);
+    --border-card: 1px solid rgba(0, 0, 0, 0.1);
+    --scrollbar-width: 4px;
+    --bg-primary: #7c3aed;
 }
 
 body {
     @apply bg-slate-100
+}
+
+body.modal {
+    overflow-y: hidden;
+    padding-right: var(--scrollbar-width);
+}
+
+::-webkit-scrollbar {
+    width: var(--scrollbar-width);
+    border-radius: 3px;
+    background-color: rgb(247, 247, 247);
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--bg-primary);
+    border-radius: 3px;
 }

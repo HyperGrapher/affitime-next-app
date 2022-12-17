@@ -1,6 +1,12 @@
 ## TODO:
 - product duzenlenirken product_url'nin link relationinda da duznleme gerekli olabilir. Check etmeli.
 
+## Reminder
+- ana fonksiyonlardan bagimsiz datalar icin baska bir db olusturup orasi kullanilabilir. 
+    auth gerekliyse protected ile ana db'de token olusturup express ile tokenin izinlerine gore
+    islem yapilabilir.
+
+
 ## Product
 
 - Product olustururken perClick ve perSale default olarak null degeri alir.

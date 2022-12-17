@@ -1,49 +1,43 @@
-// import { trpc } from '../../utils/trpc';
-// import { useState, useEffect } from 'react';
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import { useState } from 'react';
 import Typography from "@mui/material/Typography";
 import classNames from "../../utils/classnames";
 
 
+type Props = {
+    title: string;
+    desc: string;
+    confirmFn: (arg: string) => void;
+    dismissFn: () => void;
+}
 
-const ConfirmDialog: React.FC = () => {
 
-    const handleDelete = async (id: string) => {
-
-        // const deleteRes = await deleteProd.mutateAsync({ id })
-
-        // if (deleteRes.error) {
-        //     setError('Cannot delete product')
-        //     return
-        // }
-        // refetch()
-
-    }
-
+const ConfirmDeleteDialog = (props: Props) => {
 
     return (
-        <dialog open={false}
+        <section
             className={classNames(
-                "bg-white shadow-2xl rounded-xl h-48",
-                "flex flex-col items-center space-y-4",
-                "absolute inset-0 backdrop-blur-md",
-                "translate-x-0 lg:translate-x-10"
+                "bg-white shadow-xl rounded-xl ",
+                "flex flex-col items-center justify-around ",
+                "space- px-12 py-8 w-full sm:w-3/5",
 
-            )} >
-            <Typography variant="h5" >
-                Ürünü silmek istiyor musunuz?
+            )}>
+
+            <Typography color={'red'} align="center" whiteSpace={'normal'} variant="h5">
+                {props.title}
             </Typography>
 
-            <Typography variant="body2" >
-                Ürün için oluşturulan tüm linkler geçersiz hale gelecektir.
+            <Typography align="center" mt={'1.5rem'} variant="body1" >
+                {props.desc}
             </Typography>
 
 
-            <div className="flex space-x-4 absolute bottom-4">
+            <div className="space-y-4 sm-space-y-0 space-x-0 sm:space-x-4 mt-6  text-center">
                 <button
-                    onClick={() => null}
+                    onClick={() => props.dismissFn()}
                     className={classNames(
                         "bg-violet-600 hover:bg-violet-700 transition",
-                        "w-32",
+                        "w-full sm:w-32",
                         "shadow-sm hover:shadow-lg rounded-md ",
                         "py-2 px-8",
                         "text-white font-medium",
@@ -54,10 +48,10 @@ const ConfirmDialog: React.FC = () => {
                 </button>
 
                 <button
-                    onClick={() => null}
+                    onClick={() => props.confirmFn("ass")}
                     className={classNames(
                         "bg-red-600 hover:bg-red-700 transition",
-                        "w-32",
+                        "w-full sm:w-32",
                         "shadow-sm hover:shadow-lg rounded-md ",
                         "py-2 px-8",
                         "text-white font-medium",
@@ -67,10 +61,13 @@ const ConfirmDialog: React.FC = () => {
                     Sil
                 </button>
 
+
             </div>
 
-        </dialog>
+
+        </section>
     )
+
 }
 
-export default ConfirmDialog
+export default ConfirmDeleteDialog

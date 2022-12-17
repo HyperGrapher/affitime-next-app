@@ -5,6 +5,7 @@ import classNames from '../../utils/classnames';
 
 type Props = {
     title: string;
+    twColorCode?: string;
     twClasses?: string;
     icon?: ReactNode;
     disabled?: boolean;
@@ -13,21 +14,19 @@ type Props = {
 
 // ? Icon Example
 // ? <HiPlus color="white" size={"16px"} />
-
-
-const IconButton: React.FC<Props> = ({ title, twClasses, icon, disabled = false, fn }) => {
+const IconButton: React.FC<Props> = ({ title, twColorCode = "violet", twClasses, icon, disabled = false, fn }) => {
     return (
         <button
             onClick={() => fn()}
             aria-disabled={disabled}
             className={
                 classNames(
-                    "bg-violet-600 hover:bg-violet-700 transition",
-                    "flex items-center justify-center flex-nowrap space-x-2",
-                    "shadow-sm hover:shadow-lg rounded-md ",
-                    "py-2 px-8",
-                    "disabled:bg-violet-400 disabled:shadow-none",
-                    "aria-disabled:bg-violet-400 aria-disabled:shadow-none",
+                    `bg-${twColorCode}-600 hover:bg-${twColorCode}-700 transition`,
+                    `flex items-center justify-center flex-nowrap space-x-2`,
+                    `shadow-sm hover:shadow-lg rounded-md `,
+                    `py-2 px-8`,
+                    `disabled:bg-${twColorCode}-400 disabled:shadow-none`,
+                    `aria-disabled:bg-${twColorCode}-400 aria-disabled:shadow-none`,
                     `${twClasses}`
                 )}>
 
