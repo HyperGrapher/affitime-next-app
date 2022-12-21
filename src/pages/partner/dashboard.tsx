@@ -9,9 +9,10 @@ import { useRouter } from "next/router";
 import { useEffect, useTransition } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
-import usePersistedState from "../hooks/usePersistedState";
-import getClientIp from "../utils/getClientIp";
-import { trpc } from "../utils/trpc";
+import usePersistedState from "../../hooks/usePersistedState";
+import getClientIp from "../../utils/getClientIp";
+import { trpc } from "../../utils/trpc";
+import { UserRoles } from "../../interface/auth.interface";
 // import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 
 // import dynamic from 'next/dynamic'
@@ -20,6 +21,29 @@ import { trpc } from "../utils/trpc";
 // const DynamicHeader = dynamic(() => import('../components/loader/FadingLoader'), {
 //   suspense: true,
 // })
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: '/auth/signin',
+            permanent: false
+        }
+    }
+
+    if (session.role !== UserRoles.PARTNER) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: { userId: session.id } }
+
+}
 
 const IpSchema = z
     .object({
@@ -96,18 +120,3 @@ const Dashboard: NextPage = () => {
 
 export default Dashboard
 
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-    const session = await getSession(context)
-
-    if (!session) return {
-        redirect: {
-            destination: '/auth/signin',
-            permanent: false
-        }
-    }
-
-    return { props: { success: true } }
-
-}

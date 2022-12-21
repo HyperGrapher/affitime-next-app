@@ -189,7 +189,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                         <div className=" flex flex-nowrap gap-2 ml-auto h-full place-self-center">
                             <IconButton
                                 size="small"
-                                onClick={() => push(`${AppRoutes.CREATE_LINK}?pid=${p.id}`)}
+                                onClick={() => push(`${AppRoutes.VENDOR_CREATE_LINK}?pid=${p.id}`)}
                                 title="Link Oluştur"
                                 aria-label="Link oluştur">
                                 <LinkIcon className="text-indigo-600 w-4 h-4" />
@@ -204,7 +204,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                             <IconButton
                                 size="small"
                                 title="Düzenle"
-                                onClick={() => push(`${AppRoutes.CREATE_PRODUCT}?edit=true&pid=${p.id}`)}
+                                onClick={() => push(`${AppRoutes.VENDOR_CREATE_PRODUCT}?edit=true&pid=${p.id}`)}
                                 aria-label="Düzenle">
                                 <EditIcon className="text-blue-400 w-4 h-4" />
                             </IconButton>

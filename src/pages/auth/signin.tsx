@@ -8,6 +8,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import Loader from '../../components/loader/Loader';
+import { AppRoutes } from '../../config/appRoutes';
+import { notifyError } from '../../utils/notifications';
 
 const Signin: NextPage = (): JSX.Element => {
 
@@ -19,6 +21,7 @@ const Signin: NextPage = (): JSX.Element => {
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
         e.preventDefault();
+        setBusy(true)
 
         console.log({
             email: e.currentTarget.elements.email.value,
@@ -34,9 +37,13 @@ const Signin: NextPage = (): JSX.Element => {
         })
 
         console.log({ signinResult });
-        if (signinResult?.ok) router.replace('/dashboard')
-        else {
+        if (signinResult?.error) {
             setError("Kullanici bilgiliresi hatali")
+            setBusy(false)
+            notifyError('Kullanici bilgiliresi hatali')
+        }
+        else {
+            router.replace(AppRoutes.VENDOR_DASHBOARD)
         }
 
     }

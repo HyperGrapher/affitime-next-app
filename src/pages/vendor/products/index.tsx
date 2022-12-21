@@ -4,48 +4,12 @@ import type { GetServerSideProps } from "next";
 import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
-import PageCard from "../../components/card/Card";
-import ProductList from '../../components/products/ProductList';
-import { UserRoles } from '../../interface/auth.interface';
-import { trpc } from '../../utils/trpc';
+import PageCard from "../../../components/card/Card";
+import ProductList from '../../../components/products/ProductList';
+import { UserRoles } from '../../../interface/auth.interface';
+import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../components/buttons/LinkButton";
-
-const Products: NextPage = () => {
-
-    const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
-
-    return (
-        <main className="px-1">
-            {prodStatus === 'loading' && <TopBarProgress />}
-
-            <PageCard>
-
-                <div className="flex items-center mb-6">
-
-                    <h2 className="font-bold text-xl text-slate-700 ml-2">Kampanya Ürünleri</h2>
-
-                    <LinkButton
-                        title={"Ürün Ekle"}
-                        href={'/products/create'}
-                        icon={<HiPlus color="white" size="16px" />}
-                        twClasses="ml-auto w-38" />
-
-                </div>
-
-
-                <section className="">
-
-                    <ProductList prod={vendor?.products} refetch={refetchProducts} />
-
-                </section>
-
-            </PageCard>
-        </main>
-    )
-}
-
-export default Products
+import LinkButton from "../../../components/buttons/LinkButton";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -84,7 +48,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (session.role !== UserRoles.VENDOR) return {
         redirect: {
-            destination: '/dashboard',
+            destination: `/${session.role.toLowerCase()}/dashboard`,
             permanent: false
         }
     }
@@ -110,7 +74,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     // if (!data) return {
     //     redirect: {
-    //         destination: '/dashboard',
+    //         destination: `/${session.role.toLowerCase()}/dashboard`,
     //         permanent: false
     //     }
     // }
@@ -119,3 +83,47 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // return { props: { data: JSON.parse(JSON.stringify(data)) } }
 
 }
+
+const Products: NextPage = () => {
+
+    const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
+
+    return (
+        <main className="px-1">
+            {prodStatus === 'loading' && <TopBarProgress />}
+
+            <PageCard>
+
+                <div className="flex items-center mb-6">
+
+                    <div className="ml-2">
+                        <h2 className="font-bold text-xl text-slate-700">Kampanya Ürünleri</h2>
+                        {vendor?.products && vendor?.products.length > 0 ? (
+                            <p>
+                                Toplam {vendor?.products.length} adet ürün
+                            </p>
+                        ) : null}
+                    </div>
+
+                    <LinkButton
+                        title={"Ürün Ekle"}
+                        href={'/products/create'}
+                        icon={<HiPlus color="white" size="16px" />}
+                        twClasses="ml-auto w-38" />
+
+                </div>
+
+
+                <section className="">
+
+                    <ProductList prod={vendor?.products} refetch={refetchProducts} />
+
+                </section>
+
+            </PageCard>
+        </main>
+    )
+}
+
+export default Products
+

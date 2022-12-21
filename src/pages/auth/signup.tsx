@@ -80,7 +80,7 @@ const SignUp: NextPage = (): JSX.Element => {
                     })
 
                     console.log({ signinResult });
-                    if (signinResult?.ok) router.replace('/dashboard?reg=true')
+                    if (signinResult?.ok) router.replace('/vendor/dashboard?reg=true')
 
                     // client.invalidateQueries(['useQuery([queryName])'])
 

@@ -11,6 +11,7 @@ import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { UserRoles } from '../../interface/auth.interface'
 import Typography from '@mui/material/Typography'
+import { AppRoutes } from '../../config/appRoutes'
 
 // https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
@@ -37,7 +38,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <Disclosure as='nav' className='h-16 bg-violet-700 fixed top-0 left-0 right-0 shadow-lg z-10'>
+    <Disclosure as='nav' className='h-16 bg-violet-900 fixed top-0 left-0 right-0 shadow-lg z-10'>
       {({ open }) => (
         <>
           <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 '>
@@ -96,7 +97,7 @@ const Navbar: React.FC = () => {
                               active ? 'bg-gray-100' : '',
                               'block px-4 py-2 text-sm text-gray-700'
                             )}>
-                            Homey
+                            Anasayfa
                           </Link>
                         )}
                       </Menu.Item>
@@ -106,7 +107,7 @@ const Navbar: React.FC = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href='/auth/signin'
+                              href={AppRoutes.SIGNIN}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
@@ -119,7 +120,7 @@ const Navbar: React.FC = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              href='/auth/signup'
+                              href={AppRoutes.SIGNUP}
                               className={classNames(
                                 active ? 'bg-gray-100' : '',
                                 'block px-4 py-2 text-sm text-gray-700'
@@ -136,20 +137,7 @@ const Navbar: React.FC = () => {
                           <Menu.Item>
                             {({ active }) => (
                               <Link
-                                href='/welcome'
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block px-4 py-2 text-sm text-gray-700'
-                                )}>
-                                Welcome
-                              </Link>
-                            )}
-                          </Menu.Item>
-
-                          <Menu.Item>
-                            {({ active }) => (
-                              <Link
-                                href='/dashboard'
+                                href={`${sessionData.role === UserRoles.PARTNER ? AppRoutes.PARTNER_DASHBOARD : AppRoutes.VENDOR_DASHBOARD}`}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
@@ -162,7 +150,7 @@ const Navbar: React.FC = () => {
                           {sessionData.role === UserRoles.VENDOR ? <Menu.Item>
                             {({ active }) => (
                               <Link
-                                href='/products'
+                                href={AppRoutes.VENDOR_PRODUCTS}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
@@ -181,7 +169,7 @@ const Navbar: React.FC = () => {
                                   'block w-full px-4 py-2 text-left text-sm text-gray-700'
                                 )}
                                 onClick={logUserOut}>
-                                Sign out
+                                Çıkış yap
                               </button>
                             )}
                           </Menu.Item>

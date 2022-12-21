@@ -1,5 +1,9 @@
 ## TODO:
 - product duzenlenirken product_url'nin link relationinda da duznleme gerekli olabilir. Check etmeli.
+- click basina odeme aliniyorsa buna saatlik ve/veya 5 dk icinde sinir olmali. otomasyonu onlemek icin
+    orn: her saat icin max 30  24 saat'de ise 100 click affiliate'in hesabina gecmeli. 
+    ayrica clicklerin gercek bir kullanicidan geldiginden emin olmamaiz gerekli. 
+    Bir affiliate linkinden belli araliklarla surekli tiklama geliyorsa bu incelenmek uzere isaretlenmeli
 
 ## Reminder
 - ana fonksiyonlardan bagimsiz datalar icin baska bir db olusturup orasi kullanilabilir. 

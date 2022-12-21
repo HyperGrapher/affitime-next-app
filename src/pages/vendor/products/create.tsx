@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { trpc } from '../../utils/trpc';
+import { trpc } from '../../../utils/trpc';
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
@@ -8,14 +8,14 @@ import { useState } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from 'next/router'
 import TopBarProgress from 'react-topbar-progress-indicator';
-import { UserRoles } from '../../interface/auth.interface';
-import PageCard from '../../components/card/Card';
-import LinkButton from "../../components/buttons/LinkButton";
-import IconButton from '../../components/buttons/IconButton';
+import { UserRoles } from '../../../interface/auth.interface';
+import PageCard from '../../../components/card/Card';
+import LinkButton from "../../../components/buttons/LinkButton";
+import IconButton from '../../../components/buttons/IconButton';
 import { HiArrowLeft as BackIcon } from 'react-icons/hi'
-import classNames from '../../utils/classnames';
+import classNames from '../../../utils/classnames';
 import { HiPlus, HiPencil } from 'react-icons/hi'
-import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import { FormFieldError, FormFieldWrapper } from '../../../components/error-messages/FormError';
 import { CommissionType } from "@prisma/client";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod'
@@ -23,7 +23,28 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import { notifyError, notifySuccessTC, notifySuccessBR } from '../../utils/notifications';
+import { notifyError, notifySuccessTC, notifySuccessBR } from '../../../utils/notifications';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: '/auth/signin',
+            permanent: false
+        }
+    }
+    if (session.role !== UserRoles.VENDOR) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: { userId: session.id } }
+
+}
 
 
 interface IProductFormData {
@@ -592,23 +613,3 @@ const ProductCreate: NextPage = () => {
 
 export default ProductCreate
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-    const session = await getSession(context)
-
-    if (!session) return {
-        redirect: {
-            destination: '/auth/signin',
-            permanent: false
-        }
-    }
-    if (session.role !== UserRoles.VENDOR) return {
-        redirect: {
-            destination: '/dashboard',
-            permanent: false
-        }
-    }
-
-    return { props: { userId: session.id } }
-
-}

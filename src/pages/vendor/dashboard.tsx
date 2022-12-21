@@ -1,17 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import type { GetServerSideProps } from "next";
-import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
+import { type NextPage } from "next";
+import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { getSession, signIn, signOut, useSession } from "next-auth/react";
-import { trpc } from "../../utils/trpc";
 import { useRouter } from "next/router";
 import { useEffect, useTransition } from "react";
-import getClientIp from "../../utils/getClientIp";
-import usePersistedState from "../../hooks/usePersistedState";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
+import usePersistedState from "../../hooks/usePersistedState";
+import getClientIp from "../../utils/getClientIp";
+import { trpc } from "../../utils/trpc";
+import { UserRoles } from "../../interface/auth.interface";
+// import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 
 // import dynamic from 'next/dynamic'
 // import { Suspense } from 'react'
@@ -19,6 +21,29 @@ import { z } from "zod";
 // const DynamicHeader = dynamic(() => import('../components/loader/FadingLoader'), {
 //   suspense: true,
 // })
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: '/auth/signin',
+            permanent: false
+        }
+    }
+
+    if (session.role !== UserRoles.VENDOR) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: { userId: session.id } }
+
+}
 
 const IpSchema = z
     .object({
@@ -45,7 +70,7 @@ const Dashboard: NextPage = () => {
     const [__, setData] = usePersistedState('data', {})
     const { pathname, query } = useRouter()
     const { reg } = query // is user just registered?
-  
+
 
     const setUserIp = async () => {
 
@@ -69,24 +94,24 @@ const Dashboard: NextPage = () => {
     useEffect(() => { setUserIp() }, [])
 
     return (
-        <div className="bg-gradient-to-b from-[#2e026d] to-[#15162c]">
+        <div className="">
             {(sessionStatus === 'loading') && <TopBarProgress />}
-
             <Head>
                 <title>Affitime Dashboard</title>
                 <meta name="description" content="Affiliate uygulamasi" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="mx-auto container  min-h-screen">
+            <main className="mx-auto container min-h-screen">
 
                 <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-                    <h1 className="text-2xl font-extrabold tracking-tight text-white sm:text-[2rem]">
+                    <h1 className="text-2xl font-extrabold tracking-tight text-slate-700 sm:text-[2rem]">
                         {(sessionStatus === 'loading') ? "Loading" : secretMsg}
                     </h1>
 
-                    <div className='mt-6 text-white'>
+                    <div className='mt-6 text-slate-500'>
                         Role: {sessionData?.role}
                     </div>
+                    <Link className="underline text-blue-500" href={'/'}>Home</Link>
                 </div>
             </main>
         </div>
@@ -95,18 +120,3 @@ const Dashboard: NextPage = () => {
 
 export default Dashboard
 
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-    const session = await getSession(context)
-
-    if (!session) return {
-        redirect: {
-            destination: '/auth/signin',
-            permanent: false
-        }
-    }
-
-    return { props: { success: true } }
-
-}

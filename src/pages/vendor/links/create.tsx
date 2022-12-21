@@ -1,26 +1,50 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @next/next/no-img-element */
-import { trpc } from '../../utils/trpc';
+import { trpc } from '../../../utils/trpc';
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from 'next/router'
 import TopBarProgress from 'react-topbar-progress-indicator';
-import PageCard from '../../components/card/Card';
-import classNames from '../../utils/classnames';
+import PageCard from '../../../components/card/Card';
+import classNames from '../../../utils/classnames';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import { notifyError, notifySuccessTC, notifySuccessBR } from '../../utils/notifications';
+import { notifyError, notifySuccessTC, notifySuccessBR } from '../../../utils/notifications';
 import { useState } from 'react';
-import LinkButton from "../../components/buttons/LinkButton";
-import IconButton from '../../components/buttons/IconButton';
+import LinkButton from "../../../components/buttons/LinkButton";
+import IconButton from '../../../components/buttons/IconButton';
 import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import Image from "next/image";
-import productImg from '../../assets/product.png';
-import { FormFieldWrapper } from '../../components/error-messages/FormError';
+import productImg from '../../../assets/product.png';
+import { FormFieldWrapper } from '../../../components/error-messages/FormError';
+import ACComboBox from '../../../components/combobox/ComboBox';
+import { UserRoles } from '../../../interface/auth.interface';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: '/auth/signin',
+            permanent: false
+        }
+    }
+    if (session.role !== UserRoles.VENDOR) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: { userId: session.id } }
+
+}
 
 
 const LinkCreate: NextPage = () => {
@@ -41,16 +65,14 @@ const LinkCreate: NextPage = () => {
 
 
     return (
-        <div className={classNames(
-            "px-1"
-        )}>
+        <div className={'px-1'}>
 
             <PageCard>
 
                 <div className="flex items-center">
 
                     <h2 className="font-bold text-xl text-slate-700 ml-2">
-                        {edit ? "Link Düzenle" : "Affiliate Linki Ekle"}
+                        {edit ? "Link Düzenle" : "Affiliate Linki Oluştur"}
                     </h2>
 
                     <IconButton
@@ -113,33 +135,17 @@ const LinkCreate: NextPage = () => {
 
                     )}>
 
-                        <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 mb-4"
+                            )}
+                            htmlFor="title">
+                            Affiliate kullanici secin
+                        </label>
 
 
-                            <label
-                                className={classNames(
-                                    "font-medium text-sm pl-2 mb-4"
-                                )}
-                                htmlFor="title">
-                                Ürün Başlığı
-                            </label>
-
-                            <input
-                                className={classNames(
-                                    'block w-full rounded-md shadow-sm sm:text-sm',
-                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
-                                    'focus:border-indigo-500 focus:ring-indigo-500'
-                                )}
-                                type="text"
-                                disabled={busy}
-                                placeholder='Ürün Başlığı'
-                            // {...register("title", { required: true, minLength: 8 })}
-                            />
-
-                            {/* <FormFieldError state={!!errors.title} message={errors.title?.message} /> */}
-
-
-                        </FormFieldWrapper>
+                        <ACComboBox />
 
 
                     </section>

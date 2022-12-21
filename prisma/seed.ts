@@ -2,7 +2,7 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
 import { vendors, partners } from "./user-list";
-import { PackageType, Role, CommissionType } from "@prisma/client";
+import { CommissionType } from "@prisma/client";
 
 // TODO Use Faker - create partner, vendor, product
 
@@ -38,7 +38,7 @@ const createPartnerUsers = async () => {
 
 const getVendorUser = async () => {
   return await prisma.user.findFirst({
-    where: { active: true, role: "VENDOR" },
+    where: { email: "vendor@email.com" },
     include: { vendor: true },
   });
 };
@@ -85,7 +85,7 @@ const seedProducts = async () => {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
       price: 1500.99,
-      perClick: 0.50,
+      perClick: 0.5,
       perClickType: CommissionType.CASH,
       perSale: 12,
       perSaleType: CommissionType.PERC,
@@ -133,7 +133,7 @@ const seedProducts = async () => {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
       desc: "Philips TAR4406/12 alarmlı saat/kronometre Dijital çalar saat Beyaz",
       price: 849.99,
-      perClick: 0.10,
+      perClick: 0.1,
       perClickType: CommissionType.CASH,
       perSale: 16,
       perSaleType: CommissionType.PERC,
@@ -149,7 +149,7 @@ const seedProducts = async () => {
       title: "Caterpillar Kadın Bej Colorado Bot",
       desc: "Kadın Bot",
       price: 1749.0,
-      perClick: 0.50,
+      perClick: 0.5,
       perClickType: CommissionType.PERC,
       perSale: 8,
       perSaleType: CommissionType.PERC,
@@ -171,37 +171,10 @@ const seedProducts = async () => {
 };
 
 seedProducts()
-          .catch((e) => {
-            console.log(e);
-            process.exit(1);
-          })
-          .finally(() => {
-            prisma.$disconnect();
-          });
-
-// createPartnerUsers()
-//   .catch((e) => {
-//     console.log(e);
-//     process.exit(1);
-//   })
-//   .finally(() => {
-//     prisma.$disconnect();
-
-//     createVendorUsers()
-//       .catch((e) => {
-//         console.log(e);
-//         process.exit(1);
-//       })
-//       .finally(() => {
-//         prisma.$disconnect();
-
-//         seedProducts()
-//           .catch((e) => {
-//             console.log(e);
-//             process.exit(1);
-//           })
-//           .finally(() => {
-//             prisma.$disconnect();
-//           });
-//       });
-//   });
+  .catch((e) => {
+    console.log(e);
+    process.exit(1);
+  })
+  .finally(() => {
+    prisma.$disconnect();
+  });
