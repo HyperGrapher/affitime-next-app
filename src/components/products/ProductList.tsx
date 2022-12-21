@@ -41,7 +41,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
     if (deleteRes.error) return notifyError('Silme işlemi başarısız! [DB]');
 
     setDeleteId('')
-    notifySuccessTC("Silme işlemi başarılı!", true)
+    notifySuccessTC("Ürün silindi!", true)
     refetch()
     setModal(false)
 

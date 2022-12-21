@@ -43,6 +43,38 @@ export const productRouter = router({
     });
   }),
 
+  getAllProductsForVendor: protectedProcedure.query(({ ctx }) => {
+    const { partnerId } = ctx.session;
+
+    if (!partnerId)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Session user ID not found",
+      });
+
+    return ctx.prisma.product.findMany({
+      where: {
+        active: true,
+      },
+      include: {
+        vendor: {
+          include: {
+            user: {
+              select: {
+                image: true,
+                active: true,
+                trial: true,
+                pro: true,
+                packageType: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: { createdAt: "desc" },
+    });
+  }),
+
   createProduct: protectedProcedure
     .input(
       z.object({
@@ -110,11 +142,11 @@ export const productRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id: userId } = ctx.session;
+      const { vendorId } = ctx.session;
 
       const { id } = input;
 
-      if (!userId)
+      if (!vendorId)
         throw new TRPCError({
           code: "NOT_FOUND",
           message: "User ID not found",

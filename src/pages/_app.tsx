@@ -60,10 +60,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
       {/* <ThemeProvider theme={theme}> */}
       <Sidenav />
       <Navbar />
-      <div className={classNames(
-        `min-h-screen pt-16`,
-        `${session ? "ml-0 lg:ml-64" : "ml-0"}`
-      )}>
+      {/* Session cannot be retrived here */}
+      <div className={"min-h-screen pt-16 ml-0 lg:ml-64"}>
         <Component {...pageProps} />
         <Toaster containerStyle={{
           top: 60,
@@ -73,7 +71,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
         }} />
       </div>
       {/* </ThemeProvider> */}
-    </SessionProvider>
+    </SessionProvider >
   );
 };
 
