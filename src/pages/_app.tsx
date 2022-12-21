@@ -14,6 +14,7 @@ import Navbar from "../components/shared/Navbar";
 import { Toaster } from 'react-hot-toast';
 import * as timeago from 'timeago.js';
 import tr from 'timeago.js/lib/lang/tr';
+import classNames from "../utils/classnames";
 
 timeago.register('tr', tr);
 
@@ -59,7 +60,10 @@ const MyApp: AppType<{ session: Session | null }> = ({
       {/* <ThemeProvider theme={theme}> */}
       <Sidenav />
       <Navbar />
-      <div className="ml-0 lg:ml-64 min-h-screen pt-16">
+      <div className={classNames(
+        `min-h-screen pt-16`,
+        `${session ? "ml-0 lg:ml-64" : "ml-0"}`
+      )}>
         <Component {...pageProps} />
         <Toaster containerStyle={{
           top: 60,

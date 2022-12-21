@@ -19,7 +19,7 @@ const Home: NextPage = () => {
   // return <h1 className="text-center text-4xl pt-8">Affitime Server</h1>
 
   return (
-    <Container maxWidth={'md'}>
+    <Container maxWidth={'xl'}>
       <Head>
         <title>Affitime Anasayfa</title>
         <meta name="description" content="Affiliate uygulamasi" />
