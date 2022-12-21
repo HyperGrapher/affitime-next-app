@@ -9,9 +9,9 @@ export enum AppRoutes {
   SIGNIN = "/auth/signin",
   SIGNUP = "/auth/signup",
 
-  PARTNER_DASHBOARD = "/affiliate/dashboard",
-  PARTNER_PRODUCTS = "/affiliate/products",
-  PARTNER_CREATE_PRODUCT = "/affiliate/products/create",
-  PARTNER_LINKS = "/affiliate/links",
-  PARTNER_CREATE_LINK = "/affiliate/links/create",
+  PARTNER_DASHBOARD = "/partner/dashboard",
+  PARTNER_PRODUCTS = "/partner/products",
+  PARTNER_CREATE_PRODUCT = "/partner/products/create",
+  PARTNER_LINKS = "/partner/links",
+  PARTNER_CREATE_LINK = "/partner/links/create",
 }
