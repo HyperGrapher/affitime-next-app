@@ -11,7 +11,7 @@ import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
 import Head from "next/head";
-import Link from "next/link";
+import NextLink from "next/link";
 import { InferGetServerSidePropsType } from 'next'
 import Container from "@mui/material/Container";
 import { prisma } from "../../../server/db/client";
@@ -24,15 +24,15 @@ import productImg from '../../../assets/product.png';
 import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import { Lira } from '../../../components/shared/HtmlCodes';
 import { MouseEvent, useState } from 'react';
-// import { Lira } from "../../shared/HtmlCodes";
+import { AppRoutes } from '../../../config/appRoutes';
+import ModalContainer from "../../../components/modals/ModalContainer";
+import ConfirmLinkCreateDialog from "../../../components/modals/ConfirmLinkCreateDialog";
+import { Link as LinkEntity } from "@prisma/client";
 
 // https://nextjs.org/docs/api-reference/data-fetching/get-server-side-props
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const id = context.params?.prid
-
-
-    const session = await getSession(context)
 
     // This value is considered fresh for ten seconds (s-maxage=10).
     // If a request is repeated within the next 10 seconds, the previously
@@ -47,41 +47,72 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         'public, s-maxage=10, stale-while-revalidate=59'
     )
 
-    // const data = await prisma.user.findMany({
-    //     select: {
-    //         id: true,
-    //     }
-    // });
-
-    // prisma.$disconnect()
-
-
-    // if (!data) return {
-    //     redirect: {
-    //         destination: `/${session.role.toLowerCase()}/dashboard`,
-    //         permanent: false
-    //     }
-    // }
-
-
     return { props: { id } }
 
 }
 
 const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
-    const { back } = useRouter()
+    const { back, push } = useRouter()
     const [busy, setBusy] = useState(false)
+    const [modal, setModal] = useState(false)
+
 
     const { data: session, status: sessionStatus } = useSession();
     const { data: pd, status: prodStatus, refetch: refetchProducts } = trpc.product.getProductById.useQuery({ id })
+    const createLinkMutate = trpc.link.createLink.useMutation()
 
     // console.log(pd);
 
 
     function handleLinkCreation(): void {
-        console.log(pd?.id);
 
-        const vendorId = pd?.vendor_profile_id
+        setBusy(true)
+
+        if (!session) {
+            push(AppRoutes.SIGNIN)
+            return
+        }
+
+        if (session.role !== UserRoles.PARTNER) {
+            notifyError('Vendor hesabı ile link oluşturulamaz.')
+            setBusy(false)
+            return
+        }
+
+        createLinkMutate.mutate({
+            productId: pd?.id ?? ""
+        },
+            {
+                onSuccess: async (data, variables, context) => {
+                    const res = data as LinkEntity
+                    const lid = res.id
+
+                    if (!lid) {
+                        notifyError("Bir hata olustu")
+                        return
+                    }
+
+                    setTimeout(() => {
+                        notifySuccessTC('Link Olusturuldu', true)
+                        push(`${AppRoutes.PARTNER_LINK_DETAIL}/${lid}?created=true`)
+
+                    }, 2050);
+
+
+
+                },
+                onError(error, variables, context) {
+                    notifyError(error.message)
+                },
+                onSettled: () => {
+                    setTimeout(() => {
+                        setModal(false)
+                        setBusy(false)
+                    }, 2000);
+                }
+            }
+
+        )
 
     }
 
@@ -96,7 +127,7 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
 
                     <IconButton
                         title={"Geri Git"}
-                        // disabled={busy}
+                        disabled={busy}
                         icon={<BackIcon color="white" size="16px" />}
                         twClasses="ml-auto w-38"
                         fn={back} />
@@ -105,7 +136,8 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
 
                 <div className='mb-6 ml-2 w-1/2 sm:w-80'>
                     <p className="text-slate-400 text-sm font- leading-tight">
-                        Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz bir link oluşturun.
+                        Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz
+                        bir affiliate linki oluşturun.
                     </p>
                 </div>
 
@@ -239,8 +271,8 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
 
                 {/* Submit */}
                 <button
-                    // disabled={busy}
-                    onClick={handleLinkCreation}
+                    disabled={busy}
+                    onClick={() => setModal(true)}
                     type='submit'
                     className={classNames(
                         "bg-violet-600 hover:bg-violet-700 transition-colors",
@@ -248,9 +280,7 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                         "shadow-sm hover:shadow-lg rounded-md ",
                         "py-4 px-8 mt-6",
                         "disabled:bg-violet-400 disabled:shadow-none"
-                    )}
-
-                >
+                    )} >
 
                     <HiPlus color="white" size="18px" />
 
@@ -258,6 +288,19 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                         Affiliate Linki Oluştur
                     </span>
                 </button>
+
+                <ModalContainer state={modal} key={"adda"}>
+                    <ConfirmLinkCreateDialog
+                        title="Affiliate linki oluşturmak istiyor musunuz?"
+                        busy={busy}
+                        desc="
+                            Ürün için web üzerinde paylaşabileceğiniz 
+                            bir link oluşturulacaktır. 
+                            Vendor onayindan sonra kullanılabilir hale gelecektir."
+                        dismissFn={() => setModal(false)}
+                        confirmFn={handleLinkCreation}
+                    />
+                </ModalContainer>
 
 
 

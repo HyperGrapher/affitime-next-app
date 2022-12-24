@@ -15,15 +15,6 @@ import LinkButton from "../../../components/buttons/LinkButton";
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
-    const query = context.query.id
-
-    // ? DON'T Use api calls on getServerSideProps
-    // const res = await fetch('http://localhost:3000/api/examples', {
-    //     headers: {
-    //       cookie: context.req.headers.cookie || "",
-    //     },
-    //   })
-    // const data = await res.json() ?? null
 
     // This value is considered fresh for ten seconds (s-maxage=10).
     // If a request is repeated within the next 10 seconds, the previously

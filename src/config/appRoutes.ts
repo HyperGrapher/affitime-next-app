@@ -16,6 +16,7 @@ export enum AppRoutes {
   PARTNER_PRODUCT_DETAIL = "/partner/products/detail",
   PARTNER_CREATE_PRODUCT = "/partner/products/create",
   PARTNER_LINKS = "/partner/links",
+  PARTNER_LINK_DETAIL = "/partner/links/detail",
   PARTNER_CREATE_LINK = "/partner/links/create",
 
   // AUTH

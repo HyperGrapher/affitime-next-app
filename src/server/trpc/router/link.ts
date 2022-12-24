@@ -1,14 +1,15 @@
+import { UserRoles } from "./../../../interface/auth.interface";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
 export const linkRouter = router({
-  // TODO: To be implemented
   getLinkById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       const { id } = input;
+      console.log({ id });
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
@@ -16,36 +17,92 @@ export const linkRouter = router({
         where: {
           id,
         },
+        include: { product: true, vendor: true },
       });
     }),
-  // TODO: To be implemented
+
   createLink: protectedProcedure
     .input(
       z.object({
-        userId: z.string(),
         productId: z.string(),
-        city: z.string().optional(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { email } = ctx.session.user;
+      const { role, partnerId } = ctx.session;
+      console.log({ vendorId: partnerId, role });
 
-      const data = input;
-
-      if (!email)
-        throw new TRPCError({ code: "NOT_FOUND", message: "Email not found" });
-
-      if (!data)
-        throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
-
-      try {
-        await ctx.prisma.user.findUnique({
-          where: { email },
+      if (role !== UserRoles.PARTNER)
+        throw new TRPCError({
+          code: "FORBIDDEN",
+          message: "Permission denied!",
         });
 
-        return { error: false, message: "ok" };
+      const { productId } = input;
+
+      if (!partnerId)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Partner ID not found!",
+        });
+
+      if (!productId)
+        throw new TRPCError({ code: "NOT_FOUND", message: "PID not found" });
+
+      try {
+        const partner = await ctx.prisma.partner.findUnique({
+          where: { id: partnerId },
+        });
+
+        if (!partner)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Partner not found",
+          });
+
+        const product = await ctx.prisma.product.findUnique({
+          where: { id: productId },
+          include: { vendor: true },
+        });
+
+        if (!product)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Product not found",
+          });
+
+        const vendor = await ctx.prisma.vendor.findUnique({
+          where: { id: product?.vendor_profile_id },
+        });
+
+        if (!vendor)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Vendor not found",
+          });
+
+        const link = await ctx.prisma.link.create({
+          data: {
+            vendor_id: vendor.id,
+            partner_id: partner.id,
+            product_id: product.id,
+            partner_user_id: partner.userId,
+            vendor_user_id: vendor.userId,
+          },
+        });
+
+        if (!link)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Link cannot be created",
+          });
+
+        return link;
       } catch (error) {
-        return { error: true, message: "" };
+        console.log(error);
+        return new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot create link!",
+        });
       }
     }),
 
