@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `user_vendor` ADD COLUMN `brand` VARCHAR(191) NOT NULL DEFAULT '',
+    ADD COLUMN `website` VARCHAR(191) NOT NULL DEFAULT '';

@@ -6,7 +6,7 @@ import { z } from "zod";
 // https://youtu.be/_K34O0NcKAM?t=395
 export const productRouter = router({
   // TODO: To be implemented
-  getProductById: protectedProcedure
+  getProductById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       const { id } = input;
@@ -17,6 +17,7 @@ export const productRouter = router({
         where: {
           id,
         },
+        include: {vendor: true}
       });
     }),
 

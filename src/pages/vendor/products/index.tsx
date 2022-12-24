@@ -10,6 +10,7 @@ import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
+// import { prisma } from "../../../server/db/client";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -37,8 +38,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         'public, s-maxage=10, stale-while-revalidate=59'
     )
 
-
-
     if (!session) return {
         redirect: {
             destination: '/auth/signin',
@@ -53,34 +52,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    // const data = await prisma.user.findMany({
-    //     select: {
-    //         id: true,
-    //         role: true,
-    //         email: true,
-    //         image: true,
-    //         password: false,
-    //         pro: true,
-    //         trial: true,
-    //         active: true,
-    //         emailVerified: true,
-    //         vendor: true,
-    //         partner: true,
-    //     }
-    // });
-
-    // prisma.$disconnect()
-
-
-    // if (!data) return {
-    //     redirect: {
-    //         destination: `/${session.role.toLowerCase()}/dashboard`,
-    //         permanent: false
-    //     }
-    // }
 
     return { props: {} }
-    // return { props: { data: JSON.parse(JSON.stringify(data)) } }
 
 }
 
