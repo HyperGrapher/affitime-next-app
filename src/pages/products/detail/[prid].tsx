@@ -3,7 +3,7 @@
 import { useRouter } from 'next/router'
 import type { GetServerSideProps } from "next";
 import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import PageCard from "../../../components/card/Card";
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
@@ -26,11 +26,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const ProducDetailPublic: NextPage = ({ hello }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
     const router = useRouter()
     const id = router.query.prid as string
+    const { data: session, status: sessionStatus } = useSession();
 
 
 
     return (
-        <div className='p-4 text-lg'>
+        <div className={session ? "auth-container" : "px-1 pt-16"}>
             <PageCard>
                 Detail: {id}
                 <br /> helloId: {hello}

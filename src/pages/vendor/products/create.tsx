@@ -173,7 +173,7 @@ const ProductCreate: NextPage = () => {
 
 
     return (
-        <div className='px-1'>
+        <div className='auth-container'>
             {busy && <TopBarProgress />}
 
             <PageCard>

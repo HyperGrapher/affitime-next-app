@@ -65,7 +65,7 @@ const LinkCreate: NextPage = () => {
 
 
     return (
-        <div className={'px-1'}>
+        <div className='auth-container'>
 
             <PageCard>
 

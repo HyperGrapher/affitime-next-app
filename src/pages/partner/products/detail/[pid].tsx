@@ -17,7 +17,7 @@ const Detail: NextPage = () => {
 
 
     return (
-        <div className='p-4 text-lg'>
+        <div className='auth-container'>
             Detail: {pid}
             
         </div>

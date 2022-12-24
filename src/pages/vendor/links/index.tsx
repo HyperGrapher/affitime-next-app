@@ -2,7 +2,7 @@ import React from 'react'
 
 const LinkPage = () => {
     return (
-        <div>Link index</div>
+        <div className='auth-container'>Link index</div>
     )
 }
 

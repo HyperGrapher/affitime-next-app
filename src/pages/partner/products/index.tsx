@@ -108,7 +108,7 @@ const Products: NextPage = () => {
     const { data: products, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsForVendor.useQuery()
 
     return (
-        <main className="px-1">
+        <main className="auth-container">
             {prodStatus === 'loading' && <TopBarProgress />}
 
             <PageCard>

@@ -22,7 +22,7 @@ const Welcome: NextPage = () => {
 
 
   return (
-    <main>
+    <main className='auth-container'>
       {(sessionStatus === 'loading') && <TopBarProgress />}
 
       <h2 className='text-4xl'>welcome</h2>

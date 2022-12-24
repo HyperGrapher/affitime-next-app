@@ -94,7 +94,7 @@ const Dashboard: NextPage = () => {
     useEffect(() => { setUserIp() }, [])
 
     return (
-        <div className="">
+        <div className="auth-container">
             {(sessionStatus === 'loading') && <TopBarProgress />}
             <Head>
                 <title>Affitime Dashboard</title>

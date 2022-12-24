@@ -61,7 +61,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
       <Sidenav />
       <Navbar />
       {/* Session cannot be retrived here */}
-      <div className={"min-h-screen pt-16 ml-0 lg:ml-64"}>
+      <div className={"min-h-screen"}>
         <Component {...pageProps} />
         <Toaster containerStyle={{
           top: 60,

@@ -25,7 +25,7 @@ const Home: NextPage = () => {
         <meta name="description" content="Affiliate uygulamasi" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <main className="min-h-screen  bg-slate-200">
+      <main className={sessionData ? "auth-container  bg-slate-200 min-h-screen" : "min-h-screen  bg-slate-200"}>
         <div className="h-full mx-auto ">
           <h1 className="text-2xl font-extrabold tracking-tight text-slate-700 sm:text-[2rem]">
             {(sessionStatus === 'loading') ? "Loading.." : secretMsg} adad
