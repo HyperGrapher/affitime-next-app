@@ -15,10 +15,10 @@ import ProductListHeader from "./ProductListHeader";
 import Button from "@mui/material/Button";
 import { notifyError, notifySuccessBR, notifySuccessTC } from "../../utils/notifications";
 import ModalContainer from "../modals/ModalContainer";
-import ConfirmDeleteDialog from "../modals/ConfirmDialog";
 import IconButton from "../buttons/IconButton";
 // import { getSession, signIn, signOut, useSession } from "next-auth/react";
 // import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
+import WarnDialog from "../modals/WarnDialog";
 
 
 type Props = {
@@ -63,13 +63,14 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
       </ul>
 
       <ModalContainer state={modal} key={"adda"}>
-        <ConfirmDeleteDialog
+        <WarnDialog
           title="Ürünü silmek istiyor musunuz?"
           desc="
           Ürün listenizden silinecek ve oluşturulan 
           tüm affiliate linkleri geçersiz hale gelerek 
           hata sayfasina yönlendirilecektir. 
           "
+          confirmBtnText="Sil"
           dismissFn={() => setModal(false)}
           confirmFn={() => handleDelete()}
         />

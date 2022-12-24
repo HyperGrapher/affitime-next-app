@@ -9,13 +9,27 @@ export const linkRouter = router({
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       const { id } = input;
-      console.log({ id });
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
       return ctx.prisma.link.findUnique({
         where: {
           id,
+        },
+        include: { product: true, vendor: true },
+      });
+    }),
+
+    getAllLinksForPartner: protectedProcedure
+    .query(({ ctx, input }) => {
+
+      const { role, partnerId } = ctx.session;
+
+      if (!partnerId) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return ctx.prisma.link.findMany({
+        where: {
+          partner_id: partnerId,
         },
         include: { product: true, vendor: true },
       });

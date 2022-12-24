@@ -26,8 +26,10 @@ import { Lira } from '../../../components/shared/HtmlCodes';
 import { MouseEvent, useState } from 'react';
 import { AppRoutes } from '../../../config/appRoutes';
 import ModalContainer from "../../../components/modals/ModalContainer";
-import ConfirmLinkCreateDialog from "../../../components/modals/ConfirmLinkCreateDialog";
+import ConfirmDialog from "../../../components/modals/ConfirmDialog";
 import { Link as LinkEntity } from "@prisma/client";
+import Balancer from 'react-wrap-balancer'
+
 
 // https://nextjs.org/docs/api-reference/data-fetching/get-server-side-props
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -135,10 +137,15 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                 </div>
 
                 <div className='mb-6 ml-2 w-1/2 sm:w-80'>
-                    <p className="text-slate-400 text-sm font- leading-tight">
-                        Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz
-                        bir affiliate linki oluşturun.
+
+
+                    <p className="text-slate-400 text-sm leading-tight">
+                        <Balancer>
+                            Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz
+                            bir affiliate linki oluşturun.
+                        </Balancer>
                     </p>
+
                 </div>
 
                 <hr className='' />
@@ -238,9 +245,10 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                     </h3>
 
                     <section className='flex items-center justify-between px-2'>
-                        <p>
+                        <Balancer>
                             {pd?.desc}
-                        </p>
+                        </Balancer>
+
                     </section>
 
                 </section>
@@ -290,8 +298,9 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                 </button>
 
                 <ModalContainer state={modal} key={"adda"}>
-                    <ConfirmLinkCreateDialog
+                    <ConfirmDialog
                         title="Affiliate linki oluşturmak istiyor musunuz?"
+                        confirmBtnText='Oluştur'
                         busy={busy}
                         desc="
                             Ürün için web üzerinde paylaşabileceğiniz 

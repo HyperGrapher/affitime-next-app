@@ -5,8 +5,7 @@ import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } fr
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import PageCard from "../../../components/card/Card";
-import ProductList from '../../../components/_partner/products/ProductList';
-import ProductList2 from '../../../components/products/ProductList';
+import LinkList from '../../../components/_partner/links/LinkList';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
@@ -15,8 +14,47 @@ import Pager from "../../../components/pager/Pager";
 
 
 const PartnerLinks: NextPage = () => {
+    const { data: links, status: sts, refetch: refetchlinks } = trpc.link.getAllLinksForPartner.useQuery()
+
     return (
-        <div className="auth-container">Partner Link Listesi</div>
+        <main className="auth-container">
+            {sts === 'loading' && <TopBarProgress />}
+
+            <PageCard>
+
+                <div className="flex items-center mb-6">
+
+                    <div className="ml-2">
+                        <h2 className="font-bold text-xl text-slate-700">Affiliate Linkleri</h2>
+                        {links && links?.length > 0 ? (
+                            <small>
+                                Toplam {links?.length} adet link
+                            </small>
+                        ) : null}
+                    </div>
+
+                </div>
+
+
+                <section className="mb-4">
+
+                    {/* <div>
+                        {links?.map(ln => <div className="mb-4 border-2 px-2 py-4" key={ln.id}>
+                            {ln?.id} - <small>{JSON.stringify(ln)}</small>
+
+                        </div>)}
+                    </div> */}
+
+                    {links && links?.length > 0
+                        ? <LinkList prod={links} refetch={refetchlinks} />
+                        : null}
+
+                </section>
+
+                <Pager />
+
+            </PageCard>
+        </main>
     )
 }
 
