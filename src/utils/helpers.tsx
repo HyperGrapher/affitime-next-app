@@ -13,16 +13,17 @@ export const removeFirstWordIfStartsWithYaklasik = (str: string | undefined): st
 };
 
 /* Database'den gelen created/updated gibi alanlari <3 Ocak 2022> formatina cevirir */
-export const formatDateFromDatabase = (date: Date | null | undefined): string => {
+export const formatDateTR = (date: Date | null | undefined): string => {
     if (!date) return "";
 
-    const formattedDate = new Date(date).toLocaleDateString("tr-TR", {
+    return new Date(date).toLocaleDateString("tr-TR", {
         year: "numeric",
         month: "long",
         day: "numeric",
+        hour: "numeric",
+        minute: "numeric",
     });
 
-    return formattedDate;
 };
 
 export const numberWithCommas = (x: string | number | undefined | null) => {

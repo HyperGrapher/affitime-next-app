@@ -17,7 +17,8 @@ const Home: NextPage = () => {
   }
 
   // return <h1 className="text-center text-4xl pt-8">Affitime Server</h1>
-
+  // Gradient text:
+  // font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500
   return (
     <Container maxWidth={'xl'}>
       <Head>

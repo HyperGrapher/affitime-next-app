@@ -9,6 +9,7 @@ export enum AppRoutes {
   VENDOR_CREATE_PRODUCT = "/vendor/products/create",
   VENDOR_LINKS = "/vendor/links",
   VENDOR_CREATE_LINK = "/vendor/links/create",
+  VENDOR_NOTIFICATIONS = "/vendor/notifications",
 
   // PARTNER
   PARTNER_DASHBOARD = "/partner/dashboard",
@@ -18,6 +19,7 @@ export enum AppRoutes {
   PARTNER_LINKS = "/partner/links",
   PARTNER_LINK_DETAIL = "/partner/links/detail",
   PARTNER_CREATE_LINK = "/partner/links/create",
+  PARTNER_NOTIFICATIONS =  "/partner/notifications",
 
   // AUTH
   SIGNIN = "/auth/signin",

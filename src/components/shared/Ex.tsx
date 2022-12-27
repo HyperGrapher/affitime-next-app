@@ -17,6 +17,11 @@ const Ex = () => {
             <span className="max-w-[60px]"></span>
             <button className="rounded py-2 text-sm px-6 bg-red-500 text-slate-50"></button>
 
+            {/* Gradient text/title */}
+            <h1 className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500"></h1>
+            <button className="text-sm rounded-md bg-gradient-to-r from-teal-500 to-blue-500 text-white px-2 py-1">Onayla</button>
+
+
         </div>
     )
 }
