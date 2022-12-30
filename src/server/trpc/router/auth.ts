@@ -40,11 +40,14 @@ export const authRouter = router({
       z.object({
         email: z.string().email(),
         password: z.string().min(8),
+        username: z.string().min(5),
+        brand: z.string().min(5),
+        website: z.string().url(),
         role: z.enum(["VENDOR", "PARTNER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { email, password, role } = input;
+      const { email, password, role, username, brand, website } = input;
 
       const isExist = await ctx.prisma.user.findUnique({
         where: {
@@ -76,6 +79,8 @@ export const authRouter = router({
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
+              brand,
+              website
             },
           });
 
@@ -92,6 +97,7 @@ export const authRouter = router({
           const partner = await ctx.prisma.partner.create({
             data: {
               userId: user.id,
+              username
             },
           });
 

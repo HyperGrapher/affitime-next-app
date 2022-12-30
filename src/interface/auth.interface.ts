@@ -1,6 +1,9 @@
 interface FormElements extends HTMLFormControlsCollection {
     email: HTMLInputElement
     password: HTMLInputElement
+    username: HTMLInputElement
+    brand: HTMLInputElement
+    website: HTMLInputElement
 }
 
 export interface RegisterFormElement extends HTMLFormElement {

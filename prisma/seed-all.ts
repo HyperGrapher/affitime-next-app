@@ -4,15 +4,17 @@ import bcrypt from "bcrypt";
 import { vendors, partners } from "./user-list";
 import { CommissionType } from "@prisma/client";
 
-// TODO Use Faker - create partner, vendor, product
-
 const createVendorUsers = async () => {
   for (const v of vendors) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash("bm123456", salt);
     v.password = hash;
-    const user = await prisma.user.create({ data: v });
-    const vendor = await prisma.vendor.create({ data: { userId: user.id } });
+    const user = await prisma.user.create({
+      data: { email: v.email, password: v.password },
+    });
+    const vendor = await prisma.vendor.create({
+      data: { userId: user.id, website: v.website, brand: v.brand },
+    });
     await prisma.user.update({
       where: { id: user.id },
       data: { vendor_id: vendor.id },
@@ -26,8 +28,12 @@ const createPartnerUsers = async () => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash("bm123456", salt);
     p.password = hash;
-    const user = await prisma.user.create({ data: p });
-    const partner = await prisma.partner.create({ data: { userId: user.id } });
+    const user = await prisma.user.create({
+      data: { email: p.email, password: p.password },
+    });
+    const partner = await prisma.partner.create({
+      data: { userId: user.id, username: p.username },
+    });
     await prisma.user.update({
       where: { id: user.id },
       data: { partner_id: partner.id },

@@ -3,6 +3,7 @@ import { UserRoles } from "./../../../interface/auth.interface";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
+import crypto from "crypto";
 
 export const linkRouter = router({
   getLinkById: protectedProcedure
@@ -20,37 +21,32 @@ export const linkRouter = router({
       });
     }),
 
-    getAllLinksForPartner: protectedProcedure
-    .query(({ ctx, input }) => {
+  getAllLinksForPartner: protectedProcedure.query(({ ctx, input }) => {
+    const { role, partnerId } = ctx.session;
 
-      const { role, partnerId } = ctx.session;
+    if (!partnerId) throw new TRPCError({ code: "NOT_FOUND" });
 
-      if (!partnerId) throw new TRPCError({ code: "NOT_FOUND" });
+    return ctx.prisma.link.findMany({
+      where: {
+        partner_id: partnerId,
+        confirmed: true,
+      },
+      include: { product: true, vendor: true },
+    });
+  }),
 
-      return ctx.prisma.link.findMany({
-        where: {
-          partner_id: partnerId,
-          confirmed: true,
-        },
-        include: { product: true, vendor: true },
-      });
-    }),
+  getAllLinksForVendor: protectedProcedure.query(({ ctx, input }) => {
+    const { role, vendorId } = ctx.session;
 
+    if (!vendorId) throw new TRPCError({ code: "NOT_FOUND" });
 
-    getAllLinksForVendor: protectedProcedure
-    .query(({ ctx, input }) => {
-
-      const { role, vendorId } = ctx.session;
-
-      if (!vendorId) throw new TRPCError({ code: "NOT_FOUND" });
-
-      return ctx.prisma.link.findMany({
-        where: {
-          vendor_id: vendorId,
-        },
-        include: { product: true, partner: true },
-      });
-    }),
+    return ctx.prisma.link.findMany({
+      where: {
+        vendor_id: vendorId,
+      },
+      include: { product: true, partner: true },
+    });
+  }),
 
   createLink: protectedProcedure
     .input(
@@ -111,6 +107,28 @@ export const linkRouter = router({
             message: "Vendor not found",
           });
 
+        const prevLink = await ctx.prisma.link.findFirst({
+          where: { partner_id: partnerId, product_id: productId },
+        });
+
+        if (prevLink)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Daha önce link oluşturulmuş!",
+          });
+
+        const hashUrl = crypto.randomBytes(6).toString("base64url");
+
+        const sameUrlLink = await ctx.prisma.link.findFirst({
+          where: { url: hashUrl },
+        });
+
+        if (sameUrlLink)
+          throw new TRPCError({
+            code: "BAD_REQUEST",
+            message: "Link eşsiz değil. Tekrar Deneyiniz.",
+          });
+
         const link = await ctx.prisma.link.create({
           data: {
             vendor_id: vendor.id,
@@ -118,6 +136,10 @@ export const linkRouter = router({
             product_id: product.id,
             partner_user_id: partner.userId,
             vendor_user_id: vendor.userId,
+            active: null,
+            notified: null,
+            confirmed: null,
+            url: hashUrl,
           },
         });
 

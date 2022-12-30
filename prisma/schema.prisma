@@ -121,8 +121,8 @@ model Vendor {
   id        String    @id @default(cuid())
   user      User      @relation(fields: [userId], references: [id])
   userId    String    @unique
-  brand     String    @default("")
-  website   String    @default("")
+  brand     String    @unique()
+  website   String    @unique()
   products  Product[]
   links     Link[]
   createdAt DateTime  @default(now())
@@ -203,7 +203,7 @@ model Link {
   vendor          Vendor   @relation(fields: [vendor_id], references: [id])
   vendor_id       String
   vendor_user_id  String?
-  url             String   @default("")
+  url             String   @unique()
   platform        String?
   visits          Visit[]  @relation("LinkVisits")
   count           Int      @default(0)
@@ -215,5 +215,5 @@ model Link {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 
-  @@index([id, vendor_id, partner_id, product_id, url])
+  @@index([id, vendor_id, partner_id, product_id])
 }

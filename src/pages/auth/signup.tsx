@@ -44,7 +44,7 @@ const FormSchema = z.object({
 const SignUp: NextPage = (): JSX.Element => {
 
     const createUser = trpc.auth.createUser.useMutation()
-    const [enabled, setEnabled] = useState(false)
+    const [isVendor, setIsVendor] = useState(false)
     const [busy, setBusy] = useState(false)
     const [error, setError] = useState("")
     const router = useRouter()
@@ -63,7 +63,10 @@ const SignUp: NextPage = (): JSX.Element => {
         createUser.mutate({
             email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
-            role: enabled ? UserRoles.VENDOR : UserRoles.PARTNER
+            username: !isVendor ? e.currentTarget.elements.username.value : "______",
+            brand:  isVendor ? e.currentTarget.elements.brand.value : "______",
+            website: isVendor ?  e.currentTarget.elements.website.value : "https://example.com",
+            role: isVendor ? UserRoles.VENDOR : UserRoles.PARTNER
         },
             {
                 onSuccess: async (data, variables, context) => {
@@ -110,14 +113,14 @@ const SignUp: NextPage = (): JSX.Element => {
                 <div className="flex flex-row w-48 justify-between mx-auto mb-4">
                     <p className="text-sm">Partner</p>
                     <Switch
-                        checked={enabled}
-                        onChange={setEnabled}
-                        className={`${enabled ? 'bg-blue-600' : 'bg-gray-200'
+                        checked={isVendor}
+                        onChange={setIsVendor}
+                        className={`${isVendor ? 'bg-blue-600' : 'bg-gray-200'
                             } relative inline-flex h-6 w-11 items-center rounded-full`}
                     >
                         <span className="sr-only">Role secimi</span>
                         <span
-                            className={`${enabled ? 'translate-x-6' : 'translate-x-1'
+                            className={`${isVendor ? 'translate-x-6' : 'translate-x-1'
                                 } inline-block h-4 w-4 transform rounded-full bg-white transition`}
                         />
                     </Switch>
@@ -135,6 +138,38 @@ const SignUp: NextPage = (): JSX.Element => {
                         name="email"
                         id="email"
                         placeholder='Email' />
+
+                    {!isVendor ? <input
+                        className='disabled:bg-slate-200 block w-full 
+                        rounded-md border-gray-300 shadow-sm 
+                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                        disabled={busy}
+                        type="text"
+                        name="username"
+                        id="username"
+                        placeholder='Kullanici ismi' />
+                        : <>
+                            <input
+                                className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                disabled={busy}
+                                type="text"
+                                name="brand"
+                                id="brand"
+                                placeholder='Firma ismi' />
+
+                            <input
+                                className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                disabled={busy}
+                                type="text"
+                                name="website"
+                                id="website"
+                                placeholder='Website adresi' />
+                        </>
+                    }
                     <input
                         className='disabled:bg-slate-200 block w-full 
                         rounded-md border-gray-300 shadow-sm 
