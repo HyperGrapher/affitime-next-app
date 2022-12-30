@@ -5,7 +5,7 @@ import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } fr
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import PageCard from "../../../components/card/Card";
-import ProductList from '../../../components/products/ProductList';
+import NotificationList from '../../../components/_vendor/notifications/NotificationList';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
@@ -18,7 +18,7 @@ import { notifyError } from "../../../utils/notifications";
 
 const Notifications: NextPage = () => {
 
-    const { data: notifs, status: notifStatus, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
+    const { data: links, status: notifStatus, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
     const update = trpc.notifications.updateLinkNotification.useMutation()
 
     function onConfirmOrDenyClick(id: string, confirmed: boolean): void {
@@ -43,38 +43,8 @@ const Notifications: NextPage = () => {
     return (
         <div className="auth-container">
 
-            <div className="py-2 px-2 my-1 border flex space-x-4 bg-slate-200 font-medium">
-
-                <div className="w-[30ch]">
-                    <p className="text-left pl-4">Product Ismi</p>
-
-                </div>
-
-                <div className="w-[30ch]">
-                    <p className="text-left pl-4">Product ID</p>
-
-                </div>
-
-                <div className="w-[15ch]">
-
-                    <p className="text-left">Tarih</p>
-
-                </div>
-
-                <div className="w-[15ch] ">
-
-                    <p className="text-left">Kullanici</p>
-                </div>
-
-                <div className="w-[10ch]" >
-                    <p className="text-center">
-                        Onayla
-                    </p>
-                </div>
-
-            </div>
-            <div className="mt-6 ">
-                {notifs?.map(it => <div key={it.id} className="py-2 px-2 my-1 border flex space-x-4">
+            <div className="hidden mt-6 ">
+                {links?.map(it => <div key={it.id} className="py-2 px-2 my-1 border flex space-x-4">
 
 
                     <div className="w-[30ch]">
@@ -113,6 +83,43 @@ const Notifications: NextPage = () => {
 
                 </div>)}
             </div>
+
+
+            <PageCard>
+
+                <div className="flex items-center mb-6">
+
+                    <div className="ml-2">
+                        <h2 className="font-bold text-xl text-slate-700">Bildirimler</h2>
+                        {links && links?.length > 0 ? (
+                            <small>
+                                Toplam {links?.length} adet bilriminiz var.
+                                <br />
+                                Olusturulan affiliate linklerini onaylayin yada geri cevirin
+                            </small>
+                        ) : null}
+                    </div>
+
+                </div>
+
+
+                <section className="mb-4">
+
+                    {/* <div>
+                        {links?.map(ln => <div className="mb-4 border-2 px-2 py-4" key={ln.id}>
+                            {ln?.id} - <small>{JSON.stringify(ln)}</small>
+
+                        </div>)}
+                    </div> */}
+
+                    {links && links?.length > 0
+                        ? <NotificationList prod={links} refetch={refetchNotifs} />
+                        : null}
+
+                </section>
+
+
+            </PageCard>
 
         </div>
     )

@@ -43,7 +43,7 @@ const Sidenav = () => {
                 </div>
             </header>
             {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-600 hover:bg-violet-700 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
-            <div id="menu-bar" className='mt-16'>
+            <div id="menu-bar" className='mt-8'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
                         <li id='nav-link'
@@ -207,7 +207,7 @@ const Sidenav = () => {
                 </div>
             </header>
             {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-600 hover:bg-violet-700 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
-            <div id="menu-bar" className='mt-16'>
+            <div id="menu-bar" className='mt-8'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
                         <li id='nav-link'
