@@ -160,7 +160,7 @@ const Sidenav = () => {
                                 {unreadNotifications > 0 && <span
                                     className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='translate-x-[-1px]'> {unreadNotifications}</p>
+                                   <p className='translate-x-[-1px] text-white'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
@@ -330,7 +330,7 @@ const Sidenav = () => {
                                 {unreadNotifications > 0 && <span
                                     className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='translate-x-[-1px]'> {unreadNotifications}</p>
+                                   <p className='translate-x-[-1px] text-white'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
