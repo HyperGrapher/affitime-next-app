@@ -114,20 +114,17 @@ export const linkRouter = router({
         if (prevLink)
           throw new TRPCError({
             code: "BAD_REQUEST",
-            message: "Daha önce link oluşturulmuş!",
+            message: "Ürün için daha önce link oluşturulmuş!",
           });
 
-        const hashUrl = crypto.randomBytes(6).toString("base64url");
+        let hashUrl = crypto.randomBytes(6).toString("base64url").toLowerCase();
 
-        const sameUrlLink = await ctx.prisma.link.findFirst({
+        const urlExist = await ctx.prisma.link.findFirst({
           where: { url: hashUrl },
         });
 
-        if (sameUrlLink)
-          throw new TRPCError({
-            code: "BAD_REQUEST",
-            message: "Link eşsiz değil. Tekrar Deneyiniz.",
-          });
+        if (urlExist)
+          hashUrl = crypto.randomBytes(6).toString("base64url").toLowerCase();
 
         const link = await ctx.prisma.link.create({
           data: {
@@ -137,7 +134,8 @@ export const linkRouter = router({
             partner_user_id: partner.userId,
             vendor_user_id: vendor.userId,
             active: null,
-            notified: null,
+            vendor_notified: false,
+            partner_notified: false, // changes after vendor confirmation
             confirmed: null,
             url: hashUrl,
           },
@@ -186,7 +184,7 @@ export const linkRouter = router({
           data: {
             active: isConfirmed,
             confirmed: isConfirmed,
-            notified: true,
+            vendor_notified: true,
           },
         });
 

@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { GetServerSideProps } from "next";
@@ -13,13 +14,22 @@ import LinkButton from "../../../components/buttons/LinkButton";
 import TimeAgo from "timeago-react";
 import { formatDateTR } from "../../../utils/helpers";
 import { notifyError } from "../../../utils/notifications";
+import { useEffect } from "react";
+import useNotificationStore from "../../../store/notifications.store";
 
 
 
 const Notifications: NextPage = () => {
 
-    const { data: links, status: notifStatus, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
-    const update = trpc.notifications.updateLinkNotification.useMutation()
+    const { data: notifs, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
+
+    const setUnread = useNotificationStore(store => store.setUnread)
+
+    useEffect(() => {
+        setUnread(notifs?.length ?? 0)
+    }, [notifs])
+
+    const update = trpc.notifications.updateLinkNotificationByVendor.useMutation()
 
     function onConfirmOrDenyClick(id: string, confirmed: boolean): void {
         update.mutate({ id, confirmed }, {
@@ -44,7 +54,7 @@ const Notifications: NextPage = () => {
         <div className="auth-container">
 
             <div className="hidden mt-6 ">
-                {links?.map(it => <div key={it.id} className="py-2 px-2 my-1 border flex space-x-4">
+                {notifs?.map(it => <div key={it.id} className="py-2 px-2 my-1 border flex space-x-4">
 
 
                     <div className="w-[30ch]">
@@ -91,13 +101,16 @@ const Notifications: NextPage = () => {
 
                     <div className="ml-2">
                         <h2 className="font-bold text-xl text-slate-700">Bildirimler</h2>
-                        {links && links?.length > 0 ? (
+                        {notifs && notifs?.length > 0 ? (
                             <small>
-                                Toplam {links?.length} adet bilriminiz var.
+                                Toplam {notifs?.length} adet bilriminiz var.
                                 <br />
-                                Olusturulan affiliate linklerini onaylayin yada geri cevirin
+                                Olusturulan affiliate linklerini onaylayın yada iptal edin.
                             </small>
-                        ) : null}
+                        ) : <small>
+                            Okunmamış bildirim bulunmuyor
+
+                        </small>}
                     </div>
 
                 </div>
@@ -112,8 +125,8 @@ const Notifications: NextPage = () => {
                         </div>)}
                     </div> */}
 
-                    {links && links?.length > 0
-                        ? <NotificationList prod={links} refetch={refetchNotifs} />
+                    {notifs && notifs?.length > 0
+                        ? <NotificationList prod={notifs} refetch={refetchNotifs} />
                         : null}
 
                 </section>

@@ -84,7 +84,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           "
           confirmBtnText='İptal Et'
           dismissFn={() => setCancelModal(false)}
-          confirmFn={() => handleAction(true)}
+          confirmFn={() => handleAction(false)}
         />
       </ModalContainer>
 
@@ -97,7 +97,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           "
           confirmBtnText='Onayla'
           dismissFn={() => setConfirmModal(false)}
-          confirmFn={() => handleAction(false)}
+          confirmFn={() => handleAction(true)}
         />
       </ModalContainer>
 

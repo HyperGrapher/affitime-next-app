@@ -2,7 +2,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
+import { type Link as LinkEntity, type Vendor, type Product } from "@prisma/client";
 import React from "react";
 import Image from "next/image";
 import productImg from '../../../assets/product.png';
@@ -15,7 +15,7 @@ import EditIcon from '@mui/icons-material/EditOutlined';
 import LinkIcon2 from '@mui/icons-material/Link';
 import LinkIcon from '@mui/icons-material/Search';
 import SendIcon from '@mui/icons-material/Send';
-import CheckIcon from '@mui/icons-material/CheckCircle';
+import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import Chip from '@mui/material/Chip';
 import classNames from "../../../utils/classnames";
 import { useRouter } from "next/router";
@@ -25,39 +25,34 @@ import Link from "next/link";
 import Divider from "../../shared/Divider";
 import { HiCheckCircle, HiXCircle, HiCheck } from 'react-icons/hi'
 import TimeAgo from "timeago-react";
+import { trpc } from "../../../utils/trpc";
 
-
-// import { useState, useEffect } from 'react';
-// import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
-
-// interface LinkItemEntity { p: LinkEntity, {a: string}}
-
-// (Link & {
-//     vendor: Vendor;
-//     product: Product;
-// })
 
 type ItemProps = {
-    p: (LinkEntity & { partner: Partner; product: Product; });
-    confirmModal: () => void;
-    cancelModal: () => void;
-    setLinkId: (id: string) => void;
+    p: (LinkEntity & { vendor: Vendor; product: Product; });
+    refetch: () => void
+
 }
-// 812px ve asgisi icin layout degis
-const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, setLinkId }) => {
-    const { push } = useRouter()
 
-    function cancel(id: string) {
-        setLinkId(p.id)
-        cancelModal()
+const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
+
+    const update = trpc.notifications.updateNotificationReadByPartner.useMutation()
+
+    const handleUpdate = async () => {
+        update.mutate({
+            id: p.id,
+        }, {
+            onError(error) {
+                console.log(error);
+
+            },
+            onSettled: () => {
+                refetch()
+            }
+        })
+
     }
 
-    function confirm(id: string) {
-        setLinkId(p.id)
-        confirmModal()
-    }
 
     return (
         <li className={
@@ -105,6 +100,10 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
                         {numberWithCommas(p.product.price)}
                         <Lira />
                     </p>
+                    <p className="text-stone-400 text-xs whitespace-nowrap">
+                        <b className="text-stone-500">Mağaza: </b>
+                        {p.vendor.brand!}
+                    </p>
 
                 </div>
 
@@ -112,75 +111,75 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
 
                 <Divider />
 
-                {/* COMMISSON */}
-                {/* <div className="min-w-[5ch] h-full">
 
-                    <b className="text-violet-600 text-sm font-medium whitespace-nowrap">
-                        {p.partner.username}
+                {/* STATUS */}
+                <div
+                    title={p.confirmed
+                        ? "Link talebiniz vendor tarafindan onaylandi"
+                        : "Link talebiniz vendor tarafindan iptal edildi"
+                    }
+                    className="text-center gap-1 flex flex-col items-center">
+
+                    <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
+                        {p.active
+                            ? <HiCheckCircle size={"1.25rem"} color="text-green-500" />
+                            : <HiXCircle size={"1.25rem"} color="text-red-400" />}
                     </b>
 
-                </div> */}
+                    <b className="text-xs font-bold whitespace-nowrap">
 
-                <div className="flex flex-col items-center gap-1 min-w-[5ch] h-full">
+                        {p.active
+                            ? "Onaylandı"
+                            : 'İptal Edilidi'}
+                    </b>
+
+                </div>
+
+
+                <Divider />
+
+
+                <div className="flex flex-col items-center gap-1 min-w-[15ch] h-full">
                     <b className="text-xs whitespace-nowrap text-slate-500  text-center
                         font-bold transition-colors">
-                        Kullanici:
+                        Affiliate Linki:
                     </b>
-
 
                     <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                        {p.partner.username}
+                        {p.confirmed ? `affi/${p.url.toLocaleLowerCase()}` : "--"}
                     </b>
-
 
                 </div>
 
 
-
                 <Divider />
 
-                <div className="min-w-[5ch]">
+                <div className="min-w-[12ch] text-center">
 
                     <small className="text-slate-500 text-xs font-medium whitespace-nowrap">
                         <TimeAgo
                             className="whitespace-nowrap"
-                            title={formatDateTR(p.createdAt)}
-                            datetime={p.createdAt as Date}
+                            title={formatDateTR(p.updatedAt)}
+                            datetime={p.updatedAt as Date}
                             locale={'tr'}
                         />
                     </small>
                 </div>
 
-
-
                 <Divider />
 
-
-                {/* EDIT BUTTONS */}
-                <div className="w-fulll">
-                    <div className="flex flex-row">
+                <div className="flex flex-row">
 
 
-                        <div className=" flex flex-nowrap gap-2 ml-auto mr-4 h-full place-self-center">
-
-                            <IconButton
-                                size="small"
-                                onClick={() => cancel(p.id)}
-                                title="Affiliate linkini iptal et"
-                                aria-label="Affiliate linkini iptal et">
-                                <DeleteIcon className="text-red-400 w-6 h-6" />
-                            </IconButton>
-                            <IconButton
-                                size="small"
-                                title="Affiliate Linki Onayla"
-                                onClick={() => confirm(p.id)}
-                                aria-label="Affiliate linki onayla">
-                                <CheckIcon className="text-green-600 w-6 h-6" />
-                            </IconButton>
-                        </div>
-
+                    <div className="mr-4 flex flex-nowrap gap-2 ml-auto h-full place-self-center">
+                        <IconButton
+                            size="medium"
+                            onClick={() => handleUpdate()}
+                            title="Okundu"
+                            aria-label="Okundu">
+                            <CheckIcon className="text-green-500 w-6 h-6" />
+                        </IconButton>
                     </div>
-
 
                 </div>
 

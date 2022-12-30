@@ -194,26 +194,27 @@ model Visit {
 }
 
 model Link {
-  id              String   @id @default(cuid())
-  product         Product  @relation("ProductLinks", fields: [product_id], references: [id])
-  product_id      String
-  partner         Partner  @relation(fields: [partner_id], references: [id])
-  partner_id      String
-  partner_user_id String?
-  vendor          Vendor   @relation(fields: [vendor_id], references: [id])
-  vendor_id       String
-  vendor_user_id  String?
-  url             String   @unique()
-  platform        String?
-  visits          Visit[]  @relation("LinkVisits")
-  count           Int      @default(0)
-  declined        Int      @default(0)
-  repeated        Int      @default(0)
-  active          Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
-  notified        Boolean? // Vendor
-  confirmed       Boolean? // by vendor
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  id               String   @id @default(cuid())
+  product          Product  @relation("ProductLinks", fields: [product_id], references: [id])
+  product_id       String
+  partner          Partner  @relation(fields: [partner_id], references: [id])
+  partner_id       String
+  partner_user_id  String?
+  vendor           Vendor   @relation(fields: [vendor_id], references: [id])
+  vendor_id        String
+  vendor_user_id   String?
+  url              String   @unique()
+  platform         String?
+  visits           Visit[]  @relation("LinkVisits")
+  count            Int      @default(0)
+  declined         Int      @default(0)
+  repeated         Int      @default(0)
+  active           Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
+  confirmed        Boolean? // by vendor
+  vendor_notified  Boolean @default(false)
+  partner_notified Boolean @default(false)
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   @@index([id, vendor_id, partner_id, product_id])
 }

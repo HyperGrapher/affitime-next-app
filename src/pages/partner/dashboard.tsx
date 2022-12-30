@@ -13,6 +13,7 @@ import usePersistedState from "../../hooks/usePersistedState";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
 import { UserRoles } from "../../interface/auth.interface";
+import useNotificationStore from "../../store/notifications.store";
 // import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 
 // import dynamic from 'next/dynamic'
@@ -68,8 +69,15 @@ const Dashboard: NextPage = () => {
     const { data: sessionData, status: sessionStatus } = useSession();
     const [_, setPersistedIp] = usePersistedState('ip', '')
     const [__, setData] = usePersistedState('data', {})
-    const { pathname, query } = useRouter()
+    const { query } = useRouter()
     const { reg } = query // is user just registered?
+
+    const { data: notifs } = trpc.notifications.getUnreadNotificationsForPartner.useQuery()
+    const setUnread = useNotificationStore(store => store.setUnread)
+
+    useEffect(() => {
+        setUnread(notifs?.length ?? 0)
+    }, [notifs])
 
 
     const setUserIp = async () => {

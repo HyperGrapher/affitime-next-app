@@ -9,11 +9,14 @@ import { AppRoutes } from '../../config/appRoutes'
 import classNames from '../../utils/classnames'
 import { useSession } from "next-auth/react";
 import { UserRoles } from '../../interface/auth.interface'
+import useNotificationStore from '../../store/notifications.store'
 
 const Sidenav = () => {
 
     const { asPath } = useRouter();
     const { data: session } = useSession();
+    const unreadNotifications = useNotificationStore(store => store.unread)
+
 
     if (!session) return null
 
@@ -153,6 +156,12 @@ const Sidenav = () => {
                                     aria-hidden='true' />
 
                                 <span className="font-medium text-sm text-zincXXX-600">Bildirimler</span>
+
+                                {unreadNotifications > 0 && <span
+                                    className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
+                                >
+                                   <p className='translate-x-[-1px]'> {unreadNotifications}</p>
+                                </span>}
 
                             </Link>
                         </li>
@@ -317,6 +326,12 @@ const Sidenav = () => {
                                     aria-hidden='true' />
 
                                 <span className="font-medium text-sm text-zincXXX-600">Bildirimler</span>
+
+                                {unreadNotifications > 0 && <span
+                                    className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
+                                >
+                                   <p className='translate-x-[-1px]'> {unreadNotifications}</p>
+                                </span>}
 
                             </Link>
                         </li>
