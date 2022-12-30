@@ -159,26 +159,34 @@ export const linkRouter = router({
       }
     }),
 
-  // TODO: To be implemented
-  updateLink: publicProcedure
+  updateLinkStatusByVendor: protectedProcedure
     .input(
       z.object({
         id: z.string(),
+        isConfirmed: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const data = input;
+      const { id, isConfirmed } = input;
 
-      if (!data)
+      const { vendorId } = ctx.session;
+
+      if (!vendorId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Vendor not found",
+        });
+
+      if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
       // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update-a-number-field
       try {
         await ctx.prisma.link.update({
-          where: { id: "" },
+          where: { id },
           data: {
-            count: {
-              increment: 1,
-            },
+            active: isConfirmed,
+            confirmed: isConfirmed,
+            notified: true,
           },
         });
 

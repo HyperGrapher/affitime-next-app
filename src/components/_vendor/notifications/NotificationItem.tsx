@@ -42,13 +42,20 @@ import TimeAgo from "timeago-react";
 type ItemProps = {
     p: (LinkEntity & { partner: Partner; product: Product; });
     confirmModal: () => void;
-    setDeleteId: (id: string) => void;
+    cancelModal: () => void;
+    setLinkId: (id: string) => void;
 }
 // 812px ve asgisi icin layout degis
-const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
+const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, setLinkId }) => {
     const { push } = useRouter()
 
-    function del(id: string) {
+    function cancel(id: string) {
+        setLinkId(p.id)
+        cancelModal()
+    }
+
+    function confirm(id: string) {
+        setLinkId(p.id)
         confirmModal()
     }
 
@@ -158,16 +165,16 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId })
 
                             <IconButton
                                 size="small"
-                                onClick={() => del(p.id)}
-                                title="Affiliate Linkini Sil"
-                                aria-label="Sil">
+                                onClick={() => cancel(p.id)}
+                                title="Affiliate linkini iptal et"
+                                aria-label="Affiliate linkini iptal et">
                                 <DeleteIcon className="text-red-400 w-6 h-6" />
                             </IconButton>
                             <IconButton
                                 size="small"
                                 title="Affiliate Linki Onayla"
-                                onClick={() => push(`${AppRoutes.VENDOR_CREATE_PRODUCT}?edit=true&pid=${p.id}`)}
-                                aria-label="Düzenle">
+                                onClick={() => confirm(p.id)}
+                                aria-label="Affiliate linki onayla">
                                 <CheckIcon className="text-green-600 w-6 h-6" />
                             </IconButton>
                         </div>

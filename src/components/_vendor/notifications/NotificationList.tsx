@@ -17,24 +17,43 @@ import { notifyError, notifySuccessBR, notifySuccessTC } from "../../../utils/no
 import ModalContainer from "../../modals/ModalContainer";
 import WarnDialog from "../../modals/WarnDialog";
 import IconButton from "../../buttons/IconButton";
+import ConfirmDialog from "../../modals/ConfirmDialog";
 // import { getSession, signIn, signOut, useSession } from "next-auth/react";
 // import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 
 
 type Props = {
-  prod: (LinkEntity & {partner: Partner; product: Product; })[] | undefined
+  prod: (LinkEntity & { partner: Partner; product: Product; })[] | undefined
   refetch: () => void;
 }
 
 const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
-  const [modal, setModal] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
+  const [cancelModal, setCancelModal] = useState(false)
+  const [confirmModal, setConfirmModal] = useState(false)
+  const [linkId, setLinkId] = useState('')
 
-  const deleteProd = trpc.product.deleteProduct.useMutation()
+  const update = trpc.link.updateLinkStatusByVendor.useMutation()
 
-  const handleDelete = async () => {
+  const handleAction = async (confirmed: boolean) => {
 
-    console.log('');
+
+    update.mutate({ id: linkId, isConfirmed: confirmed }, {
+
+      onSuccess(data, variables, context) {
+        console.log(data);
+      },
+      onError(error, variables, context) {
+        console.log(error);
+        notifyError("Bir hata olustu")
+
+      },
+      onSettled: () => {
+        refetch()
+        setCancelModal(false)
+        setConfirmModal(false)
+      }
+    })
+
 
   }
 
@@ -42,7 +61,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
   return (<>
 
 
-    {prod?.length === 0 ? <p className='text-center'>Henüz bir ürün bulunmuyor</p> : (<>
+    {prod?.length === 0 ? <p className='text-center'>Henüz bir bildiriminiz bulunmuyor</p> : (<>
 
       {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
@@ -50,21 +69,35 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           <NotificationItem
             key={p.id}
             p={p}
-            setDeleteId={setDeleteId}
-            confirmModal={() => setModal(true)} />))}
+            setLinkId={setLinkId}
+            confirmModal={() => setConfirmModal(true)}
+            cancelModal={() => setCancelModal(true)}
+          />))}
       </ul>
 
-      <ModalContainer state={modal} key={"adda"}>
+      <ModalContainer state={cancelModal}>
         <WarnDialog
-          title="Ürünü silmek istiyor musunuz?"
+          title="Affiliate link istegini iptal etmek istiyor musunuz?"
           desc="
-          Ürün listenizden silinecek ve oluşturulan 
-          tüm affiliate linkleri geçersiz hale gelerek 
-          hata sayfasina yönlendirilecektir. 
+          Partner linki onayınıza bağlıdır. 
+          İptal etmeniz durumunda partner için affiliate linki oluşturulmayacaktır.
           "
-          confirmBtnText='Sil'
-          dismissFn={() => setModal(false)}
-          confirmFn={() => handleDelete()}
+          confirmBtnText='İptal Et'
+          dismissFn={() => setCancelModal(false)}
+          confirmFn={() => handleAction(true)}
+        />
+      </ModalContainer>
+
+      <ModalContainer state={confirmModal}>
+        <ConfirmDialog
+          title="Affiliate link istegini onaylamak istiyor musunuz?"
+          desc="
+          Partner linki onayınıza bağlıdır. 
+          Onaylamaniz durumunda partner için affiliate linki oluşturulacaktir.
+          "
+          confirmBtnText='Onayla'
+          dismissFn={() => setConfirmModal(false)}
+          confirmFn={() => handleAction(false)}
         />
       </ModalContainer>
 
