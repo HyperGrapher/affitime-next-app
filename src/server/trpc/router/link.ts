@@ -35,6 +35,22 @@ export const linkRouter = router({
       });
     }),
 
+
+    getAllLinksForVendor: protectedProcedure
+    .query(({ ctx, input }) => {
+
+      const { role, vendorId } = ctx.session;
+
+      if (!vendorId) throw new TRPCError({ code: "NOT_FOUND" });
+
+      return ctx.prisma.link.findMany({
+        where: {
+          vendor_id: vendorId,
+        },
+        include: { product: true, partner: true },
+      });
+    }),
+
   createLink: protectedProcedure
     .input(
       z.object({

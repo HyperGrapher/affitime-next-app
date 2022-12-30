@@ -12,6 +12,12 @@ import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
 import Pager from "../../../components/pager/Pager";
 
+import { Link, Partner, Product } from "@prisma/client";
+import classNames from "../../../utils/classnames";
+import Image from "next/image";
+import product from '../../../assets/product.png';
+import { numberWithCommas } from "../../../utils/helpers";
+
 
 const PartnerLinks: NextPage = () => {
     const { data: links, status: sts, refetch: refetchlinks } = trpc.link.getAllLinksForPartner.useQuery()
