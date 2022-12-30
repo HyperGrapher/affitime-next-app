@@ -111,7 +111,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Kampanya Ürünleri</span>
+                                <span className="font-medium text-sm ">Kampanya Ürünleri</span>
 
                             </Link>
                         </li>
@@ -133,7 +133,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Ürün Linkleri</span>
+                                <span className="font-medium text-sm ">Affiliate Linkleri</span>
 
                             </Link>
                         </li>
@@ -155,12 +155,12 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Bildirimler</span>
+                                <span className="font-medium text-sm ">Bildirimler</span>
 
                                 {unreadNotifications > 0 && <span
-                                    className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
+                                    className='flex items-center justify-center font-medium text-center  py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='translate-x-[-1px] text-white'> {unreadNotifications}</p>
+                                   <p className='translate-x-[-1px] text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
@@ -182,7 +182,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Kullanıcı Ayarları</span>
+                                <span className="font-medium text-sm ">Kullanıcı Ayarları</span>
 
                             </Link>
                         </li>
@@ -281,7 +281,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Kampanya Ürünleri</span>
+                                <span className="font-medium text-sm ">Kampanya Ürünleri</span>
 
                             </Link>
                         </li>
@@ -303,7 +303,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Ürün Linkleri</span>
+                                <span className="font-medium text-sm ">Affiliate Linkleri</span>
 
                             </Link>
                         </li>
@@ -325,12 +325,12 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Bildirimler</span>
+                                <span className="font-medium text-sm ">Bildirimler</span>
 
                                 {unreadNotifications > 0 && <span
                                     className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='translate-x-[-1px] text-white'> {unreadNotifications}</p>
+                                   <p className='translate-x-[-1px] text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
@@ -352,7 +352,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm text-zincXXX-600">Kullanıcı Ayarları</span>
+                                <span className="font-medium text-sm ">Kullanıcı Ayarları</span>
 
                             </Link>
                         </li>
