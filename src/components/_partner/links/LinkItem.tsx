@@ -21,6 +21,9 @@ import { useRouter } from "next/router";
 import { AppRoutes } from "../../../config/appRoutes";
 import LinkButton from "../../buttons/LinkButton";
 import Link from "next/link";
+import Divider from "../../shared/Divider";
+import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
+
 
 // import { useState, useEffect } from 'react';
 // import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
@@ -79,90 +82,63 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                     }
                 </Link>
 
-                <div className="">
-                    {p.product.title}
 
-                    {/* {JSON.stringify(p)} */}
-                </div>
-
-
-
-
-
-                {/* 
-
-                <div className="flex flex-col items-start gap-1 min-w-[20ch] h-full">
-                    <Link
-                        onClick={() => null}
-                        href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.id}`}>
+                <div className="flex flex-col items-start min-w-[20ch] h-full">
+                    <button onClick={() => null}>
                         <h4 className="text-xs whitespace-nowrap text-stone-5000 
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.title!.length > 25 ? p.title!.substring(0, 25) + " ..." : p.title}
+                            {p.product.title!.length > 25 ? p.product.title!.substring(0, 25) + " ..." : p.product.title}
                         </h4>
-                    </Link>
+                    </button>
 
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Fiyat: </b>
-                        {numberWithCommas(p.price)}
+                        {numberWithCommas(p.product.price)}
                         <Lira />
+                    </p>
+                    <p className="text-stone-400 text-xs whitespace-nowrap">
+                        <b className="text-stone-500">Mağaza: </b>
+                        {p.vendor.brand!}
                     </p>
 
                 </div>
 
 
 
+                <Divider />
 
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
+                {/* COMMISSON */}
+                <div className="min-w-[12ch] h-full">
 
+                    <div className="flex justify-between w-full items-center">
 
+                        <b className="text-stone-800 text-xs pr-1 ">Toplam <br /> Tıklama:</b>
 
-                <div className="flex flex-col gap-1 items-start  bg-purplex-200 min-w-[12ch] h-full">
-
-                    <div className="flex justify-between w-full">
-
-                        <b className="text-stone-800 text-xs ">Tiklama:</b>
-
-                        <p className="text-stone-600 text-xs font-medium whitespace-nowrap">
-                            {numberWithCommas(p.perClick)} {p.perClickType === "CASH" ? <Lira /> : "%"}
-                        </p>
-
-
-                    </div>
-
-                    <div className="flex justify-between w-full">
-
-                        <b className="text-stone-800 text-xs">Satış: </b>
-
-                        <p className="text-stone-600 text-xs font-medium whitespace-nowrap">
-                            {numberWithCommas(p.perSale)} {p.perSaleType === "CASH" ? <Lira /> : "%"}
+                        <p className="text-stone-500 text-xs font-medium whitespace-nowrap">
+                            {numberWithCommas(p.count)} adet
                         </p>
 
                     </div>
+
+
+                </div>
+
+
+                <Divider />
+
+
+                {/* STATUS */}
+                <div className="text-center">
+
+                    <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
+                        {p.active ? <HiCheckCircle size={"1.25rem"} color="text-green-500" /> : <HiXCircle size={"1.25rem"} color="text-red-400" />}
+                    </b>
 
                 </div>
 
 
 
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
-
-
-
-                <div className="">
-                    <a className="text-[10px] whitespace-nowrap text-sky-500"
-                        href={p.product_url!}
-                        target="_blank"
-                        rel="noreferrer">
-
-                        {p.product_url ? <>{p.product_url!.length > 25
-                            ? p.product_url!.substring(0, 25) + " ..." : p.product_url}</>
-                            : <span className="w-[50px]">Lutfen bir ürün linki Ekleyiniz!</span>}
-                    </a>
-                </div>
- */}
-
-
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
-
+                <Divider />
 
 
                 <div className="w-fulll">

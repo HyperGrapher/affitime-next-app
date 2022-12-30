@@ -30,6 +30,7 @@ export const linkRouter = router({
       return ctx.prisma.link.findMany({
         where: {
           partner_id: partnerId,
+          confirmed: true,
         },
         include: { product: true, vendor: true },
       });

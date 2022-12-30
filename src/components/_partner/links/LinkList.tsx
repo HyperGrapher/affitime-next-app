@@ -44,7 +44,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
     {prod?.length === 0 ? <p className='text-center'>Henüz bir ürün bulunmuyor</p> : (<>
 
-      <LinkListHeader />
+      {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (
           <LinkItem

@@ -57,7 +57,10 @@ const PartnerLinks: NextPage = () => {
 
                 </section>
 
-                <Pager />
+
+
+
+                {/* <Pager /> */}
 
             </PageCard>
         </main>
