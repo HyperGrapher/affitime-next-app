@@ -10,7 +10,6 @@
 
 [Diger bir NGinx ve trust proxy ornegi](https://stackoverflow.com/a/53819302)
 
-
 ```js
 req.headers["user-agent"];
 
@@ -18,7 +17,7 @@ request.socket.remoteAddress;
 ```
 
 - req.connection has been deprecated since node@12.12.0. Using req.connection.remoteAddress to get the client IP might still work but is discouraged.
-Luckily, req.socket.remoteAddress has been there since node@0.5.10 and is a perfect replacement: https://stackoverflow.com/a/65928931
+  Luckily, req.socket.remoteAddress has been there since node@0.5.10 and is a perfect replacement: https://stackoverflow.com/a/65928931
 
 - I found this solution req.header('Referer') this give to ma the previous page is this is best answer ?
 
@@ -32,3 +31,11 @@ Luckily, req.socket.remoteAddress has been there since node@0.5.10 and is a perf
   If you set `app.set('trust proxy', true)`, req.ip will return the real IP address even if behind proxy. https://stackoverflow.com/a/8107922
 
 ---
+
+### Detect If user is behind a VPN
+
+- Check for mismatch of browser language (Accept-Language HTTP header and IP location)
+- Check if the IP belongs to a data center network rather than a residential ISP
+
+[How do you detect if a client is using a VPN](https://stackoverflow.com/a/66209031)
+[IP2Proxy™ Proxy Detection Web Service](https://www.ip2location.com/web-service/ip2proxy)

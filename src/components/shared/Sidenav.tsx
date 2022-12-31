@@ -158,9 +158,9 @@ const Sidenav = () => {
                                 <span className="font-medium text-sm ">Bildirimler</span>
 
                                 {unreadNotifications > 0 && <span
-                                    className='flex items-center justify-center font-medium text-center  py-1 px-2 bg-red-500 rounded-full '
+                                    className='scale-75 flex items-center justify-center font-medium text-center  py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='translate-x-[-1px] text-white text-xs'> {unreadNotifications}</p>
+                                   <p className='text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
@@ -328,9 +328,9 @@ const Sidenav = () => {
                                 <span className="font-medium text-sm ">Bildirimler</span>
 
                                 {unreadNotifications > 0 && <span
-                                    className='flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
+                                    className=' scale-75 flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='translate-x-[-1px] text-white text-xs'> {unreadNotifications}</p>
+                                   <p className='text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>

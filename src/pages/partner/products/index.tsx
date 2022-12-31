@@ -17,30 +17,11 @@ import Pager from "../../../components/pager/Pager";
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
-    const query = context.query.id
-
-    // ? DON'T Use api calls on getServerSideProps
-    // const res = await fetch('http://localhost:3000/api/examples', {
-    //     headers: {
-    //       cookie: context.req.headers.cookie || "",
-    //     },
-    //   })
-    // const data = await res.json() ?? null
-
-    // This value is considered fresh for ten seconds (s-maxage=10).
-    // If a request is repeated within the next 10 seconds, the previously
-    // cached value will still be fresh. If the request is repeated before 59 seconds,
-    // the cached value will be stale but still render (stale-while-revalidate=59).
-    //
-    // In the background, a revalidation request will be made to populate the cache
-    // with a fresh value. If you refresh the page, you will see the new value.
 
     context.res.setHeader(
         'Cache-Control',
-        'public, s-maxage=10, stale-while-revalidate=59'
+        'public, s-maxage=60, stale-while-revalidate=120'
     )
-
-
 
     if (!session) return {
         redirect: {
@@ -56,52 +37,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    // const data = await prisma.user.findMany({
-    //     select: {
-    //         id: true,
-    //         role: true,
-    //         email: true,
-    //         image: true,
-    //         password: false,
-    //         pro: true,
-    //         trial: true,
-    //         active: true,
-    //         emailVerified: true,
-    //         vendor: true,
-    //         partner: true,
-    //     }
-    // });
-
-    // prisma.$disconnect()
-
-
-    // if (!data) return {
-    //     redirect: {
-    //         destination: `/${session.role.toLowerCase()}/dashboard`,
-    //         permanent: false
-    //     }
-    // }
 
     return { props: {} }
-    // return { props: { data: JSON.parse(JSON.stringify(data)) } }
 
 }
 
-const pr = {
-    "id": "clbxcin8d0001cqj0i2lw6cld",
-    "title": "1974 Fender Stratocaster, Sunburst",
-    "vendor": {
-        "id": "clbjqz7kk0003cqns571g7ggc",
-        "userId": "clbjqz7k40000cqnsntrpxsft",
-        "user": {
-            "image": null,
-            "active": true,
-            "trial": true,
-            "pro": false,
-            "packageType": "BASIC"
-        }
-    }
-}
 
 const Products: NextPage = () => {
 
@@ -136,7 +76,7 @@ const Products: NextPage = () => {
                         </div>)}
                     </div> */}
 
-                    {products && products?.length > 0 ?  <ProductList prod={products} refetch={refetchProducts} /> : null}
+                    {products && products?.length > 0 ? <ProductList prod={products} refetch={refetchProducts} /> : null}
 
                 </section>
 

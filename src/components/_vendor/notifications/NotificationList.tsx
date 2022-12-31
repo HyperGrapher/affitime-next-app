@@ -2,25 +2,21 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type Link as LinkEntity, type Vendor, type Partner, type Product } from "@prisma/client";
+import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
 import React from "react";
 import { trpc } from '../../../utils/trpc';
-import NLink from 'next/link';
 import { useState, useEffect } from 'react';
 import styled from '@emotion/styled'
 import Image from "next/image";
 import profileImg from '../../assets/profile.webp'
 import NotificationItem from "./NotificationItem";
-// import LinkListHeader from "./LinkListHeader";
 import Button from "@mui/material/Button";
 import { notifyError, notifySuccessBR, notifySuccessTC } from "../../../utils/notifications";
 import ModalContainer from "../../modals/ModalContainer";
 import WarnDialog from "../../modals/WarnDialog";
 import IconButton from "../../buttons/IconButton";
 import ConfirmDialog from "../../modals/ConfirmDialog";
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
-
+// import LinkListHeader from "./LinkListHeader";
 
 type Props = {
   prod: (LinkEntity & { partner: Partner; product: Product; })[] | undefined
@@ -32,6 +28,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
   const [confirmModal, setConfirmModal] = useState(false)
   const [linkId, setLinkId] = useState('')
 
+  // TODO: move to notifications route
   const update = trpc.link.updateLinkStatusByVendor.useMutation()
 
   const handleAction = async (confirmed: boolean) => {
@@ -39,10 +36,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
     update.mutate({ id: linkId, isConfirmed: confirmed }, {
 
-      onSuccess(data, variables, context) {
-        console.log(data);
-      },
-      onError(error, variables, context) {
+      onError(error) {
         console.log(error);
         notifyError("Bir hata olustu")
 

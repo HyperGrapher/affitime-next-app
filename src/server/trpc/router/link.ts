@@ -1,7 +1,7 @@
-import { UserRoles } from "./../../../interface/auth.interface";
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { UserRoles } from "./../../../interface/auth.interface";
 import { TRPCError } from "@trpc/server";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -107,24 +107,23 @@ export const linkRouter = router({
             message: "Vendor not found",
           });
 
-        const prevLink = await ctx.prisma.link.findFirst({
+        const hasPrevLink = await ctx.prisma.link.findFirst({
           where: { partner_id: partnerId, product_id: productId },
         });
 
-        if (prevLink)
+        if (hasPrevLink)
           throw new TRPCError({
             code: "BAD_REQUEST",
             message: "Ürün için daha önce link oluşturulmuş!",
           });
 
-        let hashUrl = crypto.randomBytes(6).toString("base64url").toLowerCase();
+        let randUrl = crypto.randomBytes(6).toString("base64url"); 
 
-        const urlExist = await ctx.prisma.link.findFirst({
-          where: { url: hashUrl },
+        const urlExists = await ctx.prisma.link.findFirst({
+          where: { url: randUrl },
         });
 
-        if (urlExist)
-          hashUrl = crypto.randomBytes(6).toString("base64url").toLowerCase();
+        if (urlExists) randUrl = crypto.randomBytes(6).toString("base64url");
 
         const link = await ctx.prisma.link.create({
           data: {
@@ -135,9 +134,9 @@ export const linkRouter = router({
             vendor_user_id: vendor.userId,
             active: null,
             vendor_notified: false,
-            partner_notified: false, // changes after vendor confirmation
+            partner_notified: false,
             confirmed: null,
-            url: hashUrl,
+            url: randUrl,
           },
         });
 
