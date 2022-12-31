@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
 import { InferGetServerSidePropsType, type NextPage } from "next";
@@ -61,6 +62,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             product: {
                 select: {
                     image: true,
+                    product_url: true,
                     desc: true,
                     title: true,
                     cookieLife: true,
@@ -107,22 +109,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         props: {
             url,
             query,
+            product_url: link.product.product_url,
             image: link.product.image,
             desc: link.product.desc,
             title: link.product.title,
-            valid: !!!session
+            valid: !!!session // ! check 
         }
     }
 
 }
 
 
-const AffiProduct: NextPage = ({ url, image, desc, title, valid, query }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_url }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [done, setDone] = useState(false)
 
     useEffect(() => {
         if (done) console.log('DONE, Navigate');
+
+        window.location.href = product_url;
 
     }, [done])
 

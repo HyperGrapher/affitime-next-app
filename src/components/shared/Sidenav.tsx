@@ -16,6 +16,23 @@ const Sidenav = () => {
     const { asPath } = useRouter();
     const { data: session } = useSession();
     const unreadNotifications = useNotificationStore(store => store.unread)
+    const { pathname } = useRouter()
+
+
+    const pathsToExlude = [
+        '/affi/'
+    ]
+    for (const excluded of pathsToExlude) {
+
+        // asPath:"/affi/uvxl8ahz"
+        // pathname:"/affi/[url]"
+
+        console.log({ asPath, pathname });
+
+
+        if (pathname.startsWith(excluded)) return null
+
+    }
 
 
     if (!session) return null
@@ -160,7 +177,7 @@ const Sidenav = () => {
                                 {unreadNotifications > 0 && <span
                                     className='scale-75 flex items-center justify-center font-medium text-center  py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='text-white text-xs'> {unreadNotifications}</p>
+                                    <p className='text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
@@ -330,7 +347,7 @@ const Sidenav = () => {
                                 {unreadNotifications > 0 && <span
                                     className=' scale-75 flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
                                 >
-                                   <p className='text-white text-xs'> {unreadNotifications}</p>
+                                    <p className='text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>

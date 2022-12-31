@@ -109,21 +109,7 @@ const Dashboard: NextPage = () => {
                 <meta name="description" content="Affiliate uygulamasi" />
                 <link rel="icon" href="/favicon.ico" />
             </Head>
-            <main className="mx-auto container min-h-screen">
 
-                <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-                    <h1 className="text-2xl font-extrabold tracking-tight text-slate-700 sm:text-[2rem]">
-                        {(sessionStatus === 'loading') ? "Loading" : secretMsg}
-                    </h1>
-
-                    <div className='mt-6 text-slate-500'>
-                        Role: {sessionData?.role}
-                        <br />
-                        Profil ID: {sessionData?.partnerId}
-                    </div>
-                    <Link className="underline text-blue-500" href={'/'}>Home</Link>
-                </div>
-            </main>
         </div>
     )
 }

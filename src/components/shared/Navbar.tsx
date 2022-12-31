@@ -17,7 +17,7 @@ import { AppRoutes } from '../../config/appRoutes'
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
 
 const pathsToExlude = [
-  '/no-navbar'
+  '/affi/'
 ]
 
 const Navbar: React.FC = () => {
@@ -29,9 +29,11 @@ const Navbar: React.FC = () => {
     signOut({ redirect: true, callbackUrl: '/' })
   }
 
-  if (pathsToExlude.includes(pathname)) return null
+  // if (pathsToExlude.includes(pathname)) return null
 
   for (const excluded of pathsToExlude) {
+    // asPath:"/affi/uvxl8ahz"
+    // pathname:"/affi/[url]"
 
     if (pathname.startsWith(excluded)) return null
 

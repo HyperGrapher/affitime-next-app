@@ -45,8 +45,7 @@ const Notifications: NextPage = () => {
                             </small>)
                             :
                             (<small>
-                                Okunmamış bildirim bulunmuyor
-                            </small>)}
+                                Bildiriminiz bulunmuyor                            </small>)}
                     </div>
 
                 </div>
