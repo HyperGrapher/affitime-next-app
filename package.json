@@ -11,11 +11,11 @@
     "mig": "npx prisma migrate dev",
     "gen": "npx prisma generate",
     "db:reset": "npx prisma migrate reset",
-    "db:seed-product": "npx prisma db seed",
-    "db:seed-all": "npx prisma db seed_all"
+    "db:seed": "npx prisma db seed",
+    "db:seed-all": "npx prisma db seed"
   },
   "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seed.ts",
+    "seed": "node --loader ts-node/esm prisma/seed-all.ts",
     "seed_all": "node --loader ts-node/esm prisma/seed-all.ts"
   },
   "dependencies": {

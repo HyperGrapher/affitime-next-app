@@ -1,8 +1,16 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
-import { vendors, partners } from "./user-list";
-import { CommissionType } from "@prisma/client";
+import { vendors, partners, cats } from "./user-list";
+import { CommissionType, Category } from "@prisma/client";
+
+const createCategories = async () => {
+  for (const v of cats) {
+    await prisma.category.create({
+      data: { name: v.name },
+    });
+  }
+};
 
 const createVendorUsers = async () => {
   for (const v of vendors) {
@@ -49,8 +57,13 @@ const getVendorUser = async () => {
   });
 };
 
+const getACat = async () => {
+  return await prisma.category.findFirst();
+};
+
 const seedProducts = async () => {
   const u = await getVendorUser();
+  const c = await getACat();
 
   const vendor_user_id = u?.id ?? "abc";
   const vendor_profile_id = u?.vendor_id ?? "abc";
@@ -169,14 +182,22 @@ const seedProducts = async () => {
     },
   ];
 
-  const productCreation = await prisma.product.createMany({
-    data: prods,
-  });
+  if (!c) return;
 
-  console.log({ productCreation });
+  for (const p of prods) {
+    await prisma.product.create({
+      data: { ...p, categoryId: c.id },
+    });
+  }
+
+  // const productCreation = await prisma.product.createMany({
+  //   data: prods,
+  // });
+
+  // console.log({ productCreation });
 };
 
-createPartnerUsers()
+createCategories()
   .catch((e) => {
     console.log(e);
     process.exit(1);
@@ -184,7 +205,7 @@ createPartnerUsers()
   .finally(() => {
     prisma.$disconnect();
 
-    createVendorUsers()
+    createPartnerUsers()
       .catch((e) => {
         console.log(e);
         process.exit(1);
@@ -192,13 +213,22 @@ createPartnerUsers()
       .finally(() => {
         prisma.$disconnect();
 
-        seedProducts()
+        createVendorUsers()
           .catch((e) => {
             console.log(e);
             process.exit(1);
           })
           .finally(() => {
             prisma.$disconnect();
+
+            seedProducts()
+              .catch((e) => {
+                console.log(e);
+                process.exit(1);
+              })
+              .finally(() => {
+                prisma.$disconnect();
+              });
           });
       });
   });

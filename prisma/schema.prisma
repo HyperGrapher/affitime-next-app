@@ -150,28 +150,53 @@ enum CommissionType {
   PERC
 }
 
+model Tag {
+  id       Int              @id @default(autoincrement())
+  name     String
+  products TagsOnProducts[]
+}
+
+model Category {
+  id      Int       @id @default(autoincrement())
+  name    String
+  Product Product[]
+  Link    Link[]
+}
+
+model TagsOnProducts {
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  tagId     Int
+
+  @@id([productId, tagId])
+}
+
 model Product {
-  id                String         @id @default(cuid())
-  title             String?        @db.Text
-  desc              String?        @db.Text
-  fullDesc          String?        @db.Text
+  id                String           @id @default(cuid())
+  title             String?          @db.Text
+  desc              String?          @db.Text
+  fullDesc          String?          @db.Text
   price             Float?
-  cookieLife        Int            @default(60)
+  cookieLife        Int              @default(60)
   perClick          Float?
-  perClickType      CommissionType @default(CASH)
+  perClickType      CommissionType   @default(CASH)
   perSale           Float?
-  perSaleType       CommissionType @default(CASH)
-  vendor            Vendor         @relation(fields: [vendor_profile_id], references: [id])
+  perSaleType       CommissionType   @default(CASH)
+  vendor            Vendor           @relation(fields: [vendor_profile_id], references: [id])
   vendor_profile_id String
   vendor_user_id    String?
-  product_url       String?        @db.Text
-  image             String?        @db.Text
-  links             Link[]         @relation("ProductLinks")
-  published         Boolean?       @default(true)
-  active            Boolean?       @default(true)
+  product_url       String?          @db.Text
+  image             String?          @db.Text
+  links             Link[]           @relation("ProductLinks")
+  tags              TagsOnProducts[]
+  category          Category         @relation(fields: [categoryId], references: [id])
+  categoryId        Int
+  published         Boolean?         @default(true)
+  active            Boolean?         @default(true)
   extra_info        Json?
-  createdAt         DateTime       @default(now())
-  updatedAt         DateTime       @updatedAt
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
 
   @@index([id, vendor_profile_id])
 }
@@ -206,6 +231,8 @@ model Link {
   vendor            Vendor   @relation(fields: [vendor_id], references: [id])
   vendor_id         String
   vendor_user_id    String?
+  category          Category @relation(fields: [categoryId], references: [id])
+  categoryId        Int
   url               String   @unique()
   platform          String?
   visits            Visit[]  @relation("LinkVisits")

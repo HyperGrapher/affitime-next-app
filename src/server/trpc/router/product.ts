@@ -17,7 +17,7 @@ export const productRouter = router({
         where: {
           id,
         },
-        include: {vendor: true}
+        include: { vendor: true },
       });
     }),
 
@@ -126,6 +126,18 @@ export const productRouter = router({
             product_url: input.product_url,
             vendor_user_id: vendor.userId,
             vendor_profile_id: vendor.id,
+            categoryId: 1, // TODO: Add dropdown to the create page
+            // tags: {
+            //   create: [
+            //     {
+            //       tag: {
+            //         create: {
+            //           name: "test-1",
+            //         },
+            //       },
+            //     },
+            //   ],
+            // },
           },
           include: { vendor: true },
         });

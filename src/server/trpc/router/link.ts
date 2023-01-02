@@ -75,7 +75,7 @@ export const linkRouter = router({
 
         const product = await ctx.prisma.product.findUnique({
           where: { id: productId },
-          include: { vendor: true },
+          include: { vendor: true, category: true },
         });
 
         if (!product)
@@ -124,6 +124,7 @@ export const linkRouter = router({
             partner_notified: false,
             confirmed: null,
             url: randUrl,
+            categoryId: product.categoryId,
           },
         });
 

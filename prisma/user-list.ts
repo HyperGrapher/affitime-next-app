@@ -1,4 +1,39 @@
-import { PackageType, Role, CommissionType } from "@prisma/client";
+import { PackageType, Role } from "@prisma/client";
+
+
+export const cats = [
+  {
+    name: "Elektronik"
+  },
+  {
+    name: "Giyim & Aksesuar"
+  },
+  {
+    name: "Müzik aletleri"
+  },
+  {
+    name: "Cep Telefonu"
+  },
+  {
+    name: "Elektrikli Ev Aletleri"
+  },
+  {
+    name: "Anne & Bebek"
+  },
+  {
+    name: "Hobi & Oyuncak"
+  },
+  {
+    name: "Kişisel Bakım & Kozmetik"
+  },
+  {
+    name: "Oyun & Konsol"
+  },
+  {
+    name: "Takı, Mücevher & Altın"
+  },
+]
+
 
 export const partners = [
   {

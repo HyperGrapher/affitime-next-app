@@ -75,7 +75,8 @@ const validationSchema = z.object({
     perSaleType: z.string().optional().nullable()
 }).required();
 
-
+// Tags: 
+// ! https://www.prisma.io/docs/concepts/components/prisma-schema/relations/many-to-many-relations#querying-an-explicit-many-to-many
 
 const ProductCreate: NextPage = () => {
 
