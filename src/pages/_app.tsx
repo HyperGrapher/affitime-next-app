@@ -1,20 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { type AppType } from "next/app";
 import { type Session } from "next-auth";
 import { SessionProvider } from "next-auth/react";
-
-import { trpc } from "../utils/trpc";
-
-import "../styles/globals.css";
-import Sidenav from "../components/shared/Sidenav";
-import SideMenu from "../components/shared/sidemenu/SideMenu";
-import TopBarProgress from "react-topbar-progress-indicator";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import Navbar from "../components/shared/Navbar";
+import { type AppType } from "next/app";
 import { Toaster } from 'react-hot-toast';
+import TopBarProgress from "react-topbar-progress-indicator";
 import * as timeago from 'timeago.js';
 import tr from 'timeago.js/lib/lang/tr';
-import classNames from "../utils/classnames";
+import Navbar from "../components/shared/Navbar";
+import Sidenav from "../components/shared/Sidenav";
+import "../styles/globals.css";
+import { trpc } from "../utils/trpc";
 
 timeago.register('tr', tr);
 
@@ -31,37 +26,14 @@ const MyApp: AppType<{ session: Session | null }> = ({
     shadowBlur: 5
   });
 
-  const theme = createTheme({
-    palette: {
-      primary: {
-        light: '#be75e8',
-        main: '#6667AB', // The hex code for Very Peri #6667AB
-        dark: '#4f0084',
-        contrastText: '#fff',
-      },
-      secondary: {
-        light: '#ff7961',
-        main: '#f44336',
-        dark: '#ba000d',
-        contrastText: '#000',
-      },
-      // Paper propschages DrawerMenu backgroud
-      // background: { 
-      //   paper: '#fff',
-      //   default: "#fff"
-      // }
-    },
-  });
 
-  // sidenav icin iki yerde degisiklik gerekli
-  // Ilki burasi digeri sidebar
+  // The hex code for Very Peri #6667AB
   return (
     <SessionProvider session={session}>
-      {/* <ThemeProvider theme={theme}> */}
       <Sidenav />
       <Navbar />
       {/* Session cannot be retrived here */}
-      <div className={"min-h-screen"}>
+      <div className={"min-h-screen debug-screens"}>
         <Component {...pageProps} />
         <Toaster containerStyle={{
           top: 60,
@@ -70,7 +42,6 @@ const MyApp: AppType<{ session: Session | null }> = ({
           right: 20,
         }} />
       </div>
-      {/* </ThemeProvider> */}
     </SessionProvider >
   );
 };

@@ -21,5 +21,9 @@ module.exports = {
     //   '0': '0px',
     // }
   },
-  plugins: [require("@tailwindcss/forms"), require("@tailwindcss/line-clamp")],
+  plugins: [
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/line-clamp"),
+    require("tailwindcss-debug-screens"),
+  ],
 };
