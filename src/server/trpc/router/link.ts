@@ -1,7 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { UserRoles } from "./../../../interface/auth.interface";
 import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure } from "../trpc";
+import {
+  router,
+  protectedProcedure,
+  partnerProcedure,
+  vendorProcedure,
+} from "../trpc";
 import { z } from "zod";
 import crypto from "crypto";
 
@@ -21,10 +25,8 @@ export const linkRouter = router({
       });
     }),
 
-  getAllLinksForPartner: protectedProcedure.query(({ ctx, input }) => {
-    const { role, partnerId } = ctx.session;
-
-    if (!partnerId) throw new TRPCError({ code: "NOT_FOUND" });
+  getAllLinksForPartner: partnerProcedure.query(({ ctx, input }) => {
+    const { partnerId } = ctx.session;
 
     return ctx.prisma.link.findMany({
       where: {
@@ -35,10 +37,8 @@ export const linkRouter = router({
     });
   }),
 
-  getAllLinksForVendor: protectedProcedure.query(({ ctx, input }) => {
-    const { role, vendorId } = ctx.session;
-
-    if (!vendorId) throw new TRPCError({ code: "NOT_FOUND" });
+  getAllLinksForVendor: vendorProcedure.query(({ ctx, input }) => {
+    const { vendorId } = ctx.session;
 
     return ctx.prisma.link.findMany({
       where: {
@@ -48,29 +48,16 @@ export const linkRouter = router({
     });
   }),
 
-  createLink: protectedProcedure
+  createLink: partnerProcedure
     .input(
       z.object({
         productId: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { role, partnerId } = ctx.session;
-      console.log({ vendorId: partnerId, role });
-
-      if (role !== UserRoles.PARTNER)
-        throw new TRPCError({
-          code: "FORBIDDEN",
-          message: "Permission denied!",
-        });
+      const { partnerId } = ctx.session;
 
       const { productId } = input;
-
-      if (!partnerId)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Partner ID not found!",
-        });
 
       if (!productId)
         throw new TRPCError({ code: "NOT_FOUND", message: "PID not found" });
@@ -117,7 +104,7 @@ export const linkRouter = router({
             message: "Ürün için daha önce link oluşturulmuş!",
           });
 
-        let randUrl = crypto.randomBytes(6).toString("base64url"); 
+        let randUrl = crypto.randomBytes(6).toString("base64url");
 
         const urlExists = await ctx.prisma.link.findFirst({
           where: { url: randUrl },
@@ -156,7 +143,7 @@ export const linkRouter = router({
       }
     }),
 
-  updateLinkStatusByVendor: protectedProcedure
+  updateLinkStatusByVendor: vendorProcedure
     .input(
       z.object({
         id: z.string(),
@@ -165,14 +152,6 @@ export const linkRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { id, isConfirmed } = input;
-
-      const { vendorId } = ctx.session;
-
-      if (!vendorId)
-        throw new TRPCError({
-          code: "BAD_REQUEST",
-          message: "Vendor not found",
-        });
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });

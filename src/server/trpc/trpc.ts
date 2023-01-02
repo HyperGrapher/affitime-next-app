@@ -63,7 +63,7 @@ const isVendor = t.middleware(({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: ctx.session.user, vendorId: ctx.session.vendorId },
     },
   });
 });
@@ -80,7 +80,7 @@ const isPartner = t.middleware(({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: { ...ctx.session, user: ctx.session.user, partnerId: ctx.session.partnerId },
     },
   });
 });
