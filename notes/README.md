@@ -24,7 +24,7 @@
 
 ## Visit
 
-- isUnique field, linke tiklayan customer'in ip ve cookiee'si check edilip true/false degeri aliyor.
+- `isUnique` field, linke tiklayan customer'in ip ve cookiee'si check edilip true/false degeri aliyor.
 - Visit id'leri yonlendirilen kullanicinin cookiee'sine partner id, tarih, unique, ip, vb ile beraber yazilir.
 - <b>paid field<b>: partner'in bu visit'ten bir kazanci varsa status'unu gosterir. Odeme yapilanlar daha sonra hesaplanmaz.
 - <b>dubious field<b> Partner ip'si ve/veya cookiee'si ile uyusuyor ise true degerini alir.
@@ -34,5 +34,5 @@
 
 - notified Boolean? is for notifications that when user read the notif turns into true
   nullable to check if an action taken previoously
-- confirmed Boolean? field is when vendor confirmed the link created by partner
+- confirmed Boolean? field is when `vendor` confirmed the link created by `partner`
   nullable to check if an action taken previoously

@@ -19,7 +19,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context)
 
     const url = context.params?.url as string
-    const query = context.query 
+    const query = context.query
 
     // This value is considered fresh for ten seconds (s-maxage=10).
     // If a request is repeated within the next 10 seconds, the previously
@@ -68,6 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     cookieLife: true,
                 }
             }
+            
 
         }
 
@@ -92,13 +93,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         return result
     }
 
+    const linkPartnerId = link.partner_id
+
     const linkUp = await prisma.link.update({
         where: {
             id: link.id
         },
         data: {
             count: session ? link.count : link.count + 1,
-            partnerVisitCount: session && session.role === UserRoles.PARTNER ? link.partnerVisitCount + 1 : link.partnerVisitCount,
+            partnerVisitCount: (session && session.partnerId === linkPartnerId)
+                ? link.partnerVisitCount + 1
+                : link.partnerVisitCount,
         }
 
     });
@@ -127,12 +132,12 @@ const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_
     useEffect(() => {
         if (done) console.log('DONE, Navigate');
 
-        window.location.href = product_url;
+        // window.location.href = product_url;
 
     }, [done])
 
     return (
-        <div className="auth-container">
+        <div className="">
             <Head>
                 <title>{title}</title>
                 <link rel="icon" href={" // afffitime ico //"} />
@@ -164,28 +169,25 @@ const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_
 
             </Head>
 
-            <h1 className="text-sm">
-                {url}
-            </h1>
+            <section className="text-gray-600 body-font">
+                <div className="container mx-auto flex px-5 py-24 items-center justify-center flex-col">
+                    <img className="lg:w-2/6 md:w-3/6 w-5/6 mb-10 object-cover object-center rounded" alt="hero" src={image} />
+                    <div className="text-center lg:w-2/3 w-full">
+                        <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-gray-900">{title}</h1>
+                        <p className="mb-8 leading-relaxed">{desc}</p>
 
-            <div className="container">
-
-                <h1>{title}</h1>
-                <summary>description: {desc}</summary>
-                <p>image: {image}</p>
-
-                {!valid && <div className="">
-                    <h2 className="text-red-500">Kayitli kullanici </h2>
-                </div>}
-
-                <div className="mt-4">
-                    {JSON.stringify(query, null, 4)}
+                        {/* <div className="flex justify-center">
+                            <button className="inline-flex text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Sayfa</button>
+                            <button className="ml-4 inline-flex text-gray-700 bg-gray-100 border-0 py-2 px-6 focus:outline-none hover:bg-gray-200 rounded text-lg">Button</button>
+                        </div> */}
+                    </div>
                 </div>
+            </section>
 
-            </div>
 
         </div>
     )
 }
 
 export default AffiProduct
+
