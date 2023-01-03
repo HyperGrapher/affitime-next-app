@@ -27,11 +27,17 @@ jobs:
       - name: Build the Project
         run: |
           touch .env.local
+          touch .env
           echo DATABASE_URL=file:./db.sqlite >> .env.local
+          echo DATABASE_URL=file:./db.sqlite >> .env
           echo NEXTAUTH_SECRET=test >> .env.local
+          echo NEXTAUTH_SECRET=test >> .env
           echo NEXTAUTH_URL=http://localhost:3000 >> .env.local
+          echo NEXTAUTH_URL=http://localhost:3000 >> .env
           echo BASE_URL=http://localhost:3000 >> .env.local
+          echo BASE_URL=http://localhost:3000 >> .env
           echo NODE_ENV=test >> .env.local
+          echo NODE_ENV=test >> .env
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
