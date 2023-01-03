@@ -22,6 +22,6 @@
       "module": "commonjs"
     }
   },
-  "include": ["scripts/**/*.ts", "scripts/**/*.js", "next-env.d.ts", "types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/components/buttons"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/components/buttons"],
+  "exclude": ["node_modules", "prisma/**/*.ts"]
 }
