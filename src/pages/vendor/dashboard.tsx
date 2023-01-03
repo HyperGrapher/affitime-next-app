@@ -112,6 +112,8 @@ const Dashboard: NextPage = () => {
             </Head>
             <main className="mx-auto container min-h-screen">
 
+                <h1>Dashboard</h1>
+
                 <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
                     <h1 className="text-2xl font-extrabold tracking-tight text-slate-700 sm:text-[2rem]">
                         {(sessionStatus === 'loading') ? "Loading" : secretMsg}
