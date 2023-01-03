@@ -8,8 +8,6 @@ on:
 
 jobs:
   buildAndTest:
-    env:
-      NODE_ENV: development
     name: Build and test
     runs-on: ${{matrix.os}}
 
@@ -21,7 +19,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Use Node.js ${{ matrix.node-version }}, NODE_ENV ${{matrix.NODE_ENV}} or {matrix.env}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
