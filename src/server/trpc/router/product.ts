@@ -21,6 +21,14 @@ export const productRouter = router({
       });
     }),
 
+
+  getProductCategories: publicProcedure
+    .query(({ ctx,  }) => {
+
+      return ctx.prisma.category.findMany({});
+    }),
+
+  
   getAllProductsBySessionVendor: protectedProcedure.query(({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -88,8 +96,7 @@ export const productRouter = router({
         perClick: z.number(),
         perClickType: z.string(),
         perSaleType: z.string(),
-        // perClickType: z.enum([CommissionType.CASH, CommissionType.PERC]).optional(),
-        // perSaleType: z.enum([CommissionType.CASH, CommissionType.PERC]).optional(),
+        category: z.number(),
       })
     )
     .mutation(async ({ ctx, input }) => {
@@ -126,7 +133,7 @@ export const productRouter = router({
             product_url: input.product_url,
             vendor_user_id: vendor.userId,
             vendor_profile_id: vendor.id,
-            categoryId: 1, // TODO: Add dropdown to the create page
+            categoryId: input.category
             // tags: {
             //   create: [
             //     {

@@ -205,8 +205,8 @@ model Visit {
   id           String   @id @default(cuid())
   link         Link     @relation("LinkVisits", fields: [link_id], references: [id])
   link_id      String
-  partner_id   String?
-  vendor_id    String?
+  partner_id   String? // maybe used for total calcs
+  vendor_id    String? // maybe used for total calcs
   visiterIp    String?
   ipInfo       Json?
   country      String   @default("tr")
@@ -219,6 +219,9 @@ model Visit {
   partnerVisit Boolean? //
   paid         Boolean?
   createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([id, link_id])
 }
 
 model Link {
@@ -247,5 +250,21 @@ model Link {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  @@index([id, vendor_id, partner_id, product_id])
+  @@index([id, vendor_id, partner_id, product_id, url])
+}
+
+model Visiter {
+  id         Int      @id @default(autoincrement())
+  url        String
+  ip         String
+  country    String
+  isUser     Boolean
+  isVpn      Boolean
+  user_id    String?
+  partner_id String?
+  vendor_id  String?
+  ipInfo     Json?
+  createdAt  DateTime @default(now())
+
+  @@index([id, url, ip])
 }

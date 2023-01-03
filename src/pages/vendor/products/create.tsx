@@ -4,7 +4,7 @@ import { trpc } from '../../../utils/trpc';
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useRouter } from 'next/router'
 import TopBarProgress from 'react-topbar-progress-indicator';
@@ -16,14 +16,16 @@ import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import classNames from '../../../utils/classnames';
 import { HiPlus, HiPencil } from 'react-icons/hi'
 import { FormFieldError, FormFieldWrapper } from '../../../components/error-messages/FormError';
-import { CommissionType } from "@prisma/client";
+import { CommissionType, type Category } from "@prisma/client";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod'
+import { number, z } from 'zod'
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
 import { notifyError, notifySuccessTC, notifySuccessBR } from '../../../utils/notifications';
+import ACComboBox from '../../../components/combobox/ComboBox';
+import CategoriesCombo from '../../../components/_vendor/products/CategoriesCombo';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -58,6 +60,7 @@ interface IProductFormData {
     perClick: number;
     perClickType: string;
     perSaleType: string;
+    category: number;
 }
 
 // https://blog.logrocket.com/schema-validation-typescript-zod/
@@ -72,7 +75,8 @@ const validationSchema = z.object({
     perSale: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
     perClick: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
     perClickType: z.string().optional().nullable(),
-    perSaleType: z.string().optional().nullable()
+    perSaleType: z.string().optional().nullable(),
+    // category: z.number()
 }).required();
 
 // Tags: 
@@ -87,12 +91,23 @@ const ProductCreate: NextPage = () => {
     const id = query.pid as string
     const edit = query.edit === "true"
 
+    const [selectedCat, setSelectedCat] = useState({ id: 0, name: "" })
+    const [err, setErr] = useState(false)
+
+    useEffect(() => {
+
+        if (selectedCat.name !== "") setErr(false)
+
+    }, [selectedCat])
+
+
     const { register, handleSubmit, setValue, formState: { errors } } = useForm<IProductFormData>({
         resolver: zodResolver(validationSchema),
         reValidateMode: 'onBlur',
         mode: 'onBlur',
     });
 
+    const { data: cats } = trpc.product.getProductCategories.useQuery()
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     trpc.product.getProductById.useQuery({ id }, {
@@ -105,26 +120,36 @@ const ProductCreate: NextPage = () => {
             setValue("image", data?.image ?? "")
             setValue("perClick", data?.perClick ?? 0)
             setValue("perSale", data?.perSale ?? 0)
+            setValue("category", data?.categoryId ?? 0)
+
+
+            const editCat = cats?.filter(c => c.id === data?.categoryId)[0]!
+            setSelectedCat(editCat)
 
             const PCT = data?.perClickType as CommissionType
             const PST = data?.perSaleType as CommissionType
             setPerClickType(PCT)
             setPerSaleType(PST)
 
-        },
-        onSettled() {
-            console.log('onSettled');
-
-        },
+        }
     })
 
 
 
 
     const onSubmit: SubmitHandler<IProductFormData> = async (data) => {
+
         setBusy(true)
         data.perClickType = perClickType // fixes a bug where data is causing field null error
         data.perSaleType = perSaleType // fixes a bug where data is causing field null error
+
+        if (selectedCat.id === 0) {
+            setErr(true)
+            setBusy(false)
+            return
+        }
+
+        data.category = selectedCat.id
 
         if (edit) {
 
@@ -133,32 +158,24 @@ const ProductCreate: NextPage = () => {
 
             updateProduct.mutate(data, {
                 onSuccess: () => {
-                    console.log(data);
-                    // notifySuccess("Düzenleme başarılı!")
                     notifySuccessTC("Düzenleme başarılı!", true)
-
-                    setBusy(false)
                     back()
-
                 },
-                onError(error, variables, context) {
+                onError(error) {
                     console.log(error)
                     notifyError('Hata. Kampanya ürünü düzenlenemedi!')
                     setBusy(false)
-
                 },
             })
 
         } else {
 
             createProduct.mutate(data, {
-                onSuccess(data, variables, context) {
-                    console.log(data);
+                onSuccess() {
                     notifySuccessBR("Kampanya ürünü eklendi!")
-                    setBusy(false)
                     back()
                 },
-                onError(error, variables, context) {
+                onError(error) {
                     console.log(error)
                     setBusy(false)
                     notifyError('Hata. Kampanya ürünü eklenemedi!')
@@ -286,6 +303,34 @@ const ProductCreate: NextPage = () => {
 
 
                             </FormFieldWrapper>
+
+
+                        </section>
+
+                        <section className={classNames(
+                            "bg-slate-100 hover:bg-slate-50",
+                            "w-full rounded-md  py-2 px-2   ",
+                            "shadow hover:shadow-md shadow-slate-300 transition-all",
+                            "border hover:border-black/5 space-y-2 pb-8 "
+
+                        )}>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="title">
+                                Kategori seçin
+                            </label>
+
+
+                            {cats && <CategoriesCombo
+                                cats={cats!}
+                                selected={selectedCat}
+                                setSelected={setSelectedCat}
+                                err={err}
+                            />}
 
 
                         </section>
@@ -583,6 +628,13 @@ const ProductCreate: NextPage = () => {
                         {/* Submit */}
                         <button
                             disabled={busy}
+                            onClick={() => {
+                                // console.log(selectedCat);
+                                if (selectedCat.id === 0) {
+                                    setErr(true)
+                                }
+
+                            }}
                             type='submit'
                             className={classNames(
                                 "bg-violet-600 hover:bg-violet-700 transition-colors",

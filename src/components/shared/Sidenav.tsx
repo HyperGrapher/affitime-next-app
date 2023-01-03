@@ -20,15 +20,10 @@ const Sidenav = () => {
 
 
     const pathsToExlude = [
-        '/affi/'
+        '/affi/',
+        '/redirect/',
     ]
     for (const excluded of pathsToExlude) {
-
-        // asPath:"/affi/uvxl8ahz"
-        // pathname:"/affi/[url]"
-
-        console.log({ asPath, pathname });
-
 
         if (pathname.startsWith(excluded)) return null
 

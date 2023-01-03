@@ -17,7 +17,8 @@ import { AppRoutes } from '../../config/appRoutes'
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
 
 const pathsToExlude = [
-  '/affi/'
+  '/affi/',
+  '/redirect/',
 ]
 
 const Navbar: React.FC = () => {

@@ -10,6 +10,7 @@ import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
+import { AppRoutes } from "../../../config/appRoutes";
 // import { prisma } from "../../../server/db/client";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -71,7 +72,7 @@ const Products: NextPage = () => {
 
                     <LinkButton
                         title={"Ürün Ekle"}
-                        href={'/products/create'}
+                        href={AppRoutes.VENDOR_CREATE_PRODUCT}
                         icon={<HiPlus color="white" size="16px" />}
                         twClasses="ml-auto w-38" />
 

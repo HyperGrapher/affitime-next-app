@@ -53,7 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             partner: true,
             count: true,
             declined: true,
-            visits: true,
+            visits: false,
             active: true,
             platform: true,
             repeated: true,
@@ -81,32 +81,38 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    const getPartnerVisitCount = () => {
-        console.log("partId", link);
-        let result
+    // const getPartnerVisitCount = () => {
+    //     console.log("partId", link);
+    //     let result
 
-        if (session && session.role == UserRoles.PARTNER) {
-            result = link.partnerVisitCount + 1
+    //     if (session && session.role == UserRoles.PARTNER) {
+    //         result = link.partnerVisitCount + 1
 
-        }
+    //     }
 
-        return result
-    }
+    //     return result
+    // }
 
     const linkPartnerId = link.partner_id
 
-    const linkUp = await prisma.link.update({
-        where: {
-            id: link.id
-        },
-        data: {
-            count: session ? link.count : link.count + 1,
-            partnerVisitCount: (session && session.partnerId === linkPartnerId)
-                ? link.partnerVisitCount + 1
-                : link.partnerVisitCount,
-        }
+    // const linkUp = await prisma.link.update({
+    //     where: {
+    //         id: link.id
+    //     },
+    //     data: {
+    //         count: session ? link.count : link.count + 1,
+    //         partnerVisitCount: (session && session.partnerId === linkPartnerId)
+    //             ? link.partnerVisitCount + 1
+    //             : link.partnerVisitCount,
+    //     }
 
-    });
+    // });
+
+    // const visit = await prisma.visit.create({
+    //     data: {
+    //         link_id: link.id
+    //     }
+    // })
 
     prisma.$disconnect()
 
