@@ -2,9 +2,9 @@ name: Test CI
 
 on:
   push:
-    branches: ["master"]
+    branches: ["staging"]
   pull_request:
-    branches: "*"
+    branches: ["staging"]
 
 jobs:
   build:
