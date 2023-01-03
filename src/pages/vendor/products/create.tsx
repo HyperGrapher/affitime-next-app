@@ -123,7 +123,7 @@ const ProductCreate: NextPage = () => {
             setValue("category", data?.categoryId ?? 0)
 
 
-            const editCat = cats?.filter(c => c.id === data?.categoryId)[0]!
+            const editCat = cats.filter(c => c.id === data?.categoryId)[0]!
             setSelectedCat(editCat)
 
             const PCT = data?.perClickType as CommissionType
