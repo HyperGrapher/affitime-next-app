@@ -8,6 +8,8 @@ on:
 
 jobs:
   buildAndTest:
+    env:
+      NODE_ENV: development
     name: Build and test
     runs-on: ${{matrix.os}}
 
