@@ -24,6 +24,14 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
+      - name: Build the Project
+        run: |
+          touch .env.local
+          echo DATABASE_URL=file:./db.sqlite >> .env.local
+          echo NEXTAUTH_SECRET=test >> .env.local
+          echo NEXTAUTH_URL=http://localhost:3000 >> .env.local
+          echo BASE_URL=http://localhost:3000 >> .env.local
+          echo NODE_ENV=test >> .env.local
       - run: npm ci
       - run: npm run build --if-present
       - run: npm test
