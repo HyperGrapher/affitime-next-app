@@ -1,30 +1,30 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { HiBookOpen, HiX } from 'react-icons/hi'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
+import Typography from '@mui/material/Typography'
 import { signOut, useSession } from 'next-auth/react'
-import { Fragment, useEffect } from 'react'
 import Image from 'next/image'
-import classNames from '../../utils/classnames'
-import logo from '../../assets/tw_logo.svg'
-import profileImg from '../../assets/profile.webp'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { UserRoles } from '../../interface/auth.interface'
-import Typography from '@mui/material/Typography'
+import { Fragment } from 'react'
+import profileImg from '../../assets/profile.webp'
+import logo from '../../assets/tw_logo.svg'
 import { AppRoutes } from '../../config/appRoutes'
+import { UserRoles } from '../../interface/auth.interface'
+import classNames from '../../utils/classnames'
 
 // https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
 
 const pathsToExlude = [
   '/affi/',
-  '/redirect/',
+  '/r/',
 ]
 
 const Navbar: React.FC = () => {
 
   const { data: sessionData } = useSession()
   const { pathname } = useRouter()
+  let sh = true
+  if (pathname === '/') sh = false
 
   const logUserOut = () => {
     signOut({ redirect: true, callbackUrl: '/' })
@@ -75,7 +75,7 @@ const Navbar: React.FC = () => {
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
                 {/* dashboard dropdown */}
                 <p className='text-white text-xs'>{sessionData?.email}</p>
-                <Menu as='div' className='relative ml-3'>
+                {sh && <Menu as='div' className='relative ml-3'>
                   <div>
                     <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
                       <span className='sr-only'>Open user menu</span>
@@ -182,7 +182,7 @@ const Navbar: React.FC = () => {
 
                     </Menu.Items>
                   </Transition>
-                </Menu>
+                </Menu>}
 
               </div>
             </div>

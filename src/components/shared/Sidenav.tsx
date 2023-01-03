@@ -1,15 +1,14 @@
 /* eslint-disable @next/next/no-img-element */
+import { useSession } from "next-auth/react"
 import Image from 'next/image'
-import React from 'react'
-import logo from '../../assets/tw_logo.svg'
-import { HiHome, HiChartPie, HiShoppingBag, HiMail, HiCog, HiLink } from 'react-icons/hi'
 import Link from 'next/link'
-import { useRouter } from "next/router";
+import { useRouter } from "next/router"
+import { HiChartPie, HiCog, HiHome, HiLink, HiMail, HiShoppingBag } from 'react-icons/hi'
+import logo from '../../assets/tw_logo.svg'
 import { AppRoutes } from '../../config/appRoutes'
-import classNames from '../../utils/classnames'
-import { useSession } from "next-auth/react";
 import { UserRoles } from '../../interface/auth.interface'
 import useNotificationStore from '../../store/notifications.store'
+import classNames from '../../utils/classnames'
 
 const Sidenav = () => {
 
@@ -21,7 +20,7 @@ const Sidenav = () => {
 
     const pathsToExlude = [
         '/affi/',
-        '/redirect/',
+        '/r/',
     ]
     for (const excluded of pathsToExlude) {
 

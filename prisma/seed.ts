@@ -130,11 +130,11 @@ const seedProducts = async () => {
     },
   ];
 
-  const productCreation = await prisma.product.createMany({
-    data: prods,
-  });
+  // const productCreation = await prisma.product.createMany({
+  //   data: prods,
+  // });
 
-  console.log({ productCreation });
+  // console.log({ productCreation });
 };
 
 seedProducts()
