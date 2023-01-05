@@ -111,28 +111,30 @@ model VerificationToken {
 }
 
 model Vendor {
-  id        String    @id @default(cuid())
-  user      User      @relation(fields: [userId], references: [id])
-  userId    String    @unique
-  brand     String    @unique()
-  website   String    @unique()
-  products  Product[]
-  links     Link[]
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
+  id            String         @id @default(cuid())
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String         @unique
+  brand         String         @unique()
+  website       String         @unique()
+  products      Product[]
+  links         Link[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[]
 
   @@index([id, userId])
   @@map("user_vendor")
 }
 
 model Partner {
-  id        String   @id @default(cuid())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    String   @unique
-  username  String   @unique
-  links     Link[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String         @id @default(cuid())
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String         @unique
+  username      String         @unique
+  links         Link[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  notifications Notification[]
 
   @@index([id, userId])
   @@map("user_partner")
@@ -150,8 +152,8 @@ model Tag {
 }
 
 model Category {
-  id      Int       @id @default(autoincrement())
-  name    String
+  id       Int       @id @default(autoincrement())
+  name     String
   products Product[]
   links    Link[]
 }
@@ -246,7 +248,7 @@ model Link {
   @@index([id, vendor_id, partner_id, product_id, url])
 }
 
-model Visiter {
+model UserIps {
   id         Int      @id @default(autoincrement())
   url        String
   ip         String
@@ -260,4 +262,20 @@ model Visiter {
   createdAt  DateTime @default(now())
 
   @@index([id, url, ip])
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+
+  message    String
+  for        Role     @default(PARTNER)
+  read       Boolean  @default(false)
+  
+  partner    Partner  @relation(fields: [partner_id], references: [id])
+  partner_id String
+  vendor     Vendor   @relation(fields: [vendor_id], references: [id])
+  vendor_id  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  // @@index([id, url, ip])
 }

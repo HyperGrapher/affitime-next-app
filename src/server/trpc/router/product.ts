@@ -21,14 +21,10 @@ export const productRouter = router({
       });
     }),
 
+  getProductCategories: publicProcedure.query(({ ctx }) => {
+    return ctx.prisma.category.findMany({});
+  }),
 
-  getProductCategories: publicProcedure
-    .query(({ ctx,  }) => {
-
-      return ctx.prisma.category.findMany({});
-    }),
-
-  
   getAllProductsBySessionVendor: protectedProcedure.query(({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -133,7 +129,7 @@ export const productRouter = router({
             product_url: input.product_url,
             vendor_user_id: vendor.userId,
             vendor_profile_id: vendor.id,
-            categoryId: input.category
+            categoryId: input.category,
             // tags: {
             //   create: [
             //     {
@@ -155,7 +151,7 @@ export const productRouter = router({
         return undefined;
       }
     }),
-  deleteProduct: protectedProcedure
+  pasifyProduct: protectedProcedure
     .input(
       z.object({
         id: z.string(),
@@ -179,8 +175,19 @@ export const productRouter = router({
         });
 
       try {
-        await ctx.prisma.product.delete({
+        await ctx.prisma.product.update({
           where: { id },
+          data: {
+            active: false,
+          },
+        });
+
+        await ctx.prisma.link.updateMany({
+          where: { product_id: id },
+          data: {
+            active: false,
+            partner_notified: false
+          },
         });
 
         return { error: false, message: "ok" };

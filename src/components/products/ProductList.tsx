@@ -30,18 +30,18 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
   const [modal, setModal] = useState(false)
   const [deleteId, setDeleteId] = useState('')
 
-  const deleteProd = trpc.product.deleteProduct.useMutation()
+  const pasifyProduct = trpc.product.pasifyProduct.useMutation()
 
   const handleDelete = async () => {
 
-    if (!deleteId) return notifyError('Silme işlemi başarısız! [ID]');
+    if (!deleteId) return notifyError('İşlem başarısız! [ID]');
 
-    const deleteRes = await deleteProd.mutateAsync({ id: deleteId })
+    const res = await pasifyProduct.mutateAsync({ id: deleteId })
 
-    if (deleteRes.error) return notifyError('Silme işlemi başarısız! [DB]');
+    if (res.error) return notifyError('İşlem başarısız! [DB]');
 
     setDeleteId('')
-    notifySuccessTC("Ürün silindi!", true)
+    notifySuccessTC("İşlem başarılı", true)
     refetch()
     setModal(false)
 

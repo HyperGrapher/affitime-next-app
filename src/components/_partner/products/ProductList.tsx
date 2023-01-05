@@ -30,7 +30,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
   const [modal, setModal] = useState(false)
   const [deleteId, setDeleteId] = useState('')
 
-  const deleteProd = trpc.product.deleteProduct.useMutation()
+  const deleteProd = trpc.product.pasifyProduct.useMutation()
 
   const handleDelete = async () => {
 

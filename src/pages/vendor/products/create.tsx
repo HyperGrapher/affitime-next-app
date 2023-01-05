@@ -106,7 +106,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
         mode: 'onBlur',
     });
 
-    // const { data: cats } = trpc.product.getProductCategories.useQuery()
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     trpc.product.getProductById.useQuery({ id }, {
