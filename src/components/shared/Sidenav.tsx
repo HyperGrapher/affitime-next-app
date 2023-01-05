@@ -106,7 +106,7 @@ const Sidenav = () => {
                         </li>
 
                         <li id='nav-link'
-                            className={classNames(asPath === AppRoutes.VENDOR_CREATE_LINK
+                            className={classNames(asPath === AppRoutes.VENDOR_LINKS
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
@@ -114,7 +114,7 @@ const Sidenav = () => {
                             )}>
                             <Link
                                 className='flex items-center space-x-6 bg-redo-100 w-full h-full'
-                                href={AppRoutes.VENDOR_CREATE_LINK} >
+                                href={AppRoutes.VENDOR_LINKS} >
 
                                 <HiLink
                                     id='toggle'
