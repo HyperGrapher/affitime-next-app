@@ -75,7 +75,7 @@ export const linkRouter = router({
 
         const product = await ctx.prisma.product.findFirst({
           where: { id: productId },
-          include: { vendor: true, category: true },
+          include: { vendor: true },
         });
 
         if (!product)

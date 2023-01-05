@@ -152,8 +152,8 @@ model Tag {
 model Category {
   id      Int       @id @default(autoincrement())
   name    String
-  Product Product[]
-  Link    Link[]
+  products Product[]
+  links    Link[]
 }
 
 model TagsOnProducts {
