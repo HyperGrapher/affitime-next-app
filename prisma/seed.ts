@@ -31,6 +31,7 @@ const seedProducts = async () => {
         "https://www.lg.com/us/images/monitors/md06121837/gallery/1100-01.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 1,
     },
     {
       title: "1974 Fender Stratocaster, Sunburst",
@@ -47,6 +48,7 @@ const seedProducts = async () => {
         "https://guitarpoint.de/app/uploads/products/1974-fender-stratocaster-3t-sunburst-mapleneck-3/Fender74Strat3tSBMN574421_18.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 3,
     },
     {
       title: "Philips Hue",
@@ -63,6 +65,7 @@ const seedProducts = async () => {
         "https://cdn.dsmcdn.com/assets/dev/product/media/images/20200328/16/670980/66961232/1/1_org_zoom.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 1,
     },
     {
       title: "Delonghi Dedica Manuel Espresso Makinesi",
@@ -79,6 +82,7 @@ const seedProducts = async () => {
         "https://cdn.dsmcdn.com/ty520/product/media/images/20220902/21/168727751/558385585/1/1_org_zoom.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 5,
     },
     {
       title: "Philips Hue Lightstrip Gradient Tv 75 inch Akıllı Led Şerit",
@@ -95,6 +99,7 @@ const seedProducts = async () => {
         "https://cdn.dsmcdn.com/ty205/product/media/images/20211020/10/152702278/269209288/5/5_org_zoom.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 1,
     },
     {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
@@ -111,6 +116,7 @@ const seedProducts = async () => {
         "https://cdn.dsmcdn.com/ty449/product/media/images/20220606/18/122223020/495602189/1/1_org_zoom.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 5,
     },
     {
       title: "Caterpillar Kadın Bej Colorado Bot",
@@ -127,14 +133,15 @@ const seedProducts = async () => {
         "https://cdn.dsmcdn.com/ty523/product/media/images/20220906/12/169717797/16382194/1/1_org_zoom.jpg",
       vendor_profile_id,
       vendor_user_id,
+      categoryId: 2,
     },
   ];
 
-  // const productCreation = await prisma.product.createMany({
-  //   data: prods,
-  // });
+  const productCreation = await prisma.product.createMany({
+    data: prods,
+  });
 
-  // console.log({ productCreation });
+  console.log({ productCreation });
 };
 
 seedProducts()

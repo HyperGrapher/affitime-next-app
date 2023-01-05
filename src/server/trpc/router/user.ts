@@ -11,7 +11,7 @@ export const userRouter = router({
 
       if (!email) throw new TRPCError({ code: "NOT_FOUND" });
 
-      return ctx.prisma.user.findUnique({
+      return ctx.prisma.user.findFirst({
         where: {
           email,
         },
@@ -37,7 +37,7 @@ export const userRouter = router({
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
-      return ctx.prisma.user.findUnique({
+      return ctx.prisma.user.findFirst({
         where: {
           id,
         },

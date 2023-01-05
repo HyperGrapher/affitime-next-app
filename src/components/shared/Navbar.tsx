@@ -24,7 +24,7 @@ const Navbar: React.FC = () => {
   const { data: sessionData } = useSession()
   const { pathname } = useRouter()
   let sh = true
-  if (pathname === '/') sh = false
+  if (pathname === '/') sh = true
 
   const logUserOut = () => {
     signOut({ redirect: true, callbackUrl: '/' })

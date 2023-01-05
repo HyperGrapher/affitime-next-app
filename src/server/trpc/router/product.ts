@@ -13,7 +13,7 @@ export const productRouter = router({
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
-      return ctx.prisma.product.findUnique({
+      return ctx.prisma.product.findFirst({
         where: {
           id,
         },
@@ -38,7 +38,7 @@ export const productRouter = router({
         message: "Session user ID not found",
       });
 
-    return ctx.prisma.vendor.findUnique({
+    return ctx.prisma.vendor.findFirst({
       where: {
         id: vendorId,
       },
@@ -111,7 +111,7 @@ export const productRouter = router({
         });
 
       try {
-        const vendor = await ctx.prisma.vendor.findUnique({
+        const vendor = await ctx.prisma.vendor.findFirst({
           where: {
             id: vendorId,
           },

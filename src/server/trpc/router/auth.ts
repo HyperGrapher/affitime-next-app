@@ -14,7 +14,7 @@ export const authRouter = router({
 
     if (!email) throw new TRPCError({ code: "NOT_FOUND" });
 
-    return ctx.prisma.user.findUnique({
+    return ctx.prisma.user.findFirst({
       where: {
         email,
       },
@@ -49,7 +49,7 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { email, password, role, username, brand, website } = input;
 
-      const isExist = await ctx.prisma.user.findUnique({
+      const isExist = await ctx.prisma.user.findFirst({
         where: {
           email,
         },
@@ -109,7 +109,7 @@ export const authRouter = router({
           });
         }
 
-        const resultUser = await ctx.prisma.user.findUnique({
+        const resultUser = await ctx.prisma.user.findFirst({
           where: {
             email,
           },

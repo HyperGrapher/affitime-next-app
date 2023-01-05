@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     //     }
     // }
 
-    const link = await prisma.link.findUnique({
+    const link = await prisma.link.findFirst({
         where: {
             url
         },

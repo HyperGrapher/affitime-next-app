@@ -17,7 +17,7 @@ export const linkRouter = router({
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
-      return ctx.prisma.link.findUnique({
+      return ctx.prisma.link.findFirst({
         where: {
           id,
         },
@@ -63,7 +63,7 @@ export const linkRouter = router({
         throw new TRPCError({ code: "NOT_FOUND", message: "PID not found" });
 
       try {
-        const partner = await ctx.prisma.partner.findUnique({
+        const partner = await ctx.prisma.partner.findFirst({
           where: { id: partnerId },
         });
 
@@ -73,7 +73,7 @@ export const linkRouter = router({
             message: "Partner not found",
           });
 
-        const product = await ctx.prisma.product.findUnique({
+        const product = await ctx.prisma.product.findFirst({
           where: { id: productId },
           include: { vendor: true, category: true },
         });
@@ -84,7 +84,7 @@ export const linkRouter = router({
             message: "Product not found",
           });
 
-        const vendor = await ctx.prisma.vendor.findUnique({
+        const vendor = await ctx.prisma.vendor.findFirst({
           where: { id: product?.vendor_profile_id },
         });
 

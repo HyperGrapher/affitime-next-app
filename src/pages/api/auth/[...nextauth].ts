@@ -43,7 +43,7 @@ export const authOptions: NextAuthOptions = {
           throw new Error("please enter email and password");
         }
 
-        const user = await prisma.user.findUnique({
+        const user = await prisma.user.findFirst({
           where: { email: email },
           include: { vendor: true, partner: true },
         });
@@ -64,7 +64,7 @@ export const authOptions: NextAuthOptions = {
       const email = session.user?.email;
       if (!email) return session;
 
-      const userDB = await prisma.user.findUnique({
+      const userDB = await prisma.user.findFirst({
         where: { email },
       });
 
