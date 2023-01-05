@@ -63,7 +63,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
             <div className="flex gap-4 items-center justify-between">
                 <Link
                     className="aspect-square  w-12 h-12 "
-                    href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.product.id}`}>
+                    href={`${AppRoutes.PARTNER_LINK_DETAIL}/${p.id}`}>
                     {p.product.image ?
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
@@ -84,12 +84,12 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                 <div className="flex flex-col items-start min-w-[20ch] h-full">
-                    <button onClick={() => null}>
+                    <Link href={`${AppRoutes.PARTNER_LINK_DETAIL}/${p.id}`}>
                         <h4 className="text-xs whitespace-nowrap text-stone-5000 
                         font-bold hover:text-sky-500 transition-colors">
                             {p.product.title!.length > 25 ? p.product.title!.substring(0, 25) + " ..." : p.product.title}
                         </h4>
-                    </button>
+                    </Link>
 
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Fiyat: </b>
@@ -148,7 +148,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                         <div className="mr-4 flex flex-nowrap gap-2 ml-auto h-full place-self-center">
                             <IconButton
                                 size="small"
-                                onClick={() => push(`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.id}`)}
+                                onClick={() => push(`${AppRoutes.PARTNER_LINK_DETAIL}/${p.id}`)}
                                 title="Detay"
                                 aria-label="Detay">
                                 <LinkIcon className="text-indigo-600 w-4 h-4" />
