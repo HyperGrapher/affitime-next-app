@@ -1,23 +1,40 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { GetServerSideProps } from "next";
-import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
-import PageCard from "../../../components/card/Card";
 import LinkList from '../../../components/_partner/links/LinkList';
-import { UserRoles } from '../../../interface/auth.interface';
+import PageCard from "../../../components/card/Card";
+import { AppRoutes } from "../../../config/appRoutes";
+import { UserRoles } from "../../../interface/auth.interface";
 import { trpc } from '../../../utils/trpc';
-import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../../components/buttons/LinkButton";
-import Pager from "../../../components/pager/Pager";
 
-import { Link, Partner, Product } from "@prisma/client";
-import classNames from "../../../utils/classnames";
-import Image from "next/image";
-import product from '../../../assets/product.png';
-import { numberWithCommas } from "../../../utils/helpers";
 
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+
+    context.res.setHeader(
+        'Cache-Control',
+        'public, s-maxage=10, stale-while-revalidate=59'
+    )
+
+    if (!session) return {
+        redirect: {
+            destination: AppRoutes.SIGNIN,
+            permanent: false
+        }
+    }
+
+    if (session.role !== UserRoles.PARTNER) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+    return { props: {} }
+
+}
 
 const PartnerLinks: NextPage = () => {
     const { data: links, status: sts, refetch: refetchlinks } = trpc.link.getAllLinksForPartner.useQuery()
@@ -44,12 +61,6 @@ const PartnerLinks: NextPage = () => {
 
                 <section className="mb-4">
 
-                    {/* <div>
-                        {links?.map(ln => <div className="mb-4 border-2 px-2 py-4" key={ln.id}>
-                            {ln?.id} - <small>{JSON.stringify(ln)}</small>
-
-                        </div>)}
-                    </div> */}
 
                     {links && links?.length > 0
                         ? <LinkList prod={links} refetch={refetchlinks} />
@@ -57,10 +68,6 @@ const PartnerLinks: NextPage = () => {
 
                 </section>
 
-
-
-
-                {/* <Pager /> */}
 
             </PageCard>
         </main>
