@@ -22,15 +22,16 @@ import IconButton from "../../buttons/IconButton";
 
 
 type Props = {
-  prod: (LinkEntity & { vendor: Vendor; product: Product; })[] | undefined;
+  links: (LinkEntity & { vendor: Vendor; product: Product; })[] | undefined;
   refetch: () => void;
 }
 
-const ProductList: React.FC<Props> = ({ prod, refetch }) => {
+const PartnerLinkList: React.FC<Props> = ({ links, refetch }) => {
   const [modal, setModal] = useState(false)
   const [deleteId, setDeleteId] = useState('')
 
-  const deleteProd = trpc.product.pasifyProduct.useMutation()
+  // PARTNER has no del button
+  // const pasifyLink = trpc.product.pasifyProduct.useMutation()
 
   const handleDelete = async () => {
 
@@ -38,15 +39,14 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
   }
 
-  // TODO: EMPTY STATE 
   return (<>
 
 
-    {prod?.length === 0 ? <p className='text-center'>Henüz bir ürün bulunmuyor</p> : (<>
+    {links?.length === 0 ? <p className='text-center'>Henüz bir ürün bulunmuyor</p> : (<>
 
       {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
-        {prod?.map(p => (
+        {links?.map(p => (
           <LinkItem
             key={p.id}
             p={p}
@@ -74,5 +74,5 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
   </>);
 };
 
-export default ProductList;
+export default PartnerLinkList;
 

@@ -8,6 +8,7 @@ export enum AppRoutes {
   VENDOR_PRODUCTS = "/vendor/products",
   VENDOR_CREATE_PRODUCT = "/vendor/products/create",
   VENDOR_LINKS = "/vendor/links",
+  VENDOR_LINK_DETAIL = "/vendor/links/detail",
   VENDOR_CREATE_LINK = "/vendor/links/create",
   VENDOR_NOTIFICATIONS = "/vendor/notifications",
 

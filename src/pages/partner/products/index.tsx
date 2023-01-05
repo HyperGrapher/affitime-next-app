@@ -14,6 +14,7 @@ import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
 import Pager from "../../../components/pager/Pager";
 
+// https://mantine.dev/hooks/use-pagination/
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)

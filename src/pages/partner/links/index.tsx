@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} }
 
 }
-
+// https://mantine.dev/hooks/use-pagination/
 const PartnerLinks: NextPage = () => {
     const { data: links, status: sts, refetch: refetchlinks } = trpc.link.getAllLinksForPartner.useQuery()
 
@@ -63,7 +63,7 @@ const PartnerLinks: NextPage = () => {
 
 
                     {links && links?.length > 0
-                        ? <LinkList prod={links} refetch={refetchlinks} />
+                        ? <LinkList links={links} refetch={refetchlinks} />
                         : null}
 
                 </section>
