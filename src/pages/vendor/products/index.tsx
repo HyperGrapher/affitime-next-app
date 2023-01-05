@@ -52,6 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const Products: NextPage = () => {
 
     const { data: vendor, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsBySessionVendor.useQuery()
+    const { data: cats } = trpc.product.getProductCategories.useQuery()
 
     return (
         <main className="auth-container">

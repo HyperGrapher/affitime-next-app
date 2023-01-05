@@ -1,33 +1,34 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { trpc } from '../../../utils/trpc';
-import type { GetServerSideProps } from "next";
-import { type NextPage } from "next";
-import { getSession } from "next-auth/react";
-import { useEffect, useState } from 'react';
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from 'next/router'
-import TopBarProgress from 'react-topbar-progress-indicator';
-import { UserRoles } from '../../../interface/auth.interface';
-import PageCard from '../../../components/card/Card';
-import LinkButton from "../../../components/buttons/LinkButton";
-import IconButton from '../../../components/buttons/IconButton';
-import { HiArrowLeft as BackIcon } from 'react-icons/hi'
-import classNames from '../../../utils/classnames';
-import { HiPlus, HiPencil } from 'react-icons/hi'
-import { FormFieldError, FormFieldWrapper } from '../../../components/error-messages/FormError';
-import { CommissionType, type Category } from "@prisma/client";
 import { zodResolver } from '@hookform/resolvers/zod';
-import { number, z } from 'zod'
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import FormControl from '@mui/material/FormControl';
-import { notifyError, notifySuccessTC, notifySuccessBR } from '../../../utils/notifications';
-import ACComboBox from '../../../components/combobox/ComboBox';
+import { CommissionType, type Category } from "@prisma/client";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { getSession } from "next-auth/react";
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from "react-hook-form";
+import { HiArrowLeft as BackIcon, HiPencil, HiPlus } from 'react-icons/hi';
+import TopBarProgress from 'react-topbar-progress-indicator';
+import { z } from 'zod';
 import CategoriesCombo from '../../../components/_vendor/products/CategoriesCombo';
+import IconButton from '../../../components/buttons/IconButton';
+import PageCard from '../../../components/card/Card';
+import { FormFieldError, FormFieldWrapper } from '../../../components/error-messages/FormError';
+import { UserRoles } from '../../../interface/auth.interface';
+import { prisma } from "../../../server/db/client";
+import classNames from '../../../utils/classnames';
+import { notifyError, notifySuccessBR, notifySuccessTC } from '../../../utils/notifications';
+import { trpc } from '../../../utils/trpc';
 
-export const getServerSideProps: GetServerSideProps = async (context) => {
+interface IServerSideProps {
+    cats: Category[]
+}
+
+export const getServerSideProps: GetServerSideProps<IServerSideProps> = async (context) => {
 
     const session = await getSession(context)
 
@@ -44,7 +45,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    return { props: { userId: session.id } }
+    const cats = await prisma.category.findMany()
+
+    return { props: { cats } }
 
 }
 
@@ -63,8 +66,6 @@ interface IProductFormData {
     category: number;
 }
 
-// https://blog.logrocket.com/schema-validation-typescript-zod/
-// https://www.austinshelby.com/blog/build-a-react-form-with-react-hook-form-and-zod
 const validationSchema = z.object({
     id: z.string().optional().nullable(),
     title: z.string().trim().min(5, "En az 5 karakter olmalı!"),
@@ -79,10 +80,8 @@ const validationSchema = z.object({
     // category: z.number()
 }).required();
 
-// Tags: 
-// ! https://www.prisma.io/docs/concepts/components/prisma-schema/relations/many-to-many-relations#querying-an-explicit-many-to-many
 
-const ProductCreate: NextPage = () => {
+const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.PERC)
     const [perSaleType, setPerSaleType] = useState<CommissionType>(CommissionType.PERC)
@@ -107,7 +106,7 @@ const ProductCreate: NextPage = () => {
         mode: 'onBlur',
     });
 
-    const { data: cats } = trpc.product.getProductCategories.useQuery()
+    // const { data: cats } = trpc.product.getProductCategories.useQuery()
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     trpc.product.getProductById.useQuery({ id }, {
@@ -122,9 +121,11 @@ const ProductCreate: NextPage = () => {
             setValue("perSale", data?.perSale ?? 0)
             setValue("category", data?.categoryId ?? 0)
 
+            const editCat = cats.filter(c => c.id === data?.categoryId)[0]
+            const c = editCat ?? { id: 0, name: "" }
+            setSelectedCat(c)
 
-            const editCat = cats!.filter(c => c.id === data?.categoryId)
-            setSelectedCat(editCat[0] ?? {id: 0, name: ""})
+
 
             const PCT = data?.perClickType as CommissionType
             const PST = data?.perSaleType as CommissionType
@@ -663,6 +664,7 @@ const ProductCreate: NextPage = () => {
         </div>
     )
 }
+
 
 export default ProductCreate
 
