@@ -172,4 +172,28 @@ export const linkRouter = router({
         return { error: true, message: "" };
       }
     }),
+
+  updateLinkStatusByPartner: partnerProcedure
+    .input(
+      z.object({
+        id: z.string(),
+        isActive: z.boolean(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { id, isActive } = input;
+
+      try {
+        await ctx.prisma.link.update({
+          where: { id },
+          data: {
+            active: isActive,
+          },
+        });
+
+        return { error: false, message: "ok" };
+      } catch (error) {
+        return { error: true, message: "" };
+      }
+    }),
 });
