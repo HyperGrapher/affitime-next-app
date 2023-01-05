@@ -15,7 +15,6 @@ import classNames from '../../utils/classnames'
 // https://www.youtube.com/watch?v=qJnIJa-cF2M
 
 const pathsToExlude = [
-  '/affi/',
   '/r/',
 ]
 
@@ -30,11 +29,7 @@ const Navbar: React.FC = () => {
     signOut({ redirect: true, callbackUrl: '/' })
   }
 
-  // if (pathsToExlude.includes(pathname)) return null
-
   for (const excluded of pathsToExlude) {
-    // asPath:"/affi/uvxl8ahz"
-    // pathname:"/affi/[url]"
 
     if (pathname.startsWith(excluded)) return null
 

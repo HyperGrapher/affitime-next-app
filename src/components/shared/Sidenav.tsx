@@ -19,7 +19,6 @@ const Sidenav = () => {
 
 
     const pathsToExlude = [
-        '/affi/',
         '/r/',
     ]
     for (const excluded of pathsToExlude) {
