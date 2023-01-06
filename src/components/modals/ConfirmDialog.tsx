@@ -1,7 +1,5 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import { useState } from 'react';
-import Typography from "@mui/material/Typography";
 import classNames from "../../utils/classnames";
+import Balancer from 'react-wrap-balancer';
 
 
 type Props = {
@@ -25,13 +23,18 @@ const ConfirmDialog: React.FC<Props> = ({ title, desc, confirmBtnText, busy, con
 
             )}>
 
-            <Typography className="text-violet-600" align="center" whiteSpace={'normal'} variant="h5">
-                {title}
-            </Typography>
+            <Balancer>
+                <h3 className="text-violet-600 text-xl font-bold text-center">
+                    {title}
+                </h3>
+            </Balancer>
 
-            <Typography align="center" mt={'1.5rem'} variant="body1" >
+
+
+            <p className="text-base mt-5 text-center">
                 {desc}
-            </Typography>
+            </p>
+
 
             <div className="space-y-4 sm:space-y-2 sm:space-x-2 space-x-0 md:space-x-4 mt-6  text-center">
                 <button
@@ -40,9 +43,9 @@ const ConfirmDialog: React.FC<Props> = ({ title, desc, confirmBtnText, busy, con
                     className={classNames(
                         "bg-violet-600 hover:bg-violet-700 transition",
                         "w-full sm:w-36 md:w-40",
-                        "shadow-sm hover:shadow-lg rounded-md ",
+                        "shadow-sm hover:shadow-lg rounded-md",
                         "py-2 px-8",
-                        "text-white font-medium",
+                        "text-white font-medium text-sm",
                         "disabled:bg-violet-400 disabled:shadow-none",
                         "aria-disabled:bg-violet-400 aria-disabled:shadow-none",
                     )}>
@@ -55,11 +58,11 @@ const ConfirmDialog: React.FC<Props> = ({ title, desc, confirmBtnText, busy, con
                     className={classNames(
                         `bg-green-600 hover:bg-green-700 transition`,
                         "w-full sm:w-36 md:w-40",
-                        "shadow-sm hover:shadow-lg rounded-md ",
+                        "shadow-sm hover:shadow-lg rounded-md text-sm",
                         "py-2 px-8",
                         "text-white font-medium whitespace-nowrap",
                         `disabled:bg-green-400 disabled:shadow-none aria-disabled:bg-green-400`,
-                        " aria-disabled:shadow-none",
+                        "aria-disabled:shadow-none",
                     )}>
                     {confirmBtnText}
                 </button>

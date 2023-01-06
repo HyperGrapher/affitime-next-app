@@ -5,47 +5,47 @@ import Image from "next/image";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
-import { HiArrowLeft as BackIcon } from 'react-icons/hi';
+import { HiArrowLeft as BackIcon, HiBell } from 'react-icons/hi';
+import TopBarProgress from "react-topbar-progress-indicator";
 import Balancer from 'react-wrap-balancer';
 import productImg from '../../../../assets/product.png';
 import IconButton from '../../../../components/buttons/IconButton';
 import PageCard from "../../../../components/card/Card";
 import ConfirmDialog from "../../../../components/modals/ConfirmDialog";
 import ModalContainer from "../../../../components/modals/ModalContainer";
-import { Lira } from '../../../../components/shared/HtmlCodes';
+import { Lira, Space } from '../../../../components/shared/HtmlCodes';
 import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
-import TopBarProgress from "react-topbar-progress-indicator";
 
 const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
 
-    const { back } = useRouter()
-
     const [busy] = useState(false)
     const [modal, setModal] = useState(false)
 
-    const { data: pd, status: sts, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
-    // const linkMutate = trpc.link.updateLinkStatusByPartner.useMutation()
+    const { back, query } = useRouter()
+    const created = query.created === "true"
+
+    const { data: link, status: sts, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
 
     const totalClickPayment = useMemo(() => {
 
-        let res = 0
-        if (pd) {
+        if (link) {
 
-            const validClickCount = pd.count - pd.partnerVisitCount
-            if (pd.product.perClickType === "PERC") {
-                return res = ((pd.product.price ?? 1) / 100) * (pd.product.perClick ?? 0) * validClickCount
+            const validClickCount = link.count - link.partnerVisitCount
+
+            if (link.product.perClickType === "PERC") {
+                return ((link.product.price ?? 1) / 100) * (link.product.perClick ?? 0) * validClickCount
             }
 
-            return validClickCount * (pd.product.perClick ?? 0)
+            return validClickCount * (link.product.perClick ?? 0)
         }
 
+        return 0
 
-        return res
-    }, [pd])
+    }, [link])
 
 
 
@@ -100,7 +100,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 <div className="flex items-center">
 
                     <h2 className="font-bold text-xl text-slate-700 ml-2">
-                        Affiliate Detayları
+                        Link Detayları
                     </h2>
 
                     <IconButton
@@ -123,23 +123,34 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                 </div>
 
+                {created && !link?.vendor_notified && (
+                    <div className="bg-yellow-50 px-2 py-2 rounded mb-2 flex items-center space-x-3">
+                        <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
+                        <b className="text-neutral-500 text-sm">
+                            Affiliate link isteğiniz mağazaya iletildi. Mağaza onayından sonra <Space />
+                            <Link className="text-blue-500 underline" href={"/"}>Affiliate Linklerim</Link> sayfasında listelenecektir.
+                        </b>
+                    </div>
+                )
+
+                }
+
                 <hr className='' />
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
-                    <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${pd?.product_id}`}>
+                    <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link?.product_id}`}>
                         <h1 className='text-slate-600 text-2xl  mb-2 font-medium leading-tight'>
-                            {pd?.product.title}
+                            {link?.product.title}
                         </h1>
 
-
-
                     </Link>
+
                     <div className="flex space-x-4 mt-4 items-center">
-                        {pd?.product.image ?
+                        {link?.product.image ?
                             <img
                                 className="object-cover hover:shadow rounded object-center w-32 h-32 aspect-square"
-                                src={pd?.product.image}
-                                alt={pd?.product.title ?? ""} />
+                                src={link?.product.image}
+                                alt={link?.product.title ?? ""} />
                             : <Image
                                 className={classNames(
                                     "object-cover rounded hover:shadow object-center",
@@ -155,26 +166,38 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         <div className='space-y-[0.18rem]'>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Durum: </b>
-                                <b className={`${pd?.active ? "text-green-500" : "text-red-500"}`}>{pd?.active ? "Aktif" : "Pasif"}  </b>
+                                <b className={`${link?.active ? "text-green-500" : "text-red-500"}`}>
+                                    {link?.active
+                                        ? "Aktif"
+                                        : (created && !link?.vendor_notified)
+                                            ? "Mağaza Onayı Bekleniyor"
+                                            : "Pasif"
+                                    }
+                                </b>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Urun Fiyati: </b>
-                                <span className=''>{pd?.product.price} <Lira /> </span>
+                                <span className=''>{link?.product.price} <Lira /> </span>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
-                                <a title={`https://affitime.com/r/${pd?.url ?? ""}`} className='text-blue-500' href={`https://affitime.com/r/${pd?.url ?? ""}`}> {`affitime.com/r/${pd?.url ?? ""}`}</a>
+
+                                {link?.active
+                                    ? <a title={`https://affitime.com/r/${link?.url ?? ""}`} className='text-blue-500' href={`https://affitime.com/r/${link?.url ?? ""}`}> {`affitime.com/r/${link?.url ?? ""}`}</a>
+                                    : <span> Sadece aktif linkler görülebilir </span>
+                                }
+
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Hedef Link: </b>
-                                <a title={pd?.product.product_url ?? ""} className='text-blue-500' href={pd?.product.product_url ?? "#"}>{pd?.product.product_url?.slice(0, 44)} ...</a>
+                                <a title={link?.product.product_url ?? ""} className='text-blue-500' href={link?.product.product_url ?? "#"}>{link?.product.product_url?.slice(0, 44)} ...</a>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'>Ürün Sahibi:</b> {pd?.vendor.brand}
+                                <b className='text-neutral-500'>Ürün Sahibi:</b> {link?.vendor.brand}
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'>Website:</b>
-                                <a title={pd?.vendor.website ?? ""} className='text-blue-500' href={pd?.vendor.website ?? "#"}> {pd?.vendor.website?.slice(0, 48)}</a>
+                                <a title={link?.vendor.website ?? ""} className='text-blue-500' href={link?.vendor.website ?? "#"}> {link?.vendor.website?.slice(0, 48)}</a>
 
                             </p>
                         </div>
@@ -201,14 +224,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {pd?.product.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {link?.product.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {pd?.product.perClick} {pd?.product.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {link?.product.perClick} {link?.product.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {pd?.product.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {link?.product.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{pd?.product.perSale} {pd?.product.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{link?.product.perSale} {link?.product.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 
@@ -229,7 +252,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base px-2 py-4"
                         )}
                     >
-                        Cookie Süresi:  <span> {pd?.product.cookieLife} Gün</span>
+                        Cookie Süresi:  <span> {link?.product.cookieLife} Gün</span>
 
 
                     </h3>
@@ -256,12 +279,12 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {pd?.count} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {link?.count} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Size Ait Tiklama: </b> {pd?.partnerVisitCount} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Size Ait Tiklama: </b> {link?.partnerVisitCount} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(pd?.count ?? 0) - (pd?.partnerVisitCount ?? 0)} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(link?.count ?? 0) - (link?.partnerVisitCount ?? 0)} </p>
                             <hr />
                             <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {totalClickPayment}  <Lira />  </p>
                         </div>
