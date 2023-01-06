@@ -1,29 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-import { trpc } from '../../../utils/trpc';
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
-import { useForm, SubmitHandler } from "react-hook-form";
-import { useRouter } from 'next/router'
-import TopBarProgress from 'react-topbar-progress-indicator';
-import PageCard from '../../../components/card/Card';
-import classNames from '../../../utils/classnames';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod'
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import { notifyError, notifySuccessTC, notifySuccessBR } from '../../../utils/notifications';
-import { useState } from 'react';
-import LinkButton from "../../../components/buttons/LinkButton";
-import IconButton from '../../../components/buttons/IconButton';
-import { HiArrowLeft as BackIcon } from 'react-icons/hi'
 import Image from "next/image";
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { HiArrowLeft as BackIcon } from 'react-icons/hi';
 import productImg from '../../../assets/product.png';
-import { FormFieldWrapper } from '../../../components/error-messages/FormError';
+import IconButton from '../../../components/buttons/IconButton';
+import PageCard from '../../../components/card/Card';
 import ACComboBox from '../../../components/combobox/ComboBox';
 import { UserRoles } from '../../../interface/auth.interface';
+import classNames from '../../../utils/classnames';
+import { trpc } from '../../../utils/trpc';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 

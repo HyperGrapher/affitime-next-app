@@ -1,24 +1,20 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { type Product } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
+import { notifyError, notifySuccessTC } from "../../utils/notifications";
 import { trpc } from '../../utils/trpc';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import styled from '@emotion/styled'
-import Image from "next/image";
-import profileImg from '../../assets/profile.webp'
 import ProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
-import Button from "@mui/material/Button";
-import { notifyError, notifySuccessBR, notifySuccessTC } from "../../utils/notifications";
-import ModalContainer from "../modals/ModalContainer";
-import IconButton from "../buttons/IconButton";
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
-import WarnDialog from "../modals/WarnDialog";
+import dynamic from 'next/dynamic'
+
+const DynamicModalContainer = dynamic(() => import('../modals/ModalContainer'), {
+  ssr: false,
+  // loading: () => <div></div>
+})
+
+const DynamicWarnDialog = dynamic(() => import('../modals/WarnDialog'), {
+  ssr: false,
+  // loading: () => <div></div>
+})
 
 
 type Props = {
@@ -47,7 +43,6 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
 
   }
 
-  // TODO: EMPTY STATE 
   return (<>
 
     {prod?.length === 0 ? <p className='text-center'>Henüz ürün eklemediniz</p> : (<>
@@ -62,19 +57,19 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
             confirmModal={() => setModal(true)} />))}
       </ul>
 
-      <ModalContainer state={modal} key={"adda"}>
-        <WarnDialog
-          title="Ürünü silmek istiyor musunuz?"
+      <DynamicModalContainer state={modal} key={"adda"}>
+        <DynamicWarnDialog
+          title="Ürünü kaldırmak istiyor musunuz?"
           desc="
-          Ürün listenizden silinecek ve oluşturulan 
+          Ürün pasif hale gelecek ve oluşturulan 
           tüm affiliate linkleri geçersiz hale gelerek 
           hata sayfasina yönlendirilecektir. 
           "
-          confirmBtnText="Sil"
+          confirmBtnText="Kaldır"
           dismissFn={() => setModal(false)}
           confirmFn={() => handleDelete()}
         />
-      </ModalContainer>
+      </DynamicModalContainer>
 
     </>
     )}

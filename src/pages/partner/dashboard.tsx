@@ -1,20 +1,15 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useTransition } from "react";
+import { useEffect } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
-import usePersistedState from "../../hooks/usePersistedState";
-import getClientIp from "../../utils/getClientIp";
-import { trpc } from "../../utils/trpc";
 import { UserRoles } from "../../interface/auth.interface";
 import useNotificationStore from "../../store/notifications.store";
-// import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
+import getClientIp from "../../utils/getClientIp";
+import { trpc } from "../../utils/trpc";
 
 // import dynamic from 'next/dynamic'
 // import { Suspense } from 'react'
@@ -42,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    return { props: { userId: session.id } }
+    return { props: {} }
 
 }
 
@@ -63,16 +58,9 @@ const IpSchema = z
 
 const Dashboard: NextPage = () => {
 
-    const { data: secretMsg, isLoading: isLoadingSecret, } = trpc.auth.getSecretMessage.useQuery()
     const updateIp = trpc.user.updateUserIp.useMutation()
-    const [isPending, startTransition] = useTransition();
-    const { data: sessionData, status: sessionStatus } = useSession();
-    const [_, setPersistedIp] = usePersistedState('ip', '')
-    const [__, setData] = usePersistedState('data', {})
-    const { query } = useRouter()
-    const { reg } = query // is user just registered?
 
-    const { data: notifs } = trpc.notifications.getUnreadNotificationsForPartner.useQuery()
+    const { data: notifs, status: sts } = trpc.notifications.getUnreadNotificationsForPartner.useQuery()
     const setUnread = useNotificationStore(store => store.setUnread)
 
     useEffect(() => {
@@ -85,13 +73,10 @@ const Dashboard: NextPage = () => {
         try {
             const userIp = await getClientIp()
             const ipData = IpSchema.parse(userIp)
-            const ipRes = await updateIp.mutateAsync(ipData)
-            console.log({ ipRes });
+            await updateIp.mutateAsync(ipData)
 
-            startTransition(() => {
-                setPersistedIp(userIp?.ip)
-                setData(userIp)
-            });
+
+
         } catch (error) {
             console.log(error);
         }
@@ -103,7 +88,7 @@ const Dashboard: NextPage = () => {
 
     return (
         <div className="auth-container">
-            {(sessionStatus === 'loading') && <TopBarProgress />}
+            {sts === 'loading' && <TopBarProgress />}
             <Head>
                 <title>Affitime Dashboard</title>
                 <meta name="description" content="Affiliate uygulamasi" />

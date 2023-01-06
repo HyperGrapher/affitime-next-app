@@ -1,24 +1,8 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { type Product } from "@prisma/client";
 import React from "react";
-import { trpc } from '../../../utils/trpc';
-import Link from 'next/link';
-import { useState, useEffect } from 'react';
-import styled from '@emotion/styled'
-import Image from "next/image";
-import profileImg from '../../assets/profile.webp'
 import ProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
-import Button from "@mui/material/Button";
-import { notifyError, notifySuccessBR, notifySuccessTC } from "../../../utils/notifications";
-import ModalContainer from "../../modals/ModalContainer";
-import WarnDialog from "../../modals/WarnDialog";
-import IconButton from "../../buttons/IconButton";
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
+
 
 
 type Props = {
@@ -26,19 +10,8 @@ type Props = {
   refetch: () => void;
 }
 
-const ProductList: React.FC<Props> = ({ prod, refetch }) => {
-  const [modal, setModal] = useState(false)
-  const [deleteId, setDeleteId] = useState('')
+const PartnerProductList: React.FC<Props> = ({ prod }) => {
 
-  const deleteProd = trpc.product.pasifyProduct.useMutation()
-
-  const handleDelete = async () => {
-
-    console.log('');
-
-  }
-
-  // TODO: EMPTY STATE 
   return (<>
 
     {prod?.length === 0 ? <p className='text-center'>Henüz bir ürün bulunmuyor</p> : (<>
@@ -46,26 +19,9 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
       <ProductListHeader />
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (
-          <ProductItem
-            key={p.id}
-            p={p}
-            setDeleteId={setDeleteId}
-            confirmModal={() => setModal(true)} />))}
+          <ProductItem key={p.id} p={p} />)
+        )}
       </ul>
-
-      <ModalContainer state={modal} key={"adda"}>
-        <WarnDialog
-          title="Ürünü silmek istiyor musunuz?"
-          desc="
-          Ürün listenizden silinecek ve oluşturulan 
-          tüm affiliate linkleri geçersiz hale gelerek 
-          hata sayfasina yönlendirilecektir. 
-          "
-          confirmBtnText='Sil'
-          dismissFn={() => setModal(false)}
-          confirmFn={() => handleDelete()}
-        />
-      </ModalContainer>
 
     </>
     )}
@@ -73,5 +29,5 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
   </>);
 };
 
-export default ProductList;
+export default PartnerProductList;
 

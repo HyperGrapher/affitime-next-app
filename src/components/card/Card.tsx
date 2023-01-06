@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Stack } from '@mui/material'
-import { useMediaQuery as useMQ } from 'react-responsive';
 
 
 type Props = {
@@ -8,10 +6,7 @@ type Props = {
 }
 
 const PageCard: React.FC<Props> = ({ children }) => {
-    const isMobile = useMQ({
-        maxWidth: 450,
-        orientation: 'portrait'
-    })
+
 
     return (
         <Stack

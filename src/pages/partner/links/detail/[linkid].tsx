@@ -1,5 +1,5 @@
-import type { GetServerSideProps } from "next";
-import { InferGetServerSidePropsType, type NextPage } from "next";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Image from "next/image";
 import Link from 'next/link';
@@ -16,19 +16,19 @@ import { Lira } from '../../../../components/shared/HtmlCodes';
 import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
-import { notifyError, notifySuccessTC } from '../../../../utils/notifications';
 import { trpc } from '../../../../utils/trpc';
+import TopBarProgress from "react-topbar-progress-indicator";
 
 const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
 
-    const { back, push } = useRouter()
+    const { back } = useRouter()
 
-    const [busy, setBusy] = useState(false)
+    const [busy] = useState(false)
     const [modal, setModal] = useState(false)
 
-    const { data: pd, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
-    const linkMutate = trpc.link.updateLinkStatusByPartner.useMutation()
+    const { data: pd, status: sts, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
+    // const linkMutate = trpc.link.updateLinkStatusByPartner.useMutation()
 
     const totalClickPayment = useMemo(() => {
 
@@ -49,42 +49,42 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 
 
-    function _handleLinkCancelation(): void {
+    // function _handleLinkCancelation(): void {
 
-        setBusy(true)
-
-
-        linkMutate.mutate({
-            id: id,
-            isActive: false
-        },
-            {
-                onSuccess: async (data, variables, context) => {
+    //     setBusy(true)
 
 
-                    setTimeout(() => {
-                        notifySuccessTC('Link Iptal Edildi', true)
-                        push(`${AppRoutes.PARTNER_LINK_DETAIL}/${id}`)
+    //     linkMutate.mutate({
+    //         id: id,
+    //         isActive: false
+    //     },
+    //         {
+    //             onSuccess: async (data, variables, context) => {
 
-                    }, 2050);
+
+    //                 setTimeout(() => {
+    //                     notifySuccessTC('Link Iptal Edildi', true)
+    //                     push(`${AppRoutes.PARTNER_LINK_DETAIL}/${id}`)
+
+    //                 }, 2050);
 
 
 
-                },
-                onError(error, variables, context) {
-                    notifyError(error.message)
-                },
-                onSettled: () => {
-                    setTimeout(() => {
-                        setModal(false)
-                        setBusy(false)
-                    }, 2000);
-                }
-            }
+    //             },
+    //             onError(error, variables, context) {
+    //                 notifyError(error.message)
+    //             },
+    //             onSettled: () => {
+    //                 setTimeout(() => {
+    //                     setModal(false)
+    //                     setBusy(false)
+    //                 }, 2000);
+    //             }
+    //         }
 
-        )
+    //     )
 
-    }
+    // }
 
 
     useEffect(() => {
@@ -95,6 +95,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     return (
         <div className={"auth-container"}>
+            {sts === 'loading' && <TopBarProgress />}
             <PageCard>
                 <div className="flex items-center">
 

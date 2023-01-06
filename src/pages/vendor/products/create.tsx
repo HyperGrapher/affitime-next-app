@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -10,7 +9,8 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from "react-hook-form";
+import type { SubmitHandler} from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { HiArrowLeft as BackIcon, HiPencil, HiPlus } from 'react-icons/hi';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { z } from 'zod';
@@ -77,7 +77,6 @@ const validationSchema = z.object({
     perClick: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
     perClickType: z.string().optional().nullable(),
     perSaleType: z.string().optional().nullable(),
-    // category: z.number()
 }).required();
 
 
@@ -85,13 +84,15 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
     const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.PERC)
     const [perSaleType, setPerSaleType] = useState<CommissionType>(CommissionType.PERC)
+    const [selectedCat, setSelectedCat] = useState({ id: 0, name: "" })
+    const [err, setErr] = useState(false)
+
     const [busy, setBusy] = useState(false)
     const { back, query } = useRouter()
+
     const id = query.pid as string
     const edit = query.edit === "true"
 
-    const [selectedCat, setSelectedCat] = useState({ id: 0, name: "" })
-    const [err, setErr] = useState(false)
 
     useEffect(() => {
 
@@ -326,7 +327,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
 
                             {cats && <CategoriesCombo
-                                cats={cats!}
+                                cats={cats}
                                 selected={selectedCat}
                                 setSelected={setSelectedCat}
                                 err={err}

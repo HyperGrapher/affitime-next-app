@@ -1,27 +1,20 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { GetServerSideProps } from "next";
-import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
-import PageCard from "../../../components/card/Card";
-import NotificationList from '../../../components/_partner/notifications/NotificationList';
-import { UserRoles } from '../../../interface/auth.interface';
-import { trpc } from '../../../utils/trpc';
-import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../../components/buttons/LinkButton";
-import TimeAgo from "timeago-react";
-import { formatDateTR } from "../../../utils/helpers";
-import { notifyError } from "../../../utils/notifications";
-import useNotificationStore from "../../../store/notifications.store";
 import { useEffect } from "react";
+import NotificationList from '../../../components/_partner/notifications/NotificationList';
+import PageCard from "../../../components/card/Card";
+import { UserRoles } from '../../../interface/auth.interface';
+import useNotificationStore from "../../../store/notifications.store";
+import { trpc } from '../../../utils/trpc';
 
 
 
 const Notifications: NextPage = () => {
 
-    const { data: notifs, status: notifStatus, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForPartner.useQuery()
+    const { data: notifs, status: sts, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForPartner.useQuery()
     const setUnread = useNotificationStore(store => store.setUnread)
 
     useEffect(() => {
@@ -32,7 +25,7 @@ const Notifications: NextPage = () => {
 
     return (
         <div className="auth-container">
-
+            {sts === "loading" && <TopBarProgress />}
             <PageCard>
 
                 <div className="flex items-center mb-6">

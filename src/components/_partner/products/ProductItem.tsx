@@ -1,45 +1,26 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
+import LinkIcon from '@mui/icons-material/Search';
+import IconButton from '@mui/material/IconButton';
 import { type Product } from "@prisma/client";
-import React from "react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
 import productImg from '../../../assets/product.png';
+import { AppRoutes } from "../../../config/appRoutes";
+import classNames from "../../../utils/classnames";
 import { numberWithCommas } from "../../../utils/helpers";
 import { Lira } from "../../shared/HtmlCodes";
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import LinkIcon2 from '@mui/icons-material/Link';
-import LinkIcon from '@mui/icons-material/Search';
-import SendIcon from '@mui/icons-material/Send';
-import Chip from '@mui/material/Chip';
-import classNames from "../../../utils/classnames";
-import { useRouter } from "next/router";
-import { AppRoutes } from "../../../config/appRoutes";
-import LinkButton from "../../buttons/LinkButton";
-import Link from "next/link";
+import Divider from '../../shared/Divider';
 
-// import { useState, useEffect } from 'react';
-// import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 
 
 type ItemProps = {
     p: Product;
-    confirmModal: () => void;
-    setDeleteId: (id: string) => void;
 }
-// 812px ve asgisi icin layout degis
-const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
+
+const ProductItem: React.FC<ItemProps> = ({ p }) => {
     const { push } = useRouter()
 
-    function del(id: string) {
-        confirmModal()
-    }
 
     return (
         <li className={
@@ -59,7 +40,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
                             src={p.image}
-                            alt={p.title!} />
+                            alt={p.title ?? "product"} />
                         : <Image
                             className={classNames(
                                 "object-cover rounded hover:shadow object-center",
@@ -82,7 +63,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                         href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.id}`}>
                         <h4 className="text-xs whitespace-nowrap text-stone-5000 
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.title!.length > 25 ? p.title!.substring(0, 25) + " ..." : p.title}
+                            {p.title && p.title.length > 25 ? p.title.substring(0, 25) + " ..." : p.title}
                         </h4>
                     </Link>
 
@@ -98,8 +79,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                 {/* DIVIDER */}
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
-
+                <Divider />
 
 
                 {/* COMMISSON */}
@@ -131,19 +111,19 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                 {/* DIVIDER */}
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
+                <Divider />
 
 
 
                 {/* PRODUCT LINK */}
                 <div className="">
                     <a className="text-[10px] whitespace-nowrap text-sky-500"
-                        href={p.product_url!}
+                        href={p.product_url ?? "#"}
                         target="_blank"
                         rel="noreferrer">
 
-                        {p.product_url ? <>{p.product_url!.length > 25
-                            ? p.product_url!.substring(0, 25) + " ..." : p.product_url}</>
+                        {p.product_url ? <>{p.product_url.length > 25
+                            ? p.product_url.substring(0, 25) + " ..." : p.product_url}</>
                             : <span className="w-[50px]">Lutfen bir ürün linki Ekleyiniz!</span>}
                     </a>
                 </div>
@@ -151,14 +131,13 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                 {/* DIVIDER */}
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
+                <Divider />
 
 
 
                 {/* EDIT BUTTONS */}
                 <div className="w-fulll">
                     <div className="flex flex-row">
-
 
                         <div className="mr-4 flex flex-nowrap gap-2 ml-auto h-full place-self-center">
                             <IconButton
@@ -175,11 +154,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
                 </div>
 
-
-
             </div>
-
-
 
         </li>)
 }

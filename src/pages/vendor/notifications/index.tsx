@@ -1,6 +1,4 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { GetServerSideProps } from "next";
 import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
 import { getSession } from "next-auth/react";
@@ -9,8 +7,6 @@ import PageCard from "../../../components/card/Card";
 import NotificationList from '../../../components/_vendor/notifications/NotificationList';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
-import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../../components/buttons/LinkButton";
 import TimeAgo from "timeago-react";
 import { formatDateTR } from "../../../utils/helpers";
 import { notifyError } from "../../../utils/notifications";
@@ -34,16 +30,11 @@ const Notifications: NextPage = () => {
     function onConfirmOrDenyClick(id: string, confirmed: boolean): void {
         update.mutate({ id, confirmed }, {
 
-            onSuccess(data, variables, context) {
-                console.log(data);
-            },
-            onError(error, variables, context) {
-                console.log(error);
+            onError() {
                 notifyError("Bir hata olustu")
 
             },
             onSettled: () => {
-                console.log('settled');
                 refetchNotifs()
 
             }
@@ -116,13 +107,6 @@ const Notifications: NextPage = () => {
 
 
                 <section className="mb-4">
-
-                    {/* <div>
-                        {links?.map(ln => <div className="mb-4 border-2 px-2 py-4" key={ln.id}>
-                            {ln?.id} - <small>{JSON.stringify(ln)}</small>
-
-                        </div>)}
-                    </div> */}
 
                     {notifs && notifs?.length > 0
                         ? <NotificationList prod={notifs} refetch={refetchNotifs} />

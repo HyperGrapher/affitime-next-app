@@ -1,44 +1,29 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { NextPage } from 'next'
-import { signIn, signOut, useSession } from "next-auth/react";
-import { RegisterFormElement, UserRoles } from '../../interface/auth.interface';
-import { trpc } from '../../utils/trpc';
-import { setCookie } from 'cookies-next';
-import { Switch } from '@headlessui/react'
-import { useState } from 'react';
-import Link from 'next/link';
-import { User } from '@prisma/client';
-import { TRPCError } from '@trpc/server';
-import { useRouter } from 'next/router';
-import ErrorMessage from '../../components/error-messages/ErrorMessage';
+import { Switch } from '@headlessui/react';
 import { QueryClient } from '@tanstack/react-query';
+import type { NextPage } from 'next';
+import { signIn } from "next-auth/react";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { z } from 'zod';
+import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import Loader from '../../components/loader/Loader';
-import { useForm, SubmitHandler } from "react-hook-form";
-import PageCard from '../../components/card/Card';
-import LinkButton from "../../components/buttons/LinkButton";
-import classNames from '../../utils/classnames';
-import { RadioGroup } from '@headlessui/react'
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod'
-
-
-// interface Props {}
-// https://tailwindcss.com/docs/flex-direction
-// https://youtu.be/Rh1MOyfQo14?t=1783
+import type { RegisterFormElement } from '../../interface/auth.interface';
+import { UserRoles } from '../../interface/auth.interface';
+import { trpc } from '../../utils/trpc';
 
 
 
 // https://www.austinshelby.com/blog/build-a-react-form-with-react-hook-form-and-zod
-const FormSchema = z.object({
-    email: z.string().email(),
-    accept: z.literal(true, {
-        invalid_type_error: "You must accept Terms and Conditions.",
-    }),
-    tier: z
-        .string({ invalid_type_error: "Please select a payment tier." })
-        .refine((val) => [{ id: "BRONZE" }, { id: "SILVER" }, { id: "GOLD" }].map((item) => item.id).includes(val)),
-});
+// const FormSchema = z.object({
+//     email: z.string().email(),
+//     accept: z.literal(true, {
+//         invalid_type_error: "You must accept Terms and Conditions.",
+//     }),
+//     tier: z
+//         .string({ invalid_type_error: "Please select a payment tier." })
+//         .refine((val) => [{ id: "BRONZE" }, { id: "SILVER" }, { id: "GOLD" }].map((item) => item.id).includes(val)),
+// });
 
 
 const SignUp: NextPage = (): JSX.Element => {
@@ -49,6 +34,7 @@ const SignUp: NextPage = (): JSX.Element => {
     const [error, setError] = useState("")
     const router = useRouter()
     const client = new QueryClient()
+    client.invalidateQueries()
 
     async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
 
@@ -64,14 +50,12 @@ const SignUp: NextPage = (): JSX.Element => {
             email: e.currentTarget.elements.email.value,
             password: e.currentTarget.elements.password.value,
             username: !isVendor ? e.currentTarget.elements.username.value : "______",
-            brand:  isVendor ? e.currentTarget.elements.brand.value : "______",
-            website: isVendor ?  e.currentTarget.elements.website.value : "https://example.com",
+            brand: isVendor ? e.currentTarget.elements.brand.value : "______",
+            website: isVendor ? e.currentTarget.elements.website.value : "https://example.com",
             role: isVendor ? UserRoles.VENDOR : UserRoles.PARTNER
         },
             {
-                onSuccess: async (data, variables, context) => {
-                    console.log('Success');
-                    console.log({ data, variables, context });
+                onSuccess: async (data, variables) => {
 
                     const { email, password } = variables
                     const signinResult = await signIn('credentials', {
@@ -82,13 +66,10 @@ const SignUp: NextPage = (): JSX.Element => {
 
                     })
 
-                    console.log({ signinResult });
                     if (signinResult?.ok) router.replace('/vendor/dashboard?reg=true')
 
-                    // client.invalidateQueries(['useQuery([queryName])'])
-
                 },
-                onError(error, variables, context) {
+                onError(error) {
                     setError(error.message)
                 },
                 onSettled: () => {

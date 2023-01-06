@@ -1,35 +1,20 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
-import React from "react";
-import Image from "next/image";
-import productImg from '../../../assets/product.png';
-import { numberWithCommas } from "../../../utils/helpers";
-import { Lira } from "../../shared/HtmlCodes";
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import PlayIcon from '@mui/icons-material/PlayCircle';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import LinkIcon2 from '@mui/icons-material/Link';
 import LinkIcon from '@mui/icons-material/Search';
-import SendIcon from '@mui/icons-material/Send';
-import Chip from '@mui/material/Chip';
-import classNames from "../../../utils/classnames";
-import { useRouter } from "next/router";
-import { AppRoutes } from "../../../config/appRoutes";
-import LinkButton from "../../buttons/LinkButton";
+import IconButton from '@mui/material/IconButton';
+import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
+import React from "react";
+import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
+import productImg from '../../../assets/product.png';
+import { AppRoutes } from "../../../config/appRoutes";
+import classNames from "../../../utils/classnames";
+import { numberWithCommas } from "../../../utils/helpers";
 import Divider from "../../shared/Divider";
-import { HiCheckCircle, HiXCircle } from 'react-icons/hi'
+import { Lira } from "../../shared/HtmlCodes";
 
-
-// import { useState, useEffect } from 'react';
-// import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
 
 
 type ItemProps = {

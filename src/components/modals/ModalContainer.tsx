@@ -28,7 +28,7 @@ const ModalContainer: React.FC<Props> = ({ children, setModal, state }) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
+            transition={{ duration: 0.25 }}
             style={{
                 position: 'absolute',
                 inset: '0',
@@ -69,7 +69,7 @@ const animStyle = {
     visible: {
         opacity: 1,
         transition: {
-            duration: 0.5,
+            duration: 0.25,
         }
     },
     exit: {

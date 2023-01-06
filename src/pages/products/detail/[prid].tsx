@@ -1,48 +1,28 @@
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { useRouter } from 'next/router'
-import type { GetServerSideProps } from "next";
-import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
-import { getSession, useSession } from "next-auth/react";
-import PageCard from "../../../components/card/Card";
-import { UserRoles } from '../../../interface/auth.interface';
-import { trpc } from '../../../utils/trpc';
-import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../../components/buttons/LinkButton";
-import Head from "next/head";
-import NextLink from "next/link";
-import { InferGetServerSidePropsType } from 'next'
-import Container from "@mui/material/Container";
-import { prisma } from "../../../server/db/client";
-import IconButton from '../../../components/buttons/IconButton';
-import TopBarProgress from 'react-topbar-progress-indicator';
-import classNames from '../../../utils/classnames';
-import { notifyError, notifySuccessTC, notifySuccessBR } from '../../../utils/notifications';
+import type { Link as LinkEntity } from "@prisma/client";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { type NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
+import { useRouter } from 'next/router';
+import { useState } from 'react';
+import { HiArrowLeft as BackIcon, HiPlus } from 'react-icons/hi';
+import Balancer from 'react-wrap-balancer';
 import productImg from '../../../assets/product.png';
-import { HiArrowLeft as BackIcon } from 'react-icons/hi'
-import { Lira } from '../../../components/shared/HtmlCodes';
-import { MouseEvent, useState } from 'react';
-import { AppRoutes } from '../../../config/appRoutes';
-import ModalContainer from "../../../components/modals/ModalContainer";
+import IconButton from '../../../components/buttons/IconButton';
+import PageCard from "../../../components/card/Card";
 import ConfirmDialog from "../../../components/modals/ConfirmDialog";
-import { Link as LinkEntity } from "@prisma/client";
-import Balancer from 'react-wrap-balancer'
+import ModalContainer from "../../../components/modals/ModalContainer";
+import { Lira } from '../../../components/shared/HtmlCodes';
+import { AppRoutes } from '../../../config/appRoutes';
+import { UserRoles } from '../../../interface/auth.interface';
+import classNames from '../../../utils/classnames';
+import { notifyError, notifySuccessTC } from '../../../utils/notifications';
+import { trpc } from '../../../utils/trpc';
 
 
-// https://nextjs.org/docs/api-reference/data-fetching/get-server-side-props
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const id = context.params?.prid
-
-    // This value is considered fresh for ten seconds (s-maxage=10).
-    // If a request is repeated within the next 10 seconds, the previously
-    // cached value will still be fresh. If the request is repeated before 59 seconds,
-    // the cached value will be stale but still render (stale-while-revalidate=59).
-    //
-    // In the background, a revalidation request will be made to populate the cache
-    // with a fresh value. If you refresh the page, you will see the new value.
 
     context.res.setHeader(
         'Cache-Control',
@@ -54,16 +34,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+
     const { back, push } = useRouter()
     const [busy, setBusy] = useState(false)
     const [modal, setModal] = useState(false)
 
 
-    const { data: session, status: sessionStatus } = useSession();
-    const { data: pd, status: prodStatus, refetch: refetchProducts } = trpc.product.getProductById.useQuery({ id })
+    const { data: session } = useSession();
+    const { data: pd } = trpc.product.getProductById.useQuery({ id })
     const createLinkMutate = trpc.link.createLink.useMutation()
-
-    // console.log(pd);
 
 
     function handleLinkCreation(): void {
@@ -85,7 +64,7 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
             productId: pd?.id ?? ""
         },
             {
-                onSuccess: async (data, variables, context) => {
+                onSuccess: async (data) => {
                     const res = data as LinkEntity
                     const lid = res.id
 
@@ -103,7 +82,7 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
 
 
                 },
-                onError(error, variables, context) {
+                onError(error) {
                     notifyError(error.message)
                 },
                 onSettled: () => {

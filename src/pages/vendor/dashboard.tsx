@@ -1,19 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useTransition } from "react";
+import { useEffect } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
-import usePersistedState from "../../hooks/usePersistedState";
-import getClientIp from "../../utils/getClientIp";
-import { trpc } from "../../utils/trpc";
 import { UserRoles } from "../../interface/auth.interface";
 import useNotificationStore from "../../store/notifications.store";
+import getClientIp from "../../utils/getClientIp";
+import { trpc } from "../../utils/trpc";
 // import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
 
 // import dynamic from 'next/dynamic'
@@ -63,14 +60,9 @@ const IpSchema = z
 
 const Dashboard: NextPage = () => {
 
-    const { data: secretMsg, isLoading: isLoadingSecret, } = trpc.auth.getSecretMessage.useQuery()
     const updateIp = trpc.user.updateUserIp.useMutation()
-    const [isPending, startTransition] = useTransition();
     const { data: sessionData, status: sessionStatus } = useSession();
-    const [_, setPersistedIp] = usePersistedState('ip', '')
-    const [__, setData] = usePersistedState('data', {})
-    const { pathname, query } = useRouter()
-    const { reg } = query
+
 
     const { data: notifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
 
@@ -86,13 +78,7 @@ const Dashboard: NextPage = () => {
         try {
             const userIp = await getClientIp()
             const ipData = IpSchema.parse(userIp)
-            const ipRes = await updateIp.mutateAsync(ipData)
-            console.log({ ipRes });
-
-            startTransition(() => {
-                setPersistedIp(userIp?.ip)
-                setData(userIp)
-            });
+            await updateIp.mutateAsync(ipData)
         } catch (error) {
             console.log(error);
         }
@@ -115,9 +101,6 @@ const Dashboard: NextPage = () => {
                 <h1>Dashboard</h1>
 
                 <div className="container flex flex-col items-center justify-center gap-12 px-4 py-16 ">
-                    <h1 className="text-2xl font-extrabold tracking-tight text-slate-700 sm:text-[2rem]">
-                        {(sessionStatus === 'loading') ? "Loading" : secretMsg}
-                    </h1>
 
                     <div className='mt-6 text-slate-500'>
                         Role: {sessionData?.role}

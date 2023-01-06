@@ -1,8 +1,9 @@
-import { Dispatch, Fragment, SetStateAction, useState } from 'react'
 import { Combobox, Transition } from '@headlessui/react'
-import { HiCheck, HiSwitchVertical } from 'react-icons/hi'
 import { type Category } from '@prisma/client'
-import { FormFieldWrapper, FormFieldError } from '../../error-messages/FormError'
+import type { Dispatch, SetStateAction } from 'react';
+import { Fragment, useState } from 'react'
+import { HiCheck, HiSwitchVertical } from 'react-icons/hi'
+import { FormFieldError, FormFieldWrapper } from '../../error-messages/FormError'
 
 
 
@@ -15,7 +16,6 @@ type Props = {
 
 const CategoriesCombo: React.FC<Props> = ({ cats, setSelected, selected, err }) => {
 
-  // const [selected, setSelected] = useState({id: 0, name: ""})
   const [query, setQuery] = useState('')
 
   const filteredCategory =

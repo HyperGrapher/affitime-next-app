@@ -71,9 +71,9 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
       <ModalContainer state={cancelModal}>
         <WarnDialog
-          title="Affiliate link istegini iptal etmek istiyor musunuz?"
+          title="Affiliate link isteğini iptal etmek istiyor musunuz?"
           desc="
-          Partner linki onayınıza bağlıdır. 
+          Affiliate link kullanımı onayınıza bağlıdır. 
           İptal etmeniz durumunda partner için affiliate linki oluşturulmayacaktır.
           "
           confirmBtnText='İptal Et'
@@ -84,9 +84,9 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
       <ModalContainer state={confirmModal}>
         <ConfirmDialog
-          title="Affiliate link istegini onaylamak istiyor musunuz?"
+          title="Affiliate link isteğini onaylamak istiyor musunuz?"
           desc="
-          Partner linki onayınıza bağlıdır. 
+          Affiliate link kullanımı onayınıza bağlıdır. 
           Onaylamaniz durumunda partner için affiliate linki oluşturulacaktir.
           "
           confirmBtnText='Onayla'

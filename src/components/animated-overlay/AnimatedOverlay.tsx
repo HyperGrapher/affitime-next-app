@@ -1,18 +1,12 @@
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import ReactDOM from "react-dom";
 import { motion } from "framer-motion";
-import { Dispatch, SetStateAction } from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 
 type Props = {
     children: React.ReactNode;
     setModal?: Dispatch<SetStateAction<boolean>>,
 }
-/* 
-    Fade-in / Fade-out full page blurred backdrop that accepts a child.
-    Can be used for modals or loader animations.
 
-*/
 const AnimatedOverlay: React.FC<Props> = ({ children, setModal }) => {
 
     return ReactDOM.createPortal(
@@ -57,20 +51,3 @@ const AnimatedOverlay: React.FC<Props> = ({ children, setModal }) => {
 }
 
 export default AnimatedOverlay;
-
-
-const animStyle = {
-    hidden: {
-        opacity: 0,
-    },
-    visible: {
-        opacity: 1,
-        transition: {
-            duration: 0.25,
-        }
-    },
-    exit: {
-        opacity: 0,
-
-    }
-}

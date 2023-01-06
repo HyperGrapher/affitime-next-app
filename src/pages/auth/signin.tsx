@@ -1,8 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { NextPage } from 'next'
-import { RegisterFormElement } from '../../interface/auth.interface';
-import { signIn, signOut, useSession } from "next-auth/react";
+import type { NextPage } from 'next'
+import type { RegisterFormElement } from '../../interface/auth.interface';
+import { signIn } from "next-auth/react";
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -13,7 +11,6 @@ import { notifyError } from '../../utils/notifications';
 
 const Signin: NextPage = (): JSX.Element => {
 
-    const { data, status } = useSession()
     const [busy, setBusy] = useState(false)
     const [error, setError] = useState("")
     const router = useRouter()

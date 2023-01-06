@@ -1,18 +1,12 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { GetServerSideProps } from "next";
-import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
+import PartnerProductList from '../../../components/_partner/products/ProductList';
 import PageCard from "../../../components/card/Card";
-import ProductList from '../../../components/_partner/products/ProductList';
-import ProductList2 from '../../../components/products/ProductList';
-
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
-import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../../components/buttons/LinkButton";
-import Pager from "../../../components/pager/Pager";
+// import Pager from "../../../components/pager/Pager";
 
 // https://mantine.dev/hooks/use-pagination/
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -46,11 +40,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Products: NextPage = () => {
 
-    const { data: products, status: prodStatus, refetch: refetchProducts } = trpc.product.getAllProductsForVendor.useQuery()
+    const { data: products, status: sts, refetch: refetchProducts } = trpc.product.getAllProductsForVendor.useQuery()
 
     return (
         <main className="auth-container">
-            {prodStatus === 'loading' && <TopBarProgress />}
+            {sts === 'loading' && <TopBarProgress />}
 
             <PageCard>
 
@@ -58,11 +52,14 @@ const Products: NextPage = () => {
 
                     <div className="ml-2">
                         <h2 className="font-bold text-xl text-slate-700">Kampanya Ürünleri</h2>
-                        {products && products?.length > 0 ? (
-                            <small>
-                                Toplam {products?.length} adet ürün
-                            </small>
-                        ) : null}
+                        {products && products?.length > 0
+                            ? (
+                                <small>
+                                    Toplam {products?.length} adet ürün
+                                </small>
+                            )
+                            : null
+                        }
                     </div>
 
                 </div>
@@ -70,18 +67,12 @@ const Products: NextPage = () => {
 
                 <section className="mb-4">
 
-                    {/* <div>
-                        {products?.map(p => <div className="mb-4 border-2 px-2 py-4" key={p.id}>
-                            {p.title} - <small>{p.vendor.user.packageType}</small>
-
-                        </div>)}
-                    </div> */}
-
-                    {products && products?.length > 0 ? <ProductList prod={products} refetch={refetchProducts} /> : null}
+                    {products && products?.length > 0
+                        ? <PartnerProductList prod={products} refetch={refetchProducts} />
+                        : null
+                    }
 
                 </section>
-
-                <Pager />
 
             </PageCard>
         </main>

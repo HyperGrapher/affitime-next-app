@@ -1,27 +1,22 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from 'react';
-import classNames from '../../utils/classnames';
-import { HiPlus } from 'react-icons/hi'
-import FormError, { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
-import { RadioGroup } from '@headlessui/react'
+import { RadioGroup } from '@headlessui/react';
 import { CommissionType } from "@prisma/client";
+import { useState } from 'react';
+import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import classNames from '../../utils/classnames';
 
 interface Props {
   disabled?: boolean
-  register?: any
   isError: boolean
   errorMsg?: string | undefined
 }
 
-const Commissons: React.FC<Props> = ({ disabled, register, isError, errorMsg }) => {
+const Commissons: React.FC<Props> = ({ isError, errorMsg }) => {
 
   const [perClickType, setPerClickType] = useState(CommissionType.PERC)
-  const [perSaleType, setPerSaleType] = useState(CommissionType.PERC)
 
 
   return (
     <div>
-
 
       <FormFieldWrapper>
 
@@ -50,9 +45,6 @@ const Commissons: React.FC<Props> = ({ disabled, register, isError, errorMsg }) 
         </RadioGroup>
 
         <FormFieldError state={isError} message={errorMsg} />
-
-
-
 
       </FormFieldWrapper>
 
