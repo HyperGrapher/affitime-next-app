@@ -197,24 +197,32 @@ model Product {
 }
 
 model Visit {
-  id           String   @id @default(cuid())
-  link         Link     @relation("LinkVisits", fields: [link_id], references: [id])
+  id           String    @id @default(cuid())
+  link         Link      @relation("LinkVisits", fields: [link_id], references: [id])
   link_id      String
-  partner_id   String? // maybe used for total calcs
-  vendor_id    String? // maybe used for total calcs
+  partner_id   String? 
+  vendor_id    String? 
   visiterIp    String?
+  os           String?   @default("undetected")
+  device       String?
   ipInfo       Json?
-  country      String   @default("tr")
+  country      String    @default("tr")
   cookieInfo   Json?
-  isSold       Boolean  @default(false)
-  isUnique     Boolean  @default(true)
+  isSold       Boolean   @default(false)
+  isVpn        Boolean   @default(false)
+  isUnique     Boolean   @default(true)
+  lastVisit    DateTime?
+  visitCount   Int       @default(0)
   params       String? // Link query extras
   dubious      Boolean? //
   dubiousCause String? //
   partnerVisit Boolean? //
   paid         Boolean?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  userAgent    String?   @db.Text // full txt form
+  ua_family    String?
+  ua_major     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([id, link_id])
 }
@@ -245,37 +253,35 @@ model Link {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  @@index([id, vendor_id, partner_id, product_id, url])
+  @@index([id, product_id, url])
 }
 
 model UserIps {
   id         Int      @id @default(autoincrement())
-  url        String
   ip         String
   country    String
-  isUser     Boolean
-  isVpn      Boolean
   user_id    String?
   partner_id String?
   vendor_id  String?
   ipInfo     Json?
   createdAt  DateTime @default(now())
 
-  @@index([id, url, ip])
+  @@index([id, ip])
 }
 
 model Notification {
-  id Int @id @default(autoincrement())
-
-  message    String
+  id         Int      @id @default(autoincrement())
+  message    String   @db.Text
+  type       String?
+  action     String?
   for        Role     @default(PARTNER)
   read       Boolean  @default(false)
-  
   partner    Partner  @relation(fields: [partner_id], references: [id])
   partner_id String
   vendor     Vendor   @relation(fields: [vendor_id], references: [id])
   vendor_id  String
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  // @@index([id, url, ip])
+
+  @@index([id])
 }

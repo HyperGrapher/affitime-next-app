@@ -1,25 +1,91 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { InferGetServerSidePropsType, type NextPage } from "next";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { type NextPage } from "next";
 import Head from "next/head";
 import { trpc } from "../../utils/trpc";
-import type { GetServerSideProps } from "next";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession, useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { prisma } from "../../server/db/client";
 import { UserRoles } from "../../interface/auth.interface";
 import { useEffect, useState } from "react";
-
-
+import userAgentLib from "useragent";
+import Cookies from 'cookies'
+import { Ipware } from '@fullerstack/nax-ipware';
+import { COOKIE_SIGN_KEY } from "../../config/constants";
+// import { BlockList } from "net"
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
+    const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] }) // shouldn't chage or cookie reset
+    const ipware = new Ipware();
+    const ipInfo = ipware.getClientIP(context.req)
+
+    const agent = userAgentLib.parse(context.req.headers['user-agent']);
+    const ua = userAgentLib.is(context.req.headers['user-agent'])
 
     const url = context.params?.url as string
     const query = context.query
+    const locale = context.locale
+    const headers = context.req.headers
+    // const vp = context.params
+    console.log("headers");
+    console.log(headers);
+    console.log(locale);
+    console.log("agent");
+    console.log(agent);
+    console.log("ua");
+    console.log(ua);
+
+    const csrfCk = cookies.get('next-auth.csrf-token')
+    const sessCk = cookies.get('next-auth.session-token')
+
+    // Get a cookie
+    const lastVisitCk = cookies.get('lv', { signed: true })
+
+    const daysToExpire = 60
+    const cookieOpts = { signed: true, expires: new Date(Date.now() + (daysToExpire * 24 * 60 * 60 * 1000)) }
+    // https://www.npmjs.com/package/keygrip for checking .sig cookie value
+    const ckData = { dt: new Date().toISOString(), c: lastVisitCk ? Number(JSON.parse(lastVisitCk).c) + 1 : 0 }
+    // Set the cookie to a value
+    cookies.set('lv', JSON.stringify(ckData), cookieOpts)
+    cookies.set('datam', "setting new cookie with signed option is true", { signed: true })
+
+    // 2023-01-09T19:46:31.613Z
+    if (!lastVisitCk) {
+        console.log('No LastVisit');
+
+    } else {
+        console.log("lastVisitCk")
+        console.log(lastVisitCk)
+    }
+
+    console.log("\n");
+    console.log(ipInfo);
+    let visterIp = ""
+
+    if (context.req.socket.remoteAddress === '::1') {
+        visterIp = 'localhost'
+    }
+
+    // if the server is behind a proxy
+    const xForwardedFor = context.req.headers['x-forwarded-for']
+    const referer = context.req.headers['referer']
+    const connection = context.req.headers['connection']
+    const osPlatform = context.req.headers['sec-ch-ua-platform']
+    console.log(xForwardedFor);
+    console.log(context.req.httpVersion);
+
+    console.log({connection});
+    console.log({osPlatform});
+    console.log({referer});
+    
+
+    const userAgent = agent.source
+    const us_family = agent.family
+    const us_major = agent.major
 
     // This value is considered fresh for ten seconds (s-maxage=10).
     // If a request is repeated within the next 10 seconds, the previously
@@ -68,7 +134,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                     cookieLife: true,
                 }
             }
-            
+
 
         }
 
@@ -89,41 +155,55 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    // const getPartnerVisitCount = () => {
-    //     console.log("partId", link);
-    //     let result
+    const getPartnerVisitCount = (): number => {
+        // console.log("partId", link);
+        let result = link.partnerVisitCount
 
-    //     if (session && session.role == UserRoles.PARTNER) {
-    //         result = link.partnerVisitCount + 1
+        if (session && session.role == UserRoles.PARTNER) {
+            result = result + 1
 
-    //     }
+        }
 
-    //     return result
-    // }
+        return result
+    }
 
-    const linkPartnerId = link.partner_id
-
-    // const linkUp = await prisma.link.update({
+    // const visit = await prisma.visit.findMany({
     //     where: {
-    //         id: link.id
-    //     },
-    //     data: {
-    //         count: session ? link.count : link.count + 1,
-    //         partnerVisitCount: (session && session.partnerId === linkPartnerId)
-    //             ? link.partnerVisitCount + 1
-    //             : link.partnerVisitCount,
-    //     }
-
-    // });
-
-    // const visit = await prisma.visit.create({
-    //     data: {
-    //         link_id: link.id
+    //         link: {
+    //             product_id: "assa"
+    //         }
     //     }
     // })
 
-    prisma.$disconnect()
+    // const ll = await prisma.link.findMany({
+    //     where: {
 
+    //     }
+    // })
+
+    const linkPartnerId = link.partner_id
+
+    /* 
+        const linkUp = await prisma.link.update({
+            where: {
+                id: link.id
+            },
+            data: {
+                count: session ? link.count : link.count + 1,
+                partnerVisitCount: getPartnerVisitCount()
+            }
+    
+        });
+    
+        const visit = await prisma.visit.create({
+            data: {
+                link_id: link.id
+            }
+        })
+    
+        prisma.$disconnect()
+    
+         */
     return {
         props: {
             url,

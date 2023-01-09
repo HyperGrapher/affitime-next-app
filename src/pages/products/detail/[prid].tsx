@@ -74,7 +74,7 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                     }
 
                     setTimeout(() => {
-                        notifySuccessTC('Link Olusturuldu', true)
+                        notifySuccessTC('Link isteği iletildi.', true)
                         push(`${AppRoutes.PARTNER_LINK_DETAIL}/${lid}?created=true`)
 
                     }, 2050);

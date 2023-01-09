@@ -10,19 +10,13 @@ import { UserRoles } from "../../interface/auth.interface";
 import useNotificationStore from "../../store/notifications.store";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
-
-// import dynamic from 'next/dynamic'
-// import { Suspense } from 'react'
-
-// const DynamicHeader = dynamic(() => import('../components/loader/FadingLoader'), {
-//   suspense: true,
-// })
+import { USER_IP_SESSION_STORAGE } from "../../config/constants";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
-
+    session?.user?.id
     if (!session) return {
         redirect: {
             destination: '/auth/signin',
@@ -58,7 +52,8 @@ const IpSchema = z
 
 const Dashboard: NextPage = () => {
 
-    const updateIp = trpc.user.updateUserIp.useMutation()
+    const updateUserIp = trpc.user.updateUserIp.useMutation()
+    const createUserIp = trpc.ips.createIp.useMutation()
 
     const { data: notifs, status: sts } = trpc.notifications.getUnreadNotificationsForPartner.useQuery()
     const setUnread = useNotificationStore(store => store.setUnread)
@@ -70,11 +65,27 @@ const Dashboard: NextPage = () => {
 
     const setUserIp = async () => {
 
-        try {
-            const userIp = await getClientIp()
-            const ipData = IpSchema.parse(userIp)
-            await updateIp.mutateAsync(ipData)
+        const isSaved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
 
+        try {
+            
+            if (isSaved !== 'true') {
+                const userIp = await getClientIp()
+                const ipData = IpSchema.parse(userIp)
+                await updateUserIp.mutateAsync(ipData)
+
+                createUserIp.mutate({
+                    ip: ipData.ip,
+                    country: ipData?.country ?? "unknown",
+                    ipInfo: ipData
+                }, {
+                    onSuccess() {
+                        console.log('svdui ok');
+                        sessionStorage.setItem(USER_IP_SESSION_STORAGE, "true")
+
+                    },
+                })
+            }
 
 
         } catch (error) {

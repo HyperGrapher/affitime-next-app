@@ -49,7 +49,7 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { email, password, role, username, brand, website } = input;
 
-      const isExist = await ctx.prisma.user.findFirst({
+      const isExist = await ctx.prisma.user.findUnique({
         where: {
           email,
         },
@@ -72,6 +72,8 @@ export const authRouter = router({
             email: email,
             password: hash,
             role: role,
+            packageType: role === 'VENDOR' ? 'ADVANCED' : 'NONE',
+            pro: role === 'VENDOR',
           },
         });
 
@@ -83,9 +85,6 @@ export const authRouter = router({
               website
             },
           });
-
-          console.log("-* *- * - * VENDOR");
-          console.log(vendor);
 
           await ctx.prisma.user.update({
             where: { id: user.id },

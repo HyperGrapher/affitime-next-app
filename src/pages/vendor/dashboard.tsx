@@ -7,18 +7,11 @@ import Link from "next/link";
 import { useEffect } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
+import { USER_IP_SESSION_STORAGE } from "../../config/constants";
 import { UserRoles } from "../../interface/auth.interface";
 import useNotificationStore from "../../store/notifications.store";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
-// import { type NextPage, NextApiRequest, InferGetServerSidePropsType } from "next";
-
-// import dynamic from 'next/dynamic'
-// import { Suspense } from 'react'
-
-// const DynamicHeader = dynamic(() => import('../components/loader/FadingLoader'), {
-//   suspense: true,
-// })
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -62,7 +55,7 @@ const Dashboard: NextPage = () => {
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const { data: sessionData, status: sessionStatus } = useSession();
-
+    const createUserIp = trpc.ips.createIp.useMutation()
 
     const { data: notifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
 
@@ -75,10 +68,28 @@ const Dashboard: NextPage = () => {
 
     const setUserIp = async () => {
 
+        const isSaved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
+
         try {
-            const userIp = await getClientIp()
-            const ipData = IpSchema.parse(userIp)
-            await updateIp.mutateAsync(ipData)
+
+            if (isSaved !== 'true') {
+                const userIp = await getClientIp()
+                const ipData = IpSchema.parse(userIp)
+                await updateIp.mutateAsync(ipData)
+
+                createUserIp.mutate({
+                    ip: ipData.ip,
+                    country: ipData?.country ?? "unknown",
+                    ipInfo: ipData
+                }, {
+                    onSuccess() {
+                        sessionStorage.setItem(USER_IP_SESSION_STORAGE, "true")
+
+                    },
+                })
+            }
+
+
         } catch (error) {
             console.log(error);
         }
