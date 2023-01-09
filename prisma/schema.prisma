@@ -12,7 +12,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  // url      = env("DATABASE_URL")
+  url      = "mysql://burak:Bm123456!@localhost:3306/affprisma?connection_limit=50&socket_timeout=3"
 }
 
 // Necessary for Next auth
@@ -33,6 +34,7 @@ model Account {
 
   @@unique([provider, providerAccountId])
   @@index([userId])
+  @@map("account")
 }
 
 enum Role {
@@ -58,6 +60,7 @@ model Session {
   user         User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
+  @@map("session")
 }
 
 model Payment {
@@ -72,6 +75,7 @@ model Payment {
   updatedAt   DateTime     @updatedAt
 
   @@index([id, userId])
+  @@map("payment")
 }
 
 model User {
@@ -100,6 +104,7 @@ model User {
   updatedAt     DateTime     @updatedAt
 
   @@index([id, email])
+  @@map("user")
 }
 
 model VerificationToken {
@@ -108,6 +113,7 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+  @@map("verification_token")
 }
 
 model Vendor {
@@ -149,6 +155,8 @@ model Tag {
   id       Int              @id @default(autoincrement())
   name     String
   products TagsOnProducts[]
+
+  @@map("tag")
 }
 
 model Category {
@@ -156,6 +164,8 @@ model Category {
   name     String
   products Product[]
   links    Link[]
+
+  @@map("category")
 }
 
 model TagsOnProducts {
@@ -165,6 +175,7 @@ model TagsOnProducts {
   tagId     Int
 
   @@id([productId, tagId])
+  @@map("tags_on_products")
 }
 
 model Product {
@@ -194,14 +205,15 @@ model Product {
   updatedAt         DateTime         @updatedAt
 
   @@index([id, vendor_profile_id])
+  @@map("product")
 }
 
 model Visit {
   id           String    @id @default(cuid())
   link         Link      @relation("LinkVisits", fields: [link_id], references: [id])
   link_id      String
-  partner_id   String? 
-  vendor_id    String? 
+  partner_id   String?
+  vendor_id    String?
   visiterIp    String?
   os           String?   @default("undetected")
   device       String?
@@ -225,6 +237,7 @@ model Visit {
   updatedAt    DateTime  @updatedAt
 
   @@index([id, link_id])
+  @@map("visit")
 }
 
 model Link {
@@ -254,6 +267,7 @@ model Link {
   updatedAt         DateTime @updatedAt
 
   @@index([id, product_id, url])
+  @@map("link")
 }
 
 model UserIps {
@@ -267,6 +281,7 @@ model UserIps {
   createdAt  DateTime @default(now())
 
   @@index([id, ip])
+  @@map("user_ip")
 }
 
 model Notification {
@@ -284,4 +299,5 @@ model Notification {
   updatedAt  DateTime @updatedAt
 
   @@index([id])
+  @@map("notification")
 }
