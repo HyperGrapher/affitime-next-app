@@ -1,14 +1,17 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 import { useSession } from "next-auth/react"
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from "next/router"
-import { HiChartPie, HiCog, HiHome, HiLink, HiMail, HiShoppingBag } from 'react-icons/hi'
+import { HiChartPie, HiCog, HiLink, HiMail, HiShoppingBag } from 'react-icons/hi'
 import logo from '../../assets/tw_logo.svg'
 import { AppRoutes } from '../../config/appRoutes'
 import { UserRoles } from '../../interface/auth.interface'
 import useNotificationStore from '../../store/notifications.store'
 import classNames from '../../utils/classnames'
+import { trpc } from "../../utils/trpc"
+import { useEffect } from "react"
 
 const Sidenav = () => {
 
@@ -16,6 +19,32 @@ const Sidenav = () => {
     const { data: session } = useSession();
     const unreadNotifications = useNotificationStore(store => store.unread)
     const { pathname } = useRouter()
+
+    const { data: nv, refetch: vFetch } = trpc.notifications.getUnreadNotificationsForVendor.useQuery(undefined, { enabled: false })
+    const { data: vp, refetch: pFetch } = trpc.notifications.getUnreadNotificationsForPartner.useQuery(undefined, { enabled: false })
+
+    const setUnread = useNotificationStore(store => store.setUnread)
+
+    useEffect(() => {
+
+        if (session && session.role === UserRoles.PARTNER) {
+            pFetch()
+        }
+        if (session && session.role === UserRoles.VENDOR) {
+            vFetch()
+        }
+    }, [session, pathname])
+
+    useEffect(() => {
+
+        if (session && session.role === UserRoles.PARTNER) {
+            setUnread(vp?.length ?? 0)
+        }
+        if (session && session.role === UserRoles.VENDOR) {
+            setUnread(nv?.length ?? 0)
+        }
+    }, [nv, vp])
+
 
 
     const pathsToExlude = [
@@ -60,7 +89,7 @@ const Sidenav = () => {
             <div id="menu-bar" className='mt-8'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
-                        
+
 
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.VENDOR_DASHBOARD
@@ -209,7 +238,7 @@ const Sidenav = () => {
             <div id="menu-bar" className='mt-8'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
-                        
+
 
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.PARTNER_DASHBOARD

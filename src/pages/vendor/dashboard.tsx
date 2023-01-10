@@ -9,9 +9,9 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
 import { USER_IP_SESSION_STORAGE } from "../../config/constants";
 import { UserRoles } from "../../interface/auth.interface";
-import useNotificationStore from "../../store/notifications.store";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
+import { AppRoutes } from "../../config/appRoutes";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -20,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }
@@ -57,22 +57,12 @@ const Dashboard: NextPage = () => {
     const { data: sessionData, status: sessionStatus } = useSession();
     const createUserIp = trpc.ips.createIp.useMutation()
 
-    const { data: notifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
-
-    const setUnread = useNotificationStore(store => store.setUnread)
-
-    useEffect(() => {
-        setUnread(notifs?.length ?? 0)
-    }, [notifs])
-
-
     const setUserIp = async () => {
 
         const isSaved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
 
-        try {
-
-            if (isSaved !== 'true') {
+        if (isSaved !== 'true') {
+            try {
                 const userIp = await getClientIp()
                 const ipData = IpSchema.parse(userIp)
                 await updateIp.mutateAsync(ipData)
@@ -87,11 +77,11 @@ const Dashboard: NextPage = () => {
 
                     },
                 })
+
+
+            } catch (error) {
+                console.log(error);
             }
-
-
-        } catch (error) {
-            console.log(error);
         }
 
 

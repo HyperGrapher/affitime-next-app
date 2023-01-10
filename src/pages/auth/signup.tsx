@@ -11,6 +11,7 @@ import Loader from '../../components/loader/Loader';
 import type { RegisterFormElement } from '../../interface/auth.interface';
 import { UserRoles } from '../../interface/auth.interface';
 import { trpc } from '../../utils/trpc';
+import { AppRoutes } from '../../config/appRoutes';
 
 
 
@@ -169,7 +170,7 @@ const SignUp: NextPage = (): JSX.Element => {
                         value="Kayıt Ol" />
                 </form>
 
-                <Link className='text-center text-blue-600' href={'/auth/signin'}>Giris Yap</Link>
+                <Link className='text-center text-blue-600' href={AppRoutes.SIGNIN}>Giris Yap</Link>
 
                 <div>
                     <ErrorMessage

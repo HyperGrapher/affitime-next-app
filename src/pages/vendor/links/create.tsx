@@ -12,6 +12,7 @@ import ACComboBox from '../../../components/combobox/ComboBox';
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from '../../../utils/classnames';
 import { trpc } from '../../../utils/trpc';
+import { AppRoutes } from "../../../config/appRoutes";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -19,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }

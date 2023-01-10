@@ -44,7 +44,7 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
           title="Affiliate linkini duraklatmak istiyor musunuz?"
           desc="
           Link pasif hale gelerek ve oluşturulan 
-          tüm affiliate linkleri hata sayfasina yönlendirilecektir. 
+          tüm Affiliate Linklerim hata sayfasina yönlendirilecektir. 
           "
           confirmBtnText='Sil'
           dismissFn={() => setModal(false)}

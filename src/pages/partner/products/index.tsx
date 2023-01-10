@@ -6,6 +6,7 @@ import PartnerProductList from '../../../components/_partner/products/ProductLis
 import PageCard from "../../../components/card/Card";
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
+import { AppRoutes } from "../../../config/appRoutes";
 // import Pager from "../../../components/pager/Pager";
 
 // https://mantine.dev/hooks/use-pagination/
@@ -20,7 +21,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }

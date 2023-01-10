@@ -16,6 +16,7 @@ const seedProducts = async () => {
   const vendor_user_id = u?.id ?? "abc";
   const vendor_profile_id = u?.vendor_id ?? "abc";
 
+  // TODO: move to another file
   const prods = [
     {
       title: "LG 38 inch Ultrawide Monitor",

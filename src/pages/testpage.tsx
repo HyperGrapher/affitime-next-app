@@ -4,6 +4,7 @@ import Link from 'next/link';
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession, signOut, } from "next-auth/react";
+import { AppRoutes } from '../config/appRoutes';
 
 // ? TEST EXIST
 const Welcome: NextPage = () => {
@@ -36,7 +37,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   if (!session) return {
     redirect: {
-      destination: '/auth/signin',
+      destination: AppRoutes.SIGNIN,
       permanent: false
     }
   }

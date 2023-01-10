@@ -9,6 +9,7 @@ import PageCard from "../../../components/card/Card";
 import { UserRoles } from '../../../interface/auth.interface';
 import useNotificationStore from "../../../store/notifications.store";
 import { trpc } from '../../../utils/trpc';
+import { AppRoutes } from "../../../config/appRoutes";
 
 
 
@@ -32,13 +33,12 @@ const Notifications: NextPage = () => {
 
                     <div className="ml-2">
                         <h2 className="font-bold text-xl text-slate-700">Bildirimler</h2>
-                        {notifs && notifs?.length > 0 ?
-                            (<small>
-                                Toplam {notifs?.length} adet bilriminiz var.
-                            </small>)
+                        {notifs && notifs?.length > 0
+                            ?
+                            (<small>Toplam {notifs?.length} adet bilriminiz var.</small>)
                             :
-                            (<small>
-                                Bildiriminiz bulunmuyor                            </small>)}
+                            (<small>Bildiriminiz bulunmuyor </small>)
+                        }
                     </div>
 
                 </div>
@@ -48,7 +48,8 @@ const Notifications: NextPage = () => {
 
                     {notifs && notifs?.length > 0
                         ? <NotificationList prod={notifs} refetch={refetchNotifs} />
-                        : null}
+                        : null
+                    }
 
                 </section>
 
@@ -68,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }
@@ -80,6 +81,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    return { props: { userId: session.id } }
+    return { props: {} }
 
 }

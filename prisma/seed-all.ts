@@ -68,6 +68,7 @@ const seedProducts = async () => {
   const vendor_user_id = u?.id ?? "abc";
   const vendor_profile_id = u?.vendor_id ?? "abc";
 
+  // TODO: move to another file 
   const prods = [
     {
       title: "LG 38 inch Ultrawide Monitor",
@@ -106,7 +107,7 @@ const seedProducts = async () => {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
       price: 1500.99,
-      perClick: 0.5,
+      perClick: 1,
       perClickType: CommissionType.CASH,
       perSale: 12,
       perSaleType: CommissionType.PERC,
@@ -123,7 +124,7 @@ const seedProducts = async () => {
       title: "Delonghi Dedica Manuel Espresso Makinesi",
       desc: "Delonghi Dedica Manuel Espresso Makinesi, 15 cm Genişlik, 1 L Kapasite, 1350W, 15 Bar Basınç, Paslanmaz Çelik (EC 685.M).",
       price: 8785.85,
-      perClick: 0.25,
+      perClick: 2,
       perClickType: CommissionType.CASH,
       perSale: 7,
       perSaleType: CommissionType.PERC,
@@ -157,7 +158,7 @@ const seedProducts = async () => {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
       desc: "Philips TAR4406/12 alarmlı saat/kronometre Dijital çalar saat Beyaz",
       price: 849.99,
-      perClick: 0.1,
+      perClick: 3,
       perClickType: CommissionType.CASH,
       perSale: 16,
       perSaleType: CommissionType.PERC,
@@ -174,7 +175,7 @@ const seedProducts = async () => {
       title: "Caterpillar Kadın Bej Colorado Bot",
       desc: "Kadın Bot",
       price: 1749.0,
-      perClick: 0.5,
+      perClick: 1,
       perClickType: CommissionType.PERC,
       perSale: 8,
       perSaleType: CommissionType.PERC,

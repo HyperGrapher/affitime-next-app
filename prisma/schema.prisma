@@ -269,12 +269,11 @@ model Link {
   @@index([id, product_id, url])
   @@map("link")
 }
-
+// ! removed user_id
 model UserIps {
   id         Int      @id @default(autoincrement())
   ip         String
   country    String
-  user_id    String?
   partner_id String?
   vendor_id  String?
   ipInfo     Json?

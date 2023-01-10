@@ -62,7 +62,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
           title="Ürünü kaldırmak istiyor musunuz?"
           desc="
           Ürün pasif hale gelecek ve oluşturulan 
-          tüm affiliate linkleri geçersiz hale gelerek 
+          tüm Affiliate Linklerim geçersiz hale gelerek 
           hata sayfasina yönlendirilecektir. 
           "
           confirmBtnText="Kaldır"

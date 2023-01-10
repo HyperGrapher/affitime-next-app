@@ -6,11 +6,12 @@ import Head from "next/head";
 import { useEffect } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
+import { USER_IP_SESSION_STORAGE } from "../../config/constants";
 import { UserRoles } from "../../interface/auth.interface";
 import useNotificationStore from "../../store/notifications.store";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
-import { USER_IP_SESSION_STORAGE } from "../../config/constants";
+import { AppRoutes } from "../../config/appRoutes";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -19,7 +20,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     session?.user?.id
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }
@@ -67,9 +68,8 @@ const Dashboard: NextPage = () => {
 
         const isSaved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
 
-        try {
-            
-            if (isSaved !== 'true') {
+        if (isSaved !== 'true') {
+            try {
                 const userIp = await getClientIp()
                 const ipData = IpSchema.parse(userIp)
                 await updateUserIp.mutateAsync(ipData)
@@ -80,16 +80,13 @@ const Dashboard: NextPage = () => {
                     ipInfo: ipData
                 }, {
                     onSuccess() {
-                        console.log('svdui ok');
                         sessionStorage.setItem(USER_IP_SESSION_STORAGE, "true")
-
                     },
                 })
+
+            } catch (error) {
+                console.log(error);
             }
-
-
-        } catch (error) {
-            console.log(error);
         }
 
 

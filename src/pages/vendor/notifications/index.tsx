@@ -12,12 +12,13 @@ import { formatDateTR } from "../../../utils/helpers";
 import { notifyError } from "../../../utils/notifications";
 import { useEffect } from "react";
 import useNotificationStore from "../../../store/notifications.store";
+import { AppRoutes } from "../../../config/appRoutes";
 
 
 
 const Notifications: NextPage = () => {
 
-    const { data: notifs, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
+    const { data: notifs,  status: sts,  refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
 
     const setUnread = useNotificationStore(store => store.setUnread)
 
@@ -43,6 +44,7 @@ const Notifications: NextPage = () => {
 
     return (
         <div className="auth-container">
+            {(sts === 'loading') && <TopBarProgress />}
 
             <div className="hidden mt-6 ">
                 {notifs?.map(it => <div key={it.id} className="py-2 px-2 my-1 border flex space-x-4">
@@ -130,7 +132,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }

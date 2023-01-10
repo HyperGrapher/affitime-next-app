@@ -23,6 +23,7 @@ import { prisma } from "../../../server/db/client";
 import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessBR, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
+import { AppRoutes } from '../../../config/appRoutes';
 
 interface IServerSideProps {
     cats: Category[]
@@ -34,7 +35,7 @@ export const getServerSideProps: GetServerSideProps<IServerSideProps> = async (c
 
     if (!session) return {
         redirect: {
-            destination: '/auth/signin',
+            destination: AppRoutes.SIGNIN,
             permanent: false
         }
     }

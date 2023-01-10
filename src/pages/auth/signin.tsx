@@ -79,7 +79,7 @@ const Signin: NextPage = (): JSX.Element => {
 
                 </form>
 
-                <Link className='text-center text-blue-600' href={'/auth/signup'}>Kayit Ol</Link>
+                <Link className='text-center text-blue-600' href={AppRoutes.SIGNUP}>Kayit Ol</Link>
 
                 <div>
                     <ErrorMessage
