@@ -169,4 +169,57 @@ export const authRouter = router({
       },
     });
   }),
+
+  createAdmin: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+        password: z.string().min(8),
+        adminpass: z.string().min(8),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { email, password, adminpass } = input;
+
+      if (adminpass !== "@@affitime-admin@@")
+        throw new Error("Cannot create admin");
+
+      const isExist = await ctx.prisma.user.findUnique({
+        where: {
+          email,
+        },
+      });
+
+      if (isExist)
+        throw new TRPCError({
+          message: "Bu email zaten kayıtlı",
+          code: "CONFLICT",
+          cause: "Email Conflict",
+        });
+
+      try {
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+
+        const user = await ctx.prisma.user.create({
+          data: {
+            email: email,
+            password: hashedPassword,
+            role: UserRoles.ADMIN,
+            packageType: "NONE",
+            pro: true,
+          },
+        });
+
+        const resultUser = await ctx.prisma.user.findFirst({
+          where: {
+            email,
+          },
+        });
+
+        return { message: "ok" };
+      } catch (error) {
+        console.log(error);
+      }
+    }),
 });

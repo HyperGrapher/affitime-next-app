@@ -5,26 +5,15 @@ import { signIn } from "next-auth/react";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { z } from 'zod';
 import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import Loader from '../../components/loader/Loader';
 import type { RegisterFormElement } from '../../interface/auth.interface';
 import { UserRoles } from '../../interface/auth.interface';
 import { trpc } from '../../utils/trpc';
 import { AppRoutes } from '../../config/appRoutes';
-
-
-
-// https://www.austinshelby.com/blog/build-a-react-form-with-react-hook-form-and-zod
-// const FormSchema = z.object({
-//     email: z.string().email(),
-//     accept: z.literal(true, {
-//         invalid_type_error: "You must accept Terms and Conditions.",
-//     }),
-//     tier: z
-//         .string({ invalid_type_error: "Please select a payment tier." })
-//         .refine((val) => [{ id: "BRONZE" }, { id: "SILVER" }, { id: "GOLD" }].map((item) => item.id).includes(val)),
-// });
+import { HiPlus } from 'react-icons/hi';
+import Head from "next/head";
+import IconButton from "../../components/buttons/IconButton";
 
 
 const SignUp: NextPage = (): JSX.Element => {
@@ -41,11 +30,6 @@ const SignUp: NextPage = (): JSX.Element => {
 
         setBusy(true)
         e.preventDefault();
-
-        console.log({
-            email: e.currentTarget.elements.email.value,
-            password: e.currentTarget.elements.password.value,
-        });
 
         createUser.mutate({
             email: e.currentTarget.elements.email.value,
@@ -74,7 +58,6 @@ const SignUp: NextPage = (): JSX.Element => {
                     setError(error.message)
                 },
                 onSettled: () => {
-                    console.log("OnSettled");
                     setBusy(false)
                 }
             }
@@ -84,11 +67,11 @@ const SignUp: NextPage = (): JSX.Element => {
     }
 
 
-
-
-
     return (
         <div className='flex justify-center pt-24'>
+            <Head>
+                <title>Affitime Kayıt</title>
+            </Head>
             <div className="w-64 flex flex-col gap-4">
                 <h1 className='text-xl font-bold text-center mb-6'>Kayıt Ol</h1>
 
@@ -98,8 +81,7 @@ const SignUp: NextPage = (): JSX.Element => {
                         checked={isVendor}
                         onChange={setIsVendor}
                         className={`${isVendor ? 'bg-blue-600' : 'bg-gray-200'
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}
-                    >
+                            } relative inline-flex h-6 w-11 items-center rounded-full`}>
                         <span className="sr-only">Role secimi</span>
                         <span
                             className={`${isVendor ? 'translate-x-6' : 'translate-x-1'
@@ -161,13 +143,13 @@ const SignUp: NextPage = (): JSX.Element => {
                         name="password"
                         id="password"
                         placeholder='Password' />
-                    <input
-                        className='disabled:bg-indigo-400 shadow-lg disabled:shadow-none 
-                        rounded-full bg-indigo-700 px-10 py-3 font-semibold text-white no-underline transition 
-                        hover:bg-indigo-500'
-                        type="submit"
+
+                    <IconButton
+                        icon={<HiPlus color="white" size={"16px"} />}
+                        title="Kayıt Ol"
                         disabled={busy}
-                        value="Kayıt Ol" />
+                        fn={() => null} />
+
                 </form>
 
                 <Link className='text-center text-blue-600' href={AppRoutes.SIGNIN}>Giris Yap</Link>

@@ -8,6 +8,10 @@ import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import Loader from '../../components/loader/Loader';
 import { AppRoutes } from '../../config/appRoutes';
 import { notifyError } from '../../utils/notifications';
+import { HiLogin } from 'react-icons/hi';
+import Head from "next/head";
+import IconButton from "../../components/buttons/IconButton";
+
 
 const Signin: NextPage = (): JSX.Element => {
 
@@ -20,11 +24,6 @@ const Signin: NextPage = (): JSX.Element => {
         e.preventDefault();
         setBusy(true)
 
-        console.log({
-            email: e.currentTarget.elements.email.value,
-            password: e.currentTarget.elements.password.value,
-        });
-
         const signinResult = await signIn('credentials', {
             redirect: false,
             email: e.currentTarget.elements.email.value,
@@ -33,7 +32,6 @@ const Signin: NextPage = (): JSX.Element => {
 
         })
 
-        console.log({ signinResult });
         if (signinResult?.error) {
             setError("Kullanici bilgiliresi hatali")
             setBusy(false)
@@ -48,6 +46,9 @@ const Signin: NextPage = (): JSX.Element => {
 
     return (
         <div className='flex justify-center pt-24'>
+            <Head>
+                <title>Affitime Kullanıcı girişi</title>
+            </Head>
             <div className="w-64 flex flex-col gap-4">
                 <h1 className='text-xl font-bold text-center mb-6'>Giriş Yap</h1>
                 <form className='flex flex-col gap-8' onSubmit={handleSubmit}>
@@ -69,13 +70,12 @@ const Signin: NextPage = (): JSX.Element => {
                         name="password"
                         id="password"
                         placeholder='Password' />
-                    <input
-                        className='disabled:bg-indigo-400 shadow-lg disabled:shadow-none 
-                        rounded-full bg-indigo-700 px-10 py-3 font-semibold text-white no-underline transition 
-                        hover:bg-indigo-500'
-                        type="submit"
+
+                    <IconButton
+                        icon={<HiLogin color="white" size={"16px"} />}
+                        title="Giriş Yap"
                         disabled={busy}
-                        value="Giriş Yap" />
+                        fn={() => null} />
 
                 </form>
 

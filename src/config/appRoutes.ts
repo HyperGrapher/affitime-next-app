@@ -22,6 +22,16 @@ export enum AppRoutes {
   PARTNER_CREATE_LINK = "/partner/links/create",
   PARTNER_NOTIFICATIONS =  "/partner/notifications",
 
+  // ADMIN
+  ADMIN_DASHBOARD = "/admin/dashboard",
+  ADMIN_PRODUCTS = "/admin/products",
+  ADMIN_PRODUCT_DETAIL = "/admin/products/detail",
+  ADMIN_CREATE_PRODUCT = "/admin/products/create",
+  ADMIN_LINKS = "/admin/links",
+  ADMIN_LINK_DETAIL = "/admin/links/detail",
+  ADMIN_CREATE_LINK = "/admin/links/create",
+  ADMIN_NOTIFICATIONS =  "/admin/notifications",
+
   // AUTH
   SIGNIN = "/auth/signin",
   SIGNUP = "/auth/signup",
