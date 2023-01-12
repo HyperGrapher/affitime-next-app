@@ -14,6 +14,8 @@ export const linkRouter = router({
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
       const { id } = input;
+      const { role } = ctx.session;
+      console.log({ role });
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
@@ -21,7 +23,11 @@ export const linkRouter = router({
         where: {
           id,
         },
-        include: { product: true, vendor: true },
+        include: {
+          product: true,
+          vendor: role === "PARTNER",
+          partner: role === "VENDOR",
+        },
       });
     }),
 

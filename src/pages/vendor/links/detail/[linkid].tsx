@@ -171,12 +171,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 <a title={pd?.product.product_url ?? ""} className='text-blue-500' href={pd?.product.product_url ?? "#"}>{pd?.product.product_url?.slice(0, 44)} ...</a>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'>Ürün Sahibi:</b> {pd?.vendor.brand}
-                            </p>
-                            <p className="text-sm">
-                                <b className='text-neutral-500'>Website:</b>
-                                <a title={pd?.vendor.website ?? ""} className='text-blue-500' href={pd?.vendor.website ?? "#"}> {pd?.vendor.website?.slice(0, 48)}</a>
-
+                                <b className='text-neutral-500'>Kullanici ismi:</b> {pd?.partner.username}
                             </p>
                         </div>
                     </div>
