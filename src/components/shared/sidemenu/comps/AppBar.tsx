@@ -1,7 +1,6 @@
 import MuiAppBar from '@mui/material/AppBar';
 import { styled } from '@mui/material/styles';
 import type { AppBarProps as MuiAppBarProps } from '@mui/material/AppBar';
-import MailIcon from '@mui/icons-material/Mail';
 import MenuIcon from '@mui/icons-material/Menu';
 import IconButton from '@mui/material/IconButton';
 

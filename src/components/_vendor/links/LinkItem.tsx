@@ -49,7 +49,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
                             src={p.product.image ?? ""}
-                            alt={p.id!} />
+                            alt={p.id} />
                         : <Image
                             className={classNames(
                                 "object-cover rounded hover:shadow object-center",
@@ -68,7 +68,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                     <Link href={`${AppRoutes.VENDOR_LINK_DETAIL}/${p.id}`}>
                         <h4 className="text-xs whitespace-nowrap text-stone-5000 
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.product.title!.length > 25 ? p.product.title!.substring(0, 25) + " ..." : p.product.title}
+                            {p.product.title && p.product.title.length > 25 ? p.product.title.substring(0, 25) + " ..." : p.product.title}
                         </h4>
                     </Link>
 
@@ -79,7 +79,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                     </p>
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Kullanici: </b>
-                        {p.partner.username!}
+                        {p.partner.username}
                     </p>
 
                 </div>
