@@ -50,5 +50,5 @@ jobs:
       - name: Deploying after build/test CI
         run: |
           echo "Now Deploying..."
-          sleep 5s;
+          sleep 1s;
           echo "Deployment Done!"
