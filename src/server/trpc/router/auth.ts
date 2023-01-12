@@ -157,4 +157,16 @@ export const authRouter = router({
         },
       });
     }),
+  deleteSession: protectedProcedure.mutation(async ({ ctx }) => {
+    const userId = ctx.session.id;
+    console.log({ userId });
+
+    if (!userId) throw new Error("Kullanıcı sezonu sonlanmış");
+
+    return ctx.prisma.session.deleteMany({
+      where: {
+        userId,
+      },
+    });
+  }),
 });

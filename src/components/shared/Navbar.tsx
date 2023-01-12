@@ -4,15 +4,15 @@ import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment } from 'react'
+import { Fragment, useState } from 'react'
 import profileImg from '../../assets/profile.webp'
 import logo from '../../assets/tw_logo.svg'
 import { AppRoutes } from '../../config/appRoutes'
 import { UserRoles } from '../../interface/auth.interface'
 import classNames from '../../utils/classnames'
+import { trpc } from '../../utils/trpc'
+import TopBarProgress from "react-topbar-progress-indicator";
 
-// https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx
-// https://www.youtube.com/watch?v=qJnIJa-cF2M
 
 const pathsToExlude = [
   '/r/',
@@ -20,13 +20,24 @@ const pathsToExlude = [
 
 const Navbar: React.FC = () => {
 
+  const [busy, setBusy] = useState(false)
   const { data: sessionData } = useSession()
   const { pathname } = useRouter()
   let sh = true
   if (pathname === '/') sh = true
+  const deleteUserSession = trpc.auth.deleteSession.useMutation()
+
 
   const logUserOut = () => {
-    signOut({ redirect: true, callbackUrl: '/' })
+    setBusy(true)
+
+    deleteUserSession.mutate(undefined, {
+      onSettled: () => {
+        signOut({ redirect: true, callbackUrl: '/' })
+        setBusy(false)
+      }
+    })
+
   }
 
   for (const excluded of pathsToExlude) {
@@ -39,6 +50,8 @@ const Navbar: React.FC = () => {
     <Disclosure as='nav' className='h-16 bg-violet-900 fixed top-0 left-0 right-0 shadow-lg z-10'>
       {({ open }) => (
         <>
+          {busy && <TopBarProgress />}
+
           <div className='mx-auto max-w-7xl px-2 sm:px-6 lg:px-8 '>
             <div className='relative flex h-16 items-center justify-between'>
               <div className='absolute inset-y-0 left-0 flex items-center sm:hidden'>

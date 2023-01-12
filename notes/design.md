@@ -1,3 +1,6 @@
 # CSS ve Genel Tasarim
 
-- SlideContainer > main > main: <b>translate-x-12</b> sidemenu acilirken yasanan ziplamayi kesiyor ancak onceki degere 25 ms sonra animate edilmeli 
+- "field selector" dropdown 
+    https://twitter.com/i/status/1613619886131122176
+- headlessui navbar https://github.com/joschan21/business-card-fullstack/blob/main/src/components/shared/Navbar.tsx  
+    https://www.youtube.com/watch?v=qJnIJa-cF2M

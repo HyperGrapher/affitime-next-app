@@ -49,8 +49,6 @@ const Account = () => {
 
     const onSubmit: SubmitHandler<IFormData> = async (data) => {
         setBusy(true)
-        console.log(data);
-
         updatePassword.mutate(data, {
             onSuccess: () => {
                 notifySuccessBR("Bilgileriniz Güncellendi!")
