@@ -160,6 +160,19 @@ const Navbar: React.FC = () => {
 
                           <Menu.Item>
                             {({ active }) => (
+                              <Link
+                                href={AppRoutes.SETTINGS_ACCOUNT}
+                                className={classNames(
+                                  active ? 'bg-gray-100' : '',
+                                  'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                )}>
+                                Hesap Ayarlari
+                              </Link>
+                            )}
+                          </Menu.Item>
+
+                          <Menu.Item>
+                            {({ active }) => (
                               <button
                                 type='button'
                                 className={classNames(

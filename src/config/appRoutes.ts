@@ -25,4 +25,5 @@ export enum AppRoutes {
   // AUTH
   SIGNIN = "/auth/signin",
   SIGNUP = "/auth/signup",
+  SETTINGS_ACCOUNT = "/settings/account"
 }

@@ -185,7 +185,7 @@ const Sidenav = () => {
                             </Link>
                         </li>
                         <li id='nav-link'
-                            className={classNames(asPath === "/settings" /* AppRoutes.PRODUCTS */
+                            className={classNames(asPath === AppRoutes.SETTINGS_ACCOUNT /* AppRoutes.PRODUCTS */
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
@@ -193,7 +193,7 @@ const Sidenav = () => {
                             )}>
                             <Link
                                 className='flex items-center space-x-6 bg-redo-100 w-full h-full'
-                                href={AppRoutes.VENDOR_DASHBOARD} >
+                                href={AppRoutes.SETTINGS_ACCOUNT} >
 
                                 <HiCog
                                     id='toggle'
@@ -201,7 +201,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm ">Kullanıcı Ayarları</span>
+                                <span className="font-medium text-sm ">Hesap Ayarları</span>
 
                             </Link>
                         </li>
@@ -334,7 +334,7 @@ const Sidenav = () => {
                             </Link>
                         </li>
                         <li id='nav-link'
-                            className={classNames(asPath === "/settings" /* AppRoutes.PRODUCTS */
+                            className={classNames(asPath === AppRoutes.SETTINGS_ACCOUNT
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
@@ -342,7 +342,7 @@ const Sidenav = () => {
                             )}>
                             <Link
                                 className='flex items-center space-x-6 bg-redo-100 w-full h-full'
-                                href={AppRoutes.PARTNER_DASHBOARD} >
+                                href={AppRoutes.SETTINGS_ACCOUNT} >
 
                                 <HiCog
                                     id='toggle'
@@ -350,7 +350,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm ">Kullanıcı Ayarları</span>
+                                <span className="font-medium text-sm ">Hesap Ayarları</span>
 
                             </Link>
                         </li>

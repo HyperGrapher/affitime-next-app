@@ -4,11 +4,9 @@ import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import { UserRoles } from "../../../interface/auth.interface";
 import bcrypt from "bcrypt";
+import { comparePassword } from "../../../utils/comparePassword";
 
 export const authRouter = router({
-  getSession: publicProcedure.query(({ ctx }) => {
-    return ctx.session;
-  }),
   getSessionUser: protectedProcedure.query(({ ctx }) => {
     const { email } = ctx.session.user;
 
@@ -31,9 +29,6 @@ export const authRouter = router({
         partner: true,
       },
     });
-  }),
-  getSecretMessage: protectedProcedure.query(() => {
-    return "Authanticated";
   }),
   createUser: publicProcedure
     .input(
@@ -64,16 +59,15 @@ export const authRouter = router({
 
       try {
         const salt = await bcrypt.genSalt(10);
-        const hash = await bcrypt.hash(password, salt);
-        console.log({ email, password, role, hash });
+        const hashedPassword = await bcrypt.hash(password, salt);
 
         const user = await ctx.prisma.user.create({
           data: {
             email: email,
-            password: hash,
+            password: hashedPassword,
             role: role,
-            packageType: role === 'VENDOR' ? 'ADVANCED' : 'NONE',
-            pro: role === 'VENDOR',
+            packageType: role === "VENDOR" ? "ADVANCED" : "NONE",
+            pro: role === "VENDOR",
           },
         });
 
@@ -82,7 +76,7 @@ export const authRouter = router({
             data: {
               userId: user.id,
               brand,
-              website
+              website,
             },
           });
 
@@ -96,7 +90,7 @@ export const authRouter = router({
           const partner = await ctx.prisma.partner.create({
             data: {
               userId: user.id,
-              username
+              username,
             },
           });
 
@@ -122,5 +116,45 @@ export const authRouter = router({
       } catch (error) {
         console.log(error);
       }
+    }),
+
+  updatePassword: protectedProcedure
+    .input(
+      z.object({
+        password1: z.string().min(8),
+        password2: z.string().min(8),
+        oldPassword: z.string().min(8),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { email } = ctx.session;
+      const { password1, password2, oldPassword } = input;
+
+      if (!email) throw new Error("Kullanıcı sezonu sonlanmış");
+
+      if (password1 !== password2) throw new Error("Şifre tekrarı aynı olmalı");
+
+      const user = await ctx.prisma.user.findFirst({
+        where: { email: email },
+        include: { vendor: true, partner: true },
+      });
+
+      if (!user) throw new Error("User not found!");
+
+      const result = await comparePassword(oldPassword, user.password);
+
+      if (!result) throw new Error("Eski şifrenizi doğru giriniz!");
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password1, salt);
+
+      return ctx.prisma.user.update({
+        where: {
+          email,
+        },
+        data: {
+          password: hashedPassword,
+        },
+      });
     }),
 });
