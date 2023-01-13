@@ -6,6 +6,9 @@
 // npx prisma studio
 // npx prisma migrate reset (Reset DB)
 
+// prisma db pull //make sure that your Prisma schema is up-to-date
+// https://www.prisma.io/docs/guides/database/developing-with-prisma-migrate/add-prisma-migrate-to-a-project
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -209,32 +212,36 @@ model Product {
 }
 
 model Visit {
-  id           String    @id @default(cuid())
-  link         Link      @relation("LinkVisits", fields: [link_id], references: [id])
-  link_id      String
-  partner_id   String?
-  vendor_id    String?
-  visiterIp    String?
-  os           String?   @default("undetected")
-  device       String?
-  ipInfo       Json?
-  country      String    @default("tr")
-  cookieInfo   Json?
-  isSold       Boolean   @default(false)
-  isVpn        Boolean   @default(false)
-  isUnique     Boolean   @default(true)
-  lastVisit    DateTime?
-  visitCount   Int       @default(0)
-  params       String? // Link query extras
-  dubious      Boolean? //
-  dubiousCause String? //
-  partnerVisit Boolean? //
-  paid         Boolean?
-  userAgent    String?   @db.Text // full txt form
-  ua_family    String?
-  ua_major     String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id                   String    @id @default(cuid())
+  link                 Link      @relation("LinkVisits", fields: [link_id], references: [id])
+  link_id              String
+  visiterIp            String? // get from client
+  country              String    @default("tr") // get from client
+  ipInfo               Json? // get from client
+  ipwareIp             String? // get from server
+  ipwareIsPublic       Boolean? // get from server
+  ipwareIsRouteTrusted Boolean? // get from server
+  hasCookie            Boolean // @default(false)
+  cookieInfo           Json? // cookie
+  lastVisit            DateTime? // cookie
+  prevIp               String? // cookie
+  isSold               Boolean   @default(false)
+  isVpn                Boolean   @default(false)
+  isUnique             Boolean   @default(true)
+  params               String? // Link query extras
+  dubious              Boolean?
+  dubiousCause         String?
+  partnerVisit         Boolean?
+  vendorVisit          Boolean?
+  paid                 Boolean?
+  os                   String?   @default("undetected")
+  device               String?
+  userAgent            String?   @db.Text // full txt form
+  isAgentBot           Boolean?
+  ua_family            String?
+  ua_major             String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
 
   @@index([id, link_id])
   @@map("visit")
@@ -269,7 +276,7 @@ model Link {
   @@index([id, product_id, url])
   @@map("link")
 }
-// ! removed user_id
+
 model UserIps {
   id         Int      @id @default(autoincrement())
   ip         String
