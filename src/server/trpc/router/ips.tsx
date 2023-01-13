@@ -35,7 +35,6 @@ export const userIpsRouter = router({
                     data: {
                         ip: input.ip,
                         country: input.country,
-                        user_id: id,
                         partner_id: partnerId,
                         vendor_id: vendorId,
                         ipInfo: input.ipInfo
