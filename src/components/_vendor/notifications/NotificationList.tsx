@@ -1,21 +1,11 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
+import { notifyError } from "../../../utils/notifications";
 import { trpc } from '../../../utils/trpc';
-import { useState, useEffect } from 'react';
-import styled from '@emotion/styled'
-import Image from "next/image";
-import profileImg from '../../assets/profile.webp'
-import NotificationItem from "./NotificationItem";
-import Button from "@mui/material/Button";
-import { notifyError, notifySuccessBR, notifySuccessTC } from "../../../utils/notifications";
+import ConfirmDialog from "../../modals/ConfirmDialog";
 import ModalContainer from "../../modals/ModalContainer";
 import WarnDialog from "../../modals/WarnDialog";
-import IconButton from "../../buttons/IconButton";
-import ConfirmDialog from "../../modals/ConfirmDialog";
+import NotificationItem from "./NotificationItem";
 // import LinkListHeader from "./LinkListHeader";
 
 type Props = {
@@ -51,9 +41,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
   }
 
-  // TODO: EMPTY STATE 
   return (<>
-
 
     {prod?.length === 0 ? <p className='text-center'>Henüz bir bildiriminiz bulunmuyor</p> : (<>
 

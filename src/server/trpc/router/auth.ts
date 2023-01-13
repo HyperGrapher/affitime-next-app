@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
@@ -201,7 +200,7 @@ export const authRouter = router({
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        const user = await ctx.prisma.user.create({
+        await ctx.prisma.user.create({
           data: {
             email: email,
             password: hashedPassword,
@@ -211,13 +210,7 @@ export const authRouter = router({
           },
         });
 
-        const resultUser = await ctx.prisma.user.findFirst({
-          where: {
-            email,
-          },
-        });
-
-        return { message: "ok" };
+        return { message: "ok", error: null };
       } catch (error) {
         console.log(error);
       }

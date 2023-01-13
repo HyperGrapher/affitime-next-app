@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import MailIcon from '@mui/icons-material/Mail';
@@ -13,9 +12,7 @@ import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { useTheme } from '@mui/material/styles';
-import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
 import * as React from 'react';
 import useNavbarMenuStore from '../../../store/menu.store';
 import AppBar from './comps/AppBar';
@@ -27,13 +24,6 @@ export default function SideMenu() {
     const [open, setOpen] = React.useState(false);
     const setSideOpen = useNavbarMenuStore(store => store.setSideOpen)
 
-
-    const { data: sessionData } = useSession()
-    const { pathname } = useRouter()
-
-    const logUserOut = () => {
-        signOut({ redirect: true, callbackUrl: '/' })
-    }
 
     const handleDrawerOpen = () => {
         setOpen(true);

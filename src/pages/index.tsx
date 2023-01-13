@@ -1,7 +1,6 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import Container from "@mui/material/Container";
-import { GetServerSideProps, type NextPage } from "next";
+import type { GetServerSideProps } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
 

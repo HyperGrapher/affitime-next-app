@@ -1,9 +1,7 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import Link from 'next/link';
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession, signOut, } from "next-auth/react";
+import Link from 'next/link';
 import { AppRoutes } from '../config/appRoutes';
 
 // ? TEST EXIST
