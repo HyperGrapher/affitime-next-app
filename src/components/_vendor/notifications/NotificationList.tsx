@@ -2,11 +2,22 @@ import { type Link as LinkEntity, type Partner, type Product } from "@prisma/cli
 import React, { useState } from "react";
 import { notifyError } from "../../../utils/notifications";
 import { trpc } from '../../../utils/trpc';
-import ConfirmDialog from "../../modals/ConfirmDialog";
-import ModalContainer from "../../modals/ModalContainer";
-import WarnDialog from "../../modals/WarnDialog";
 import NotificationItem from "./NotificationItem";
-// import LinkListHeader from "./LinkListHeader";
+import dynamic from 'next/dynamic'
+
+const DynamicModalContainer = dynamic(() => import('../../modals/ModalContainer'), {
+  ssr: false,
+})
+
+const DynamicWarnDialog = dynamic(() => import('../../modals/WarnDialog'), {
+  ssr: false,
+})
+
+
+const DynamicConfirmDialog = dynamic(() => import('../../modals/ConfirmDialog'), {
+  ssr: false,
+})
+
 
 type Props = {
   prod: (LinkEntity & { partner: Partner; product: Product; })[] | undefined
@@ -57,8 +68,8 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           />))}
       </ul>
 
-      <ModalContainer state={cancelModal}>
-        <WarnDialog
+      <DynamicModalContainer state={cancelModal}>
+        <DynamicWarnDialog
           title="Affiliate link isteğini iptal etmek istiyor musunuz?"
           desc="
           Affiliate link kullanımı onayınıza bağlıdır. 
@@ -68,10 +79,10 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           dismissFn={() => setCancelModal(false)}
           confirmFn={() => handleAction(false)}
         />
-      </ModalContainer>
+      </DynamicModalContainer>
 
-      <ModalContainer state={confirmModal}>
-        <ConfirmDialog
+      <DynamicModalContainer state={confirmModal}>
+        <DynamicConfirmDialog
           title="Affiliate link isteğini onaylamak istiyor musunuz?"
           desc="
           Affiliate link kullanımı onayınıza bağlıdır. 
@@ -81,7 +92,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           dismissFn={() => setConfirmModal(false)}
           confirmFn={() => handleAction(true)}
         />
-      </ModalContainer>
+      </DynamicModalContainer>
 
     </>
     )}

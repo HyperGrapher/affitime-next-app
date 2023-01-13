@@ -14,14 +14,16 @@ import Cookies from 'cookies'
 import { Ipware } from '@fullerstack/nax-ipware';
 import { COOKIE_SIGN_KEY } from "../../config/constants";
 import isbot from 'isbot'
-
+import getClientIp from "../../utils/getClientIp";
+import { IpSchema } from "../../interface/zod.schema";
+import { TypeOf } from "zod";
 // https://github.com/omrilotan/isbot
 // import { BlockList } from "net"
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
-    const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] }) // shouldn't chage or cookie reset
+    const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
     const ipware = new Ipware();
     const ipInfo = ipware.getClientIP(context.req)
     const agent = userAgentLib.parse(context.req.headers['user-agent']);
@@ -68,6 +70,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     // Set the cookie to a value
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
+
+
     cookies.set('datam', "setting new cookie with signed option is true", { signed: true })
 
     // 2023-01-09T19:46:31.613Z
@@ -111,6 +115,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     //
     // In the background, a revalidation request will be made to populate the cache
     // with a fresh value. If you refresh the page, you will see the new value.
+
+
     context.res.setHeader(
         'Cache-Control',
         'public, s-maxage=600, stale-while-revalidate=6000'
@@ -239,6 +245,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_url }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [done, setDone] = useState(false)
+    const [sch, setSch] = useState<unknown>({})
+
+    
+    const setUserIp = async () => {
+        
+        const userIp = await getClientIp()
+        const ipData = IpSchema.parse(userIp)
+        setSch(ipData)
+        return 
+
+    }
+
+    useEffect(() => { setUserIp() }, [])
+
+
 
     useEffect(() => {
         if (done) console.log('DONE, Navigate');
@@ -294,6 +315,10 @@ const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_
                     </div>
                 </div>
             </section>
+
+            <pre className="mt-8 pb-8">
+                {JSON.stringify(sch, null, 4)}
+            </pre>
 
 
         </div>
