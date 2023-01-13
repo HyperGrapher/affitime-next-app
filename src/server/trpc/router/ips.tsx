@@ -1,4 +1,3 @@
-// import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";
 
@@ -27,7 +26,7 @@ export const userIpsRouter = router({
             })
         )
         .mutation(async ({ ctx, input }) => {
-            const { vendorId, partnerId, id } = ctx.session;
+            const { vendorId, partnerId } = ctx.session;
 
             try {
 
