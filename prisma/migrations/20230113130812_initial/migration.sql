@@ -127,6 +127,7 @@ CREATE TABLE `category` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+
 -- CreateTable
 CREATE TABLE `tags_on_products` (
     `productId` VARCHAR(191) NOT NULL,
@@ -172,7 +173,7 @@ CREATE TABLE `visit` (
     `ipwareIp` VARCHAR(191) NULL,
     `ipwareIsPublic` BOOLEAN NULL,
     `ipwareIsRouteTrusted` BOOLEAN NULL,
-    `hasCookie` BOOLEAN NOT NULL DEFAULT false,
+    `hasCookie` BOOLEAN NOT NULL,
     `cookieInfo` JSON NULL,
     `lastVisit` DATETIME(3) NULL,
     `prevIp` VARCHAR(191) NULL,

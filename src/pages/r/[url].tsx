@@ -18,10 +18,6 @@ import isbot from 'isbot'
 // https://github.com/omrilotan/isbot
 // import { BlockList } from "net"
 
-/*
-
-Onceden de biraz konustuk. Elimde var olan ama tasarimi eksik kalmis yada sadece api'si bulunan uygulamalar var.
-*/
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
