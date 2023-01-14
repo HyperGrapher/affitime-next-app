@@ -48,7 +48,7 @@ export const authOptions: NextAuthOptions = {
           include: { vendor: true, partner: true },
         });
 
-        if (!user) throw new Error("User not found!!");
+        if (!user) return null;
 
         const result = await comparePassword(password, user.password);
 

@@ -28,7 +28,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const ipInfo = ipware.getClientIP(context.req)
     const agent = userAgentLib.parse(context.req.headers['user-agent']);
     const ua = userAgentLib.is(context.req.headers['user-agent'])
-    
+
     const url = context.params?.url as string
     const query = context.query
     const locale = context.locale
@@ -45,9 +45,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     console.log("is bot: ", isbot(context.req.headers['user-agent'] ?? "no data"));
 
-    if(isbot(context.req.headers['user-agent'] ?? "")) {
+    if (isbot(context.req.headers['user-agent'] ?? "")) {
         const isDoub = true
-        const reason= "Crawler veya bot"
+        const reason = "Crawler veya bot"
     }
 
 
@@ -70,9 +70,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     // Set the cookie to a value
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
-
-
-    cookies.set('datam', "setting new cookie with signed option is true", { signed: true })
 
     // 2023-01-09T19:46:31.613Z
     if (!lastVisitCk) {
@@ -235,25 +232,40 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             image: link.product.image,
             desc: link.product.desc,
             title: link.product.title,
-            valid: !!!session // ! check 
+            valid: !!!session, // ! check
+            ipInfo,
+            lastVisitCk: lastVisitCk ? lastVisitCk : null,
+            visterIp
+
         }
     }
 
 }
+// * server'a atilacak
 
-
-const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_url }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const AffiProduct: NextPage = ({ 
+    url, 
+    image, 
+    desc, 
+    title, 
+    valid, 
+    query, 
+    product_url, 
+    ipInfo, 
+    lastVisitCk,
+    visterIp
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [done, setDone] = useState(false)
     const [sch, setSch] = useState<unknown>({})
 
-    
+
     const setUserIp = async () => {
-        
+
         const userIp = await getClientIp()
         const ipData = IpSchema.parse(userIp)
         setSch(ipData)
-        return 
+        return
 
     }
 
@@ -316,10 +328,29 @@ const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_
                 </div>
             </section>
 
-            <pre className="mt-8 pb-8">
-                {JSON.stringify(sch, null, 4)}
-            </pre>
+            <div className="px-8 pb-16">
 
+                <b>Cookie: </b>
+                <p>{lastVisitCk}</p>
+
+                <br />
+
+                <b>socket.remoteAddress: </b>
+                <p>{visterIp}</p>
+
+                <br />
+
+                <pre className="mt-8 pb-8">
+                    {JSON.stringify(sch, null, 4)}
+                </pre>
+
+
+                <b className="mt-8 ">IpWare</b>
+                <pre className="pb-8">
+                    {JSON.stringify(ipInfo, null, 4)}
+                </pre>
+
+            </div>
 
         </div>
     )
