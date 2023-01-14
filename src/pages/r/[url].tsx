@@ -1,24 +1,25 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import { type NextPage } from "next";
-import Head from "next/head";
-// import { trpc } from "../../utils/trpc";
+import { Ipware } from '@fullerstack/nax-ipware';
+import type { UserIps } from "@prisma/client";
+import Cookies from 'cookies';
+import isbot from 'isbot';
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
-// import { useRouter } from "next/router";
-import { prisma } from "../../server/db/client";
-import { UserRoles } from "../../interface/auth.interface";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import userAgentLib from "useragent";
-import Cookies from 'cookies'
-import { Ipware } from '@fullerstack/nax-ipware';
 import { COOKIE_SIGN_KEY } from "../../config/constants";
-import isbot from 'isbot'
-import getClientIp from "../../utils/getClientIp";
+import { UserRoles } from "../../interface/auth.interface";
+import type { ILVCookie } from "../../interface/zod.schema";
 import { IpSchema } from "../../interface/zod.schema";
-import type { Visit } from "@prisma/client";
+import { prisma } from "../../server/db/client";
+import getClientIp from "../../utils/getClientIp";
 // https://github.com/omrilotan/isbot
 // import { BlockList } from "net"
+// https://www.npmjs.com/package/request-info
+// https://www.npmjs.com/package/keygrip for checking .sig cookie value
 
 /*
 http://affitime.com/r/ULGhrzxx
@@ -48,235 +49,96 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context)
     const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
     const ipware = new Ipware();
-    const ipInfo = ipware.getClientIP(context.req)
-    const agent = userAgentLib.parse(context.req.headers['user-agent']);
-    const ua = userAgentLib.is(context.req.headers['user-agent'])
-
+    const ipwareObj = ipware.getClientIP(context.req)
+    const agentObj = userAgentLib.parse(context.req.headers['user-agent']);
     const url = context.params?.url as string
     const query = context.query
-    const locale = context.locale
-    const headers = context.req.headers
-    // const vp = context.params
-    console.log("headers");
-    console.log(headers);
-    console.log(locale);
-    console.log("agent");
-    console.log(agent);
-    console.log("context.req.headers['user-agent']: ", context.req.headers['user-agent']);
-    console.log("ua");
-    console.log(ua);
-
-    console.log("is bot: ", isbot(context.req.headers['user-agent'] ?? "no data"));
-
-    const visitData: Partial<Visit> = {
-        link_id: "",
-        visiterIp: null,
-        country: "",
-        ipInfo: null,
-        ipwareIp: null,
-        ipwareIsPublic: null,
-        ipwareIsRouteTrusted: null,
-        hasCookie: false,
-        cookieInfo: null,
-        lastVisit: null,
-        prevIp: null,
-        isVpn: false,
-        isUnique: false,
-        params: null,
-        dubious: null,
-        dubiousCause: null,
-        partnerVisit: null,
-        vendorVisit: null,
-        paid: null,
-        os: null,
-        device: null,
-        userAgent: null,
-        isAgentBot: null,
-        ua_family: null,
-        ua_major: null,
-    }
 
     if (isbot(context.req.headers['user-agent'] ?? "")) {
         const isDoub = true
         const reason = "Crawler veya bot"
     }
-
-
     const csrfCk = cookies.get('next-auth.csrf-token')
     const sessCk = cookies.get('next-auth.session-token')
-
     // Get a cookie
     const lastVisitCk = cookies.get('lv', { signed: true })
+    // const xx = cookies.get('xx', { signed: true })
+    const cook = lastVisitCk ? JSON.parse(lastVisitCk) as ILVCookie : undefined
 
     const daysToExpire = 60
     const cookieOpts = {
         signed: true,
         expires: new Date(Date.now() + (daysToExpire * 24 * 60 * 60 * 1000))
     }
-    // https://www.npmjs.com/package/keygrip for checking .sig cookie value
-    const ckData = {
-        dt: new Date().toISOString(),
-        c: lastVisitCk ? Number(JSON.parse(lastVisitCk).c) + 1 : 1,
-        previp: ipInfo?.ip
-    }
-    // Set the cookie to a value
+    // ? Maybe jwt ?
+    const ckData: ILVCookie = { dt: new Date().toISOString(), c: cook ? cook.c + 1 : 1, previp: ipwareObj?.ip }
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
-
-    // 2023-01-09T19:46:31.613Z
-    if (!lastVisitCk) {
-        console.log('No LastVisit');
-
-    } else {
-        console.log("lastVisitCk")
-        console.log(lastVisitCk)
-    }
-
-    console.log("\n");
-    console.log(ipInfo);
-    let visterIp = ""
-
-    if (context.req.socket.remoteAddress === '::1') {
-        visterIp = 'localhost'
-    }
 
     // if the server is behind a proxy
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
-    const connection = context.req.headers['connection']
-    let osPlatform = context.req.headers['sec-ch-ua-platform']
     console.log({ xForwardedFor });
-    console.log({ connection });
     console.log({ referer });
 
-
-    const userAgent = agent.source
-    const us_family = agent.family
-    const us_major = agent.major
-    console.log(osPlatform?.toString());
-    if (osPlatform === undefined) osPlatform = userAgent.includes('Windows NT') ? "Windows" : undefined
-    console.log({ osPlatform });
-
-    // This value is considered fresh for ten seconds (s-maxage=10).
-    // If a request is repeated within the next 10 seconds, the previously
-    // cached value will still be fresh. If the request is repeated before 59 seconds,
-    // the cached value will be stale but still render (stale-while-revalidate=59).
-    //
-    // In the background, a revalidation request will be made to populate the cache
-    // with a fresh value. If you refresh the page, you will see the new value.
-
-
-    context.res.setHeader(
-        'Cache-Control',
-        'public, s-maxage=600, stale-while-revalidate=6000'
-    )
-
-
-    // if (session) return {
-    //     redirect: {
-    //         destination: AppRoutes.SIGNIN,
-    //         permanent: false
-    //     }
-    // }
+    const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
+    context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
 
     const link = await prisma.link.findFirst({
-        where: {
-            url
-        },
-        select: {
-            id: true,
-            url: true,
-            vendor_id: true,
-            partner_id: true,
-            partner: true,
-            count: true,
-            declined: true,
-            visits: false,
-            active: true,
-            platform: true,
-            repeated: true,
-            confirmed: true,
-            partnerVisitCount: true,
-            product: {
-                select: {
-                    image: true,
-                    product_url: true,
-                    desc: true,
-                    title: true,
-                    cookieLife: true,
-                }
-            }
-
-
-        }
-
+        where: { url }, include: { product: true }
     });
 
-    if (!link) return {
-        redirect: {
-            destination: `/r/not-found/${url}`,
-            permanent: false
-        }
+    // Redirects
+    if (!link) return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+    if (!link.active) return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+
+    const ip = await prisma.userIps.findFirst({ where: { ip: ipwareObj?.ip }, })
+
+    const isUnique = (): { res: boolean, data: UserIps | null } => {
+        console.log({ cook: !!cook });
+        if (!ip || !!cook) return { res: false, data: null }
+        return { res: true, data: ip }
     }
 
-
-    if (!link.active) return {
-        redirect: {
-            destination: `/r/not-found/${url}`,
-            permanent: false
-        }
+    const visitData = {
+        link_id: link.id,
+        ipwareIp: ipwareObj?.ip,
+        ipwareIsPublic: ipwareObj?.isPublic,
+        ipwareIsRouteTrusted: ipwareObj?.isRouteTrusted,
+        hasCookie: !!cook,
+        cookieInfo: lastVisitCk ? cook : undefined,
+        lastVisit: cook?.dt,
+        prevIp: cook?.previp,
+        isVpn: false,
+        isUnique: isUnique().res,
+        params: JSON.stringify(query),
+        dubious: null,
+        dubiousCause: null,
+        partnerVisit: isUnique().data?.partner_id ? true : null,
+        vendorVisit: isUnique().data?.vendor_id ? true : null,
+        os: osRegexArray ? osRegexArray[0] : null,
+        device: null,
+        userAgent: agentObj.source,
+        isAgentBot: isbot(agentObj.source),
+        ua_family: agentObj.family,
+        ua_major: agentObj.major,
     }
+    const visit = await prisma.visit.create({ data: visitData })
+    const visitId = visit.id
+    // console.log(visit);
 
     const getPartnerVisitCount = (): number => {
-        // console.log("partId", link);
         let result = link.partnerVisitCount
-
         if (session && session.role == UserRoles.PARTNER) {
             result = result + 1
-
         }
-
         return result
     }
 
-    // const visit = await prisma.visit.findMany({
-    //     where: {
-    //         link: {
-    //             product_id: "assa"
-    //         }
-    //     }
-    // })
-
-    // const ll = await prisma.link.findMany({
-    //     where: {
-
-    //     }
-    // })
-
     const linkPartnerId = link.partner_id
 
-    /* 
-        const linkUp = await prisma.link.update({
-            where: {
-                id: link.id
-            },
-            data: {
-                count: session ? link.count : link.count + 1,
-                partnerVisitCount: getPartnerVisitCount()
-            }
-    
-        });
-    
-        const visit = await prisma.visit.create({
-            data: {
-                link_id: link.id
-            }
-        })
-    
-        prisma.$disconnect()
-    
-         */
     return {
         props: {
+            visitId: "asas",
             url,
             query,
             product_url: link.product.product_url,
@@ -284,51 +146,44 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             desc: link.product.desc,
             title: link.product.title,
             valid: !!!session, // ! check
-            ipInfo,
+            ipInfo: ipwareObj,
             lastVisitCk: lastVisitCk ? lastVisitCk : null,
-            visterIp,
-            visitData,
+            isBot: isbot(agentObj.source)
         }
     }
 
 }
 // * server'a atilacak
 
-const AffiProduct: NextPage = ({ 
-    url, 
-    image, 
-    desc, 
-    title, 
-    valid, 
-    product_url, 
-    ipInfo, 
+const AffiProduct: NextPage = ({
+    visitId,
+    url,
+    image,
+    desc,
+    title,
+    valid,
+    product_url,
+    ipInfo,
     lastVisitCk,
-    visterIp,
-    query
+    query,
+    isBot
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+
+    // ? if isBot dont redirect and get the list of last 100 product page link from serverSideProps
 
     const [done, setDone] = useState(false)
     const [sch, setSch] = useState<unknown>({})
 
-
     const setUserIp = async () => {
-
         const userIp = await getClientIp()
         const ipData = IpSchema.parse(userIp)
         setSch(ipData)
         return
-
     }
 
     useEffect(() => { setUserIp() }, [])
-
-
-
     useEffect(() => {
-        if (done) console.log('DONE, Navigate');
-
-        // window.location.href = product_url;
-
+        if (done) console.log('DONE, Navigate'); // window.location.href = product_url;
     }, [done])
 
     return (
@@ -382,7 +237,7 @@ const AffiProduct: NextPage = ({
             <div className="px-8 pb-16">
 
                 <b>query: </b>
-                
+
                 <pre className="mt-8 pb-8">
                     {JSON.stringify(query, null, 4)}
                 </pre>
@@ -392,10 +247,10 @@ const AffiProduct: NextPage = ({
                 <b>Cookie: </b>
                 <p>{lastVisitCk}</p>
 
-                <br />
 
-                <b>socket.remoteAddress: </b>
-                <p>{visterIp}</p>
+                <br />
+                <b>visitId: </b>
+                <p>{visitId}</p>
 
                 <br />
 
@@ -404,10 +259,10 @@ const AffiProduct: NextPage = ({
                 </pre>
 
 
-                <b className="mt-8 ">IpWare</b>
-                <pre className="pb-8">
-                    {JSON.stringify(ipInfo, null, 4)}
-                </pre>
+                <b className="mt-8 ">visitData</b>
+                {/* <pre className="pb-8">
+                    {JSON.stringify(visitData, null, 4)}
+                </pre> */}
 
             </div>
 
