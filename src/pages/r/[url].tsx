@@ -14,23 +14,21 @@ import Cookies from 'cookies'
 import { Ipware } from '@fullerstack/nax-ipware';
 import { COOKIE_SIGN_KEY } from "../../config/constants";
 import isbot from 'isbot'
-
+import getClientIp from "../../utils/getClientIp";
+import { IpSchema } from "../../interface/zod.schema";
+import { TypeOf } from "zod";
 // https://github.com/omrilotan/isbot
 // import { BlockList } from "net"
 
-/*
-
-Onceden de biraz konustuk. Elimde var olan ama tasarimi eksik kalmis yada sadece api'si bulunan uygulamalar var.
-*/
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
-    const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] }) // shouldn't chage or cookie reset
+    const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
     const ipware = new Ipware();
     const ipInfo = ipware.getClientIP(context.req)
     const agent = userAgentLib.parse(context.req.headers['user-agent']);
     const ua = userAgentLib.is(context.req.headers['user-agent'])
-    
+
     const url = context.params?.url as string
     const query = context.query
     const locale = context.locale
@@ -47,9 +45,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     console.log("is bot: ", isbot(context.req.headers['user-agent'] ?? "no data"));
 
-    if(isbot(context.req.headers['user-agent'] ?? "")) {
+    if (isbot(context.req.headers['user-agent'] ?? "")) {
         const isDoub = true
-        const reason= "Crawler veya bot"
+        const reason = "Crawler veya bot"
     }
 
 
@@ -72,7 +70,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     // Set the cookie to a value
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
-    cookies.set('datam', "setting new cookie with signed option is true", { signed: true })
 
     // 2023-01-09T19:46:31.613Z
     if (!lastVisitCk) {
@@ -115,6 +112,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     //
     // In the background, a revalidation request will be made to populate the cache
     // with a fresh value. If you refresh the page, you will see the new value.
+
+
     context.res.setHeader(
         'Cache-Control',
         'public, s-maxage=600, stale-while-revalidate=6000'
@@ -233,16 +232,46 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             image: link.product.image,
             desc: link.product.desc,
             title: link.product.title,
-            valid: !!!session // ! check 
+            valid: !!!session, // ! check
+            ipInfo,
+            lastVisitCk: lastVisitCk ? lastVisitCk : null,
+            visterIp
+
         }
     }
 
 }
+// * server'a atilacak
 
-
-const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_url }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const AffiProduct: NextPage = ({ 
+    url, 
+    image, 
+    desc, 
+    title, 
+    valid, 
+    query, 
+    product_url, 
+    ipInfo, 
+    lastVisitCk,
+    visterIp
+}: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [done, setDone] = useState(false)
+    const [sch, setSch] = useState<unknown>({})
+
+
+    const setUserIp = async () => {
+
+        const userIp = await getClientIp()
+        const ipData = IpSchema.parse(userIp)
+        setSch(ipData)
+        return
+
+    }
+
+    useEffect(() => { setUserIp() }, [])
+
+
 
     useEffect(() => {
         if (done) console.log('DONE, Navigate');
@@ -299,6 +328,29 @@ const AffiProduct: NextPage = ({ url, image, desc, title, valid, query, product_
                 </div>
             </section>
 
+            <div className="px-8 pb-16">
+
+                <b>Cookie: </b>
+                <p>{lastVisitCk}</p>
+
+                <br />
+
+                <b>socket.remoteAddress: </b>
+                <p>{visterIp}</p>
+
+                <br />
+
+                <pre className="mt-8 pb-8">
+                    {JSON.stringify(sch, null, 4)}
+                </pre>
+
+
+                <b className="mt-8 ">IpWare</b>
+                <pre className="pb-8">
+                    {JSON.stringify(ipInfo, null, 4)}
+                </pre>
+
+            </div>
 
         </div>
     )

@@ -1,9 +1,17 @@
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
 import React, { useState } from "react";
 import { trpc } from '../../../utils/trpc';
-import ModalContainer from "../../modals/ModalContainer";
-import WarnDialog from "../../modals/WarnDialog";
 import LinkItem from "./LinkItem";
+import dynamic from 'next/dynamic'
+
+const DynamicModalContainer = dynamic(() => import('../../modals/ModalContainer'), {
+  ssr: false,
+})
+
+const DynamicWarnDialog = dynamic(() => import('../../modals/WarnDialog'), {
+  ssr: false,
+})
+
 
 type Props = {
   links: (LinkEntity & { partner: Partner; product: Product; })[] | undefined;
@@ -39,8 +47,8 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
             confirmModal={() => setModal(true)} />))}
       </ul>
 
-      <ModalContainer state={modal} key={"adda"}>
-        <WarnDialog
+      <DynamicModalContainer state={modal} key={"adda"}>
+        <DynamicWarnDialog
           title="Affiliate linkini duraklatmak istiyor musunuz?"
           desc="
           Link pasif hale gelerek ve oluşturulan 
@@ -50,7 +58,7 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
           dismissFn={() => setModal(false)}
           confirmFn={() => handlePasifyLink()}
         />
-      </ModalContainer>
+      </DynamicModalContainer>
 
     </>
     )}
