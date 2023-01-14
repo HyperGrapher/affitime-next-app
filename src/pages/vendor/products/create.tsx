@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
@@ -9,7 +8,7 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { getSession } from "next-auth/react";
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
-import type { SubmitHandler} from "react-hook-form";
+import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { HiArrowLeft as BackIcon, HiPencil, HiPlus } from 'react-icons/hi';
 import TopBarProgress from 'react-topbar-progress-indicator';
@@ -18,12 +17,12 @@ import CategoriesCombo from '../../../components/_vendor/products/CategoriesComb
 import IconButton from '../../../components/buttons/IconButton';
 import PageCard from '../../../components/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../../components/error-messages/FormError';
+import { AppRoutes } from '../../../config/appRoutes';
 import { UserRoles } from '../../../interface/auth.interface';
 import { prisma } from "../../../server/db/client";
 import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessBR, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
-import { AppRoutes } from '../../../config/appRoutes';
 
 interface IServerSideProps {
     cats: Category[]

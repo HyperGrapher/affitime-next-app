@@ -29,8 +29,8 @@ export const authOptions: NextAuthOptions = {
           placeholder: "Email adresiniz",
         },
         password: { label: "Password", type: "password" },
-        userRole: {},
-        callbackUrl: {},
+        // userRole: {},
+        // callbackUrl: {},
       },
 
       async authorize(credentials, req) {
@@ -48,11 +48,11 @@ export const authOptions: NextAuthOptions = {
           include: { vendor: true, partner: true },
         });
 
-        if (!user) throw new Error("User not found!!");
+        if (!user) return null;
 
         const result = await comparePassword(password, user.password);
 
-        if (!result) throw new Error("Wrong Credentials!!");
+        if (!result) return null;
         else return user;
       },
     }),

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import {
   router,
@@ -31,7 +30,7 @@ export const linkRouter = router({
       });
     }),
 
-  getAllLinksForPartner: partnerProcedure.query(({ ctx, input }) => {
+  getAllLinksForPartner: partnerProcedure.query(({ ctx }) => {
     const { partnerId } = ctx.session;
 
     return ctx.prisma.link.findMany({
@@ -43,7 +42,7 @@ export const linkRouter = router({
     });
   }),
 
-  getAllLinksForVendor: vendorProcedure.query(({ ctx, input }) => {
+  getAllLinksForVendor: vendorProcedure.query(({ ctx }) => {
     const { vendorId } = ctx.session;
 
     return ctx.prisma.link.findMany({

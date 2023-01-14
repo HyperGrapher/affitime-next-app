@@ -1,43 +1,18 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
-import React from "react";
-import Image from "next/image";
-import productImg from '../../../assets/product.png';
-import { formatDateTR, numberWithCommas } from "../../../utils/helpers";
-import { Lira } from "../../shared/HtmlCodes";
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import LinkIcon2 from '@mui/icons-material/Link';
-import LinkIcon from '@mui/icons-material/Search';
-import SendIcon from '@mui/icons-material/Send';
 import CheckIcon from '@mui/icons-material/CheckCircle';
-import Chip from '@mui/material/Chip';
-import classNames from "../../../utils/classnames";
-import { useRouter } from "next/router";
-import { AppRoutes } from "../../../config/appRoutes";
-import LinkButton from "../../buttons/LinkButton";
+import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
+import IconButton from '@mui/material/IconButton';
+import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
+import Image from "next/image";
 import Link from "next/link";
-import Divider from "../../shared/Divider";
-import { HiCheckCircle, HiXCircle, HiCheck } from 'react-icons/hi'
+import React from "react";
 import TimeAgo from "timeago-react";
+import productImg from '../../../assets/product.png';
+import { AppRoutes } from "../../../config/appRoutes";
+import classNames from "../../../utils/classnames";
+import { formatDateTR, numberWithCommas } from "../../../utils/helpers";
+import Divider from "../../shared/Divider";
+import { Lira } from "../../shared/HtmlCodes";
 
-
-// import { useState, useEffect } from 'react';
-// import { HiChevronRight, HiHome, HiCollection, HiOutlineArrowSmRight, HiArrowCircleRight } from 'react-icons/hi'
-// import { getSession, signIn, signOut, useSession } from "next-auth/react";
-// import { RefetchOptions, RefetchQueryFilters } from "@tanstack/react-query";
-
-// interface LinkItemEntity { p: LinkEntity, {a: string}}
-
-// (Link & {
-//     vendor: Vendor;
-//     product: Product;
-// })
 
 type ItemProps = {
     p: (LinkEntity & { partner: Partner; product: Product; });
@@ -47,14 +22,13 @@ type ItemProps = {
 }
 // 812px ve asgisi icin layout degis
 const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, setLinkId }) => {
-    const { push } = useRouter()
 
-    function cancel(id: string) {
+    function cancel() {
         setLinkId(p.id)
         cancelModal()
     }
 
-    function confirm(id: string) {
+    function confirm() {
         setLinkId(p.id)
         confirmModal()
     }
@@ -77,7 +51,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
                             src={p.product.image ?? ""}
-                            alt={p.id!} />
+                            alt={p.id} />
                         : <Image
                             className={classNames(
                                 "object-cover rounded hover:shadow object-center",
@@ -96,7 +70,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
                     <Link href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.product.id}`}>
                         <h4 className="text-xs whitespace-nowrap
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.product.title!.length > 25 ? p.product.title!.substring(0, 25) + " ..." : p.product.title}
+                            {p.product.title && p.product.title.length > 25 ? p.product.title.substring(0, 25) + " ..." : p.product.title}
                         </h4>
                     </Link>
 
@@ -165,7 +139,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
 
                             <IconButton
                                 size="small"
-                                onClick={() => cancel(p.id)}
+                                onClick={() => cancel()}
                                 title="Affiliate linkini iptal et"
                                 aria-label="Affiliate linkini iptal et">
                                 <DeleteIcon className="text-red-400 w-6 h-6" />
@@ -173,7 +147,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
                             <IconButton
                                 size="small"
                                 title="Affiliate Linki Onayla"
-                                onClick={() => confirm(p.id)}
+                                onClick={() => confirm()}
                                 aria-label="Affiliate linki onayla">
                                 <CheckIcon className="text-green-600 w-6 h-6" />
                             </IconButton>

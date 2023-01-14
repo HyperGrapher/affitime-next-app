@@ -1,18 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
-import { type Product } from "@prisma/client";
-import Image from "next/image";
-import product from '../../assets/product.png';
-import { numberWithCommas } from "../../utils/helpers";
-import { Lira } from "../shared/HtmlCodes";
-import IconButton from '@mui/material/IconButton';
-import Button from '@mui/material/Button';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import SendIcon from '@mui/icons-material/Send';
-import Chip from '@mui/material/Chip';
 
 
 const ProductListHeader: React.FC = () => {

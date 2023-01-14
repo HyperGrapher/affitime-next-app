@@ -10,14 +10,21 @@ import Balancer from 'react-wrap-balancer';
 import productImg from '../../../assets/product.png';
 import IconButton from '../../../components/buttons/IconButton';
 import PageCard from "../../../components/card/Card";
-import ConfirmDialog from "../../../components/modals/ConfirmDialog";
-import ModalContainer from "../../../components/modals/ModalContainer";
 import { Lira } from '../../../components/shared/HtmlCodes';
 import { AppRoutes } from '../../../config/appRoutes';
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
+import dynamic from 'next/dynamic'
+
+const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
+  ssr: false,
+})
+
+const DynamicConfirmDialog = dynamic(() => import('../../../components/modals/ConfirmDialog'), {
+  ssr: false,
+})
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -276,8 +283,8 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                     </span>
                 </button>
 
-                <ModalContainer state={modal} key={"adda"}>
-                    <ConfirmDialog
+                <DynamicModalContainer state={modal} key={"adda"}>
+                    <DynamicConfirmDialog
                         title="Affiliate linki oluşturmak istiyor musunuz?"
                         confirmBtnText='Oluştur'
                         busy={busy}
@@ -288,7 +295,7 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
                         dismissFn={() => setModal(false)}
                         confirmFn={handleLinkCreation}
                     />
-                </ModalContainer>
+                </DynamicModalContainer>
 
 
 

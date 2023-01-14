@@ -1,74 +1,22 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
-import bcrypt from "bcrypt";
-import { vendors, partners, cats } from "./user-list";
 import { CommissionType } from "@prisma/client";
 
-const createCategories = async () => {
-  for (const v of cats) {
-    await prisma.category.create({
-      data: { name: v.name },
-    });
-  }
-};
-
-const createVendorUsers = async () => {
-  for (const v of vendors) {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash("bm123456", salt);
-    v.password = hash;
-    const user = await prisma.user.create({
-      data: { email: v.email, password: v.password },
-    });
-    const vendor = await prisma.vendor.create({
-      data: { userId: user.id, website: v.website, brand: v.brand },
-    });
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { vendor_id: vendor.id },
-    });
-    console.log("Vendor: ", v.email);
-  }
-};
-
-const createPartnerUsers = async () => {
-  for (const p of partners) {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash("bm123456", salt);
-    p.password = hash;
-    const user = await prisma.user.create({
-      data: { email: p.email, password: p.password },
-    });
-    const partner = await prisma.partner.create({
-      data: { userId: user.id, username: p.username },
-    });
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { partner_id: partner.id },
-    });
-    console.log("Partner: ", p.email);
-  }
-};
 
 const getVendorUser = async () => {
   return await prisma.user.findFirst({
-    where: { active: true, role: "VENDOR" },
+    where: { email: "wendy@email.com" },
     include: { vendor: true },
   });
 };
 
-const getACat = async () => {
-  return await prisma.category.findFirst();
-};
-
 const seedProducts = async () => {
   const u = await getVendorUser();
-  const c = await getACat();
 
   const vendor_user_id = u?.id ?? "abc";
   const vendor_profile_id = u?.vendor_id ?? "abc";
 
-  // TODO: move to another file 
+  // TODO: move to another file
   const prods = [
     {
       title: "LG 38 inch Ultrawide Monitor",
@@ -107,7 +55,7 @@ const seedProducts = async () => {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
       price: 1500.99,
-      perClick: 1,
+      perClick: 0.5,
       perClickType: CommissionType.CASH,
       perSale: 12,
       perSaleType: CommissionType.PERC,
@@ -124,7 +72,7 @@ const seedProducts = async () => {
       title: "Delonghi Dedica Manuel Espresso Makinesi",
       desc: "Delonghi Dedica Manuel Espresso Makinesi, 15 cm Genişlik, 1 L Kapasite, 1350W, 15 Bar Basınç, Paslanmaz Çelik (EC 685.M).",
       price: 8785.85,
-      perClick: 2,
+      perClick: 0.25,
       perClickType: CommissionType.CASH,
       perSale: 7,
       perSaleType: CommissionType.PERC,
@@ -158,7 +106,7 @@ const seedProducts = async () => {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
       desc: "Philips TAR4406/12 alarmlı saat/kronometre Dijital çalar saat Beyaz",
       price: 849.99,
-      perClick: 3,
+      perClick: 0.1,
       perClickType: CommissionType.CASH,
       perSale: 16,
       perSaleType: CommissionType.PERC,
@@ -175,7 +123,7 @@ const seedProducts = async () => {
       title: "Caterpillar Kadın Bej Colorado Bot",
       desc: "Kadın Bot",
       price: 1749.0,
-      perClick: 1,
+      perClick: 0.5,
       perClickType: CommissionType.PERC,
       perSale: 8,
       perSaleType: CommissionType.PERC,
@@ -190,53 +138,18 @@ const seedProducts = async () => {
     },
   ];
 
-  if (!c) return;
+  const productCreation = await prisma.product.createMany({
+    data: prods,
+  });
 
-  for (const p of prods) {
-    await prisma.product.create({
-      data: { ...p, categoryId: c.id },
-    });
-  }
-
-  // const productCreation = await prisma.product.createMany({
-  //   data: prods,
-  // });
-
-  // console.log({ productCreation });
+  console.log({ productCreation });
 };
 
-createCategories()
+seedProducts()
   .catch((e) => {
     console.log(e);
     process.exit(1);
   })
   .finally(() => {
     prisma.$disconnect();
-
-    createPartnerUsers()
-      .catch((e) => {
-        console.log(e);
-        process.exit(1);
-      })
-      .finally(() => {
-        prisma.$disconnect();
-
-        createVendorUsers()
-          .catch((e) => {
-            console.log(e);
-            process.exit(1);
-          })
-          .finally(() => {
-            prisma.$disconnect();
-
-            seedProducts()
-              .catch((e) => {
-                console.log(e);
-                process.exit(1);
-              })
-              .finally(() => {
-                prisma.$disconnect();
-              });
-          });
-      });
   });

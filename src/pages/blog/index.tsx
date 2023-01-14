@@ -1,10 +1,10 @@
 import fs from 'fs'
 import path from 'path'
-import type { GetServerSideProps, GetStaticProps, InferGetStaticPropsType } from 'next'
+import type { GetStaticProps, InferGetStaticPropsType } from 'next'
 import Head from 'next/head'
 import { useSession } from 'next-auth/react'
 import IconButton from '../../components/buttons/IconButton'
-import { HiPlus, HiUpload, HiPhotograph } from 'react-icons/hi'
+import { HiUpload, HiPhotograph } from 'react-icons/hi'
 
 interface IServerSideProps {
     blogs: string[]
@@ -12,14 +12,15 @@ interface IServerSideProps {
 
 export const getStaticProps: GetStaticProps<IServerSideProps> = async (context) => {
 
-
+    console.log(context.params);
+    
     console.log(process.cwd());
     // md files should not be in src
     // const mds = fs.readdirSync(path.join('..', 'examples-codes'))
     const photos = fs.readdirSync(path.join('public', 'images', 'blog'))
     console.log(photos);
 
-    const blogs = photos.map((fn) => {
+    photos.map((fn) => {
         console.log(fn);
 
     })
@@ -38,13 +39,17 @@ const BlogIndex = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) =>
 
     const { data: session } = useSession();
 
-
+    console.log(blogs);
+    
     return (
         <div>
             {/* 
                 Admin icin gorunur component olacak. Sidebarda oldugu gibi visibility admin ise
                 Her bir blog item uzerinde admin icin delete btn
             */}
+            <Head>
+                <title>Affitime Blog</title>
+            </Head>
 
             {session?.role === "ADMIN" &&
                 <div className='fixed bottom-0 left-0 right-0 bg-slate-900 px-8 py-4 flex justify-center gap-4'>

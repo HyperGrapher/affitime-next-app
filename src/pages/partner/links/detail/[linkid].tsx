@@ -11,13 +11,20 @@ import Balancer from 'react-wrap-balancer';
 import productImg from '../../../../assets/product.png';
 import IconButton from '../../../../components/buttons/IconButton';
 import PageCard from "../../../../components/card/Card";
-import ConfirmDialog from "../../../../components/modals/ConfirmDialog";
-import ModalContainer from "../../../../components/modals/ModalContainer";
 import { Lira, Space } from '../../../../components/shared/HtmlCodes';
 import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
+import dynamic from 'next/dynamic'
+
+const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
+  ssr: false,
+})
+
+const DynamicConfirmDialog = dynamic(() => import('../../../../components/modals/ConfirmDialog'), {
+  ssr: false,
+})
 
 const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
@@ -183,7 +190,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
 
                                 {link?.active
-                                    ? <a title={`https://affitime.com/r/${link?.url ?? ""}`} className='text-blue-500' href={`https://affitime.com/r/${link?.url ?? ""}`}> {`affitime.com/r/${link?.url ?? ""}`}</a>
+                                    ? <a title={`http://affiti.me/r/${link?.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${link?.url ?? ""}`}> {`affiti.me/r/${link?.url ?? ""}`}</a>
                                     : <span> Sadece aktif linkler görülebilir </span>
                                 }
 
@@ -313,8 +320,8 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 
 
-                <ModalContainer state={modal} key={"adda"}>
-                    <ConfirmDialog
+                <DynamicModalContainer state={modal} key={"adda"}>
+                    <DynamicConfirmDialog
                         title="Affiliate linki oluşturmak istiyor musunuz?"
                         confirmBtnText='Oluştur'
                         busy={busy}
@@ -325,7 +332,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         dismissFn={() => setModal(false)}
                         confirmFn={() => null}
                     />
-                </ModalContainer>
+                </DynamicModalContainer>
 
 
 

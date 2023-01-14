@@ -1,5 +1,7 @@
 ### Find where user clicked the link
 
+- https://github.com/rguerreiro/device  no ts types
+
 [NAX IPware - Best attempt to get client's IP address ](https://github.com/neekware/fullerstack/tree/main/libs/nax-ipware)
 
 [I need to know where user came from node js](https://stackoverflow.com/q/55312249)
@@ -39,3 +41,16 @@ request.socket.remoteAddress;
 
 [How do you detect if a client is using a VPN](https://stackoverflow.com/a/66209031)
 [IP2Proxy™ Proxy Detection Web Service](https://www.ip2location.com/web-service/ip2proxy)
+
+
+INSERT INTO `category` (`id`, `name`) VALUES
+(1, 'Elektronik'),
+(2, 'Giyim & Aksesuar'),
+(3, 'Müzik aletleri'),
+(4, 'Cep Telefonu'),
+(5, 'Elektrikli Ev Aletleri'),
+(6, 'Anne & Bebek'),
+(7, 'Hobi & Oyuncak'),
+(8, 'Kişisel Bakım & Kozmetik'),
+(9, 'Oyun & Konsol'),
+(10, 'Takı, Mücevher & Altın');

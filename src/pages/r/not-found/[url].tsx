@@ -1,12 +1,12 @@
 import React from 'react'
-import { getSession } from "next-auth/react";
-import type { GetServerSideProps, InferGetServerSidePropsType, NextPage } from "next";
+// import { getSession } from "next-auth/react";
+import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import Link from 'next/link';
 
 
 export const getServerSideProps: GetServerSideProps<{ url: string }> = async (context) => {
 
-    const session = await getSession(context)
+    // const session = await getSession(context)
 
     const url = context.params?.url as string
 
@@ -20,6 +20,8 @@ export const getServerSideProps: GetServerSideProps<{ url: string }> = async (co
 
 
 const NotFound = ({ url }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+    console.log(url);
+
     return (
         <section className="text-gray-600 body-font">
             <div className="container px-5 py-24 mx-auto">

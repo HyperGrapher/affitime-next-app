@@ -3,16 +3,15 @@ import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import { HiArrowLeft as BackIcon } from 'react-icons/hi';
 import productImg from '../../../assets/product.png';
 import IconButton from '../../../components/buttons/IconButton';
 import PageCard from '../../../components/card/Card';
 import ACComboBox from '../../../components/combobox/ComboBox';
+import { AppRoutes } from "../../../config/appRoutes";
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from '../../../utils/classnames';
 import { trpc } from '../../../utils/trpc';
-import { AppRoutes } from "../../../config/appRoutes";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -35,21 +34,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 }
 
-
+// !! NOT USED
 const LinkCreate: NextPage = () => {
-    const [busy, setBusy] = useState(false)
+
     const { back, query } = useRouter()
     const id = query.pid as string
     const edit = query.edit === "true"
 
-
-    // const { register, handleSubmit, setValue, formState: { errors } } = useForm<IProductFormData>({
-    //     resolver: zodResolver(validationSchema),
-    //     reValidateMode: 'onBlur',
-    //     mode: 'onBlur',
-    // });
-
-    const createProduct = trpc.product.createProduct.useMutation()
     const { data: pd } = trpc.product.getProductById.useQuery({ id })
 
 
@@ -66,7 +57,7 @@ const LinkCreate: NextPage = () => {
 
                     <IconButton
                         title={"Geri Git"}
-                        disabled={busy}
+                        disabled={false}
                         icon={<BackIcon color="white" size="16px" />}
                         twClasses="ml-auto w-38"
                         fn={back} />

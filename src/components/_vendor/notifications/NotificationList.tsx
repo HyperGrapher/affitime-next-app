@@ -1,22 +1,23 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
-import React from "react";
+import React, { useState } from "react";
+import { notifyError } from "../../../utils/notifications";
 import { trpc } from '../../../utils/trpc';
-import { useState, useEffect } from 'react';
-import styled from '@emotion/styled'
-import Image from "next/image";
-import profileImg from '../../assets/profile.webp'
 import NotificationItem from "./NotificationItem";
-import Button from "@mui/material/Button";
-import { notifyError, notifySuccessBR, notifySuccessTC } from "../../../utils/notifications";
-import ModalContainer from "../../modals/ModalContainer";
-import WarnDialog from "../../modals/WarnDialog";
-import IconButton from "../../buttons/IconButton";
-import ConfirmDialog from "../../modals/ConfirmDialog";
-// import LinkListHeader from "./LinkListHeader";
+import dynamic from 'next/dynamic'
+
+const DynamicModalContainer = dynamic(() => import('../../modals/ModalContainer'), {
+  ssr: false,
+})
+
+const DynamicWarnDialog = dynamic(() => import('../../modals/WarnDialog'), {
+  ssr: false,
+})
+
+
+const DynamicConfirmDialog = dynamic(() => import('../../modals/ConfirmDialog'), {
+  ssr: false,
+})
+
 
 type Props = {
   prod: (LinkEntity & { partner: Partner; product: Product; })[] | undefined
@@ -51,9 +52,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
   }
 
-  // TODO: EMPTY STATE 
   return (<>
-
 
     {prod?.length === 0 ? <p className='text-center'>Henüz bir bildiriminiz bulunmuyor</p> : (<>
 
@@ -69,8 +68,8 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           />))}
       </ul>
 
-      <ModalContainer state={cancelModal}>
-        <WarnDialog
+      <DynamicModalContainer state={cancelModal}>
+        <DynamicWarnDialog
           title="Affiliate link isteğini iptal etmek istiyor musunuz?"
           desc="
           Affiliate link kullanımı onayınıza bağlıdır. 
@@ -80,10 +79,10 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           dismissFn={() => setCancelModal(false)}
           confirmFn={() => handleAction(false)}
         />
-      </ModalContainer>
+      </DynamicModalContainer>
 
-      <ModalContainer state={confirmModal}>
-        <ConfirmDialog
+      <DynamicModalContainer state={confirmModal}>
+        <DynamicConfirmDialog
           title="Affiliate link isteğini onaylamak istiyor musunuz?"
           desc="
           Affiliate link kullanımı onayınıza bağlıdır. 
@@ -93,7 +92,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
           dismissFn={() => setConfirmModal(false)}
           confirmFn={() => handleAction(true)}
         />
-      </ModalContainer>
+      </DynamicModalContainer>
 
     </>
     )}

@@ -1,27 +1,10 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @next/next/no-img-element */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/consistent-type-imports */
 import type { GetServerSideProps } from "next";
-import { type NextPage, /*  NextApiRequest, InferGetServerSidePropsType  */ } from "next";
+import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import PageCard from "../../../components/card/Card";
-import ProductList from '../../../components/products/ProductList';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
-import { HiPlus } from 'react-icons/hi'
-import LinkButton from "../../../components/buttons/LinkButton";
-import { Link, Partner, Product } from "@prisma/client";
-import classNames from "../../../utils/classnames";
-import Image from "next/image";
-import product from '../../../assets/product.png';
-import { numberWithCommas } from "../../../utils/helpers";
-// import { Lira } from "../shared/HtmlCodes";
-import IconButton from '@mui/material/IconButton';
-import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-import EditIcon from '@mui/icons-material/EditOutlined';
-import LinkIcon from '@mui/icons-material/Link';
 import LinkList from '../../../components/_vendor/links/LinkList';
 import { AppRoutes } from "../../../config/appRoutes";
 
@@ -48,7 +31,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
-    return { props: {  } }
+    return { props: {} }
 
 }
 
@@ -58,7 +41,7 @@ const LinkPage: NextPage = () => {
 
     const { data: links, status: sts, refetch: refetchLinks } = trpc.link.getAllLinksForVendor.useQuery()
 
-        return (
+    return (
         <main className="auth-container">
             {sts === 'loading' && <TopBarProgress />}
 

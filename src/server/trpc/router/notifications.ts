@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure } from "../trpc";
 import { z } from "zod";

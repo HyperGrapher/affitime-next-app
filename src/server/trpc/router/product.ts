@@ -1,11 +1,10 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import type { CommissionType } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
 import { router, publicProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
-// https://youtu.be/_K34O0NcKAM?t=395
+
 export const productRouter = router({
-  // TODO: To be implemented
+
   getProductById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
@@ -215,7 +214,6 @@ export const productRouter = router({
       if (!input.id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
 
-      // ? WTF Typescript!
       const PCT = input.perClickType as CommissionType;
       const PST = input.perSaleType as CommissionType;
 
