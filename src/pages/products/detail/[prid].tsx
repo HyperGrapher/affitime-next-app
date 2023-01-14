@@ -115,8 +115,8 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
             <Head>
                 <title>{pd?.title ?? ""}</title>
-                <link rel="icon" href={" // afffitime ico //"} />
                 <meta name="description" content={pd?.desc ?? ""} />
+                <meta name="theme-color" content="#8b71ff" />
 
                 <meta property="og:url" content="https://affitime.com" />
                 <meta property="og:site_name" content="affitime" />
