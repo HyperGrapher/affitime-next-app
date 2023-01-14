@@ -23,8 +23,6 @@ const Navbar: React.FC = () => {
   const [busy, setBusy] = useState(false)
   const { data: sessionData } = useSession()
   const { pathname } = useRouter()
-  let sh = true
-  if (pathname === '/') sh = true
   const deleteUserSession = trpc.auth.deleteSession.useMutation()
 
 
@@ -83,7 +81,7 @@ const Navbar: React.FC = () => {
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
                 {/* dashboard dropdown */}
                 <p className='text-white text-xs'>{sessionData?.email}</p>
-                {sh && <Menu as='div' className='relative ml-3'>
+                <Menu as='div' className='relative ml-3'>
                   <div>
                     <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
                       <span className='sr-only'>Open user menu</span>
@@ -203,7 +201,7 @@ const Navbar: React.FC = () => {
 
                     </Menu.Items>
                   </Transition>
-                </Menu>}
+                </Menu>
 
               </div>
             </div>
