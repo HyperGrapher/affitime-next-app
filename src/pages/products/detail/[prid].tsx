@@ -17,13 +17,14 @@ import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
 import dynamic from 'next/dynamic'
+import Head from "next/head";
 
 const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
-  ssr: false,
+    ssr: false,
 })
 
 const DynamicConfirmDialog = dynamic(() => import('../../../components/modals/ConfirmDialog'), {
-  ssr: false,
+    ssr: false,
 })
 
 
@@ -106,6 +107,31 @@ const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof
 
     return (
         <div className={session ? "auth-container" : "px-1 pt-16"}>
+
+            <Head>
+                <title>{pd?.title ?? ""}</title>
+                <link rel="icon" href={" // afffitime ico //"} />
+                <meta name="description" content={pd?.desc ?? ""} />
+
+                <meta property="og:url" content="https://affitime.com" />
+                <meta property="og:site_name" content="affitime" />
+                <meta property="og:locale" content="tr_TR" />
+                <meta property="og:type" content="website" />
+                <meta property="og:title" content={pd?.title ?? ""} />
+                <meta property="og:description" content={pd?.desc ?? ""} />
+                <meta property="og:image" content={pd?.image ?? ""} />
+                <meta property="og:image:type" content="image/png" />
+
+
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:image" content={pd?.image ?? ""} />
+                <meta property="twitter:domain" content="affitime.com" />
+                <meta property="twitter:url" content="https://affitime.com" />
+                <meta name="twitter:title" content={pd?.title ?? ""} />
+                <meta name="twitter:description" content={pd?.desc ?? ""} />
+
+            </Head>
+
             <PageCard>
                 <div className="flex items-center">
 
