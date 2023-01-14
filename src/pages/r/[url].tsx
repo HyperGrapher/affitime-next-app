@@ -4,7 +4,7 @@ import { type NextPage } from "next";
 import Head from "next/head";
 // import { trpc } from "../../utils/trpc";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
-import { getSession, useSession } from "next-auth/react";
+import { getSession } from "next-auth/react";
 // import { useRouter } from "next/router";
 import { prisma } from "../../server/db/client";
 import { UserRoles } from "../../interface/auth.interface";
@@ -16,9 +16,14 @@ import { COOKIE_SIGN_KEY } from "../../config/constants";
 import isbot from 'isbot'
 import getClientIp from "../../utils/getClientIp";
 import { IpSchema } from "../../interface/zod.schema";
-import { TypeOf } from "zod";
+import type { Visit } from "@prisma/client";
 // https://github.com/omrilotan/isbot
 // import { BlockList } from "net"
+
+/*
+- if session exist DUBIOUS
+
+*/
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -45,6 +50,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     console.log("is bot: ", isbot(context.req.headers['user-agent'] ?? "no data"));
 
+    const visitData: Partial<Visit> = {
+        link_id: "",
+        visiterIp: null,
+        country: "",
+        ipInfo: null,
+        ipwareIp: null,
+        ipwareIsPublic: null,
+        ipwareIsRouteTrusted: null,
+        hasCookie: false,
+        cookieInfo: null,
+        lastVisit: null,
+        prevIp: null,
+        isVpn: false,
+        isUnique: false,
+        params: null,
+        dubious: null,
+        dubiousCause: null,
+        partnerVisit: null,
+        vendorVisit: null,
+        paid: null,
+        os: null,
+        device: null,
+        userAgent: null,
+        isAgentBot: null,
+        ua_family: null,
+        ua_major: null,
+    }
+
     if (isbot(context.req.headers['user-agent'] ?? "")) {
         const isDoub = true
         const reason = "Crawler veya bot"
@@ -65,7 +98,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // https://www.npmjs.com/package/keygrip for checking .sig cookie value
     const ckData = {
         dt: new Date().toISOString(),
-        c: lastVisitCk ? Number(JSON.parse(lastVisitCk).c) + 1 : 0,
+        c: lastVisitCk ? Number(JSON.parse(lastVisitCk).c) + 1 : 1,
         previp: ipInfo?.ip
     }
     // Set the cookie to a value
@@ -235,8 +268,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             valid: !!!session, // ! check
             ipInfo,
             lastVisitCk: lastVisitCk ? lastVisitCk : null,
-            visterIp
-
+            visterIp,
+            visitData,
         }
     }
 
@@ -249,11 +282,11 @@ const AffiProduct: NextPage = ({
     desc, 
     title, 
     valid, 
-    query, 
     product_url, 
     ipInfo, 
     lastVisitCk,
-    visterIp
+    visterIp,
+    query
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [done, setDone] = useState(false)
@@ -330,6 +363,14 @@ const AffiProduct: NextPage = ({
 
             <div className="px-8 pb-16">
 
+                <b>query: </b>
+                
+                <pre className="mt-8 pb-8">
+                    {JSON.stringify(query, null, 4)}
+                </pre>
+
+
+                <br />
                 <b>Cookie: </b>
                 <p>{lastVisitCk}</p>
 
