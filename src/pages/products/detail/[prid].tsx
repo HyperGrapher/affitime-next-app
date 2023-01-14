@@ -18,6 +18,7 @@ import { notifyError, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
 import dynamic from 'next/dynamic'
 import Head from "next/head";
+import { prisma } from "../../../server/db/client";
 
 const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -30,26 +31,29 @@ const DynamicConfirmDialog = dynamic(() => import('../../../components/modals/Co
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
-    const id = context.params?.prid
+    const id = context.params?.prid as string
 
     context.res.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'
     )
 
-    return { props: { id } }
+    const pd = await prisma.product.findFirst({
+        where: { id }, 
+    });
+
+
+    return { props: { pd } }
 
 }
 
-const ProducDetailPublic: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const { back, push } = useRouter()
     const [busy, setBusy] = useState(false)
     const [modal, setModal] = useState(false)
 
-
     const { data: session } = useSession();
-    const { data: pd } = trpc.product.getProductById.useQuery({ id })
     const createLinkMutate = trpc.link.createLink.useMutation()
 
 
