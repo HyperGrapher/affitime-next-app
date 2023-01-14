@@ -190,7 +190,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
 
                                 {link?.active
-                                    ? <a title={`https://affitime.com/r/${link?.url ?? ""}`} className='text-blue-500' href={`https://affitime.com/r/${link?.url ?? ""}`}> {`affitime.com/r/${link?.url ?? ""}`}</a>
+                                    ? <a title={`http://affiti.me/r/${link?.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${link?.url ?? ""}`}> {`affiti.me/r/${link?.url ?? ""}`}</a>
                                     : <span> Sadece aktif linkler görülebilir </span>
                                 }
 

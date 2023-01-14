@@ -170,7 +170,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
-                                <a title={`https://affitime.com/r/${pd?.url ?? ""}`} className='text-blue-500' href={`https://affitime.com/r/${pd?.url ?? ""}`}> {`affitime.com/r/${pd?.url ?? ""}`}</a>
+                                <a title={`http://affiti.me/r/${pd?.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${pd?.url ?? ""}`}> {`affiti.me/r/${pd?.url ?? ""}`}</a>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Hedef Link: </b>

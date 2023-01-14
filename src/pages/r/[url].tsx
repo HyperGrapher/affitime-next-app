@@ -21,7 +21,25 @@ import type { Visit } from "@prisma/client";
 // import { BlockList } from "net"
 
 /*
-- if session exist DUBIOUS
+http://affitime.com/r/ULGhrzxx
+http://affiti.me/r/ULGhrzxx
+http://affiti.me/r/RaDExlWe
+* if session exist DUBIOUS - vendor veya partner visit as cause
+me: '176.33.101.203'
+twitter: '199.16.157.183' -> bot: true
+twitter: '176.33.101.203' -> bot: false
+twitter: '34.82.121.157' -> bot: false postladiktan sonra
+twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor bot false
+
+* tw post yapinca isbot fase geliyor ama asadaki gibiyse bot olarak kayit et
+Agent {
+  family: 'Other',
+  major: '0',
+  minor: '0',
+  patch: '0',
+  source: ''
+}
+context.req.headers['user-agent']:  undefined
 
 */
 

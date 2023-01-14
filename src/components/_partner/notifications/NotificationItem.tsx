@@ -133,7 +133,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
                     </b>
 
                     <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                        {p.confirmed ? `affi/${p.url}` : "--"}
+                        {p.confirmed ? `affiti.me/r/${p.url}` : "--"}
                     </b>
 
                 </div>
