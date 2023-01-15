@@ -19,8 +19,8 @@ const MyApp: AppType<{ session: Session | null }> = ({
 
   TopBarProgress.config({
     barColors: {
-      "0": "#fc6363",
-      "1.0": "#0084ff"
+      "0": "#d163fc",
+      "1.0": "#d863fc"
     },
     shadowBlur: 5
   });

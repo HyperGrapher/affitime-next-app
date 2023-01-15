@@ -82,6 +82,7 @@ const ProductListHeader: React.FC = () => {
 
 
                 {/* LINK COUNT */}
+                {/* 
                 <div className=" text-center xmin-w-[3ch]">
 
 
@@ -89,7 +90,7 @@ const ProductListHeader: React.FC = () => {
                         Link
                     </b>
 
-                </div>
+                </div> */}
 
 
 

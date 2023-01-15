@@ -155,19 +155,16 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
 
 
                 {/* LINK COUNT */}
+
+                {/* 
                 <div className=" text-center min-w-[3ch]">
 
                     <b className={`text-stone-600 text-xs font-bold whitespace-nowrap`}>
-                        {p.active ? "7" : "3"}
+                        99457
                     </b>
 
                 </div>
-
-
-
-                {/* DIVIDER */}
-                <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
-
+                */}
 
 
                 {/* EDIT BUTTONS */}
@@ -176,7 +173,7 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
 
 
                         <div className=" flex flex-nowrap gap-2 ml-auto h-full place-self-center">
-    
+
                             <IconButton
                                 size="small"
                                 onClick={() => del(p.id)}

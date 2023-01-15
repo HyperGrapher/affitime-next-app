@@ -1,7 +1,33 @@
-import { router, publicProcedure } from "../trpc";
+import { router, publicProcedure, vendorProcedure } from "../trpc";
 import { z } from "zod";
 
-export const visitRouter = router({
+export const dashboardRouter = router({
+  getXForVendor: vendorProcedure.query(async ({ ctx }) => {
+    const { vendorId } = ctx.session;
+
+    const links = await ctx.prisma.link.findMany({
+      where: {
+        vendor_id: vendorId,
+      },
+    });
+
+    const lnActives = links.filter((x) => x.active);
+    const lnPasives = links.filter((x) => !x.confirmed);
+
+    const allClicks = lnActives.reduce((acc, cur) => acc + cur.count, 0)
+    const valid = lnActives.reduce((acc, cur) => acc + (cur.count - cur.declined), 0)
+    const declined = lnActives.reduce((acc, cur) => acc + cur.declined, 0)
+
+    return { 
+      activeLinksCount: lnActives.length, 
+      passive: lnPasives.length,
+      allClicks,
+      valid,
+      declined,
+
+    };
+  }),
+
   updateVisit: publicProcedure
     .input(
       z.object({
