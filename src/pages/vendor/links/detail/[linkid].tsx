@@ -42,7 +42,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
         let res = 0
         if (pd) {
 
-            const validClickCount = pd.count - pd.partnerVisitCount
+            const validClickCount = pd.count - pd.declined
             if (pd.product.perClickType === "PERC") {
                 return res = ((pd.product.price ?? 1) / 100) * (pd.product.perClick ?? 0) * validClickCount
             }
@@ -263,7 +263,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             <p className='text-base'><b className='text-neutral-500'>Partnere Ait Tiklama: </b> {pd?.partnerVisitCount} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(pd?.count ?? 0) - (pd?.partnerVisitCount ?? 0)} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(pd?.count ?? 0) - (pd?.declined ?? 0)} </p>
                             <hr />
                             <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {totalClickPayment}  <Lira />  </p>
                         </div>

@@ -40,7 +40,26 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const pd = await prisma.product.findFirst({
         where: { id },
-        include: { vendor: true }
+        select: {
+            createdAt: false,
+            updatedAt: false,
+            id: true,
+            product_url: true,
+            image: true,
+            perClick: true,
+            perClickType: true,
+            perSaleType: true,
+            perSale: true,
+            title: true,
+            desc: true,
+            cookieLife: true,
+            vendor: {
+                select: {
+                    brand: true,
+                    website: true
+                }
+            },
+        }
     });
 
 

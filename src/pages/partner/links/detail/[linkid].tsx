@@ -41,7 +41,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
         if (link) {
 
-            const validClickCount = link.count - link.partnerVisitCount
+            const validClickCount = link.count - link.declined
 
             if (link.product.perClickType === "PERC") {
                 return ((link.product.price ?? 1) / 100) * (link.product.perClick ?? 0) * validClickCount
@@ -291,7 +291,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             <p className='text-base'><b className='text-neutral-500'>Size Ait Tiklama: </b> {link?.partnerVisitCount} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(link?.count ?? 0) - (link?.partnerVisitCount ?? 0)} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(link?.count ?? 0) - (link?.declined ?? 0)} </p>
                             <hr />
                             <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {totalClickPayment}  <Lira />  </p>
                         </div>

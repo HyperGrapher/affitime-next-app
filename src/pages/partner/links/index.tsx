@@ -53,7 +53,7 @@ const PartnerLinks: NextPage = () => {
                             <small>
                                 Toplam {links?.length} adet link
                             </small>
-                        ) : null}
+                        ) : (<small>Affiliate linkleriniz burada listelenecektir. </small>)}
                     </div>
 
                 </div>

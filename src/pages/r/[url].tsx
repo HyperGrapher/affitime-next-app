@@ -32,16 +32,6 @@ twitter: '176.33.101.203' -> bot: false
 twitter: '34.82.121.157' -> bot: false postladiktan sonra
 twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor bot false
 
-* tw post yapinca isbot fase geliyor ama asadaki gibiyse bot olarak kayit et
-Agent {
-  family: 'Other',
-  major: '0',
-  minor: '0',
-  patch: '0',
-  source: ''
-}
-context.req.headers['user-agent']:  undefined
-
 */
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -56,7 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     // Get a cookie
     const lastVisitCk = cookies.get('lv', { signed: true })
-    // const xx = cookies.get('xx', { signed: true })
     const cook = lastVisitCk ? JSON.parse(lastVisitCk) as ILVCookie : undefined
 
     const daysToExpire = 60
@@ -73,7 +62,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const referer = context.req.headers['referer']
     console.log({ xForwardedFor });
     console.log({ referer });
-    console.log({ query });
 
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
     context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
@@ -165,13 +153,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const getPartnerVisitCount = (): number => {
         let result = link.partnerVisitCount
+        
         if (session && session.role == UserRoles.PARTNER) {
-            result = result + 1
+            console.log("\n PARTNER CLICK \n");
+            
+            return result = result + 1
+        }
+        if (prevUserIp?.partner_id ) {
+            console.log("\n partner_id CLICK \n", prevUserIp?.partner_id );
+            return result = result + 1
         }
         return result
     }
 
-    const linkPartnerId = link.partner_id
+    // const linkPartnerId = link.partner_id
+
+    await prisma.link.update({
+        where: {
+            id: link.id
+        },
+        data: {
+            count: link.count + 1,
+            partnerVisitCount: getPartnerVisitCount(),
+            repeated: (!checkFraudAndUniqness().dubious && cook) ? link.repeated + 1 : link.repeated,
+            declined: checkFraudAndUniqness().dubious ? link.declined + 1 : link.declined,
+
+        }
+
+    });
+
+    prisma.$disconnect()
 
     return {
         props: {
@@ -194,16 +205,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const AffiProduct: NextPage = ({
     visitId,
-    url,
     image,
     desc,
     title,
-    valid,
     product_url,
-    ipInfo,
     lastVisitCk,
     query,
-    isBot
+    isBot,
+    
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     // ? if isBot dont redirect and get the list of last 100 product page link from serverSideProps
