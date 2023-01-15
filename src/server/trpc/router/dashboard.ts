@@ -56,7 +56,7 @@ export const dashboardRouter = router({
           data: {
             country: ipInfo.country,
             ipInfo: ipInfo,
-            visiterIp: ipInfo.ip,
+            ipapi: ipInfo.ip,
           },
         });
 

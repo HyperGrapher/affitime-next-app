@@ -212,33 +212,35 @@ model Product {
 }
 
 model Visit {
-  id           String    @id @default(cuid())
-  link         Link      @relation("LinkVisits", fields: [link_id], references: [id])
-  link_id      String
-  visiterIp    String? // get from client
-  country      String    @default("tr") // get from client
-  ipInfo       Json? // get from client
-  ipwareIp     String? // get from server
-  hasCookie    Boolean // @default(false)
-  cookieInfo   Json? // cookie
-  lastVisit    DateTime? // cookie
-  prevIp       String? // cookie
-  isSold       Boolean   @default(false)
-  isVpn        Boolean   @default(false)
-  isUnique     Boolean   @default(true)
-  params       String? // Link query extras
-  dubious      Boolean?
-  dubiousCause String?
-  isPartner    Boolean?
-  isVendor     Boolean?
-  paid         Boolean?
-  os           String?   @default("undetected")
-  userAgent    String?   @db.Text // full txt form
-  isAgentBot   Boolean?
-  ua_family    String?
-  ua_major     String?
-  createdAt    DateTime  @default(now())
-  updatedAt    DateTime  @updatedAt
+  id         String   @id @default(cuid())
+  link       Link     @relation("LinkVisits", fields: [link_id], references: [id])
+  link_id    String
+  vendor_id  String?
+  partner_id String?
+  ipapi      String?  // from client
+  country    String   @default("-") // from client
+  ipInfo     Json?    // from client
+  ipware     String?  // from server
+  hasCookie  Boolean
+  cookie     Json?
+  prevIp     String?
+  sold       Boolean  @default(false)
+  vpn        Boolean  @default(false)
+  unique     Boolean  @default(true)
+  params     String?  // query extras
+  dubious    Boolean?
+  cause      String?
+  partner    Boolean?
+  vendor     Boolean?
+  paid       Boolean?
+  os         String?  @default("-")
+  agent      String?  @db.Text
+  bot        Boolean?
+  uaFamily   String?
+  referer    String? 
+  uaMajor    String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   @@index([id, link_id])
   @@map("visit")

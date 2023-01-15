@@ -67,15 +67,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const prevUserIp = await prisma.userIps.findFirst({ where: { ip: ipwareObj?.ip === '::1' ? "176.33.101.203" : ipwareObj?.ip }, })
 
     const checkFraudAndUniqness = (): {
-        isUnique: boolean, ipData: UserIps | null,
-        dubious: boolean, dubiousCause: string | null
+        unique: boolean, ipData: UserIps | null,
+        dubious: boolean, cause: string | null
     } => {
 
         if (isbot(agentObj.source)) {
 
             return {
-                isUnique: false, ipData: prevUserIp, dubious: true,
-                dubiousCause: `bot`
+                unique: false, ipData: prevUserIp, dubious: true,
+                cause: `bot`
             }
 
         }
@@ -83,16 +83,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (context.req.headers['user-agent'] === undefined) {
 
             return {
-                isUnique: false, ipData: prevUserIp, dubious: true,
-                dubiousCause: `bot`
+                unique: false, ipData: prevUserIp, dubious: true,
+                cause: `bot`
             }
         }
 
         if (session) {
 
             return {
-                isUnique: false, ipData: prevUserIp, dubious: true,
-                dubiousCause: `${session.role === "PARTNER" ? "partner" : "vendor"}`
+                unique: false, ipData: prevUserIp, dubious: true,
+                cause: `${session.role === "PARTNER" ? "partner" : "vendor"}`
             }
 
         }
@@ -100,34 +100,36 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         if (prevUserIp) {
 
             return {
-                isUnique: false, ipData: prevUserIp, dubious: true,
-                dubiousCause: `${prevUserIp.partner_id ? "partner" : "vendor"}`
+                unique: false, ipData: prevUserIp, dubious: true,
+                cause: `${prevUserIp.partner_id ? "partner" : "vendor"}`
             }
         }
 
-        if (!!cookie) return { isUnique: false, ipData: null, dubious: false, dubiousCause: null }
-        return { isUnique: true, ipData: prevUserIp, dubious: false, dubiousCause: null }
+        if (!!cookie) return { unique: false, ipData: null, dubious: false, cause: null }
+        return { unique: true, ipData: prevUserIp, dubious: false, cause: null }
     }
 
     const visitData = {
         link_id: link.id,
-        ipwareIp: ipwareObj?.ip,
+        vendor_id: link.vendor_id,
+        partner_id: link.partner_id,
+        ipware: ipwareObj?.ip,
         hasCookie: !!cookie,
-        cookieInfo: !!cookie ? cookie : undefined,
-        lastVisit: cookie?.dt,
+        cookie: !!cookie ? cookie : undefined,
         prevIp: cookie?.previp,
-        isVpn: false,
-        isUnique: checkFraudAndUniqness().isUnique,
+        vpn: false,
+        unique: checkFraudAndUniqness().unique,
         params: JSON.stringify(query),
         dubious: checkFraudAndUniqness().dubious,
-        dubiousCause: checkFraudAndUniqness().dubiousCause,
-        isPartner: checkFraudAndUniqness().ipData?.partner_id ? true : null,
-        isVendor: checkFraudAndUniqness().ipData?.vendor_id ? true : null,
+        cause: checkFraudAndUniqness().cause,
+        partner: checkFraudAndUniqness().ipData?.partner_id ? true : null,
+        vendor: checkFraudAndUniqness().ipData?.vendor_id ? true : null,
         os: osRegexArray ? osRegexArray[0] : null,
-        userAgent: agentObj.source,
-        isAgentBot: isbot(agentObj.source),
-        ua_family: agentObj.family,
-        ua_major: agentObj.major,
+        agent: agentObj.source,
+        bot: isbot(agentObj.source),
+        uaFamily: agentObj.family,
+        uaMajor: agentObj.major,
+        referer: query.referer as string
     }
     const visit = await prisma.visit.create({ data: visitData })
 
