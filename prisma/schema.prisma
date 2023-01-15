@@ -1,7 +1,7 @@
 // COMMANDS
 // npx prisma migrate dev --name init
 // npx prisma format
-// npx prisma db push
+// npx prisma db push  (If you are prototyping)
 // npx prisma generate
 // npx prisma studio
 // npx prisma migrate reset (Reset DB)
@@ -212,36 +212,33 @@ model Product {
 }
 
 model Visit {
-  id                   String    @id @default(cuid())
-  link                 Link      @relation("LinkVisits", fields: [link_id], references: [id])
-  link_id              String
-  visiterIp            String? // get from client
-  country              String    @default("tr") // get from client
-  ipInfo               Json? // get from client
-  ipwareIp             String? // get from server
-  ipwareIsPublic       Boolean? // get from server
-  ipwareIsRouteTrusted Boolean? // get from server
-  hasCookie            Boolean // @default(false)
-  cookieInfo           Json? // cookie
-  lastVisit            DateTime? // cookie
-  prevIp               String? // cookie
-  isSold               Boolean   @default(false)
-  isVpn                Boolean   @default(false)
-  isUnique             Boolean   @default(true)
-  params               String? // Link query extras
-  dubious              Boolean?
-  dubiousCause         String?
-  partnerVisit         Boolean?
-  vendorVisit          Boolean?
-  paid                 Boolean?
-  os                   String?   @default("undetected")
-  device               String?
-  userAgent            String?   @db.Text // full txt form
-  isAgentBot           Boolean?
-  ua_family            String?
-  ua_major             String?
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime  @updatedAt
+  id           String    @id @default(cuid())
+  link         Link      @relation("LinkVisits", fields: [link_id], references: [id])
+  link_id      String
+  visiterIp    String? // get from client
+  country      String    @default("tr") // get from client
+  ipInfo       Json? // get from client
+  ipwareIp     String? // get from server
+  hasCookie    Boolean // @default(false)
+  cookieInfo   Json? // cookie
+  lastVisit    DateTime? // cookie
+  prevIp       String? // cookie
+  isSold       Boolean   @default(false)
+  isVpn        Boolean   @default(false)
+  isUnique     Boolean   @default(true)
+  params       String? // Link query extras
+  dubious      Boolean?
+  dubiousCause String?
+  isPartner    Boolean?
+  isVendor     Boolean?
+  paid         Boolean?
+  os           String?   @default("undetected")
+  userAgent    String?   @db.Text // full txt form
+  isAgentBot   Boolean?
+  ua_family    String?
+  ua_major     String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
   @@index([id, link_id])
   @@map("visit")
