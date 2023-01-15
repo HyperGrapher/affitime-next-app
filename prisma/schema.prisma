@@ -15,8 +15,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  // url      = env("DATABASE_URL")
-  url      = "mysql://burak:Bm123456!@localhost:3306/affprisma?connection_limit=50&socket_timeout=3"
+  url      = env("DATABASE_URL")
+  // url      = "mysql://burak:Bm123456!@localhost:3306/affprisma?connection_limit=20&socket_timeout=3"
 }
 
 // Necessary for Next auth

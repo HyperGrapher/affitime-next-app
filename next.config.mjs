@@ -19,11 +19,5 @@ const config = {
       hostname: 'cdn.dsmcdn.com',
     },
   ], formats: ['image/avif', 'image/webp'], },
-  // eslint: {
-  //     ignoreDuringBuilds: true,
-  //   },
-  // typescript: {
-  //     ignoreBuildErrors: true,
-  //   },
 };
 export default config;

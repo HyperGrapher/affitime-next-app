@@ -17,7 +17,7 @@ import { prisma } from "../../server/db/client";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from '../../utils/trpc';
 // import { BlockList } from "net"
-
+// https://www.npmjs.com/package/user-agents
 // https://www.npmjs.com/package/keygrip for checking .sig cookie value
 /*
 me: '176.33.101.203'
