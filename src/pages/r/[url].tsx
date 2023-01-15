@@ -16,6 +16,7 @@ import type { ILVCookie } from "../../interface/zod.schema";
 import { IpSchema } from "../../interface/zod.schema";
 import { prisma } from "../../server/db/client";
 import getClientIp from "../../utils/getClientIp";
+import { trpc } from '../../utils/trpc';
 // https://github.com/omrilotan/isbot
 // import { BlockList } from "net"
 // https://www.npmjs.com/package/request-info
@@ -153,14 +154,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const getPartnerVisitCount = (): number => {
         let result = link.partnerVisitCount
-        
+
         if (session && session.role == UserRoles.PARTNER) {
             console.log("\n PARTNER CLICK \n");
-            
+
             return result = result + 1
         }
-        if (prevUserIp?.partner_id ) {
-            console.log("\n partner_id CLICK \n", prevUserIp?.partner_id );
+        if (prevUserIp?.partner_id) {
+            console.log("\n partner_id CLICK \n", prevUserIp?.partner_id);
             return result = result + 1
         }
         return result
@@ -212,25 +213,40 @@ const AffiProduct: NextPage = ({
     lastVisitCk,
     query,
     isBot,
-    
+
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     // ? if isBot dont redirect and get the list of last 100 product page link from serverSideProps
-
-    const [done, setDone] = useState(false)
     const [sch, setSch] = useState<unknown>({})
+    const updateVisit = trpc.visit.updateVisit.useMutation()
 
     const setUserIp = async () => {
         const userIp = await getClientIp()
         const ipData = IpSchema.parse(userIp)
         setSch(ipData)
+
+        if (typeof visitId !== 'string') return
+        updateVisit.mutate(
+            {
+                visitId,
+                ipInfo: ipData
+            },
+            {
+                onSuccess: async (data) => {
+                    console.log("Success")
+                },
+
+                onSettled: () => {
+                    console.log('settled');
+
+                }
+            })
+
         return
     }
 
     useEffect(() => { setUserIp() }, [])
-    useEffect(() => {
-        if (done) console.log('DONE, Navigate'); // window.location.href = product_url;
-    }, [done])
+
 
     return (
         <div className="">
