@@ -9,6 +9,7 @@ import { z } from "zod";
 import crypto from "crypto";
 
 export const linkRouter = router({
+  // Used by both vendor and partner
   getLinkById: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
@@ -26,6 +27,19 @@ export const linkRouter = router({
           product: true,
           vendor: role === "PARTNER",
           partner: role === "VENDOR",
+        },
+      });
+    }),
+
+  findLinkByProductIdForPartner: partnerProcedure
+    .input(z.object({ pid: z.string() }))
+    .query(({ ctx, input }) => {
+      const { pid } = input;
+      const { partnerId } = ctx.session;
+      return ctx.prisma.link.findFirst({
+        where: {
+          product_id: pid,
+          partner_id: partnerId,
         },
       });
     }),

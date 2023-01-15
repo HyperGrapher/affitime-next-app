@@ -3,7 +3,7 @@ import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import PageCard from "../../../components/card/Card";
-import ProductList from '../../../components/products/ProductList';
+import VendorProductList from '../../../components/products/ProductList';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
@@ -70,7 +70,7 @@ const Products: NextPage = () => {
 
                 <section className="">
 
-                    <ProductList prod={vendor?.products} refetch={refetchProducts} />
+                    <VendorProductList prod={vendor?.products} refetch={refetchProducts} />
 
                 </section>
 

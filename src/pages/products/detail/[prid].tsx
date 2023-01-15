@@ -5,12 +5,12 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useRouter } from 'next/router';
 import { useState } from 'react';
-import { HiArrowLeft as BackIcon, HiPlus } from 'react-icons/hi';
+import { HiArrowLeft as BackIcon, HiBell, HiPlus } from 'react-icons/hi';
 import Balancer from 'react-wrap-balancer';
 import productImg from '../../../assets/product.png';
 import IconButton from '../../../components/buttons/IconButton';
 import PageCard from "../../../components/card/Card";
-import { Lira } from '../../../components/shared/HtmlCodes';
+import { Lira, Space } from '../../../components/shared/HtmlCodes';
 import { AppRoutes } from '../../../config/appRoutes';
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from '../../../utils/classnames';
@@ -19,6 +19,7 @@ import { trpc } from '../../../utils/trpc';
 import dynamic from 'next/dynamic'
 import Head from "next/head";
 import { prisma } from "../../../server/db/client";
+import Link from "next/link";
 
 const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -72,9 +73,21 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
     const { back, push } = useRouter()
     const [busy, setBusy] = useState(false)
     const [modal, setModal] = useState(false)
+    const [partnerHasLink, setPartnerHasLink] = useState(false)
+    const [partnerLinkId, setPartnerLinkId] = useState("")
 
     const { data: session } = useSession();
     const createLinkMutate = trpc.link.createLink.useMutation()
+
+    trpc.link.findLinkByProductIdForPartner.useQuery({ pid: pd.id }, {
+        enabled: session?.role === UserRoles.PARTNER,
+        onSuccess(data) {
+            if (data?.id) {
+                setPartnerHasLink(true)
+                setPartnerLinkId(data.id)
+            }
+        }
+    })
 
 
     function handleLinkCreation(): void {
@@ -183,6 +196,19 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                     </p>
 
                 </div>
+
+
+                {partnerHasLink && (
+                    <div className="bg-yellow-50 px-2 py-2 rounded mb-2 flex items-center space-x-3">
+                        <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
+                        <b className="text-neutral-500 text-sm">
+                            Bu ürün için zaten bir link mevcut.  <Space />
+                            <Link className="text-blue-500 underline" href={`${AppRoutes.PARTNER_LINK_DETAIL}/${partnerLinkId}`}>Link Detay Sayfası</Link>
+                        </b>
+                    </div>
+                )
+
+                }
 
                 <hr className='' />
                 {/*Meta Data with Image */}
@@ -315,8 +341,16 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                 {/* Submit */}
                 <button
-                    disabled={busy}
-                    onClick={() => setModal(true)}
+                    disabled={busy || partnerHasLink}
+                    onClick={() => {
+                        if (!session) return push(AppRoutes.SIGNIN)
+                        if (session && session.role === UserRoles.VENDOR) {
+                            return push(`${AppRoutes.VENDOR_CREATE_PRODUCT}?edit=true&pid=${pd.id}`)
+                        }
+
+                        setModal(true)
+
+                    }}
                     type='submit'
                     className={classNames(
                         "bg-violet-600 hover:bg-violet-700 transition-colors",
@@ -329,7 +363,8 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                     <HiPlus color="white" size="18px" />
 
                     <span className="text-slate-50 text-sm font-medium tracking-wide text-center">
-                        Affiliate Linki Oluştur
+
+                        {(session && session.role === UserRoles.VENDOR) ? "Ürünü Düzenle" : "Affiliate Linki Oluştur"}
                     </span>
                 </button>
 

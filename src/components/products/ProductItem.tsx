@@ -7,10 +7,10 @@ import { Lira } from "../shared/HtmlCodes";
 import IconButton from '@mui/material/IconButton';
 import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import EditIcon from '@mui/icons-material/EditOutlined';
-import LinkIcon from '@mui/icons-material/Link';
 import classNames from "../../utils/classnames";
 import { useRouter } from "next/router";
 import { AppRoutes } from "../../config/appRoutes";
+import Link from "next/link";
 
 
 type ItemProps = {
@@ -18,8 +18,9 @@ type ItemProps = {
     confirmModal: () => void;
     setDeleteId: (id: string) => void;
 }
+
 // 812px ve asgisi icin layout degis
-const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
+const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
     const { push } = useRouter()
 
     function del(id: string) {
@@ -38,9 +39,9 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
             {/* IMAGE */}
             <div className="flex gap-4 items-center justify-between">
-                <button
-                    className="aspect-square  w-12 h-12 "
-                    onClick={() => null}>
+                <Link
+                    href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.id}`}
+                    className="aspect-square  w-12 h-12">
                     {p.image ?
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
@@ -57,18 +58,18 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                             src={product}
                             alt={"Generic Foto"} />
                     }
-                </button>
+                </Link>
 
 
 
                 {/* TITLE */}
                 <div className="flex flex-col items-start gap-1 min-w-[20ch] h-full">
-                    <button onClick={() => null}>
+                    <Link href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.id}`}>
                         <h4 className="text-xs whitespace-nowrap text-stone-5000 
                         font-bold hover:text-sky-500 transition-colors">
                             {p.title && p.title.length > 25 ? p.title.substring(0, 25) + " ..." : p.title}
                         </h4>
-                    </button>
+                    </Link>
 
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Fiyat: </b>
@@ -175,13 +176,7 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                         <div className=" flex flex-nowrap gap-2 ml-auto h-full place-self-center">
-                            <IconButton
-                                size="small"
-                                onClick={() => push(`${AppRoutes.VENDOR_CREATE_LINK}?pid=${p.id}`)}
-                                title="Link Oluştur"
-                                aria-label="Link oluştur">
-                                <LinkIcon className="text-indigo-600 w-4 h-4" />
-                            </IconButton>
+    
                             <IconButton
                                 size="small"
                                 onClick={() => del(p.id)}
@@ -212,4 +207,4 @@ const ProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
         </li>)
 }
 
-export default ProductItem
+export default VendorProductItem

@@ -2,7 +2,7 @@ import { type Product } from "@prisma/client";
 import React, { useState } from "react";
 import { notifyError, notifySuccessTC } from "../../utils/notifications";
 import { trpc } from '../../utils/trpc';
-import ProductItem from "./ProductItem";
+import VendorProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
 import dynamic from 'next/dynamic'
 
@@ -22,7 +22,8 @@ type Props = {
   refetch: () => void;
 }
 
-const ProductList: React.FC<Props> = ({ prod, refetch }) => {
+const VendorProductList: React.FC<Props> = ({ prod, refetch }) => {
+  
   const [modal, setModal] = useState(false)
   const [deleteId, setDeleteId] = useState('')
 
@@ -50,7 +51,7 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
       <ProductListHeader />
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (
-          <ProductItem
+          <VendorProductItem
             key={p.id}
             p={p}
             setDeleteId={setDeleteId}
@@ -77,5 +78,5 @@ const ProductList: React.FC<Props> = ({ prod, refetch }) => {
   </>);
 };
 
-export default ProductList;
+export default VendorProductList;
 
