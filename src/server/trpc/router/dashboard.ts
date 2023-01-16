@@ -12,20 +12,51 @@ export const dashboardRouter = router({
     });
 
     const lnActives = links.filter((x) => x.active);
-    const lnPasives = links.filter((x) => !x.confirmed);
+    const refusedByVendor = links.filter((x) => x.confirmed === false);
+    const passive = links.filter(
+      (x) => x.active === false && x.confirmed === false
+    );
+    const awaiting = links.filter((x) => x.confirmed === null);
 
-    const allClicks = lnActives.reduce((acc, cur) => acc + cur.count, 0)
-    const valid = lnActives.reduce((acc, cur) => acc + (cur.count - cur.declined), 0)
-    const declined = lnActives.reduce((acc, cur) => acc + cur.declined, 0)
+    const allClicks = lnActives.reduce((acc, cur) => acc + cur.count, 0);
+    const valid = lnActives.reduce(
+      (acc, cur) => acc + (cur.count - cur.declined),
+      0
+    );
+    const declined = lnActives.reduce((acc, cur) => acc + cur.declined, 0);
 
-    return { 
-      activeLinksCount: lnActives.length, 
-      passive: lnPasives.length,
-      allClicks,
-      valid,
-      declined,
-
+    return {
+      all: String(links.length),
+      active: String(lnActives.length),
+      passive: String(passive.length),
+      refused: String(refusedByVendor.length),
+      awaiting: String(awaiting.length),
+      total: String(allClicks),
+      valid: String(valid),
+      declined: String(declined),
     };
+  }),
+
+  // https://github.com/prisma/prisma/discussions/4185
+  getInfoForVendor: vendorProcedure.query(async ({ ctx }) => {
+    const { vendorId } = ctx.session;
+
+    const links = await ctx.prisma.link.findMany({
+      where: {
+        vendor_id: vendorId,
+      },
+    });
+
+    const visits = await ctx.prisma.visit.findMany({
+      where: {
+        vendor_id: vendorId,
+      },
+      include: { link: true },
+    });
+
+    // const active = visits.map(x => x.)
+
+    return { links, visits };
   }),
 
   updateVisit: publicProcedure

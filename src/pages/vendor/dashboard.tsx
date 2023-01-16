@@ -4,7 +4,8 @@ import { type NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import type { ReactNode } from "react";
+import { useEffect, useReducer } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
 import { USER_IP_SESSION_STORAGE } from "../../config/constants";
@@ -13,6 +14,7 @@ import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
 import { AppRoutes } from "../../config/appRoutes";
 import classNames from "../../utils/classnames";
+import type { IDashboardData } from "../../interface/dashboard.interface";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -54,22 +56,29 @@ const IpSchema = z
 
 const Dashboard: NextPage = () => {
 
-    const [act, setAct] = useState(0)
-    const [pass, setPass] = useState(0)
-    const [all, setAll] = useState(0)
-    const [valid, setValid] = useState(0)
-    const [declined, setDeclined] = useState(0)
+    const [data, updateData] = useReducer(
+        (prev: IDashboardData, next: IDashboardData): IDashboardData => {
+            return { ...prev, ...next };
+        },
+        {
+            all: "",
+            active: "",
+            passive: "",
+            refused: "",
+            awaiting: "",
+            total: "",
+            valid: "",
+            declined: "",
+        }
+    );
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const { status: sessionStatus } = useSession();
     const createUserIp = trpc.ips.createIp.useMutation()
     trpc.dashboard.getXForVendor.useQuery(undefined, {
         onSuccess(data) {
-            setAct(data.activeLinksCount)
-            setPass(data.passive)
-            setAll(data.allClicks)
-            setValid(data.valid)
-            setDeclined(data.declined)
+
+            updateData(data)
         },
     })
 
@@ -123,33 +132,60 @@ const Dashboard: NextPage = () => {
                         <Link href={AppRoutes.VENDOR_LINKS}> Affi</Link>
                     </small>
                 </div>
-                <section className="flex justify-between xs:flex-wrap md:flex-nowrap gap-4">
+
+
+                <Title>Affiliate Linkleri</Title>
+                <hr />
+                <section className="mt-2 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
                     <SqrBox
                         title={'Linkler'}
                         desc={"Vendor affiliate link sayısı"}
-                        info={'36'}
+                        info={data.all}
 
                     />
 
+
+
+                    <SqrBox
+                        title={'Onay Bekleyen'}
+                        desc={"Aktif link sayısı"}
+                        info={data.awaiting}
+
+                    />
                     <SqrBox
                         title={'Aktif'}
                         desc={"Aktif link sayısı"}
-                        info={String(act)}
+                        info={data.active}
 
                     />
 
                     <SqrBox
                         title={'Rededilen'}
                         desc={"Rededlen link sayısı"}
-                        info={String(pass)}
+                        info={data.refused}
 
                     />
+
+                    <SqrBox
+                        title={'Pasif'}
+                        desc={"Pasif link sayısı"}
+                        info={data.passive}
+
+                    />
+
+
+
+                </section>
+
+                <Title>Linkleri Tıklamaları</Title>
+                <hr />
+                <section className="mt-2 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
 
 
                     <SqrBox
                         title={'Toplam'}
                         desc={"Affiliate link tıklamaları"}
-                        info={`${all}`}
+                        info={data.total}
 
                     />
 
@@ -157,16 +193,17 @@ const Dashboard: NextPage = () => {
                     <SqrBox
                         title={'Geçerli'}
                         desc={"Geçerli link tıklamaları"}
-                        info={`${valid}`}
+                        info={data.valid}
 
                     />
 
                     <SqrBox
                         title={'Geçersiz'}
                         desc={"Partner link tıklamaları"}
-                        info={`${declined}`}
+                        info={data['declined']}
 
                     />
+
 
 
 
@@ -179,7 +216,16 @@ const Dashboard: NextPage = () => {
 
 export default Dashboard
 
+const Title: React.FC<TitleProps> = ({ children }) => <h1
+    className="mt-8 text-xl font-bold text-slate-600">
+    {children}
+</h1>
 
+
+type TitleProps = {
+    children: ReactNode;
+
+};
 type Props = {
     title: string;
     desc: string;

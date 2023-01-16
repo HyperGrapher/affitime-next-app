@@ -51,7 +51,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     // if the server is behind a proxy
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
-    console.log({ xForwardedFor });
     console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
 
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
@@ -129,7 +128,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         bot: isbot(agentObj.source),
         uaFamily: agentObj.family,
         uaMajor: agentObj.major,
-        referer: query.referer as string
+        referer: referer ?? (query.referer as string ?? null),
     }
     const visit = await prisma.visit.create({ data: visitData })
 
