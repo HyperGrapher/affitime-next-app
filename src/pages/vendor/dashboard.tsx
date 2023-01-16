@@ -15,6 +15,7 @@ import { trpc } from "../../utils/trpc";
 import { AppRoutes } from "../../config/appRoutes";
 import classNames from "../../utils/classnames";
 import type { IDashboardData } from "../../interface/dashboard.interface";
+import PageCard from "../../components/card/Card";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -121,7 +122,7 @@ const Dashboard: NextPage = () => {
                 <title>Affitime Dashboard</title>
                 <meta name="description" content="Affiliate uygulamasi" />
             </Head>
-            <main className="mx-auto container min-h-screen p-6">
+            <main className="mx-auto container min-h-screen px-2 pt-6">
 
                 <div className="mb-8">
                     <h1 className="text-slate-600 font-bold text-2xl">
@@ -133,10 +134,10 @@ const Dashboard: NextPage = () => {
                     </small>
                 </div>
 
-
+                <PageCard>
                 <Title>Affiliate Linkleri</Title>
                 <hr />
-                <section className="mt-2 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
+                <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
                     <SqrBox
                         title={'Linkler'}
                         desc={"Vendor affiliate link sayısı"}
@@ -177,9 +178,12 @@ const Dashboard: NextPage = () => {
 
                 </section>
 
+                </PageCard>
+
+                <PageCard>
                 <Title>Linkleri Tıklamaları</Title>
                 <hr />
-                <section className="mt-2 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
+                <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
 
 
                     <SqrBox
@@ -199,15 +203,16 @@ const Dashboard: NextPage = () => {
 
                     <SqrBox
                         title={'Geçersiz'}
-                        desc={"Partner link tıklamaları"}
+                        desc={"Bot ve partner tıklamaları"}
                         info={data['declined']}
 
                     />
 
-
-
-
                 </section>
+
+               
+
+                </PageCard>
 
             </main>
         </div>
@@ -217,7 +222,7 @@ const Dashboard: NextPage = () => {
 export default Dashboard
 
 const Title: React.FC<TitleProps> = ({ children }) => <h1
-    className="mt-8 text-xl font-bold text-slate-600">
+    className="mt- text-xl font-bold text-slate-600">
     {children}
 </h1>
 
@@ -235,7 +240,7 @@ type Props = {
 const SqrBox: React.FC<Props> = ({ title, desc, info }) => {
     return (
         <section className={classNames(
-            'bg-white rounded xs:w-full-md:w-64 min-w-[12rem] 2xl:w-full px-4 py-2 aspect-auto',
+            'bg-slate-100 hover:bg-slate-50 rounded xs:w-full-md:w-64 min-w-[12rem] 2xl:w-full px-4 py-2 aspect-auto',
             'shadow hover:shadow-md shadow-slate-300 bg-greenx-100',
             'flex items-center'
 
