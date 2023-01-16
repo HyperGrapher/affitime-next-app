@@ -60,7 +60,7 @@ export const authOptions: NextAuthOptions = {
   ],
   callbacks: {
     async session({ session, user, token }) {
-      console.log("--------  SESSION callback ------ ");
+      // console.log("--------  SESSION callback ------ ");
       const email = session.user?.email;
       if (!email) return session;
 
@@ -87,14 +87,14 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, account, profile, isNewUser }) {
-      console.log("-------- JWT CALLBACK ---------");
+      // console.log("-------- JWT CALLBACK ---------");
       return token;
     },
 
     // If OAuth provider is used, it contains the full OAuth
     // * "profile" returned by your provider.
     async signIn({ user, account, profile, email, credentials }) {
-      console.log("-------- SIGN IN CALLBACK---------");
+      // console.log("-------- SIGN IN CALLBACK---------");
       if (user) {
         const sessionToken = randomBytes(32).toString("hex");
         const sessionExpiry = new Date(Date.now() + 3600); // No effect over cookie,

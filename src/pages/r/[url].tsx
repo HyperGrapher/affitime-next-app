@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
     console.log({ xForwardedFor });
-    console.log({ referer });
+    console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
 
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
     context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
