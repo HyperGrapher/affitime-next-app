@@ -4,7 +4,7 @@ import { type NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { useEffect, useReducer, useState } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
@@ -16,6 +16,7 @@ import { AppRoutes } from "../../config/appRoutes";
 import classNames from "../../utils/classnames";
 import type { IDashboardData, IPartnerAndLinks } from "../../interface/dashboard.interface";
 import PageCard from "../../components/card/Card";
+// import { Link as LinkEntity } from "@prisma/client";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -81,6 +82,13 @@ const Dashboard: NextPage = () => {
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
 
+    trpc.dashboardVendor.calculateTotal.useQuery(undefined, {
+        onSuccess(data) {
+
+            console.log(data);
+
+        },
+    })
     trpc.dashboardVendor.getXForVendor.useQuery(undefined, {
         onSuccess(data) {
 
@@ -235,20 +243,7 @@ const Dashboard: NextPage = () => {
                     <section className="mt-4 flex flex-col gap-4">
 
                         {
-                            partnerLinks?.map(x =>
-                                <div key={x.id}>
-
-                                    <h4 className="text-xl font-bold">{x.username}</h4>
-                                    <ul>
-                                        {
-                                            x.partner_links.map(y => <li key={y.id}>
-                                                {y.url}
-                                            </li>)
-                                        }
-                                    </ul>
-
-                                </div>
-                            )
+                            partnerLinks?.map(x => <PartnerItem key={x.id} pl={x} />)
                         }
 
                     </section>
@@ -260,6 +255,43 @@ const Dashboard: NextPage = () => {
 }
 
 export default Dashboard
+
+
+type PartnerItemProps = {
+    pl: IPartnerAndLinks;
+
+};
+
+const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
+
+    // useEffect(() => {
+
+    // }, [pl])
+
+    const pc = useMemo(() => {
+        const p = pl.partner_links.map(x => x)
+        const act = pl.partner_links.filter(x => x.active)
+        const unique = [...new Set(p.map(x => x.product_id))]
+        return { products: unique.length, active: act.length, links: p.length }
+
+    }, [pl])
+    return (
+        <div
+            className="">
+
+            <div className="flex items-center justify-between">
+                <b className="text-blue-500">{pl.username}</b>
+
+                <p>Link Sayisi: {String(pc.links)}</p>
+                <p>Urun sayisi: {String(pc.products)}</p>
+                <p>Aktif: {String(pc.active)}</p>
+
+                <Link href={'/'}>Detaylar</Link>
+            </div>
+
+        </div>
+    )
+}
 
 const Title: React.FC<TitleProps> = ({ children }) => <h1
     className="mt- text-xl font-bold text-slate-600">

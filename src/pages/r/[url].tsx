@@ -180,7 +180,7 @@ const AffiProduct: NextPage = ({
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     // ? if isBot dont redirect and get the list of last 100 product page link from serverSideProps
-    const updateVisit = trpc.dashboardVendor.updateVisit.useMutation()
+    const updateVisit = trpc.visit.updateVisit.useMutation()
 
     const setUserIp = async () => {
         const userIp = await getClientIp()

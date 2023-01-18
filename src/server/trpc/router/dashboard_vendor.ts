@@ -1,5 +1,5 @@
-import { router, publicProcedure, vendorProcedure } from "../trpc";
-import { z } from "zod";
+import { router, vendorProcedure } from "../trpc";
+// import { z } from "zod";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
 import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
 import type { Link, Partner } from "@prisma/client";
@@ -16,12 +16,16 @@ export const VendorDashboardRouter = router({
     });
 
     const confirmed = links.filter((x) => x.status === LinkStatus.CONFIRMED);
-    const canceledByVendor = links.filter((x) => x.status === LinkStatus.CANCELED_BY_VENDOR);
-    const deniedRequests = links.filter((x) => x.status === LinkStatus.REQUEST_DENIED);
+    const canceledByVendor = links.filter(
+      (x) => x.status === LinkStatus.CANCELED_BY_VENDOR
+    );
+    // const deniedRequests = links.filter(
+    //   (x) => x.status === LinkStatus.REQUEST_DENIED
+    // );
     const passive = links.filter((x) => x.active === false);
     const awaiting = links.filter((x) => x.status === LinkStatus.AWAITING);
-    console.log(deniedRequests.length);
-    
+    // console.log(deniedRequests.length);
+
     const allClicks = confirmed.reduce((acc, cur) => acc + cur.count, 0);
     const valid = confirmed.reduce(
       (acc, cur) => acc + (cur.count - cur.declined),
@@ -45,17 +49,36 @@ export const VendorDashboardRouter = router({
   getPartnerAndLinks: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
+    const p = await ctx.prisma.product.findMany({
+      where: {
+        vendor_profile_id: vendorId,
+        active: true,
+        links: {
+          some: { active: { not: null } },
+        },
+      },
+      include: {
+        links: {
+          include: { partner: true, visits: true },
+        },
+      },
+    });
+
+    // console.log(JSON.stringify(p, null, 4));
+
     const links = await ctx.prisma.link.findMany({
       where: {
-        vendor_id: vendorId,
-        active: true,
+        AND: [
+          { vendor_id: vendorId },
+          { status: { not: LinkStatus.AWAITING } },
+        ],
       },
       include: { partner: true },
     });
 
-    //  DB |-> Links[] + {partner} => partner[] + Links[] 
-    // Vendor'e ait herbir link ile gelen single partner yerine 
-    // Vendor'e ait link'e sahip herbir partner ile gelen multiple linkler 
+    //  DB |-> Links[] + {partner} => partner[] + Links[]
+    // Vendor'e ait herbir link ile gelen single partner yerine
+    // Vendor'e ait link'e sahip herbir partner ile gelen multiple linkler
     const func = flow(
       partialRight(groupBy, "partner.id"),
       partialRight(
@@ -74,42 +97,45 @@ export const VendorDashboardRouter = router({
     return func(links) as IPartnerAndLinks[];
   }),
 
-  updateVisit: publicProcedure
-    .input(
-      z.object({
-        visitId: z.string(),
-        ipInfo: z.object({
-          ip: z.string(),
-          network: z.string().optional(),
-          city: z.string().optional(),
-          region: z.string().optional(),
-          country: z.string().optional(),
-          country_name: z.string().optional(),
-          currency: z.string().optional(),
-          latitude: z.number().optional(),
-          longitude: z.number().optional(),
-          org: z.string().optional(),
-          in_eu: z.boolean().optional(),
-        }),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      const { visitId, ipInfo } = input;
+  calculateTotal: vendorProcedure.query(async ({ ctx }) => {
+    const { vendorId } = ctx.session;
+    console.log({vendorId});
+    
+    const visits = await ctx.prisma.visit.findMany({
+      where: {
+        vendor_id: vendorId,
+        // dubious: { not: true },
+      },
+      include: {
+        link: {
+          include: { product: true },
+        },
+      },
+    });
 
-      try {
-        await ctx.prisma.visit.update({
-          where: { id: visitId },
-          data: {
-            country: ipInfo.country,
-            ipInfo: ipInfo,
-            ipapi: ipInfo.ip,
-          },
-        });
-
-        return { success: true, error: false };
-      } catch (error) {
-        console.error(error);
-        return { success: false, error: error };
+    const paid = visits.filter((x) => x.paid);
+    const unpaid = visits.filter((x) => !x.paid);
+    console.log({unpaid: unpaid.length});
+    console.log({paid: paid.length});
+    // console.log({unpaid});
+    
+    const paidLinks = paid.map((x) => x.link.product);
+    const unpaidLinks = unpaid.map((x) => x.link.product);
+    let s = 0
+    const unpaidTotal = unpaidLinks.reduce((acc, cur) => {
+      s = cur.perClick ?? 0
+      let res = 0;
+      if (cur.perClickType === "CASH") {
+        res = cur.perClick ?? 0 + acc;
+      } else {
+        // ((pd.product.price ?? 1) / 100) * (pd.product.perClick ?? 0)
+        res = (((cur.price ?? 0) / 100) * (cur.perClick ?? 0) )+ acc;
       }
-    }),
+      return res;
+    }, s);
+
+    console.log({ unpaidTotal });
+
+    return 0;
+  }),
 });
