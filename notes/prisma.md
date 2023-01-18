@@ -15,6 +15,7 @@
 
 
 ```prisma
+// An example from a github discussion
 model Product {
   name                      String      
   filters                   Filter[]
