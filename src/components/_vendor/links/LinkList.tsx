@@ -42,7 +42,7 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
         {links?.map(p => (
           <LinkItem
             key={p.id}
-            p={p}
+            link={p}
             setDeleteId={setDeleteId}
             confirmModal={() => setModal(true)} />))}
       </ul>

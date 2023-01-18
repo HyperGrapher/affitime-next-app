@@ -17,7 +17,7 @@ const PartnerLinkList: React.FC<Props> = ({ links }) => {
         {links?.map(p => (
           <LinkItem
             key={p.id}
-            p={p}
+            link={p}
           />))}
       </ul>
 

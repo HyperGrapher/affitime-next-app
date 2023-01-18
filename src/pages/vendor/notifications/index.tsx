@@ -7,9 +7,6 @@ import PageCard from "../../../components/card/Card";
 import NotificationList from '../../../components/_vendor/notifications/NotificationList';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
-import TimeAgo from "timeago-react";
-import { formatDateTR } from "../../../utils/helpers";
-import { notifyError } from "../../../utils/notifications";
 import { useEffect } from "react";
 import useNotificationStore from "../../../store/notifications.store";
 import { AppRoutes } from "../../../config/appRoutes";
@@ -18,7 +15,7 @@ import { AppRoutes } from "../../../config/appRoutes";
 
 const Notifications: NextPage = () => {
 
-    const { data: notifs,  status: sts,  refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
+    const { data: notifs, status: sts, refetch: refetchNotifs } = trpc.notifications.getUnreadNotificationsForVendor.useQuery()
 
     const setUnread = useNotificationStore(store => store.setUnread)
 
@@ -26,67 +23,9 @@ const Notifications: NextPage = () => {
         setUnread(notifs?.length ?? 0)
     }, [notifs])
 
-    const update = trpc.notifications.updateLinkNotificationByVendor.useMutation()
-
-    function onConfirmOrDenyClick(id: string, confirmed: boolean): void {
-        update.mutate({ id, confirmed }, {
-
-            onError() {
-                notifyError("Bir hata olustu")
-
-            },
-            onSettled: () => {
-                refetchNotifs()
-
-            }
-        })
-    }
-
     return (
         <div className="auth-container">
             {(sts === 'loading') && <TopBarProgress />}
-
-            <div className="hidden mt-6 ">
-                {notifs?.map(it => <div key={it.id} className="py-2 px-2 my-1 border flex space-x-4">
-
-
-                    <div className="w-[30ch]">
-                        <p>{it.product.title?.slice(0, 30)}..</p>
-
-                    </div>
-
-                    <div className="w-[30ch]">
-                        <p>{it.product.id?.slice(0, 100)}</p>
-
-                    </div>
-
-                    <div className="w-[15ch]">
-
-                        <TimeAgo
-                            className="whitespace-nowrap"
-                            title={formatDateTR(it.createdAt)}
-                            datetime={it.createdAt as Date}
-                            locale={'tr'}
-                        />
-
-                    </div>
-
-                    <div className="w-[15ch] name font-bold text-transparent bg-clip-text bg-gradient-to-r from-teal-500 to-blue-500">
-
-                        {it.partner.username}
-                    </div>
-
-                    <button
-                        onClick={() => onConfirmOrDenyClick(it.id, true)}
-                        className="w-[10ch] text-sm rounded-md bg-gradient-to-r from-teal-500 to-blue-500 text-white px-2 py-1">Onayla</button>
-
-                    <button
-                        onClick={() => onConfirmOrDenyClick(it.id, false)}
-                        className="w-[10ch] text-sm rounded-md bg-gradient-to-r from-red-500 to-red-700 text-white px-2 py-1">Reddet</button>
-
-                </div>)}
-            </div>
-
 
             <PageCard>
 
@@ -111,7 +50,7 @@ const Notifications: NextPage = () => {
                 <section className="mb-4">
 
                     {notifs && notifs?.length > 0
-                        ? <NotificationList prod={notifs} refetch={refetchNotifs} />
+                        ? <NotificationList links={notifs} refetch={refetchNotifs} />
                         : null}
 
                 </section>

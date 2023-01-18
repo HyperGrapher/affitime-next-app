@@ -35,7 +35,6 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
     const [modal, setModal] = useState(false)
 
     const { data: pd, status: sts, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
-    // const linkMutate = trpc.link.updateLinkStatusByPartner.useMutation()
 
     const totalClickPayment = useMemo(() => {
 

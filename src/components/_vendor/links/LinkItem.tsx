@@ -2,7 +2,7 @@ import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
 import PlayIcon from '@mui/icons-material/PlayCircle';
 import LinkIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
-import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
+import { LinkStatus, type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -18,12 +18,12 @@ import { Lira } from "../../shared/HtmlCodes";
 
 
 type ItemProps = {
-    p: (LinkEntity & { partner: Partner; product: Product; });
+    link: (LinkEntity & { partner: Partner; product: Product; });
     confirmModal: () => void;
     setDeleteId: (id: string) => void;
 }
 
-const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
+const LinkItem: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }) => {
     const { push } = useRouter()
 
     function del(id: string) {
@@ -44,12 +44,12 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
             <div className="flex gap-4 items-center justify-between">
                 <Link
                     className="aspect-square  w-12 h-12 "
-                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${p.id}`}>
-                    {p.product.image ?
+                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${link.id}`}>
+                    {link.product.image ?
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
-                            src={p.product.image ?? ""}
-                            alt={p.id} />
+                            src={link.product.image ?? ""}
+                            alt={link.id} />
                         : <Image
                             className={classNames(
                                 "object-cover rounded hover:shadow object-center",
@@ -65,21 +65,21 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                 <div className="flex flex-col items-start min-w-[20ch] h-full">
-                    <Link href={`${AppRoutes.VENDOR_LINK_DETAIL}/${p.id}`}>
+                    <Link href={`${AppRoutes.VENDOR_LINK_DETAIL}/${link.id}`}>
                         <h4 className="text-xs whitespace-nowrap text-stone-5000 
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.product.title && p.product.title.length > 25 ? p.product.title.substring(0, 25) + " ..." : p.product.title}
+                            {link.product.title && link.product.title.length > 25 ? link.product.title.substring(0, 25) + " ..." : link.product.title}
                         </h4>
                     </Link>
 
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Fiyat: </b>
-                        {numberWithCommas(p.product.price)}
+                        {numberWithCommas(link.product.price)}
                         <Lira />
                     </p>
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Kullanici: </b>
-                        {p.partner.username}
+                        {link.partner.username}
                     </p>
 
                 </div>
@@ -96,7 +96,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                         <b className="text-stone-800 text-xs pr-1 ">Toplam <br /> Tıklama:</b>
 
                         <p className="text-stone-500 text-xs font-medium whitespace-nowrap">
-                            {numberWithCommas(p.count)} adet
+                            {numberWithCommas(link.count)} adet
                         </p>
 
                     </div>
@@ -109,10 +109,27 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                 {/* STATUS */}
-                <div className="text-center">
+                <div
+                    title={link.active
+                        ? "Onaylandi"
+                        : "İptal edildi"
+                    }
+                    className="text-center gap-1 flex flex-col items-center min-w-[12ch]">
 
-                    <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
-                        {p.active ? <HiCheckCircle size={"1.25rem"} color="text-green-500" /> : <HiXCircle size={"1.25rem"} color="text-red-400" />}
+                    <b className={`${link.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
+                        {link.active
+                            ? <HiCheckCircle size={"1.25rem"} color="text-green-500" />
+                            : <HiXCircle size={"1.25rem"} color="text-red-400" />}
+                    </b>
+
+                    <b className="text-xs font-bold whitespace-nowrap">
+
+                        {link.status === LinkStatus.AWAITING && "Onay Bekliyor"}
+                        {link.status === LinkStatus.REQUEST_DENIED && "Onaylanmadı"}
+                        {link.status === LinkStatus.CANCELED_BY_VENDOR && "İptal Edilidi"}
+                        {link.status === LinkStatus.PRODUCT_DELETED && "Ürün Silindi"}
+                        {link.status === LinkStatus.CONFIRMED && "Onaylandı"}
+                        {link.status === LinkStatus.PAUSED_BY_VENDOR && "Duraklatıldı"}
                     </b>
 
                 </div>
@@ -127,11 +144,11 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
 
                         <div className="mr-4 flex flex-nowrap gap-2 ml-auto h-full place-self-center">
-                            {p.active ? <IconButton
+                            {link.active ? <IconButton
                                 size="small"
                                 title="Durdur"
                                 aria-label="Detay"
-                                onClick={() => del(p.id)}>
+                                onClick={() => del(link.id)}>
                                 <DeleteIcon className="text-red-400 w-4 h-4" />
                             </IconButton>
                                 :
@@ -140,7 +157,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
                                     size="small"
                                     title="Durdur"
                                     aria-label="Detay"
-                                    onClick={() => del(p.id)}>
+                                    onClick={() => del(link.id)}>
                                     <PlayIcon className="text-green-400 w-4 h-4" />
                                 </IconButton>
 
@@ -149,7 +166,7 @@ const LinkItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
 
                             <IconButton
                                 size="small"
-                                onClick={() => push(`${AppRoutes.VENDOR_LINK_DETAIL}/${p.id}`)}
+                                onClick={() => push(`${AppRoutes.VENDOR_LINK_DETAIL}/${link.id}`)}
                                 title="Detay"
                                 aria-label="Detay">
                                 <LinkIcon className="text-indigo-600 w-4 h-4" />

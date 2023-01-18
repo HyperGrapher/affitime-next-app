@@ -246,6 +246,16 @@ model Visit {
   @@map("visit")
 }
 
+enum LinkStatus {
+    AWAITING
+    CONFIRMED
+    REQUEST_DENIED
+    PAUSED_BY_VENDOR
+    CANCELED_BY_VENDOR
+    CANCELED_BY_PARTNER
+    PRODUCT_DELETED
+}
+
 model Link {
   id                String   @id @default(cuid())
   product           Product  @relation("ProductLinks", fields: [product_id], references: [id])
@@ -265,8 +275,8 @@ model Link {
   partnerVisitCount Int      @default(0)
   declined          Int      @default(0)
   repeated          Int      @default(0)
+  status            LinkStatus
   active            Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
-  confirmed         Boolean? // by vendor
   vendor_notified   Boolean  @default(false)
   partner_notified  Boolean  @default(false)
   createdAt         DateTime @default(now())

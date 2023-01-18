@@ -1,6 +1,7 @@
-import type { CommissionType } from "@prisma/client";
+import type { CommissionType} from "@prisma/client";
+import { LinkStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { router, publicProcedure, protectedProcedure } from "../trpc";
+import { router, publicProcedure, protectedProcedure, vendorProcedure } from "../trpc";
 import { z } from "zod";
 
 export const productRouter = router({
@@ -79,7 +80,7 @@ export const productRouter = router({
     });
   }),
 
-  createProduct: protectedProcedure
+  createProduct: vendorProcedure
     .input(
       z.object({
         title: z.string(),
@@ -150,22 +151,15 @@ export const productRouter = router({
         return undefined;
       }
     }),
-  pasifyProduct: protectedProcedure
+  pasifyProduct: vendorProcedure
     .input(
       z.object({
         id: z.string(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { vendorId } = ctx.session;
 
       const { id } = input;
-
-      if (!vendorId)
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "User ID not found",
-        });
 
       if (!id)
         throw new TRPCError({
@@ -185,13 +179,14 @@ export const productRouter = router({
           where: { product_id: id },
           data: {
             active: false,
-            partner_notified: false
+            partner_notified: false,
+            status: LinkStatus.PRODUCT_DELETED
           },
         });
 
         return { error: false, message: "ok" };
       } catch (error) {
-        return { error: true, message: "" };
+        return { error: true, message: "error" };
       }
     }),
 

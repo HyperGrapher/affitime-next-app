@@ -19,7 +19,7 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
         {prod?.map(p => (
           <NotificationItem
             key={p.id}
-            p={p}
+            link={p}
             refetch={refetch}
           />))}
       </ul>

@@ -3,6 +3,7 @@ import { z } from "zod";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
 import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
 import type { Link, Partner } from "@prisma/client";
+import { LinkStatus } from "@prisma/client";
 
 export const VendorDashboardRouter = router({
   getXForVendor: vendorProcedure.query(async ({ ctx }) => {
@@ -14,25 +15,25 @@ export const VendorDashboardRouter = router({
       },
     });
 
-    const lnActives = links.filter((x) => x.active);
-    const refusedByVendor = links.filter((x) => x.confirmed === false);
-    const passive = links.filter(
-      (x) => x.active === false && x.confirmed === false
-    );
-    const awaiting = links.filter((x) => x.confirmed === null);
-
-    const allClicks = lnActives.reduce((acc, cur) => acc + cur.count, 0);
-    const valid = lnActives.reduce(
+    const confirmed = links.filter((x) => x.status === LinkStatus.CONFIRMED);
+    const canceledByVendor = links.filter((x) => x.status === LinkStatus.CANCELED_BY_VENDOR);
+    const deniedRequests = links.filter((x) => x.status === LinkStatus.REQUEST_DENIED);
+    const passive = links.filter((x) => x.active === false);
+    const awaiting = links.filter((x) => x.status === LinkStatus.AWAITING);
+    console.log(deniedRequests.length);
+    
+    const allClicks = confirmed.reduce((acc, cur) => acc + cur.count, 0);
+    const valid = confirmed.reduce(
       (acc, cur) => acc + (cur.count - cur.declined),
       0
     );
-    const declined = lnActives.reduce((acc, cur) => acc + cur.declined, 0);
+    const declined = confirmed.reduce((acc, cur) => acc + cur.declined, 0);
 
     return {
       all: String(links.length),
-      active: String(lnActives.length),
+      active: String(confirmed.length),
       passive: String(passive.length),
-      refused: String(refusedByVendor.length),
+      refused: String(canceledByVendor.length),
       awaiting: String(awaiting.length),
       total: String(allClicks),
       valid: String(valid),

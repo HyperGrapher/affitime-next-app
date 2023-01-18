@@ -15,21 +15,21 @@ import { Lira } from "../../shared/HtmlCodes";
 
 
 type ItemProps = {
-    p: (LinkEntity & { partner: Partner; product: Product; });
+    link: (LinkEntity & { partner: Partner; product: Product; });
     confirmModal: () => void;
     cancelModal: () => void;
     setLinkId: (id: string) => void;
 }
 // 812px ve asgisi icin layout degis
-const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, setLinkId }) => {
+const NotificationItem: React.FC<ItemProps> = ({ link, confirmModal, cancelModal, setLinkId }) => {
 
     function cancel() {
-        setLinkId(p.id)
+        setLinkId(link.id)
         cancelModal()
     }
 
     function confirm() {
-        setLinkId(p.id)
+        setLinkId(link.id)
         confirmModal()
     }
 
@@ -46,12 +46,12 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
             <div className="flex gap-4 items-center justify-between">
                 <Link
                     className="aspect-square  w-12 h-12 "
-                    href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.product.id}`}>
-                    {p.product.image ?
+                    href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link.product.id}`}>
+                    {link.product.image ?
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
-                            src={p.product.image ?? ""}
-                            alt={p.id} />
+                            src={link.product.image ?? ""}
+                            alt={link.id} />
                         : <Image
                             className={classNames(
                                 "object-cover rounded hover:shadow object-center",
@@ -67,16 +67,16 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
 
 
                 <div className="flex flex-col gap-1 items-start min-w-[20ch] h-full">
-                    <Link href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.product.id}`}>
+                    <Link href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link.product.id}`}>
                         <h4 className="text-xs whitespace-nowrap
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.product.title && p.product.title.length > 25 ? p.product.title.substring(0, 25) + " ..." : p.product.title}
+                            {link.product.title && link.product.title.length > 25 ? link.product.title.substring(0, 25) + " ..." : link.product.title}
                         </h4>
                     </Link>
 
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Fiyat: </b>
-                        {numberWithCommas(p.product.price)}
+                        {numberWithCommas(link.product.price)}
                         <Lira />
                     </p>
 
@@ -86,15 +86,6 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
 
                 <Divider />
 
-                {/* COMMISSON */}
-                {/* <div className="min-w-[5ch] h-full">
-
-                    <b className="text-violet-600 text-sm font-medium whitespace-nowrap">
-                        {p.partner.username}
-                    </b>
-
-                </div> */}
-
                 <div className="flex flex-col items-center gap-1 min-w-[5ch] h-full">
                     <b className="text-xs whitespace-nowrap text-slate-500  text-center
                         font-bold transition-colors">
@@ -103,7 +94,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
 
 
                     <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                        {p.partner.username}
+                        {link.partner.username}
                     </b>
 
 
@@ -118,8 +109,8 @@ const NotificationItem: React.FC<ItemProps> = ({ p, confirmModal, cancelModal, s
                     <small className="text-slate-500 text-xs font-medium whitespace-nowrap">
                         <TimeAgo
                             className="whitespace-nowrap"
-                            title={formatDateTR(p.createdAt)}
-                            datetime={p.createdAt as Date}
+                            title={formatDateTR(link.createdAt)}
+                            datetime={link.createdAt as Date}
                             locale={'tr'}
                         />
                     </small>

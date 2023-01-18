@@ -7,6 +7,7 @@ import {
 } from "../trpc";
 import { z } from "zod";
 import crypto from "crypto";
+import { LinkStatus } from "@prisma/client";
 
 export const linkRouter = router({
   // Used by both vendor and partner
@@ -49,7 +50,7 @@ export const linkRouter = router({
     return ctx.prisma.link.findMany({
       where: {
         partner_id: partnerId,
-        confirmed: true,
+        status: { not: LinkStatus.AWAITING },
       },
       include: { product: true, vendor: true },
     });
@@ -61,6 +62,7 @@ export const linkRouter = router({
     return ctx.prisma.link.findMany({
       where: {
         vendor_id: vendorId,
+        status: { not: LinkStatus.AWAITING },
       },
       include: { product: true, partner: true },
     });
@@ -140,9 +142,9 @@ export const linkRouter = router({
             active: null,
             vendor_notified: false,
             partner_notified: false,
-            confirmed: null,
             url: randUrl,
             categoryId: product.categoryId,
+            status: LinkStatus.AWAITING,
           },
         });
 
@@ -162,15 +164,15 @@ export const linkRouter = router({
       }
     }),
 
-  updateLinkStatusByVendor: vendorProcedure
+  confirmOrDenyLinkRequest: vendorProcedure
     .input(
       z.object({
         id: z.string(),
-        isConfirmed: z.boolean(),
+        confirmed: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { id, isConfirmed } = input;
+      const { id, confirmed } = input;
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
@@ -179,9 +181,12 @@ export const linkRouter = router({
         await ctx.prisma.link.update({
           where: { id },
           data: {
-            active: isConfirmed,
-            confirmed: isConfirmed,
+            active: confirmed,
             vendor_notified: true,
+            partner_notified: false,
+            status: confirmed
+              ? LinkStatus.CONFIRMED
+              : LinkStatus.REQUEST_DENIED,
           },
         });
 
@@ -191,6 +196,7 @@ export const linkRouter = router({
       }
     }),
 
+  // ! Not used yet
   updateLinkStatusByPartner: partnerProcedure
     .input(
       z.object({
@@ -206,6 +212,9 @@ export const linkRouter = router({
           where: { id },
           data: {
             active: isActive,
+            status: LinkStatus.CANCELED_BY_PARTNER,
+            vendor_notified: false,
+            partner_notified: true,
           },
         });
 

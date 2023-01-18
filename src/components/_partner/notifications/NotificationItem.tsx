@@ -1,6 +1,6 @@
 import CheckIcon from '@mui/icons-material/CheckCircleOutline';
 import IconButton from '@mui/material/IconButton';
-import { type Link as LinkEntity, type Product, type Vendor } from "@prisma/client";
+import { LinkStatus, type Link as LinkEntity, type Product, type Vendor } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -16,18 +16,18 @@ import { Lira } from "../../shared/HtmlCodes";
 
 
 type ItemProps = {
-    p: (LinkEntity & { vendor: Vendor; product: Product; });
+    link: (LinkEntity & { vendor: Vendor; product: Product; });
     refetch: () => void
 
 }
 
-const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
+const NotificationItem: React.FC<ItemProps> = ({ link, refetch }) => {
 
     const update = trpc.notifications.updateNotificationReadByPartner.useMutation()
 
     const handleUpdate = async () => {
         update.mutate({
-            id: p.id,
+            id: link.id,
         }, {
             onError(error) {
                 console.log(error);
@@ -54,12 +54,12 @@ const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
             <div className="flex gap-4 items-center justify-between">
                 <Link
                     className="aspect-square  w-12 h-12 "
-                    href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.product.id}`}>
-                    {p.product.image ?
+                    href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link.product.id}`}>
+                    {link.product.image ?
                         <img
                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
-                            src={p.product.image ?? ""}
-                            alt={p.id} />
+                            src={link.product.image ?? ""}
+                            alt={link.id} />
                         : <Image
                             className={classNames(
                                 "object-cover rounded hover:shadow object-center",
@@ -75,21 +75,21 @@ const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
 
 
                 <div className="flex flex-col gap-1 items-start min-w-[20ch] h-full">
-                    <Link href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${p.product.id}`}>
+                    <Link href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link.product.id}`}>
                         <h4 className="text-xs whitespace-nowrap
                         font-bold hover:text-sky-500 transition-colors">
-                            {p.product.title && p.product.title.length > 25 ? p.product.title.substring(0, 25) + " ..." : p.product.title}
+                            {link.product.title && link.product.title.length > 25 ? link.product.title.substring(0, 25) + " ..." : link.product.title}
                         </h4>
                     </Link>
 
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Fiyat: </b>
-                        {numberWithCommas(p.product.price)}
+                        {numberWithCommas(link.product.price)}
                         <Lira />
                     </p>
                     <p className="text-stone-400 text-xs whitespace-nowrap">
                         <b className="text-stone-500">Mağaza: </b>
-                        {p.vendor.brand}
+                        {link.vendor.brand}
                     </p>
 
                 </div>
@@ -101,23 +101,25 @@ const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
 
                 {/* STATUS */}
                 <div
-                    title={p.confirmed
+                    title={link.active
                         ? "Link talebiniz vendor tarafindan onaylandi"
-                        : "Link talebiniz vendor tarafindan iptal edildi"
+                        : "Vendor tarafindan iptal edildi"
                     }
                     className="text-center gap-1 flex flex-col items-center">
 
-                    <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
-                        {p.active
+                    <b className={`${link.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
+                        {link.active
                             ? <HiCheckCircle size={"1.25rem"} color="text-green-500" />
                             : <HiXCircle size={"1.25rem"} color="text-red-400" />}
                     </b>
 
                     <b className="text-xs font-bold whitespace-nowrap">
 
-                        {p.active
-                            ? "Onaylandı"
-                            : 'İptal Edilidi'}
+                        {link.status === LinkStatus.REQUEST_DENIED && "İptal Edilidi"}
+                        {link.status === LinkStatus.CANCELED_BY_VENDOR && "İptal Edilidi"}
+                        {link.status === LinkStatus.PRODUCT_DELETED && "Ürün Silindi"}
+                        {link.status === LinkStatus.CONFIRMED && "Onaylandı"}
+                        {link.status === LinkStatus.PAUSED_BY_VENDOR && "Duraklatıldı"}
                     </b>
 
                 </div>
@@ -133,7 +135,7 @@ const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
                     </b>
 
                     <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                        {p.confirmed ? `affiti.me/r/${p.url}` : "--"}
+                        {link.active ? `affiti.me/r/${link.url}` : "--"}
                     </b>
 
                 </div>
@@ -146,8 +148,8 @@ const NotificationItem: React.FC<ItemProps> = ({ p, refetch }) => {
                     <small className="text-slate-500 text-xs font-medium whitespace-nowrap">
                         <TimeAgo
                             className="whitespace-nowrap"
-                            title={formatDateTR(p.updatedAt)}
-                            datetime={p.updatedAt as Date}
+                            title={formatDateTR(link.updatedAt)}
+                            datetime={link.updatedAt as Date}
                             locale={'tr'}
                         />
                     </small>

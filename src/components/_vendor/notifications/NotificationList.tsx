@@ -20,23 +20,21 @@ const DynamicConfirmDialog = dynamic(() => import('../../modals/ConfirmDialog'),
 
 
 type Props = {
-  prod: (LinkEntity & { partner: Partner; product: Product; })[] | undefined
+  links: (LinkEntity & { partner: Partner; product: Product; })[] | undefined
   refetch: () => void;
 }
 
-const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
+const NotificationList: React.FC<Props> = ({ links, refetch }) => {
   const [cancelModal, setCancelModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
   const [linkId, setLinkId] = useState('')
 
-  // TODO: move to notifications route
-  const update = trpc.link.updateLinkStatusByVendor.useMutation()
+  const update = trpc.link.confirmOrDenyLinkRequest.useMutation()
 
   const handleAction = async (confirmed: boolean) => {
 
 
-    update.mutate({ id: linkId, isConfirmed: confirmed }, {
-
+    update.mutate({ id: linkId, confirmed }, {
       onError(error) {
         console.log(error);
         notifyError("Bir hata olustu")
@@ -54,14 +52,14 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
   return (<>
 
-    {prod?.length === 0 ? <p className='text-center'>Henüz bir bildiriminiz bulunmuyor</p> : (<>
+    {links?.length === 0 ? <p className='text-center'>Henüz bir bildiriminiz bulunmuyor</p> : (<>
 
       {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
-        {prod?.map(p => (
+        {links?.map(p => (
           <NotificationItem
             key={p.id}
-            p={p}
+            link={p}
             setLinkId={setLinkId}
             confirmModal={() => setConfirmModal(true)}
             cancelModal={() => setCancelModal(true)}
