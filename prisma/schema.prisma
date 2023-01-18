@@ -217,17 +217,17 @@ model Visit {
   link_id    String
   vendor_id  String?
   partner_id String?
-  ipapi      String?  // from client
+  ipapi      String? // from client
   country    String   @default("-") // from client
-  ipInfo     Json?    // from client
-  ipware     String?  // from server
+  ipInfo     Json? // from client
+  ipware     String? // from server
   hasCookie  Boolean
   cookie     Json?
   prevIp     String?
   sold       Boolean  @default(false)
   vpn        Boolean  @default(false)
   unique     Boolean  @default(true)
-  params     String?  // query extras
+  params     String? // query extras
   dubious    Boolean?
   cause      String?
   partner    Boolean?
@@ -237,7 +237,7 @@ model Visit {
   agent      String?  @db.Text
   bot        Boolean?
   uaFamily   String?
-  referer    String? 
+  referer    String?
   uaMajor    String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
@@ -247,40 +247,45 @@ model Visit {
 }
 
 enum LinkStatus {
-    AWAITING
-    CONFIRMED
-    REQUEST_DENIED
-    PAUSED_BY_VENDOR
-    CANCELED_BY_VENDOR
-    CANCELED_BY_PARTNER
-    PRODUCT_DELETED
+  AWAITING
+  CONFIRMED
+  REQUEST_DENIED
+  PAUSED_BY_VENDOR
+  CANCELED_BY_VENDOR
+  CANCELED_BY_PARTNER
+  PRODUCT_DELETED
 }
 
 model Link {
-  id                String   @id @default(cuid())
-  product           Product  @relation("ProductLinks", fields: [product_id], references: [id])
+  id                String         @id @default(cuid())
+  product           Product        @relation("ProductLinks", fields: [product_id], references: [id])
   product_id        String
-  partner           Partner  @relation(fields: [partner_id], references: [id])
+  partner           Partner        @relation(fields: [partner_id], references: [id])
   partner_id        String
   partner_user_id   String?
-  vendor            Vendor   @relation(fields: [vendor_id], references: [id])
+  vendor            Vendor         @relation(fields: [vendor_id], references: [id])
   vendor_id         String
   vendor_user_id    String?
-  category          Category @relation(fields: [categoryId], references: [id])
+  category          Category       @relation(fields: [categoryId], references: [id])
   categoryId        Int
-  url               String   @unique()
+  url               String         @unique()
   platform          String?
-  visits            Visit[]  @relation("LinkVisits")
-  count             Int      @default(0)
-  partnerVisitCount Int      @default(0)
-  declined          Int      @default(0)
-  repeated          Int      @default(0)
+  visits            Visit[]        @relation("LinkVisits")
+  count             Int            @default(0)
+  partnerVisitCount Int            @default(0)
+  declined          Int            @default(0)
+  repeated          Int            @default(0)
   status            LinkStatus
   active            Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
-  vendor_notified   Boolean  @default(false)
-  partner_notified  Boolean  @default(false)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
+  vendor_notified   Boolean        @default(false)
+  partner_notified  Boolean        @default(false)
+  price             Float?
+  perClick          Float?
+  perClickType      CommissionType @default(CASH)
+  perSale           Float?
+  perSaleType       CommissionType @default(CASH)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
 
   @@index([id, product_id, url])
   @@map("link")

@@ -3,6 +3,7 @@ import { router, vendorProcedure } from "../trpc";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
 import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
 import type { Link, Partner } from "@prisma/client";
+import { CommissionType } from "@prisma/client";
 import { LinkStatus } from "@prisma/client";
 
 export const VendorDashboardRouter = router({
@@ -49,20 +50,20 @@ export const VendorDashboardRouter = router({
   getPartnerAndLinks: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
-    const p = await ctx.prisma.product.findMany({
-      where: {
-        vendor_profile_id: vendorId,
-        active: true,
-        links: {
-          some: { active: { not: null } },
-        },
-      },
-      include: {
-        links: {
-          include: { partner: true, visits: true },
-        },
-      },
-    });
+    // const p = await ctx.prisma.product.findMany({
+    //   where: {
+    //     vendor_profile_id: vendorId,
+    //     active: true,
+    //     links: {
+    //       some: { active: { not: null } },
+    //     },
+    //   },
+    //   include: {
+    //     links: {
+    //       include: { partner: true, visits: true },
+    //     },
+    //   },
+    // });
 
     // console.log(JSON.stringify(p, null, 4));
 
@@ -97,14 +98,14 @@ export const VendorDashboardRouter = router({
     return func(links) as IPartnerAndLinks[];
   }),
 
-  calculateTotal: vendorProcedure.query(async ({ ctx }) => {
+  calculateTotalPartnerPayments: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
-    console.log({vendorId});
-    
+    console.log({ vendorId });
+
     const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
-        // dubious: { not: true },
+        dubious: false,
       },
       include: {
         link: {
@@ -114,27 +115,34 @@ export const VendorDashboardRouter = router({
     });
 
     const paid = visits.filter((x) => x.paid);
-    const unpaid = visits.filter((x) => !x.paid);
-    console.log({unpaid: unpaid.length});
-    console.log({paid: paid.length});
-    // console.log({unpaid});
-    
-    const paidLinks = paid.map((x) => x.link.product);
-    const unpaidLinks = unpaid.map((x) => x.link.product);
-    let s = 0
+    const unpaid = visits.filter((x) => !x.paid && !x.dubious);
+    console.log({ unpaid: unpaid.length });
+    console.log({ paid: paid.length });
+
+    const paidLinks = paid.map((x) => x.link);
+    const unpaidLinks = unpaid.map((x) => x.link);
+
     const unpaidTotal = unpaidLinks.reduce((acc, cur) => {
-      s = cur.perClick ?? 0
       let res = 0;
-      if (cur.perClickType === "CASH") {
-        res = cur.perClick ?? 0 + acc;
-      } else {
-        // ((pd.product.price ?? 1) / 100) * (pd.product.perClick ?? 0)
-        res = (((cur.price ?? 0) / 100) * (cur.perClick ?? 0) )+ acc;
+      if (cur.perClickType === CommissionType.CASH) {
+        res = (cur.perClick ?? 0) + acc;
+      } else if (cur.perClickType === CommissionType.PERC) {
+        res = ((cur.price ?? 0) / 100) * (cur.perClick ?? 0) + acc;
       }
       return res;
-    }, s);
+    }, 0);
 
-    console.log({ unpaidTotal });
+    const paidTotal = paidLinks.reduce((acc, cur) => {
+      let res = 0;
+      if (cur.perClickType === CommissionType.CASH) {
+        res = (cur.perClick ?? 0) + acc;
+      } else if (cur.perClickType === CommissionType.PERC) {
+        res = ((cur.price ?? 0) / 100) * (cur.perClick ?? 0) + acc;
+      }
+      return res;
+    }, 0);
+
+    console.log({ unpaidTotal, paidTotal });
 
     return 0;
   }),

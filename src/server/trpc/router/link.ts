@@ -145,6 +145,11 @@ export const linkRouter = router({
             url: randUrl,
             categoryId: product.categoryId,
             status: LinkStatus.AWAITING,
+            price: product.price,
+            perClick: product.perClick,
+            perSale: product.perSale,
+            perClickType: product.perClickType,
+            perSaleType: product.perSaleType,
           },
         });
 

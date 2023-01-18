@@ -4,7 +4,8 @@ import { type NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import { ReactNode, useMemo } from "react";
+import type { ReactNode} from "react";
+import { useMemo } from "react";
 import { useEffect, useReducer, useState } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
@@ -82,7 +83,7 @@ const Dashboard: NextPage = () => {
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
 
-    trpc.dashboardVendor.calculateTotal.useQuery(undefined, {
+    trpc.dashboardVendor.calculateTotalPartnerPayments.useQuery(undefined, {
         onSuccess(data) {
 
             console.log(data);
@@ -150,7 +151,7 @@ const Dashboard: NextPage = () => {
                     </h1>
                     <small className="text-slate-400 text-sm">
                         Tüm affiliate bilgilerınız bu sayfada bir arada görüntüleyebilirsiiniz.
-                        <Link href={AppRoutes.VENDOR_LINKS}> Affi</Link>
+                        <Link href={AppRoutes.VENDOR_LINKS}> </Link>
                     </small>
                 </div>
 
@@ -201,7 +202,7 @@ const Dashboard: NextPage = () => {
                 </PageCard>
 
                 <PageCard>
-                    <Title>Linkleri Tıklamaları</Title>
+                    <Title>Link Tıklamaları</Title>
                     <hr />
                     <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
 

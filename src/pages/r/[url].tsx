@@ -89,9 +89,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         if (session) {
 
+            if(session.role === UserRoles.ADMIN) return { unique: false, ipData: prevUserIp, dubious: true, cause: 'bot' }
+
             return {
                 unique: false, ipData: prevUserIp, dubious: true,
-                cause: `${session.role === "PARTNER" ? "partner" : "vendor"}`
+                cause: `${session.role === UserRoles.PARTNER ? "partner" : "vendor"}`
             }
 
         }
