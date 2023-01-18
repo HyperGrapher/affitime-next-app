@@ -46,3 +46,22 @@ await prisma.product.findMany({
 })
 
 ```
+
+## GroupBy
+
+```ts
+
+const visitsGroupByRes = await ctx.prisma.visit.groupBy({
+      by: ['link_id'],
+      _count: {
+        dubious: true
+        
+      }
+      
+    });
+    
+    const visitsGroupByRes = [
+      { _count: { dubious: 3 }, link_id: 'clcx7ayh40002cqecxd18d2ui' },
+      { _count: { dubious: 1 }, link_id: 'clcxoofis0004cq6gl94wkc8e' }
+    ]
+```

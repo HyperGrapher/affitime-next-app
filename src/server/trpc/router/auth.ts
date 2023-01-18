@@ -183,13 +183,13 @@ export const authRouter = router({
       if (adminpass !== "@@affitime-admin@@")
         throw new Error("Cannot create admin");
 
-      const isExist = await ctx.prisma.user.findUnique({
+      const exist = await ctx.prisma.user.findUnique({
         where: {
           email,
         },
       });
 
-      if (isExist)
+      if (exist)
         throw new TRPCError({
           message: "Bu email zaten kayıtlı",
           code: "CONFLICT",

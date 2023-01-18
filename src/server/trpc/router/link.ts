@@ -15,7 +15,6 @@ export const linkRouter = router({
     .query(({ ctx, input }) => {
       const { id } = input;
       const { role } = ctx.session;
-      console.log({ role });
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 

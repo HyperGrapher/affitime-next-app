@@ -1,7 +1,10 @@
 import { router, publicProcedure, vendorProcedure } from "../trpc";
 import { z } from "zod";
+import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
+import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
+import type { Link, Partner } from "@prisma/client";
 
-export const dashboardRouter = router({
+export const VendorDashboardRouter = router({
   getXForVendor: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -38,25 +41,36 @@ export const dashboardRouter = router({
   }),
 
   // https://github.com/prisma/prisma/discussions/4185
-  getInfoForVendor: vendorProcedure.query(async ({ ctx }) => {
+  getPartnerAndLinks: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
     const links = await ctx.prisma.link.findMany({
       where: {
         vendor_id: vendorId,
+        active: true,
       },
+      include: { partner: true },
     });
 
-    const visits = await ctx.prisma.visit.findMany({
-      where: {
-        vendor_id: vendorId,
-      },
-      include: { link: true },
-    });
+    //  DB |-> Links[] + {partner} => partner[] + Links[] 
+    // Vendor'e ait herbir link ile gelen single partner yerine 
+    // Vendor'e ait link'e sahip herbir partner ile gelen multiple linkler 
+    const func = flow(
+      partialRight(groupBy, "partner.id"),
+      partialRight(
+        map,
+        (
+          group: (Link & {
+            partner: Partner;
+          })[]
+        ) => ({
+          ...get(head(group), "partner"),
+          partner_links: group.map((o) => omit(o, "partner")),
+        })
+      )
+    );
 
-    // const active = visits.map(x => x.)
-
-    return { links, visits };
+    return func(links) as IPartnerAndLinks[];
   }),
 
   updateVisit: publicProcedure

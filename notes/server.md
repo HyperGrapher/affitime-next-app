@@ -1,4 +1,4 @@
-ssh burak@178.62.214.223  → bm13_____
+ssh burak@178.62.214.223  → bm13xxxxxxxxx
 pm2 stop affinext
 pm2 start affinext
 pm2 restart affinext

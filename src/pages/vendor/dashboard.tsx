@@ -5,7 +5,7 @@ import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useEffect, useReducer } from "react";
+import { useEffect, useReducer, useState } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from "zod";
 import { USER_IP_SESSION_STORAGE } from "../../config/constants";
@@ -14,7 +14,7 @@ import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
 import { AppRoutes } from "../../config/appRoutes";
 import classNames from "../../utils/classnames";
-import type { IDashboardData } from "../../interface/dashboard.interface";
+import type { IDashboardData, IPartnerAndLinks } from "../../interface/dashboard.interface";
 import PageCard from "../../components/card/Card";
 
 
@@ -57,29 +57,41 @@ const IpSchema = z
 
 const Dashboard: NextPage = () => {
 
+
+    const { status: sessionStatus } = useSession();
+
+    const [partnerLinks, setPartnerLinks] = useState<IPartnerAndLinks[] | undefined>()
+
     const [data, updateData] = useReducer(
         (prev: IDashboardData, next: IDashboardData): IDashboardData => {
             return { ...prev, ...next };
         },
         {
-            all: "",
-            active: "",
-            passive: "",
-            refused: "",
-            awaiting: "",
-            total: "",
-            valid: "",
-            declined: "",
+            all: "0",
+            active: "0",
+            passive: "0",
+            refused: "0",
+            awaiting: "0",
+            total: "0",
+            valid: "0",
+            declined: "0",
         }
     );
 
     const updateIp = trpc.user.updateUserIp.useMutation()
-    const { status: sessionStatus } = useSession();
     const createUserIp = trpc.ips.createIp.useMutation()
-    trpc.dashboard.getXForVendor.useQuery(undefined, {
+
+    trpc.dashboardVendor.getXForVendor.useQuery(undefined, {
         onSuccess(data) {
 
             updateData(data)
+        },
+    })
+    trpc.dashboardVendor.getPartnerAndLinks.useQuery(undefined, {
+        onSuccess(data) {
+
+            setPartnerLinks(data)
+
         },
     })
 
@@ -135,83 +147,111 @@ const Dashboard: NextPage = () => {
                 </div>
 
                 <PageCard>
-                <Title>Affiliate Linkleri</Title>
-                <hr />
-                <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
-                    <SqrBox
-                        title={'Linkler'}
-                        desc={"Vendor affiliate link sayısı"}
-                        info={data.all}
+                    <Title>Affiliate Linkleri</Title>
+                    <hr />
+                    <section className="mt-4 flex justify-between items-center xs:flex-wrap md:flex-wrap gap-4">
+                        <SqrBox
+                            title={'Linkler'}
+                            desc={"Vendor affiliate link sayısı"}
+                            info={data.all}
 
-                    />
-
-
-
-                    <SqrBox
-                        title={'Onay Bekleyen'}
-                        desc={"Aktif link sayısı"}
-                        info={data.awaiting}
-
-                    />
-                    <SqrBox
-                        title={'Aktif'}
-                        desc={"Aktif link sayısı"}
-                        info={data.active}
-
-                    />
-
-                    <SqrBox
-                        title={'Rededilen'}
-                        desc={"Rededlen link sayısı"}
-                        info={data.refused}
-
-                    />
-
-                    <SqrBox
-                        title={'Pasif'}
-                        desc={"Pasif link sayısı"}
-                        info={data.passive}
-
-                    />
+                        />
 
 
 
-                </section>
+                        <SqrBox
+                            title={'Onay Bekleyen'}
+                            desc={"Aktif link sayısı"}
+                            info={data.awaiting}
+
+                        />
+                        <SqrBox
+                            title={'Aktif'}
+                            desc={"Aktif link sayısı"}
+                            info={data.active}
+
+                        />
+
+                        <SqrBox
+                            title={'Rededilen'}
+                            desc={"Rededlen link sayısı"}
+                            info={data.refused}
+
+                        />
+
+                        <SqrBox
+                            title={'Pasif'}
+                            desc={"Pasif link sayısı"}
+                            info={data.passive}
+
+                        />
+
+
+
+                    </section>
 
                 </PageCard>
 
                 <PageCard>
-                <Title>Linkleri Tıklamaları</Title>
-                <hr />
-                <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
+                    <Title>Linkleri Tıklamaları</Title>
+                    <hr />
+                    <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
 
 
-                    <SqrBox
-                        title={'Toplam'}
-                        desc={"Affiliate link tıklamaları"}
-                        info={data.total}
+                        <SqrBox
+                            title={'Toplam'}
+                            desc={"Affiliate link tıklamaları"}
+                            info={data.total}
 
-                    />
+                        />
 
 
-                    <SqrBox
-                        title={'Geçerli'}
-                        desc={"Geçerli link tıklamaları"}
-                        info={data.valid}
+                        <SqrBox
+                            title={'Geçerli'}
+                            desc={"Geçerli link tıklamaları"}
+                            info={data.valid}
 
-                    />
+                        />
 
-                    <SqrBox
-                        title={'Geçersiz'}
-                        desc={"Bot ve partner tıklamaları"}
-                        info={data['declined']}
+                        <SqrBox
+                            title={'Geçersiz'}
+                            desc={"Bot ve partner tıklamaları"}
+                            info={data['declined']}
 
-                    />
+                        />
 
-                </section>
+                    </section>
 
-               
 
+
+                </PageCard>
+
+
+
+                <PageCard>
+                    <Title>Partner Performanslari</Title>
+                    <hr />
+
+                    <section className="mt-4 flex flex-col gap-4">
+
+                        {
+                            partnerLinks?.map(x =>
+                                <div key={x.id}>
+
+                                    <h4 className="text-xl font-bold">{x.username}</h4>
+                                    <ul>
+                                        {
+                                            x.partner_links.map(y => <li key={y.id}>
+                                                {y.url}
+                                            </li>)
+                                        }
+                                    </ul>
+
+                                </div>
+                            )
+                        }
+
+                    </section>
                 </PageCard>
 
             </main>
