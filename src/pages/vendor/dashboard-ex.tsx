@@ -275,6 +275,7 @@ type PartnerItemProps = {
 
 };
 
+
 const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
 
     // useEffect(() => {
