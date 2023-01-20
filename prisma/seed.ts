@@ -1,9 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
-import { vendors, partners, cats } from "./user-list";
+import { vendors, partners, cats } from "./data";
 import { CommissionType } from "@prisma/client";
-
+// https://github.com/orta/vscode-twoslash-queries
 const createCategories = async () => {
   const c = await prisma.category.count();
 
@@ -101,12 +101,11 @@ const seedProducts = async () => {
   const vendor_user_id = u?.id ?? "abc";
   const vendor_profile_id = u?.vendor_id ?? "abc";
 
-  // TODO: move to another file
   const prods = [
     {
       title: "LG 38 inch Ultrawide Monitor",
       desc: "LG 38 inch Ultrawide Monitor",
-      price: 24500,
+      price: 20000,
       perClick: 3,
       perClickType: CommissionType.CASH,
       perSale: 12,
@@ -122,7 +121,7 @@ const seedProducts = async () => {
     {
       title: "1974 Fender Stratocaster, Sunburst",
       desc: "Wonderful 1974 Fender Stratocaster in three-tone Sunburst, with Rosewood fingerboard, large headstock, bullet trussrod, staggered pole pickups all in excellent condition complete with bridge cover and tremolo arm at a good price thanks to a replacement neck pickup.",
-      price: 80800,
+      price: 1000,
       perClick: 1,
       perClickType: CommissionType.CASH,
       perSale: 8,
@@ -139,10 +138,10 @@ const seedProducts = async () => {
     {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
-      price: 1500.99,
-      perClick: 0.5,
+      price: 1000,
+      perClick: 1,
       perClickType: CommissionType.CASH,
-      perSale: 12,
+      perSale: 10,
       perSaleType: CommissionType.PERC,
       active: true,
       product_url:
@@ -156,8 +155,8 @@ const seedProducts = async () => {
     {
       title: "Delonghi Dedica Manuel Espresso Makinesi",
       desc: "Delonghi Dedica Manuel Espresso Makinesi, 15 cm Genişlik, 1 L Kapasite, 1350W, 15 Bar Basınç, Paslanmaz Çelik (EC 685.M).",
-      price: 8785.85,
-      perClick: 0.25,
+      price: 1000,
+      perClick: 1,
       perClickType: CommissionType.CASH,
       perSale: 7,
       perSaleType: CommissionType.PERC,
@@ -173,7 +172,7 @@ const seedProducts = async () => {
     {
       title: "Philips Hue Lightstrip Gradient Tv 75 inch Akıllı Led Şerit",
       desc: "Kolay akıllı aydınlatma Philips Hue ile sinemanın heyecanını evinizde yaşayın Degrade ışık şeridi oynayın. tepki veren birden çok ışık rengi elde edin. • Renkleri Sorunsuz Bir Şekilde Karıştırın • Çevre Aydınlatma Efektleri • Oyunu Değiştiren Ev Eğlencesi • Kolay kurulum • Hue Sync ve Hue Bridge Gerekli • Mükemmel uyum için üç boyut",
-      price: 4199.0,
+      price: 1000.0,
       perClick: 0,
       perClickType: CommissionType.CASH,
       perSale: 12,
@@ -190,8 +189,8 @@ const seedProducts = async () => {
     {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
       desc: "Philips TAR4406/12 alarmlı saat/kronometre Dijital çalar saat Beyaz",
-      price: 849.99,
-      perClick: 0.1,
+      price: 1000,
+      perClick: 1,
       perClickType: CommissionType.CASH,
       perSale: 16,
       perSaleType: CommissionType.PERC,
@@ -207,8 +206,8 @@ const seedProducts = async () => {
     {
       title: "Caterpillar Kadın Bej Colorado Bot",
       desc: "Kadın Bot",
-      price: 1749.0,
-      perClick: 0.5,
+      price: 2000.0,
+      perClick: 1,
       perClickType: CommissionType.PERC,
       perSale: 8,
       perSaleType: CommissionType.PERC,

@@ -11,6 +11,7 @@
     "test": "jest",
     "mig": "npx prisma migrate dev",
     "update": "npx npm-check-updates",
+    "unused": "npx depcheck",
     "gen": "npx prisma generate",
     "db:reset": "npx prisma migrate reset",
     "db:seed": "npx prisma db seed"
