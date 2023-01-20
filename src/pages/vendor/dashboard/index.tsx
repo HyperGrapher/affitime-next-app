@@ -1,33 +1,19 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
-import type { GetServerSideProps } from "next";
-import { type NextPage } from "next";
-import { getSession, useSession } from "next-auth/react";
-import Head from "next/head";
+import { Tab } from '@headlessui/react';
 import Link from "next/link";
-import type { ReactNode } from "react";
-import { useMemo } from "react";
-import { useEffect, useReducer, useState } from "react";
-import TopBarProgress from "react-topbar-progress-indicator";
-import { z } from "zod";
+import { useEffect, useState } from "react";
+import Main from "../../../components/_vendor/dashboard/Main";
+import TabItem from "../../../components/tab-item/TabItem";
+import { AppRoutes } from "../../../config/appRoutes";
 import { USER_IP_SESSION_STORAGE } from "../../../config/constants";
-import { UserRoles } from "../../../interface/auth.interface";
+import { IpSchema } from "../../../interface/zod.schema";
+import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
-import { AppRoutes } from "../../../config/appRoutes";
-import classNames from "../../../utils/classnames";
-import type { IDashboardData, IPartnerAndLinks, IVisitAndPayment } from "../../../interface/dashboard.interface";
-import PageCard from "../../../components/card/Card";
-import { Tab } from '@headlessui/react'
-import { useRouter } from "next/router";
-import { IpSchema } from "../../../interface/zod.schema";
-import Main from "../../../components/_vendor/dashboard/Main";
 
 const Dash = () => {
 
-    const { status: sessionStatus } = useSession();
     const [selectedIndex, setSelectedIndex] = useState(0)
-
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
@@ -64,10 +50,6 @@ const Dash = () => {
 
     useEffect(() => { setUserIp() }, [])
 
-    const { push } = useRouter()
-
-
-
     return (
         <div className="auth-container">
 
@@ -94,8 +76,8 @@ const Dash = () => {
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>{selectedIndex === 0 && <Main />}</Tab.Panel>
-                        <Tab.Panel>{selectedIndex === 1 && <Pagem id="2" />}</Tab.Panel>
-                        <Tab.Panel>{selectedIndex === 2 && <Pagem id="3" />}</Tab.Panel>
+                        <Tab.Panel>{selectedIndex === 1 && <div id="2" />}</Tab.Panel>
+                        <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>
 
@@ -105,45 +87,3 @@ const Dash = () => {
 }
 
 export default Dash
-
-type props = {
-    id: string
-}
-
-const Pagem: React.FC<props> = ({ id }) => {
-
-    console.log('SUB PAGE RENDER' + id);
-
-
-
-    return (
-        <div>index {id}</div>
-    )
-}
-
-
-type TabProps = {
-    id: string,
-    selected: number,
-    query: string,
-    title: string
-}
-
-const TabItem: React.FC<TabProps> = ({ id, selected, query, title }) => {
-
-    const { push } = useRouter()
-
-    return (
-        <Tab
-            className={classNames(
-                "bg-slate-100  py-1 text-sm text-slate-500",
-                `${String(selected) === id && "underline underline-offset-8 "}`,
-                'outline-0 font-medium',
-                ""
-            )}
-            onClick={() => push({ query: { tab: query } })}>
-            {title}
-        </Tab>
-    )
-}
-

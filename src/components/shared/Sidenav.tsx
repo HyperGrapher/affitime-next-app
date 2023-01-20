@@ -92,7 +92,7 @@ const Sidenav = () => {
 
 
                         <li id='nav-link'
-                            className={classNames(asPath === AppRoutes.VENDOR_DASHBOARD
+                            className={classNames(asPath.startsWith(AppRoutes.VENDOR_DASHBOARD)
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
@@ -158,6 +158,28 @@ const Sidenav = () => {
                         </li>
 
                         <li id='nav-link'
+                            className={classNames(asPath.startsWith(AppRoutes.VENDOR_PAYMENTS)
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
+                            <Link
+                                className='flex items-center space-x-6 bg-redo-100 w-full h-full'
+                                href={AppRoutes.VENDOR_PAYMENTS} >
+
+                                <HiLink
+                                    id='toggle'
+                                    className='h-6 w-6 p-1
+                                             text-violet-50 bg-violet-600 rounded-full'
+                                    aria-hidden='true' />
+
+                                <span className="font-medium text-sm ">Ödemelerim</span>
+
+                            </Link>
+                        </li>
+
+                        <li id='nav-link'
                             className={classNames(asPath === AppRoutes.VENDOR_NOTIFICATIONS
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
@@ -209,7 +231,7 @@ const Sidenav = () => {
                 </div>
             </div>
         </nav>
-    ) : session.role === UserRoles.PARTNER ?  (
+    ) : session.role === UserRoles.PARTNER ? (
         <nav
             className={classNames(
                 'hidden lg:block fixed top-0 left-0',
