@@ -1,15 +1,19 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Tab } from '@headlessui/react';
+import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Main from "../../../components/_vendor/dashboard/Main";
 import TabItem from "../../../components/tab-item/TabItem";
+import { AppRoutes } from '../../../config/appRoutes';
 import { USER_IP_SESSION_STORAGE } from "../../../config/constants";
+import { UserRoles } from '../../../interface/auth.interface';
 import { IpSchema } from "../../../interface/zod.schema";
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
 
-const Dash = () => {
+const DashboardVendor = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
 
@@ -83,4 +87,27 @@ const Dash = () => {
     )
 }
 
-export default Dash
+export default DashboardVendor
+
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: AppRoutes.SIGNIN,
+            permanent: false
+        }
+    }
+
+    if (session.role !== UserRoles.VENDOR) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: {} }
+}

@@ -1,7 +1,7 @@
 import { PackageType, Role } from "@prisma/client";
 
 
-export const cats = [
+export const categories = [
   {
     name: "Elektronik"
   },

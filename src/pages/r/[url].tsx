@@ -44,7 +44,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         signed: true,
         expires: new Date(Date.now() + (daysToExpire * 24 * 60 * 60 * 1000))
     }
-    // ? Maybe jwt ?
+
     const ckData: ILVCookie = { dt: new Date().toISOString(), c: cookie ? cookie.c + 1 : 1, previp: ipwareObj?.ip }
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
 
@@ -134,26 +134,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     const visit = await prisma.visit.create({ data: visitData })
 
-    const getPartnerVisitCount = (): number => {
-        let result = link.partnerVisitCount
-        if (session && session.role == UserRoles.PARTNER) return result = result + 1;
-        if (prevUserIp?.partner_id) return result = result + 1;
-        return result
-    }
-
-    await prisma.link.update({
-        where: {
-            id: link.id
-        },
-        data: {
-            count: link.count + 1,
-            partnerVisitCount: getPartnerVisitCount(),
-            repeated: (!checkFraudAndUniqness().dubious && cookie) ? link.repeated + 1 : link.repeated,
-            declined: checkFraudAndUniqness().dubious ? link.declined + 1 : link.declined,
-
-        }
-
-    });
 
     prisma.$disconnect()
 

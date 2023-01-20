@@ -125,6 +125,7 @@ model Vendor {
   userId        String         @unique
   brand         String         @unique()
   website       String         @unique()
+  image         String?        @db.Text // !! yeni, full db reset migration required
   products      Product[]
   links         Link[]
   createdAt     DateTime       @default(now())
@@ -140,6 +141,7 @@ model Partner {
   user          User           @relation(fields: [userId], references: [id])
   userId        String         @unique
   username      String         @unique
+  image         String?        @db.Text // !! yeni, full db reset migration required
   links         Link[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
@@ -253,6 +255,7 @@ enum LinkStatus {
   PAUSED_BY_VENDOR
   CANCELED_BY_VENDOR
   CANCELED_BY_PARTNER
+  CANCELED_BY_ADMIN // !! yeni, full db reset migration required
   PRODUCT_DELETED
 }
 
@@ -271,10 +274,10 @@ model Link {
   url               String         @unique()
   platform          String?
   visits            Visit[]        @relation("LinkVisits")
-  count             Int            @default(0)
-  partnerVisitCount Int            @default(0)
-  declined          Int            @default(0)
-  repeated          Int            @default(0)
+  count             Int            @default(0) // ! to be removed [ fix vendor ve partner links detail pages ]
+  partnerVisitCount Int            @default(0) // ! to be removed [ fix vendor ve partner links detail pages ]
+  declined          Int            @default(0) // ! to be removed [ fix vendor ve partner links detail pages ]
+  repeated          Int            @default(0) // ! to be removed [ fix vendor ve partner links detail pages ]
   status            LinkStatus
   active            Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
   vendor_notified   Boolean        @default(false)
@@ -307,7 +310,7 @@ model UserIps {
 model Notification {
   id         Int      @id @default(autoincrement())
   message    String   @db.Text
-  type       String?
+  type       String? // * make enum after types are clarified
   action     String?
   for        Role     @default(PARTNER)
   read       Boolean  @default(false)
@@ -320,4 +323,17 @@ model Notification {
 
   @@index([id])
   @@map("notification")
+}
+
+// !! yeni
+model Faq {
+  id        Int      @id @default(autoincrement())
+  quest     String   @db.Text
+  active    Boolean  @default(true)
+  answer    String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id])
+  @@map("faq")
 }

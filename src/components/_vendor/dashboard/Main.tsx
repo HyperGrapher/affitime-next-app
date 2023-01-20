@@ -11,9 +11,9 @@ import PageCard from "../../card/Card";
 
 const Main = () => {
 
-    const { data: calculated, isLoading: ld1 } = trpc.dashboardVendor.calculateLinksAndPayments.useQuery(undefined, {})
-    const { data: linkStats, isLoading: ld2 } = trpc.dashboardVendor.getLinkStats.useQuery(undefined, {})
-    const { data: partnerLinks, isLoading: ld3 } = trpc.dashboardVendor.getPartnerAndLinks.useQuery(undefined, {})
+    const { data: calculated, isLoading: ld1 } = trpc.dashboardVendor.calculateLinksAndPayments.useQuery()
+    const { data: linkStats, isLoading: ld2 } = trpc.dashboardVendor.getLinkStats.useQuery()
+    const { data: partnerLinks, isLoading: ld3 } = trpc.dashboardVendor.getPartnerAndLinks.useQuery()
 
     return (
         <div className="">

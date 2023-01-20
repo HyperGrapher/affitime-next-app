@@ -1,7 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
-import { vendors, partners, cats } from "./data";
+import { vendors, partners, categories } from "./data";
 import { CommissionType } from "@prisma/client";
 // https://github.com/orta/vscode-twoslash-queries
 const createCategories = async () => {
@@ -12,7 +12,7 @@ const createCategories = async () => {
     return;
   }
 
-  for (const v of cats) {
+  for (const v of categories) {
     await prisma.category.create({
       data: { name: v.name },
     });
