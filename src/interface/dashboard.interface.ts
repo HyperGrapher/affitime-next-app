@@ -6,11 +6,18 @@ export interface IDashboardData {
   passive: string;
   refused: string;
   awaiting: string;
-  total: string;
-  valid: string;
-  declined: string;
+
 }
 
+export interface IVisitAndPayment {
+  unpaidTotal: string;
+  paidTotal: string;
+  unpaid: string;
+  paid: string;
+  total: string;
+  valid: string;
+  invalid: string;
+}
 
 export type IPartnerAndLinks = {
   id: string;
@@ -19,4 +26,4 @@ export type IPartnerAndLinks = {
   createdAt: Date;
   updatedAt: Date;
   partner_links: Link[];
-}
+};

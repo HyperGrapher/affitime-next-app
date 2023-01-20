@@ -4,7 +4,7 @@ import { type NextPage } from "next";
 import { getSession, useSession } from "next-auth/react";
 import Head from "next/head";
 import Link from "next/link";
-import type { ReactNode} from "react";
+import type { ReactNode } from "react";
 import { useMemo } from "react";
 import { useEffect, useReducer, useState } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
@@ -15,7 +15,7 @@ import getClientIp from "../../utils/getClientIp";
 import { trpc } from "../../utils/trpc";
 import { AppRoutes } from "../../config/appRoutes";
 import classNames from "../../utils/classnames";
-import type { IDashboardData, IPartnerAndLinks } from "../../interface/dashboard.interface";
+import type { IDashboardData, IPartnerAndLinks, IVisitAndPayment } from "../../interface/dashboard.interface";
 import PageCard from "../../components/card/Card";
 // import { Link as LinkEntity } from "@prisma/client";
 
@@ -64,7 +64,7 @@ const Dashboard: NextPage = () => {
 
     const [partnerLinks, setPartnerLinks] = useState<IPartnerAndLinks[] | undefined>()
 
-    const [data, updateData] = useReducer(
+    const [linkStats, updateLinkStats] = useReducer(
         (prev: IDashboardData, next: IDashboardData): IDashboardData => {
             return { ...prev, ...next };
         },
@@ -74,26 +74,38 @@ const Dashboard: NextPage = () => {
             passive: "0",
             refused: "0",
             awaiting: "0",
+        }
+    );
+
+    const [visitStats, updateVisitStats] = useReducer(
+        (prev: IVisitAndPayment, next: IVisitAndPayment): IVisitAndPayment => {
+            return { ...prev, ...next };
+        },
+        {
+            unpaidTotal: "0",
+            paidTotal: "0",
+            unpaid: "0",
+            paid: "0",
             total: "0",
             valid: "0",
-            declined: "0",
+            invalid: "0",
         }
     );
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
 
-    trpc.dashboardVendor.calculateTotalPartnerPayments.useQuery(undefined, {
+    trpc.dashboardVendor.calculateLinksAndPayments.useQuery(undefined, {
         onSuccess(data) {
 
-            console.log(data);
+            updateVisitStats(data);
 
         },
     })
-    trpc.dashboardVendor.getXForVendor.useQuery(undefined, {
+    trpc.dashboardVendor.getLinkStats.useQuery(undefined, {
         onSuccess(data) {
 
-            updateData(data)
+            updateLinkStats(data)
         },
     })
     trpc.dashboardVendor.getPartnerAndLinks.useQuery(undefined, {
@@ -162,7 +174,7 @@ const Dashboard: NextPage = () => {
                         <SqrBox
                             title={'Linkler'}
                             desc={"Vendor affiliate link sayısı"}
-                            info={data.all}
+                            info={linkStats.all}
 
                         />
 
@@ -171,27 +183,27 @@ const Dashboard: NextPage = () => {
                         <SqrBox
                             title={'Onay Bekleyen'}
                             desc={"Aktif link sayısı"}
-                            info={data.awaiting}
+                            info={linkStats.awaiting}
 
                         />
                         <SqrBox
                             title={'Aktif'}
                             desc={"Aktif link sayısı"}
-                            info={data.active}
+                            info={linkStats.active}
 
                         />
 
                         <SqrBox
                             title={'Rededilen'}
                             desc={"Rededlen link sayısı"}
-                            info={data.refused}
+                            info={linkStats.refused}
 
                         />
 
                         <SqrBox
                             title={'Pasif'}
                             desc={"Pasif link sayısı"}
-                            info={data.passive}
+                            info={linkStats.passive}
 
                         />
 
@@ -210,7 +222,7 @@ const Dashboard: NextPage = () => {
                         <SqrBox
                             title={'Toplam'}
                             desc={"Affiliate link tıklamaları"}
-                            info={data.total}
+                            info={visitStats.total}
 
                         />
 
@@ -218,14 +230,14 @@ const Dashboard: NextPage = () => {
                         <SqrBox
                             title={'Geçerli'}
                             desc={"Geçerli link tıklamaları"}
-                            info={data.valid}
+                            info={visitStats.valid}
 
                         />
 
                         <SqrBox
                             title={'Geçersiz'}
                             desc={"Bot ve partner tıklamaları"}
-                            info={data['declined']}
+                            info={visitStats['invalid']}
 
                         />
 

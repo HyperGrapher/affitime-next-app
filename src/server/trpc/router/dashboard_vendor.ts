@@ -7,7 +7,7 @@ import { CommissionType } from "@prisma/client";
 import { LinkStatus } from "@prisma/client";
 
 export const VendorDashboardRouter = router({
-  getXForVendor: vendorProcedure.query(async ({ ctx }) => {
+  getLinkStats: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
     const links = await ctx.prisma.link.findMany({
@@ -25,14 +25,6 @@ export const VendorDashboardRouter = router({
     // );
     const passive = links.filter((x) => x.active === false);
     const awaiting = links.filter((x) => x.status === LinkStatus.AWAITING);
-    // console.log(deniedRequests.length);
-
-    const allClicks = confirmed.reduce((acc, cur) => acc + cur.count, 0);
-    const valid = confirmed.reduce(
-      (acc, cur) => acc + (cur.count - cur.declined),
-      0
-    );
-    const declined = confirmed.reduce((acc, cur) => acc + cur.declined, 0);
 
     return {
       all: String(links.length),
@@ -40,9 +32,6 @@ export const VendorDashboardRouter = router({
       passive: String(passive.length),
       refused: String(canceledByVendor.length),
       awaiting: String(awaiting.length),
-      total: String(allClicks),
-      valid: String(valid),
-      declined: String(declined),
     };
   }),
 
@@ -98,14 +87,16 @@ export const VendorDashboardRouter = router({
     return func(links) as IPartnerAndLinks[];
   }),
 
-  calculateTotalPartnerPayments: vendorProcedure.query(async ({ ctx }) => {
+  calculateLinksAndPayments: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
-    console.log({ vendorId });
+    // console.log({ vendorId });
+    console.log("\n");
 
     const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
-        dubious: false,
+        // dubious: false,
+        paid: null,
       },
       include: {
         link: {
@@ -116,8 +107,11 @@ export const VendorDashboardRouter = router({
 
     const paid = visits.filter((x) => x.paid);
     const unpaid = visits.filter((x) => !x.paid && !x.dubious);
-    console.log({ unpaid: unpaid.length });
-    console.log({ paid: paid.length });
+    const valid = visits.filter((x) => !x.dubious);
+    const invalid = visits.filter((x) => x.dubious);
+
+    const x = groupBy(unpaid, "link.product.id");
+    console.log(x);
 
     const paidLinks = paid.map((x) => x.link);
     const unpaidLinks = unpaid.map((x) => x.link);
@@ -142,8 +136,24 @@ export const VendorDashboardRouter = router({
       return res;
     }, 0);
 
-    console.log({ unpaidTotal, paidTotal });
+    console.log({
+      unpaidTotal,
+      paidTotal,
+      unpaid: unpaidLinks.length,
+      paid: paidLinks.length,
+      total: visits.length,
+      valid: valid.length,
+      invalid: invalid.length,
+    });
 
-    return 0;
+    return {
+      unpaidTotal: String(unpaidTotal),
+      paidTotal: String(paidTotal),
+      unpaid: String(unpaidLinks.length),
+      paid: String(paidLinks.length),
+      total: String(visits.length),
+      valid: String(valid.length),
+      invalid: String(invalid.length),
+    };
   }),
 });
