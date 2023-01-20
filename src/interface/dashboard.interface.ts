@@ -27,3 +27,13 @@ export type IPartnerAndLinks = {
   updatedAt: Date;
   partner_links: Link[];
 };
+
+export type IUnpaidPartnerAndLinks = {
+  id: string;
+  userId: string;
+  username: string;
+  createdAt: Date;
+  updatedAt: Date;
+  calc: number,
+  partner_links: number;
+};

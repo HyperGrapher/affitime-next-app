@@ -1,113 +1,61 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { useMemo, useReducer, useState } from "react";
+import { useMemo } from "react";
 import TopBarProgress from "react-topbar-progress-indicator";
-import type { IDashboardData, IPartnerAndLinks, IVisitAndPayment } from "../../../interface/dashboard.interface";
+import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
 import classNames from "../../../utils/classnames";
 import { trpc } from "../../../utils/trpc";
 import PageCard from "../../card/Card";
-// import { Link as LinkEntity } from "@prisma/client";
 
 
 const Main = () => {
 
-    const [partnerLinks, setPartnerLinks] = useState<IPartnerAndLinks[] | undefined>()
-    const [busy, setBusy] = useState(true)
-
-
-    const [linkStats, updateLinkStats] = useReducer(
-        (prev: IDashboardData, next: IDashboardData): IDashboardData => {
-            return { ...prev, ...next };
-        },
-        {
-            all: "0",
-            active: "0",
-            passive: "0",
-            refused: "0",
-            awaiting: "0",
-        }
-    );
-
-    const [visitStats, updateVisitStats] = useReducer(
-        (prev: IVisitAndPayment, next: IVisitAndPayment): IVisitAndPayment => {
-            return { ...prev, ...next };
-        },
-        {
-            unpaidTotal: "0",
-            paidTotal: "0",
-            unpaid: "0",
-            paid: "0",
-            total: "0",
-            valid: "0",
-            invalid: "0",
-        }
-    );
-
-
-    trpc.dashboardVendor.calculateLinksAndPayments.useQuery(undefined, {
-        onSuccess(data) {
-
-            updateVisitStats(data);
-            setBusy(false)
-
-        },
-    })
-    trpc.dashboardVendor.getLinkStats.useQuery(undefined, {
-        onSuccess(data) {
-
-            updateLinkStats(data)
-        },
-    })
-    trpc.dashboardVendor.getPartnerAndLinks.useQuery(undefined, {
-        onSuccess(data) {
-
-            setPartnerLinks(data)
-
-        },
-    })
+    const { data: calculated, isLoading: ld1 } = trpc.dashboardVendor.calculateLinksAndPayments.useQuery(undefined, {})
+    const { data: linkStats, isLoading: ld2 } = trpc.dashboardVendor.getLinkStats.useQuery(undefined, {})
+    const { data: partnerLinks, isLoading: ld3 } = trpc.dashboardVendor.getPartnerAndLinks.useQuery(undefined, {})
 
     return (
         <div className="">
-            {busy && <TopBarProgress />}
+            {(ld1 && ld2 && ld3) && <TopBarProgress />}
 
             <PageCard>
                 <Title>Affiliate Linkleri</Title>
                 <hr />
                 <section className="mt-4 flex justify-between items-center xs:flex-wrap md:flex-wrap gap-4">
+
                     <SqrBox
                         title={'Linkler'}
                         desc={"Vendor affiliate link sayısı"}
-                        info={linkStats.all}
+                        info={linkStats?.all ?? "0"}
 
                     />
-
 
 
                     <SqrBox
                         title={'Onay Bekleyen'}
                         desc={"Aktif link sayısı"}
-                        info={linkStats.awaiting}
+                        info={linkStats?.awaiting ?? "0"}
 
                     />
                     <SqrBox
                         title={'Aktif'}
                         desc={"Aktif link sayısı"}
-                        info={linkStats.active}
+                        info={linkStats?.active ?? "0"}
 
                     />
 
                     <SqrBox
                         title={'Rededilen'}
                         desc={"Rededlen link sayısı"}
-                        info={linkStats.refused}
+                        info={linkStats?.refused ?? "0"}
 
                     />
 
                     <SqrBox
                         title={'Pasif'}
                         desc={"Pasif link sayısı"}
-                        info={linkStats.passive}
+                        info={linkStats?.passive ?? "0"}
 
                     />
 
@@ -122,11 +70,10 @@ const Main = () => {
                 <hr />
                 <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
 
-
                     <SqrBox
                         title={'Toplam'}
                         desc={"Affiliate link tıklamaları"}
-                        info={visitStats.total}
+                        info={calculated?.total ?? "0"}
 
                     />
 
@@ -134,14 +81,14 @@ const Main = () => {
                     <SqrBox
                         title={'Geçerli'}
                         desc={"Geçerli link tıklamaları"}
-                        info={visitStats.valid}
+                        info={calculated?.valid ?? "0"}
 
                     />
 
                     <SqrBox
                         title={'Geçersiz'}
                         desc={"Bot ve partner tıklamaları"}
-                        info={visitStats['invalid']}
+                        info={calculated?.invalid ?? "0"}
 
                     />
 
@@ -224,7 +171,7 @@ type TitleProps = {
 type Props = {
     title: string;
     desc: string;
-    info: string;
+    info: string | undefined;
 };
 
 const SqrBox: React.FC<Props> = ({ title, desc, info }) => {

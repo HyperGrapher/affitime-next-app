@@ -1,10 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Tab } from '@headlessui/react';
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import Main from "../../../components/_vendor/dashboard/Main";
 import TabItem from "../../../components/tab-item/TabItem";
-import { AppRoutes } from "../../../config/appRoutes";
 import { USER_IP_SESSION_STORAGE } from "../../../config/constants";
 import { IpSchema } from "../../../interface/zod.schema";
 import classNames from "../../../utils/classnames";
@@ -20,9 +18,9 @@ const Dash = () => {
 
     const setUserIp = async () => {
 
-        const isSaved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
+        const saved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
 
-        if (isSaved !== 'true') {
+        if (!saved) {
             try {
                 const userIp = await getClientIp()
                 const ipData = IpSchema.parse(userIp)
@@ -57,11 +55,10 @@ const Dash = () => {
 
                 <div className="mb-2">
                     <h1 className="text-slate-600 font-bold text-2xl">
-                        Merhaba, Wendy Ticaret A.Ş.a
+                        Merhaba, Wendy Ticaret A.Ş.
                     </h1>
                     <small className="text-slate-400 text-sm">
                         Tüm affiliate bilgilerınız bu sayfada bir arada görüntüleyebilirsiiniz.
-                        <Link href={AppRoutes.VENDOR_LINKS}> </Link>
                     </small>
                 </div>
 
@@ -69,9 +66,9 @@ const Dash = () => {
                     <Tab.List className={classNames(
                         "flex space-x-8 "
                     )}>
-                        <TabItem id="0" title="Genel" selected={selectedIndex} query="main" />
-                        <TabItem id="1" title="Second" selected={selectedIndex} query="second" />
-                        <TabItem id="2" title="Third" selected={selectedIndex} query="third" />
+                        <TabItem id="0" title="Genel" selected={selectedIndex} query="0" />
+                        <TabItem id="1" title="Second" selected={selectedIndex} query="1" />
+                        <TabItem id="2" title="Third" selected={selectedIndex} query="2" />
 
                     </Tab.List>
                     <Tab.Panels>
