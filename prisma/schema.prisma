@@ -125,12 +125,13 @@ model Vendor {
   userId        String         @unique
   brand         String         @unique()
   website       String         @unique()
-  image         String?        @db.Text // !! yeni, full db reset migration required
+  image         String?        @db.Text
   products      Product[]
   links         Link[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   notifications Notification[]
+  visits        Visit[]
 
   @@index([id, userId])
   @@map("user_vendor")
@@ -141,11 +142,12 @@ model Partner {
   user          User           @relation(fields: [userId], references: [id])
   userId        String         @unique
   username      String         @unique
-  image         String?        @db.Text // !! yeni, full db reset migration required
+  image         String?        @db.Text
   links         Link[]
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
   notifications Notification[]
+  visits        Visit[]
 
   @@index([id, userId])
   @@map("user_partner")
@@ -214,35 +216,42 @@ model Product {
 }
 
 model Visit {
-  id         String   @id @default(cuid())
-  link       Link     @relation("LinkVisits", fields: [link_id], references: [id])
-  link_id    String
-  vendor_id  String?
-  partner_id String?
-  ipapi      String? // from client
-  country    String   @default("-") // from client
-  ipInfo     Json? // from client
-  ipware     String? // from server
-  hasCookie  Boolean
-  cookie     Json?
-  prevIp     String?
-  sold       Boolean  @default(false)
-  vpn        Boolean  @default(false)
-  unique     Boolean  @default(true)
-  params     String? // query extras
-  dubious    Boolean?
-  cause      String?
-  partner    Boolean?
-  vendor     Boolean?
-  paid       Boolean?
-  os         String?  @default("-")
-  agent      String?  @db.Text
-  bot        Boolean?
-  uaFamily   String?
-  referer    String?
-  uaMajor    String?
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  id           String         @id @default(cuid())
+  link         Link           @relation("LinkVisits", fields: [link_id], references: [id])
+  link_id      String
+  vendor       Vendor         @relation(fields: [vendor_id], references: [id])
+  vendor_id    String
+  partner      Partner        @relation(fields: [partner_id], references: [id])
+  partner_id   String
+  ipapi        String? // from client
+  country      String         @default("-") // from client
+  ipInfo       Json? // from client
+  ipware       String? // from server
+  hasCookie    Boolean
+  cookie       Json?
+  prevIp       String?
+  sold         Boolean        @default(false)
+  vpn          Boolean        @default(false)
+  unique       Boolean        @default(true)
+  params       String? // query extras
+  dubious      Boolean?
+  cause        String?
+  isPartner    Boolean?
+  isVendor     Boolean?
+  paid         Boolean?
+  os           String?        @default("-")
+  agent        String?        @db.Text
+  bot          Boolean?
+  uaFamily     String?
+  referer      String?
+  uaMajor      String?
+  price        Float?
+  perClick     Float?
+  perClickType CommissionType @default(CASH)
+  perSale      Float?
+  perSaleType  CommissionType @default(CASH)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
 
   @@index([id, link_id])
   @@map("visit")
@@ -255,7 +264,7 @@ enum LinkStatus {
   PAUSED_BY_VENDOR
   CANCELED_BY_VENDOR
   CANCELED_BY_PARTNER
-  CANCELED_BY_ADMIN // !! yeni, full db reset migration required
+  CANCELED_BY_ADMIN
   PRODUCT_DELETED
 }
 
@@ -325,7 +334,6 @@ model Notification {
   @@map("notification")
 }
 
-// !! yeni
 model Faq {
   id        Int      @id @default(autoincrement())
   quest     String   @db.Text
