@@ -3,7 +3,7 @@
 import { router, vendorProcedure } from "../trpc";
 import { z } from "zod";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
-import type { IUnpaidPartnerAndLinks } from "../../../interface/dashboard.interface";
+import type { IUnpaidPartnerAndVisits } from "../../../interface/dashboard.interface";
 import type { Link, Partner, Product, Visit } from "@prisma/client";
 import { CommissionType } from "@prisma/client";
 import { LinkStatus } from "@prisma/client";
@@ -37,29 +37,11 @@ export const PaymentsRouter = router({
     };
   }),
 
-  // ! THIS is faulty
+  // * payments-awaitingPayments [DONE]
   getUnpaidPartners: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
-    console.time("qq");
-    const linksWithUnPaidVisits = await ctx.prisma.link.findMany({
-      where: {
-        vendor_id: vendorId,
-      },
-      include: {
-        visits: {
-          where: {
-            dubious: false,
-            paid: null,
-          },
-          include: {link: true}
-        },
-        partner: true,
-        // product: true,
-      },
-    });
-
-    const visitsWithUnPaidVisits = await ctx.prisma.visit.findMany({
+    const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
         dubious: false,
@@ -67,90 +49,49 @@ export const PaymentsRouter = router({
       },
       include: {
         link: true,
-        // partner: true,
-        // product: true,
+        partner: true,
       },
     });
 
-    console.log("visitsWithUnPaidVisits");
-    console.log(visitsWithUnPaidVisits.length);
     
+    // const paid = visits.filter((x) => x.paid);
+    // const unpaid = visits.filter((x) => !x.paid && !x.dubious);
 
 
-    const groupTransactions =( await ctx.prisma.visit.groupBy({
-      by: ['partner_id'],
-  }))
-  
-  
-
-    // console.log(JSON.stringify(groupTransactions, null, 4));
-    
-
-
-    // const aa = linksWithUnPaidVisits.map(x => ({
-    //   partner: x.partner
-    // }))
-
-    console.timeEnd("qq");
-
-    console.time("payment_func");
     const func = flow(
-      partialRight(groupBy, "partner_id"),
+      partialRight(groupBy, "partner.id"),
       partialRight(
         map,
         (
-          group: (Link & {
+          group: (Visit & {
             partner: Partner;
-            visits: Visit & { link: Link };
+            link: Link;
           })[]
         ) => ({
           ...get(head(group), "partner"),
-          partner_links: group.map((o) => omit(o, "partner")).length,
-          visits: group.map((o) => (o.visits)),
-          link: group.map((o) => (o)),
-          visitsCalc: group.flatMap((v) => ({vis: v.visits, link: v})).reduce((acc, cur) => {
-            let res = 0
-            // console.log("cur.vis /n");
-            // console.log( cur.vis);
-            
-            if(cur.link.perClickType === CommissionType.CASH) {
-              const pc = cur.link.perClick
-              res = (pc ?? 0) + acc;
-            }  else if (cur.link.perClickType === CommissionType.PERC) {
-              res = ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
-            }
-
-            return res
-          }, 0),
+          visits: group.map((o) => omit(o, "partner")),
           calc: group
-            .map((o) => omit(o, "partner"))
             .reduce((acc, cur) => {
-              let res = 0;
-              if (cur.perClickType === CommissionType.CASH) {
-                res = (cur.perClick ?? 0) + acc;
-              } else if (cur.perClickType === CommissionType.PERC) {
-                res = ((cur.price ?? 0) / 100) * (cur.perClick ?? 0) + acc;
+              let total = 0;
+              if (cur.link.perClickType === CommissionType.CASH) {
+                total = (cur.link.perClick ?? 0) + acc;
+              } else if (cur.link.perClickType === CommissionType.PERC) {
+                total = ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
               }
-              return res;
+
+              return total;
             }, 0),
+          links: new Set(group.map((x) => x.link_id)).size,
         })
       )
     );
 
-    const funcRes = func(linksWithUnPaidVisits) as IUnpaidPartnerAndLinks[];
-    
-    console.log('------------------------------------ /n');
-    
-    // console.log(JSON.stringify(funcRes, null, 4));
-
-    console.timeEnd("payment_func");
-
-    // console.log(func(links));
+    const funcRes = func(visits) as IUnpaidPartnerAndVisits[];
 
     return funcRes;
   }),
 
-  // * Payment Detail Page
+  // * Payment Detail Page - Not implemented as page
   getLinkAndVisitDetailsOfPartner: vendorProcedure
     .input(z.object({ partnerId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -211,79 +152,15 @@ export const PaymentsRouter = router({
       return func(links);
     }),
 
-  getPayments: vendorProcedure.query(async ({ ctx }) => {
-    const { vendorId } = ctx.session;
-    // console.log({ vendorId });
-    const links = await ctx.prisma.link.findMany({
-      where: {
-        vendor_id: vendorId,
-      },
-      include: { visits: true, partner: true, product: true },
-    });
-
-    const viss = links.map((x) => x.visits);
-    const a = viss.map((x) => x.filter((x) => !x.paid && !x.dubious)[0]);
-    // console.log(a);
-    const gr = groupBy(a, "partner_id");
-    // console.log(gr);
-
-    const vis12 = links.map((x) => ({
-      partnerUsername: x.partner.username,
-      // prodId: x.product_id,
-      // partnerId: x.partner.id,
-      // link: x,
-      // product: x.product,
-      // visits: x.visits,
-      // partner: x.partner,
-      xx: gr[x.partner_id],
-    }));
-
-    console.log(vis12);
-
-    const vis = links.map((x) => ({
-      partnerUsername: x.partner.username,
-      prodId: x.product_id,
-      partnerId: x.partner.id,
-      link: x,
-      product: x.product,
-      visits: x.visits,
-      partner: x.partner,
-    }));
-
-    // const x = groupBy(vis, "partnerUsername");
-    // console.log(x);
-
-    const visits = await ctx.prisma.visit.findMany({
-      where: {
-        vendor_id: vendorId,
-        // dubious: false,
-        paid: null,
-      },
-      include: {
-        link: {
-          include: { product: true, partner: true },
-        },
-      },
-    });
-
-    // const paid2 = visits.filter((x) => x.paid);
-    // const unpaid2 = visits.filter((x) => !x.paid && !x.dubious);
-
-    // console.log(JSON.stringify(func(unpaid2)));
-
-    return links;
-  }),
-
+  // Dashboard - Main.tsx
   calculateLinksAndPayments: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
-    // console.log({ vendorId });
-    console.log("\n");
 
     const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
         // dubious: false,
-        paid: null,
+        // paid: null,
       },
       include: {
         link: {
@@ -297,8 +174,8 @@ export const PaymentsRouter = router({
     const valid = visits.filter((x) => !x.dubious);
     const invalid = visits.filter((x) => x.dubious);
 
-    const x = groupBy(unpaid, "link.product.id");
-    console.log(x);
+    // const x = groupBy(unpaid, "link.product.id");
+    // console.log(x);
 
     const paidLinks = paid.map((x) => x.link);
     const unpaidLinks = unpaid.map((x) => x.link);

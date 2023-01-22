@@ -17,7 +17,7 @@ const Payments = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
 
-    const { data: x, status: sts } = trpc.payments.getUnpaidPartners.useQuery(undefined, {})
+    const { data: partnersWithVisits, status: sts } = trpc.payments.getUnpaidPartners.useQuery(undefined, {})
 
 
     return (
@@ -44,7 +44,7 @@ const Payments = () => {
 
                     </Tab.List>
                     <Tab.Panels>
-                        <Tab.Panel>{selectedIndex === 0 && <AwaitingPayments partners={x} />}</Tab.Panel>
+                        <Tab.Panel>{selectedIndex === 0 && <AwaitingPayments partners={partnersWithVisits} />}</Tab.Panel>
                         <Tab.Panel>{selectedIndex === 1 && <PaymentsCompleted />}</Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>

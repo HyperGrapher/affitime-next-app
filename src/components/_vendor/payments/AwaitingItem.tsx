@@ -1,15 +1,15 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import React, { useMemo } from 'react'
+import React from 'react'
 import profileImg from '../../../assets/profile.webp'
-import type { IUnpaidPartnerAndLinks } from '../../../interface/dashboard.interface'
+import type { IUnpaidPartnerAndVisits } from '../../../interface/dashboard.interface'
 import classNames from '../../../utils/classnames'
 import { numberWithCommas } from '../../../utils/helpers'
 import Divider from '../../shared/Divider'
 import { Lira } from '../../shared/HtmlCodes'
 
 type Props = {
-    item: IUnpaidPartnerAndLinks
+    item: IUnpaidPartnerAndVisits
 }
 
 const AwaitingItem: React.FC<Props> = ({ item }) => {
@@ -75,7 +75,7 @@ const AwaitingItem: React.FC<Props> = ({ item }) => {
                     </b>
 
                     <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                        {numberWithCommas(item.partner_links)}
+                        {numberWithCommas(item.links)}
                     </b>
 
                 </div>
