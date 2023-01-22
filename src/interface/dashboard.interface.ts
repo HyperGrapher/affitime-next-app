@@ -1,4 +1,4 @@
-import type { Link } from "@prisma/client";
+import type { Link, Visit } from "@prisma/client";
 
 export interface IDashboardData {
   all: string;
@@ -34,6 +34,8 @@ export type IUnpaidPartnerAndLinks = {
   username: string;
   createdAt: Date;
   updatedAt: Date;
-  calc: number,
+  visits: Visit[][];
+  link: Link;
+  calc: number;
   partner_links: number;
 };

@@ -33,7 +33,7 @@ const LinkItem: React.FC<ItemProps> = ({ link }) => {
             )}>
 
             {/* IMAGE */}
-            <main className="flex gap-4 items-center justify-between">
+            <div className="flex gap-4 items-center justify-between">
                 <Link
                     className="aspect-square  w-12 h-12 "
                     href={`${AppRoutes.PARTNER_LINK_DETAIL}/${link.id}`}>
@@ -150,7 +150,7 @@ const LinkItem: React.FC<ItemProps> = ({ link }) => {
 
                 </section>
 
-            </main>
+            </div>
 
 
 

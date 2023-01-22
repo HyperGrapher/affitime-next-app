@@ -344,63 +344,6 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 export default LinkDetail
 
-/*
-   <div className="flex flex-col md:flex-row justify-content md:space-x-2">
-
-   <section className={classNames(
-       "bg-slate-100 hover:bg-slate-50",
-       "w-full rounded-md  py-0 px-2   ",
-       "shadow hover:shadow-md shadow-slate-300 transition-all",
-       "border hover:border-black/5 ",
-       'mt-2'
-
-   )}>
-       <div className="d">
-           <h3
-               className={classNames(
-                   "font-medium text-base px-2 py-4"
-               )}
-           >
-               Toplam Ziyaret
-
-
-           </h3>
-       </div>
-
-       <div className="d">
-          
-       </div>
-
-   </section>
-
-   <section className={classNames(
-       "bg-slate-100 hover:bg-slate-50",
-       "w-full rounded-md  py-0 px-2   ",
-       "shadow hover:shadow-md shadow-slate-300 transition-all",
-       "border hover:border-black/5 ",
-       'mt-2'
-
-   )}>
-       <div className="d">
-           <h3
-               className={classNames(
-                   "font-medium text-base px-2 py-4"
-               )}
-           >
-               Cookie Süresi
-
-
-           </h3>
-       </div>
-
-       <div className="d">
-
-       </div>
-
-   </section>
-</div>
-*/
-
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 

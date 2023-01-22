@@ -3,6 +3,7 @@ import classNames from "../../../utils/classnames";
 import PageCard from "../../../components/card/Card";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import EmptyListView from "../../shared/EmptyListView";
 
 const Title: React.FC<TitleProps> = ({ children }) => <h1
   className="mt- text-xl font-bold text-slate-600">
@@ -15,16 +16,15 @@ type TitleProps = {
 
 };
 
-const PaymentsIndex = () => {
+const PaymentsCompleted = () => {
   return (
     <div>
       <PageCard>
-        <Title>Odemesi Bekleyen Partnerler</Title>
+        <Title>Yapılan Ödemeler</Title>
         <hr />
-        <section className="mt-4 flex justify-between items-center xs:flex-wrap md:flex-wrap gap-4">
+        <section className="space-y-2 mt-4">
 
-
-
+          <EmptyListView title="Henüz yapılmış ödemeniz bulunmuyor" />
 
         </section>
 
@@ -36,4 +36,5 @@ const PaymentsIndex = () => {
   )
 }
 
-export default PaymentsIndex
+export default PaymentsCompleted
+
