@@ -1,6 +1,6 @@
-import type { NextPage } from 'next'
-import type { RegisterFormElement } from '../../interface/auth.interface';
-import { signIn } from "next-auth/react";
+import type { GetServerSideProps, NextPage } from 'next'
+import type { RegisterFormElement} from '../../interface/auth.interface';
+import { getSession, signIn } from "next-auth/react";
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
@@ -98,3 +98,18 @@ const Signin: NextPage = (): JSX.Element => {
 }
 
 export default Signin
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (session) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: {} }
+}

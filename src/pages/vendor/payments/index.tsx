@@ -1,14 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Tab } from '@headlessui/react';
+import { getSession } from 'next-auth/react';
 import Link from "next/link";
+import type { GetServerSideProps } from 'next/types';
 import { useState } from "react";
+import TopBarProgress from 'react-topbar-progress-indicator';
 import AwaitingPayments from '../../../components/_vendor/payments/AwaitingPayments';
 import PaymentsCompleted from '../../../components/_vendor/payments/PaymentsCompleted';
 import TabItem from "../../../components/tab-item/TabItem";
 import { AppRoutes } from "../../../config/appRoutes";
+import { UserRoles } from '../../../interface/auth.interface';
 import classNames from "../../../utils/classnames";
 import { trpc } from "../../../utils/trpc";
-import TopBarProgress from 'react-topbar-progress-indicator';
 
 const Payments = () => {
 
@@ -52,3 +55,26 @@ const Payments = () => {
 }
 
 export default Payments
+
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+    const session = await getSession(context)
+
+    if (!session) return {
+        redirect: {
+            destination: AppRoutes.SIGNIN,
+            permanent: false
+        }
+    }
+
+    if (session.role !== UserRoles.VENDOR) return {
+        redirect: {
+            destination: `/${session.role.toLowerCase()}/dashboard`,
+            permanent: false
+        }
+    }
+
+    return { props: {} }
+}

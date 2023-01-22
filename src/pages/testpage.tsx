@@ -5,7 +5,7 @@ import { getSession, signOut, } from "next-auth/react";
 import { AppRoutes } from '../config/appRoutes';
 
 // ? TEST EXIST
-const Welcome: NextPage = () => {
+const TestPage: NextPage = () => {
 
 
   const logUserOut = () => {
@@ -27,7 +27,7 @@ const Welcome: NextPage = () => {
   )
 }
 
-export default Welcome
+export default TestPage
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 

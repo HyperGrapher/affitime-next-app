@@ -29,7 +29,7 @@ const DynamicConfirmDialog = dynamic(() => import('../../../../components/modals
 const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
 
-    const { back, /* push */ } = useRouter()
+    const { back } = useRouter()
 
     const [busy, /* setBusy */] = useState(false)
     const [modal, setModal] = useState(false)
@@ -53,44 +53,6 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
         return res
     }, [pd])
 
-
-
-    // function _handleLinkCancelation(): void {
-
-    //     setBusy(true)
-
-
-    //     linkMutate.mutate({
-    //         id: id,
-    //         isActive: false
-    //     },
-    //         {
-    //             onSuccess: async (data, variables, context) => {
-
-
-    //                 setTimeout(() => {
-    //                     notifySuccessTC('Link Iptal Edildi', true)
-    //                     push(`${AppRoutes.PARTNER_LINK_DETAIL}/${id}`)
-
-    //                 }, 2050);
-
-
-
-    //             },
-    //             onError(error, variables, context) {
-    //                 notifyError(error.message)
-    //             },
-    //             onSettled: () => {
-    //                 setTimeout(() => {
-    //                     setModal(false)
-    //                     setBusy(false)
-    //                 }, 2000);
-    //             }
-    //         }
-
-    //     )
-
-    // }
 
 
     useEffect(() => {
