@@ -1,0 +1,11 @@
+-- AlterTable
+ALTER TABLE `link` MODIFY `perClickType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    MODIFY `perSaleType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH';
+
+-- AlterTable
+ALTER TABLE `product` MODIFY `perClickType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    MODIFY `perSaleType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH';
+
+-- AlterTable
+ALTER TABLE `visit` MODIFY `perClickType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    MODIFY `perSaleType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH';

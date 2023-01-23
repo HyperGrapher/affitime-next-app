@@ -40,9 +40,7 @@ export const productRouter = router({
       },
       select: {
         products: {
-          orderBy: {
-            createdAt: "desc",
-          },
+          orderBy: [{ active: "desc" }, { createdAt: "desc" }],
         },
       },
     });

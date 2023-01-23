@@ -51,11 +51,7 @@ export const PaymentsRouter = router({
         link: true,
         partner: true,
       },
-    });
-
-    
-    // const paid = visits.filter((x) => x.paid);
-    // const unpaid = visits.filter((x) => !x.paid && !x.dubious);
+    });    
 
 
     const func = flow(
@@ -88,7 +84,8 @@ export const PaymentsRouter = router({
 
     const funcRes = func(visits) as IUnpaidPartnerAndVisits[];
 
-    return funcRes;
+
+    return funcRes.filter(x => x.calc !== 0);
   }),
 
   // * Payment Detail Page - Not implemented as page

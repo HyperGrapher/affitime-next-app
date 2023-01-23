@@ -73,8 +73,8 @@ const validationSchema = z.object({
     product_url: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!"),
     image: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!").optional().nullable(),
     price: z.number()?.positive("Pozitif bir rakam giriniz"),
-    perSale: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
-    perClick: z.number()?.positive("Pozitif bir rakam giriniz").default(0),
+    perSale: z.number().default(0),
+    perClick: z.number().default(0),
     perClickType: z.string().optional().nullable(),
     perSaleType: z.string().optional().nullable(),
 }).required();
@@ -82,10 +82,10 @@ const validationSchema = z.object({
 
 const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
-    const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.PERC)
+    const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.CASH)
     const [perSaleType, setPerSaleType] = useState<CommissionType>(CommissionType.PERC)
     const [selectedCat, setSelectedCat] = useState({ id: 0, name: "" })
-    const [err, setErr] = useState(false)
+    const [catErr, setCatErr] = useState(false)
 
     const [busy, setBusy] = useState(false)
     const { back, query } = useRouter()
@@ -96,12 +96,12 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
     useEffect(() => {
 
-        if (selectedCat.name !== "") setErr(false)
+        if (selectedCat.name !== "") setCatErr(false)
 
     }, [selectedCat])
 
 
-    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IProductFormData>({
+    const { register, handleSubmit, setValue, formState: { errors }, setError } = useForm<IProductFormData>({
         resolver: zodResolver(validationSchema),
         reValidateMode: 'onBlur',
         mode: 'onBlur',
@@ -144,10 +144,39 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
         data.perClickType = perClickType // fixes a bug where data is causing field null error
         data.perSaleType = perSaleType // fixes a bug where data is causing field null error
 
-        if (selectedCat.id === 0) {
-            setErr(true)
+        if (data.perClick < 0) {
+            setError('perClick', { message: 'Negatif rakam girilemez' })
             setBusy(false)
             return
+        }
+
+        if (data.perSale < 0) {
+            setError('perSale', { message: 'Negatif rakam girilemez' })
+            setBusy(false)
+            return
+        }
+
+        if (data.perClick === 0) {
+            // data.perClickType = 'NONE'
+        }
+
+        if (data.perSale === 0) {
+            // data.perSaleType = 'NONE'
+        }
+
+        if (selectedCat.id === 0) {
+            setCatErr(true)
+            setBusy(false)
+            return
+        }
+
+        if (data.perClick === 0 && data.perSale === 0) {
+
+            setError('perClick', { message: 'Komisyonlardan en az biri pozitif rakam olmalı' })
+            setError('perSale', { message: 'Komisyonlardan en az biri pozitif rakam olmalı' })
+            setBusy(false)
+            return
+
         }
 
         data.category = selectedCat.id
@@ -192,7 +221,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
 
     return (
-        <div className='auth-container'>
+        <div className='auth-container' style={{ overflowX: 'hidden' }}>
             {busy && <TopBarProgress />}
 
             <PageCard>
@@ -330,7 +359,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                 cats={cats}
                                 selected={selectedCat}
                                 setSelected={setSelectedCat}
-                                err={err}
+                                err={catErr}
                             />}
 
 
@@ -533,6 +562,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                             'transition-colors focus:border-indigo-500 focus:ring-indigo-500 '
                                         )}
                                         type="number"
+                                        defaultValue={0}
                                         disabled={busy}
                                         placeholder={perClickType === CommissionType.CASH ? "TL" : "%"}
                                         {...register("perClick", {
@@ -541,8 +571,9 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                         })}
                                     />
 
-                                    <FormFieldError state={!!errors.perClick} message={errors.perClick?.message} />
-
+                                    {/* <span className="translate-x-24 scroll-mx-0"> */}
+                                        <FormFieldError state={!!errors.perClick} message={errors.perClick?.message} />
+                                    {/* </span> */}
 
                                 </FormFieldWrapper>
 
@@ -604,6 +635,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                             'transition-colors focus:border-indigo-500 focus:ring-indigo-500 '
                                         )}
                                         type="number"
+                                        defaultValue={0}
                                         disabled={busy}
                                         placeholder={perSaleType === CommissionType.CASH ? "TL" : "%"}
                                         {...register("perSale", {
@@ -611,8 +643,9 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                             setValueAs: (v) => v === "" ? 0 : parseInt(v, 10),
                                         })}
                                     />
-
-                                    <FormFieldError state={!!errors.perSale} message={errors.perSale?.message} />
+                                    {/* <span className="translate-x-24 scroll-mx-0"> */}
+                                        <FormFieldError state={!!errors.perSale} message={errors.perSale?.message} />
+                                    {/* </span> */}
 
 
                                 </FormFieldWrapper>
@@ -632,7 +665,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                             onClick={() => {
                                 // console.log(selectedCat);
                                 if (selectedCat.id === 0) {
-                                    setErr(true)
+                                    setCatErr(true)
                                 }
 
                             }}
