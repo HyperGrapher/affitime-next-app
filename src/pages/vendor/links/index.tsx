@@ -39,7 +39,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 const LinkPage: NextPage = () => {
 
 
-    const { data: links, status: sts, refetch: refetchLinks } = trpc.link.getAllLinksForVendor.useQuery()
+    const { data: links, status: sts, refetch: refetchLinks } = trpc.link.getVendorLinks.useQuery()
 
     return (
         <main className="auth-container">

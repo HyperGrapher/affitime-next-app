@@ -7,19 +7,20 @@ import {
 } from "../trpc";
 import { z } from "zod";
 import crypto from "crypto";
-import { LinkStatus } from "@prisma/client";
+import { CommissionType, LinkStatus } from "@prisma/client";
 
 export const linkRouter = router({
   // Used by both vendor and partner
-  getLinkById: protectedProcedure
+  // * ../links/detail/[id]
+  getLinkDetails: protectedProcedure
     .input(z.object({ id: z.string() }))
-    .query(({ ctx, input }) => {
+    .query(async ({ ctx, input }) => {
       const { id } = input;
       const { role } = ctx.session;
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
-      return ctx.prisma.link.findFirst({
+      const link = await ctx.prisma.link.findUnique({
         where: {
           id,
         },
@@ -27,8 +28,33 @@ export const linkRouter = router({
           product: true,
           vendor: role === "PARTNER",
           partner: role === "VENDOR",
+          visits: true,
         },
       });
+
+      if (!link) throw new TRPCError({ code: "NOT_FOUND" });
+
+      const validClicks = link.visits.filter((x) => !x.paid && !x.dubious);
+      const dubiousClicks = link.visits.filter((x) => !x.paid && x.dubious);
+
+      const totalDuePayment = validClicks.reduce((acc, cur) => {
+        let total = 0;
+        if (cur.perClickType === CommissionType.CASH) {
+          total = (cur.perClick ?? 0) + acc;
+        } else if (cur.perClickType === CommissionType.PERC) {
+          total = ((cur.price ?? 0) / 100) * (cur.perClick ?? 0) + acc;
+        }
+
+        return total;
+      }, 0);
+
+
+      return {
+        link, 
+        totalDuePayment,
+        validClicks: validClicks.length, 
+        dubiousClicks: dubiousClicks.length,
+       };
     }),
 
   findLinkByProductIdForPartner: partnerProcedure
@@ -56,7 +82,8 @@ export const linkRouter = router({
     });
   }),
 
-  getAllLinksForVendor: vendorProcedure.query(({ ctx }) => {
+  // * vendor/links
+  getVendorLinks: vendorProcedure.query(({ ctx }) => {
     const { vendorId } = ctx.session;
 
     return ctx.prisma.link.findMany({
@@ -64,7 +91,7 @@ export const linkRouter = router({
         vendor_id: vendorId,
         status: { not: LinkStatus.AWAITING },
       },
-      include: { product: true, partner: true },
+      include: { product: true, partner: true, visits: true },
     });
   }),
 

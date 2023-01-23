@@ -1,3 +1,4 @@
+import type { Visit} from "@prisma/client";
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
 import React, { useState } from "react";
 import { trpc } from '../../../utils/trpc';
@@ -14,7 +15,7 @@ const DynamicWarnDialog = dynamic(() => import('../../modals/WarnDialog'), {
 
 
 type Props = {
-  links: (LinkEntity & { partner: Partner; product: Product; })[] | undefined;
+  links: (LinkEntity & { partner: Partner; product: Product; visits: Visit[] })[] | undefined;
   refetch: () => void;
 }
 

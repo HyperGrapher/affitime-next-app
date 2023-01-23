@@ -1,11 +1,13 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
+import dynamic from 'next/dynamic';
 import Image from "next/image";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { HiArrowLeft as BackIcon } from 'react-icons/hi';
+import TopBarProgress from "react-topbar-progress-indicator";
 import Balancer from 'react-wrap-balancer';
 import productImg from '../../../../assets/product.png';
 import IconButton from '../../../../components/buttons/IconButton';
@@ -15,8 +17,6 @@ import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
-import TopBarProgress from "react-topbar-progress-indicator";
-import dynamic from 'next/dynamic'
 
 const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -31,34 +31,10 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     const { back } = useRouter()
 
-    const [busy, /* setBusy */] = useState(false)
     const [modal, setModal] = useState(false)
 
-    const { data: pd, status: sts, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
+    const { data: pd, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
 
-    const totalClickPayment = useMemo(() => {
-
-        let res = 0
-        if (pd) {
-
-            const validClickCount = pd.count - pd.declined
-            if (pd.product.perClickType === "PERC") {
-                return res = ((pd.product.price ?? 1) / 100) * (pd.product.perClick ?? 0) * validClickCount
-            }
-
-            return validClickCount * (pd.product.perClick ?? 0)
-        }
-
-
-        return res
-    }, [pd])
-
-
-
-    useEffect(() => {
-        refetchLink()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id])
 
 
     return (
@@ -73,7 +49,6 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <IconButton
                         title={"Geri Git"}
-                        disabled={busy}
                         icon={<BackIcon color="white" size="16px" />}
                         twClasses="ml-auto w-38"
                         fn={back} />
@@ -94,20 +69,20 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 <hr className='' />
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
-                    <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${pd?.product_id}`}>
+                    <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${pd?.link.product_id}`}>
                         <h1 className='text-slate-600 text-2xl  mb-2 font-medium leading-tight'>
-                            {pd?.product.title}
+                            {pd?.link.product.title}
                         </h1>
 
 
 
                     </Link>
                     <div className="flex space-x-4 mt-4 items-center">
-                        {pd?.product.image ?
+                        {pd?.link.product.image ?
                             <img
                                 className="object-cover hover:shadow rounded object-center w-32 h-32 aspect-square"
-                                src={pd?.product.image}
-                                alt={pd?.product.title ?? ""} />
+                                src={pd?.link.product.image}
+                                alt={pd?.link.product.title ?? ""} />
                             : <Image
                                 className={classNames(
                                     "object-cover rounded hover:shadow object-center",
@@ -123,22 +98,22 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         <div className='space-y-[0.18rem]'>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Durum: </b>
-                                <b className={`${pd?.active ? "text-green-500" : "text-red-500"}`}>{pd?.active ? "Aktif" : "Pasif"}  </b>
+                                <b className={`${pd?.link.active ? "text-green-500" : "text-red-500"}`}>{pd?.link.active ? "Aktif" : "Pasif"}  </b>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Urun Fiyati: </b>
-                                <span className=''>{pd?.product.price} <Lira /> </span>
+                                <span className=''>{pd?.link.product.price} <Lira /> </span>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
-                                <a title={`http://affiti.me/r/${pd?.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${pd?.url ?? ""}`}> {`affiti.me/r/${pd?.url ?? ""}`}</a>
+                                <a title={`http://affiti.me/r/${pd?.link.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${pd?.link.url ?? ""}`}> {`affiti.me/r/${pd?.link.url ?? ""}`}</a>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Hedef Link: </b>
-                                <a title={pd?.product.product_url ?? ""} className='text-blue-500' href={pd?.product.product_url ?? "#"}>{pd?.product.product_url?.slice(0, 44)} ...</a>
+                                <a title={pd?.link.product.product_url ?? ""} className='text-blue-500' href={pd?.link.product.product_url ?? "#"}>{pd?.link.product.product_url?.slice(0, 44)} ...</a>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'>Kullanici ismi:</b> {pd?.partner.username}
+                                <b className='text-neutral-500'>Kullanici ismi:</b> {pd?.link.partner.username}
                             </p>
                         </div>
                     </div>
@@ -164,14 +139,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {pd?.product.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {pd?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {pd?.product.perClick} {pd?.product.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {pd?.link.perClick} {pd?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {pd?.product.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {pd?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{pd?.product.perSale} {pd?.product.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{pd?.link.perSale} {pd?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 
@@ -192,7 +167,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base px-2 py-4"
                         )}
                     >
-                        Cookie Süresi:  <span> {pd?.product.cookieLife} Gün</span>
+                        Cookie Süresi:  <span> {pd?.link.product.cookieLife} Gün</span>
 
 
                     </h3>
@@ -219,14 +194,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {pd?.count} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {(pd?.dubiousClicks ?? 0) + (pd?.validClicks ?? 0)}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Partnere Ait Tiklama: </b> {pd?.partnerVisitCount} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Ait Tiklama: </b> {pd?.dubiousClicks} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(pd?.count ?? 0) - (pd?.declined ?? 0)} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçerli Tiklama: </b> {pd?.validClicks} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {totalClickPayment}  <Lira />  </p>
+                            <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {pd?.totalDuePayment}  <Lira />  </p>
                         </div>
                     </section>
 
@@ -257,7 +232,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                     <DynamicConfirmDialog
                         title="Affiliate linki oluşturmak istiyor musunuz?"
                         confirmBtnText='Oluştur'
-                        busy={busy}
+                        // busy={busy}
                         desc="
                         Ürün için web üzerinde paylaşabileceğiniz 
                         bir link oluşturulacaktır. 

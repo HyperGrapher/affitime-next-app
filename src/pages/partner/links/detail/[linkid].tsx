@@ -1,10 +1,11 @@
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
+import dynamic from 'next/dynamic';
 import Image from "next/image";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { HiArrowLeft as BackIcon, HiBell } from 'react-icons/hi';
 import TopBarProgress from "react-topbar-progress-indicator";
 import Balancer from 'react-wrap-balancer';
@@ -16,14 +17,13 @@ import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
-import dynamic from 'next/dynamic'
 
 const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
-  ssr: false,
+    ssr: false,
 })
 
 const DynamicConfirmDialog = dynamic(() => import('../../../../components/modals/ConfirmDialog'), {
-  ssr: false,
+    ssr: false,
 })
 
 const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
@@ -35,69 +35,8 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
     const { back, query } = useRouter()
     const created = query.created === "true"
 
-    const { data: link, status: sts, refetch: refetchLink } = trpc.link.getLinkById.useQuery({ id })
+    const { data: link, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
 
-    const totalClickPayment = useMemo(() => {
-
-        if (link) {
-
-            const validClickCount = link.count - link.declined
-
-            if (link.product.perClickType === "PERC") {
-                return ((link.product.price ?? 1) / 100) * (link.product.perClick ?? 0) * validClickCount
-            }
-
-            return validClickCount * (link.product.perClick ?? 0)
-        }
-
-        return 0
-
-    }, [link])
-
-
-
-    // function _handleLinkCancelation(): void {
-
-    //     setBusy(true)
-
-
-    //     linkMutate.mutate({
-    //         id: id,
-    //         isActive: false
-    //     },
-    //         {
-    //             onSuccess: async (data, variables, context) => {
-
-
-    //                 setTimeout(() => {
-    //                     notifySuccessTC('Link Iptal Edildi', true)
-    //                     push(`${AppRoutes.PARTNER_LINK_DETAIL}/${id}`)
-
-    //                 }, 2050);
-
-
-
-    //             },
-    //             onError(error, variables, context) {
-    //                 notifyError(error.message)
-    //             },
-    //             onSettled: () => {
-    //                 setTimeout(() => {
-    //                     setModal(false)
-    //                     setBusy(false)
-    //                 }, 2000);
-    //             }
-    //         }
-
-    //     )
-
-    // }
-
-
-    useEffect(() => {
-        refetchLink()
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [id])
 
 
     return (
@@ -130,7 +69,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                 </div>
 
-                {created && !link?.vendor_notified && (
+                {created && !link?.link.vendor_notified && (
                     <div className="bg-yellow-50 px-2 py-2 rounded mb-2 flex items-center space-x-3">
                         <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
                         <b className="text-neutral-500 text-sm">
@@ -145,19 +84,19 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 <hr className='' />
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
-                    <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link?.product_id}`}>
+                    <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link?.link.product_id}`}>
                         <h1 className='text-slate-600 text-2xl  mb-2 font-medium leading-tight'>
-                            {link?.product.title}
+                            {link?.link.product.title}
                         </h1>
 
                     </Link>
 
                     <div className="flex space-x-4 mt-4 items-center">
-                        {link?.product.image ?
+                        {link?.link.product.image ?
                             <img
                                 className="object-cover hover:shadow rounded object-center w-32 h-32 aspect-square"
-                                src={link?.product.image}
-                                alt={link?.product.title ?? ""} />
+                                src={link?.link.product.image}
+                                alt={link?.link.product.title ?? ""} />
                             : <Image
                                 className={classNames(
                                     "object-cover rounded hover:shadow object-center",
@@ -173,10 +112,10 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         <div className='space-y-[0.18rem]'>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Durum: </b>
-                                <b className={`${link?.active ? "text-green-500" : "text-red-500"}`}>
-                                    {link?.active
+                                <b className={`${link?.link.active ? "text-green-500" : "text-red-500"}`}>
+                                    {link?.link.active
                                         ? "Aktif"
-                                        : (created && !link?.vendor_notified)
+                                        : (created && !link?.link.vendor_notified)
                                             ? "Mağaza Onayı Bekleniyor"
                                             : "Pasif"
                                     }
@@ -184,27 +123,27 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Urun Fiyati: </b>
-                                <span className=''>{link?.product.price} <Lira /> </span>
+                                <span className=''>{link?.link.product.price} <Lira /> </span>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
 
-                                {link?.active
-                                    ? <a title={`http://affiti.me/r/${link?.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${link?.url ?? ""}`}> {`affiti.me/r/${link?.url ?? ""}`}</a>
+                                {link?.link.active
+                                    ? <a title={`http://affiti.me/r/${link?.link.url ?? ""}`} className='text-blue-500' href={`http://affiti.me/r/${link?.link.url ?? ""}`}> {`affiti.me/r/${link?.link.url ?? ""}`}</a>
                                     : <span> Sadece aktif linkler görülebilir </span>
                                 }
 
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'> Hedef Link: </b>
-                                <a title={link?.product.product_url ?? ""} className='text-blue-500' href={link?.product.product_url ?? "#"}>{link?.product.product_url?.slice(0, 44)} ...</a>
+                                <a title={link?.link.product.product_url ?? ""} className='text-blue-500' href={link?.link.product.product_url ?? "#"}>{link?.link.product.product_url?.slice(0, 44)} ...</a>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'>Ürün Sahibi:</b> {link?.vendor.brand}
+                                <b className='text-neutral-500'>Ürün Sahibi:</b> {link?.link.vendor.brand}
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'>Website:</b>
-                                <a title={link?.vendor.website ?? ""} className='text-blue-500' href={link?.vendor.website ?? "#"}> {link?.vendor.website?.slice(0, 48)}</a>
+                                <a title={link?.link.vendor.website ?? ""} className='text-blue-500' href={link?.link.vendor.website ?? "#"}> {link?.link.vendor.website?.slice(0, 48)}</a>
 
                             </p>
                         </div>
@@ -231,14 +170,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {link?.product.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {link?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {link?.product.perClick} {link?.product.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {link?.link.perClick} {link?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {link?.product.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {link?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{link?.product.perSale} {link?.product.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{link?.link.perSale} {link?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 
@@ -259,7 +198,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base px-2 py-4"
                         )}
                     >
-                        Cookie Süresi:  <span> {link?.product.cookieLife} Gün</span>
+                        Cookie Süresi:  <span> {link?.link.product.cookieLife} Gün</span>
 
 
                     </h3>
@@ -286,14 +225,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {link?.count} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {(link?.validClicks ?? 0) + (link?.dubiousClicks ?? 0)} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Size Ait Tiklama: </b> {link?.partnerVisitCount} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Tiklama: </b> {link?.dubiousClicks} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {(link?.count ?? 0) - (link?.declined ?? 0)} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {link?.validClicks} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {totalClickPayment}  <Lira />  </p>
+                            <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {link?.totalDuePayment}  <Lira />  </p>
                         </div>
                     </section>
 
