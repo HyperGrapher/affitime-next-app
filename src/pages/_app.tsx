@@ -9,6 +9,7 @@ import Navbar from "../components/shared/Navbar";
 import Sidenav from "../components/shared/Sidenav";
 import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
+import NonAuthNavbar from "../components/shared/NonAuthNavbar";
 
 timeago.register('tr', tr);
 
@@ -30,6 +31,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
   return (
     <SessionProvider session={session}>
       <Sidenav />
+      <NonAuthNavbar />
       <Navbar />
       {/* Session cannot be retrived here */}
       <div className={"min-h-screen debug-screens"}>

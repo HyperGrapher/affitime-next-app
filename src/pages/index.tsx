@@ -25,8 +25,8 @@ const Home: NextPage = () => {
       <meta name="description" content="Affiliate uygulamasi" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <header className="text-white body-font bg-violet-700 py-12">
-      <div className="container mx-auto flex px-5 py-24 md:flex-row flex-col items-center" >
+    <header className="text-white body-font bg-violet-700 py-12  bg-gradient-to-r from-indigo-900 to-violet-500">
+      <div className="container mx-auto flex px-8 py-24 md:flex-row flex-col items-center" >
         <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center" >
           <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">Lorem ipsum dolor sit amet
             <br className="hidden lg:inline-block" />consect adi elit.
@@ -37,15 +37,13 @@ const Home: NextPage = () => {
             <button className="inline-flex text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded text-lg">Hadi Başlayalım</button>
           </div>
         </div>
-        <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6 re" >
-          <div className="relativex xx-translate-y-28">
-            {/* <Image width={600} className="absolute scale-[0.8] z-0 w-[600px] h-auto -translate-y-28" src={MacBgCircles} alt={"cover"} /> */}
-            <Image className="absolutez " src={MacMock} alt={"cover"} />
+        <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6" >
+          <div className="">
+            <Image className="" src={MacMock} alt={"cover"} />
           </div>
         </div>
       </div>
     </header>
-
 
     <Feat />
     <Feat2 />
@@ -108,14 +106,14 @@ const Accords = () => {
 
 
 const Footer = () => {
-  return (<footer className="bg-white h-64 py-12 px-36">
+  return (<footer className="bg-white  py-28 px-36">
 
     <div className="container mx-auto flex justify-between">
 
       <section className="flex flex-col space-y-8">
         <div className="a">
           <Image width={150} src={FLogo} alt="logo" />
-          <small className="text-slate-500"> {new Date().getFullYear()} Affitime Tüm hakları saklıdır.</small>
+          <small className="text-slate-400"> {new Date().getFullYear()} Affitime Tüm hakları saklıdır.</small>
         </div>
 
         <div className="space-y-4">
@@ -148,8 +146,10 @@ const Footer = () => {
   </footer>)
 }
 
+// <div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-teal-900 to-teal-500">
+
 const FooterTop = () => {
-  return (<div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-teal-900 to-teal-500">
+  return (<div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-indigo-900 to-violet-500">
 
     <div className="flex flex-col items-center space-y-8 py-8">
       <h4 className="font-bold text-3xl text-center text-white">
@@ -163,7 +163,7 @@ const FooterTop = () => {
 
     <div className="absolute left-0 top-0">
       <svg width="141" height="157" viewBox="0 0 141 157" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="41.5" cy="57.5" r="99.5" fill="#007358" />
+        <circle cx="41.5" cy="57.5" r="99.5" fill="#CA2D78" />
       </svg>
 
     </div>
@@ -179,7 +179,7 @@ const FooterTop = () => {
 }
 
 const Feat2 = () => {
-  return (<section className="bg-violet-600 text-white relative">
+  return (<section className="bg-violet-600 text-white relative  bg-gradient-to-r from-teal-800 to-green-500">
     <div className="container px-5 py-24 mx-auto" >
       <div className="flex flex-col text-center w-full mb-20" >
         <h3 className="sm:text-3xl text-2xl font-medium title-font text-white/80">Affitime ile neler yapabilirsiniz?</h3>

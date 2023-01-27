@@ -14,6 +14,7 @@ import TopBarProgress from "react-topbar-progress-indicator";
 
 const pathsToExlude = [
   '/r/',
+  '/auth/',
 ]
 
 const Navbar: React.FC = () => {
@@ -35,6 +36,8 @@ const Navbar: React.FC = () => {
     })
 
   }
+
+  if (pathname === '/') return null
 
   for (const excluded of pathsToExlude) {
 
