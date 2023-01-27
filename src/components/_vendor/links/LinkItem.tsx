@@ -24,7 +24,7 @@ type ItemProps = {
     setDeleteId: (id: string) => void;
 }
 
-const LinkItem: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }) => {
+const VendorLinkItem: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }) => {
     const { push } = useRouter()
 
     function del(id: string) {
@@ -197,4 +197,4 @@ const LinkItem: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }) => {
         </li>)
 }
 
-export default LinkItem
+export default VendorLinkItem

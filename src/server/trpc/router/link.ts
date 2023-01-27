@@ -69,8 +69,8 @@ export const linkRouter = router({
         },
       });
     }),
-
-  getAllLinksForPartner: partnerProcedure.query(({ ctx }) => {
+  // * partner/links
+  getPartnerLinks: partnerProcedure.query(({ ctx }) => {
     const { partnerId } = ctx.session;
 
     return ctx.prisma.link.findMany({
@@ -78,7 +78,7 @@ export const linkRouter = router({
         partner_id: partnerId,
         status: { not: LinkStatus.AWAITING },
       },
-      include: { product: true, vendor: true },
+      include: { product: true, vendor: true, visits: true },
     });
   }),
 
@@ -172,6 +172,7 @@ export const linkRouter = router({
             url: randUrl,
             categoryId: product.categoryId,
             status: LinkStatus.AWAITING,
+            // cookieLife: product.cookieLife, // ! TODO 
             price: product.price,
             perClick: product.perClick,
             perSale: product.perSale,

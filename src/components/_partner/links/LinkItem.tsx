@@ -1,10 +1,11 @@
 import LinkIcon from '@mui/icons-material/Search';
 import IconButton from '@mui/material/IconButton';
+import type { Visit } from "@prisma/client";
 import { LinkStatus, type Link as LinkEntity, type Product, type Vendor } from "@prisma/client";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React from "react";
+import React, { useMemo } from "react";
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import productImg from '../../../assets/product.png';
 import { AppRoutes } from "../../../config/appRoutes";
@@ -15,12 +16,22 @@ import { Lira } from "../../shared/HtmlCodes";
 
 
 type ItemProps = {
-    link: (LinkEntity & { vendor: Vendor; product: Product; });
+    link: (LinkEntity & { vendor: Vendor; product: Product; visits: Visit[] });
 
 }
 
 const LinkItem: React.FC<ItemProps> = ({ link }) => {
     const { push } = useRouter()
+
+    const validTotalClicks = useMemo(() => {
+        return link.visits.reduce((acc, cur) => {
+            let x = 0
+            if (!cur.dubious) x = acc + 1
+
+            return x
+        }, 0)
+    }, [link])
+
 
 
     return (
@@ -85,10 +96,10 @@ const LinkItem: React.FC<ItemProps> = ({ link }) => {
 
                     <div className="flex justify-between w-full items-center">
 
-                        <b className="text-stone-800 text-xs pr-1 ">Toplam <br /> Tıklama:</b>
+                        <b className="text-stone-800 text-xs pr-1 ">Geçerli <br /> Tıklama:</b>
 
                         <p className="text-stone-500 text-xs font-medium whitespace-nowrap">
-                            {numberWithCommas(link.count)} adet
+                            {numberWithCommas(validTotalClicks)} adet
                         </p>
 
                     </div>

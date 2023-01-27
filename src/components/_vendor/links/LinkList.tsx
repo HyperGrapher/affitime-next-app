@@ -2,7 +2,7 @@ import type { Visit} from "@prisma/client";
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
 import React, { useState } from "react";
 import { trpc } from '../../../utils/trpc';
-import LinkItem from "./LinkItem";
+import VendorLinkItem from "./LinkItem";
 import dynamic from 'next/dynamic'
 
 const DynamicModalContainer = dynamic(() => import('../../modals/ModalContainer'), {
@@ -41,7 +41,7 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
       {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {links?.map(p => (
-          <LinkItem
+          <VendorLinkItem
             key={p.id}
             link={p}
             setDeleteId={setDeleteId}

@@ -36,7 +36,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
     const { data: pd, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
 
 
-
+    // ! TODO: Get cookie life from link
     return (
         <div className={"auth-container"}>
             {sts === 'loading' && <TopBarProgress />}
@@ -101,7 +101,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 <b className={`${pd?.link.active ? "text-green-500" : "text-red-500"}`}>{pd?.link.active ? "Aktif" : "Pasif"}  </b>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'> Urun Fiyati: </b>
+                                <b className='text-neutral-500'> Ürün Fiyatı: </b>
                                 <span className=''>{pd?.link.product.price} <Lira /> </span>
                             </p>
                             <p className="text-sm">
@@ -113,7 +113,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 <a title={pd?.link.product.product_url ?? ""} className='text-blue-500' href={pd?.link.product.product_url ?? "#"}>{pd?.link.product.product_url?.slice(0, 44)} ...</a>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'>Kullanici ismi:</b> {pd?.link.partner.username}
+                                <b className='text-neutral-500'>Kullanıcı ismi:</b> {pd?.link.partner.username}
                             </p>
                         </div>
                     </div>
@@ -139,14 +139,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {pd?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Tıklama Ödeme Şekli: </b> {pd?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {pd?.link.perClick} {pd?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Tıklama Başı Bedeli: </b> {pd?.link.perClick} {pd?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {pd?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Satış Ödeme Şekli: </b> {pd?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{pd?.link.perSale} {pd?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Satış Başı Bedeli: </b>{pd?.link.perSale} {pd?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 
@@ -167,6 +167,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base px-2 py-4"
                         )}
                     >
+                        {/*  // ! TODO: Get cookie life from link */}
                         Cookie Süresi:  <span> {pd?.link.product.cookieLife} Gün</span>
 
 
@@ -189,19 +190,19 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base  pl-2 mb-4"
                         )}
                     >
-                        Tiklama Odemeleri
+                        Tıklama Ödemeleri
                     </h3>
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {(pd?.dubiousClicks ?? 0) + (pd?.validClicks ?? 0)}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Toplam Tıklama:</b> {(pd?.dubiousClicks ?? 0) + (pd?.validClicks ?? 0)}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Ait Tiklama: </b> {pd?.dubiousClicks} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Tıklama: </b> {pd?.dubiousClicks} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Geçerli Tiklama: </b> {pd?.validClicks} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçerli Tıklama: </b> {pd?.validClicks} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {pd?.totalDuePayment}  <Lira />  </p>
+                            <p className='text-base'><b className='text-neutral-500'>Toplam Tutar:</b> {pd?.totalDuePayment}  <Lira />  </p>
                         </div>
                     </section>
 

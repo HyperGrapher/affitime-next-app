@@ -37,7 +37,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     const { data: link, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
 
-
+    // ! TODO: Get cookie life from link
 
     return (
         <div className={"auth-container"}>
@@ -122,7 +122,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 </b>
                             </p>
                             <p className="text-sm">
-                                <b className='text-neutral-500'> Urun Fiyati: </b>
+                                <b className='text-neutral-500'> Ürün Fiyatı: </b>
                                 <span className=''>{link?.link.product.price} <Lira /> </span>
                             </p>
                             <p className="text-sm">
@@ -170,14 +170,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Odeme Sekli: </b> {link?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Tıklama Ödeme Şekli: </b> {link?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Tiklama Basi Bedeli: </b> {link?.link.perClick} {link?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Tıklama Başı Bedeli: </b> {link?.link.perClick} {link?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Satis Odeme Sekli: </b> {link?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-base'><b className='text-neutral-500'>Satış Ödeme Şekli: </b> {link?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Satis Basi Bedeli: </b>{link?.link.perSale} {link?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Satış Başı Bedeli: </b>{link?.link.perSale} {link?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 
@@ -198,6 +198,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base px-2 py-4"
                         )}
                     >
+                        {/*  // ! TODO: Get cookie life from link */}
                         Cookie Süresi:  <span> {link?.link.product.cookieLife} Gün</span>
 
 
@@ -220,19 +221,19 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base  pl-2 mb-4"
                         )}
                     >
-                        Tiklama Odemeleri
+                        Tıklama Ödemeleri
                     </h3>
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Toplam Tiklama : </b> {(link?.validClicks ?? 0) + (link?.dubiousClicks ?? 0)} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Toplam Tıklama: </b> {(link?.validClicks ?? 0) + (link?.dubiousClicks ?? 0)} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Tiklama: </b> {link?.dubiousClicks} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Tıklama: </b> {link?.dubiousClicks} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Gecerli Tiklama: </b> {link?.validClicks} </p>
+                            <p className='text-base'><b className='text-neutral-500'>Geçerli Tıklama: </b> {link?.validClicks} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Odeme Bedeli: </b> {link?.totalDuePayment}  <Lira />  </p>
+                            <p className='text-base'><b className='text-neutral-500'>Ödeme Bedeli: </b> {link?.totalDuePayment}  <Lira />  </p>
                         </div>
                     </section>
 
