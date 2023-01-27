@@ -3,15 +3,9 @@ import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import Head from "next/head";
-import MacMock from '../assets/home/mac-mockup.png'
-import FLogo from '../assets/footer/logo-footer.png'
-import Partners from '../assets/footer/partners.png'
-import MSStartup from '../assets/footer/ms-startup-badge.png'
-import SocFB from '../assets/footer/social-facebook.png'
-import SocIns from '../assets/footer/social-instagram.png'
-import SocLinkd from '../assets/footer/social-linkedin.png'
-import Link from "next/link";
 import Image from "next/image";
+import Link from "next/link";
+import MacMock from '../assets/home/mac-mockup.png';
 import AccordItem from "../components/accordion/AccordItem";
 
 
@@ -49,9 +43,8 @@ const Home: NextPage = () => {
     <Feat2 />
 
     <Accords />
-
     <FooterTop />
-    <Footer />
+
   </div>
 
 };
@@ -103,48 +96,6 @@ const Accords = () => {
 
 }
 
-
-
-const Footer = () => {
-  return (<footer className="bg-white  py-28 px-36">
-
-    <div className="container mx-auto flex justify-between">
-
-      <section className="flex flex-col space-y-8">
-        <div className="a">
-          <Image width={150} src={FLogo} alt="logo" />
-          <small className="text-slate-400"> {new Date().getFullYear()} Affitime Tüm hakları saklıdır.</small>
-        </div>
-
-        <div className="space-y-4">
-          <b className="text-slate-800">İş Ortaklarımız</b>
-          <Image width={300} src={Partners} alt="logo" />
-        </div>
-
-      </section>
-
-      <section className="flex flex-col space-y-2">
-        <b className="text-slate-800">Yasal</b>
-        <Link href={'#'} className="text-slate-800">Kullanıcı sözleşmesi</Link>
-        <Link href={'#'} className="text-slate-800">Gizlilik sözleşmesi</Link>
-        <Link href={'#'} className="text-slate-800">Aydınlatma metni</Link>
-      </section>
-
-      <section className="flex flex-col space-y-8">
-        <Image width={200} src={MSStartup} alt="microsoft for startups badge" />
-        <div className="">
-          <b className="text-slate-800">Sosyal Ağlar</b>
-          <div className="flex space-x-2 mt-2 justify-betweens">
-
-            <Image width={24} src={SocFB} alt="facebook social" />
-            <Image width={24} src={SocIns} alt="instagram social" />
-            <Image width={24} src={SocLinkd} alt="linkedin social" />
-          </div>
-        </div>
-      </section>
-    </div>
-  </footer>)
-}
 
 // <div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-teal-900 to-teal-500">
 

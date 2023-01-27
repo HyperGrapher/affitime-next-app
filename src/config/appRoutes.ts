@@ -1,6 +1,7 @@
 export enum AppRoutes {
   // PUBLIC
   HOME = "/",
+  LEGAL = "/rules-and-policies",
   PUBLIC_PRODUCT_DETAIL = "/products/detail",
 
   // VENDOR
@@ -22,7 +23,7 @@ export enum AppRoutes {
   PARTNER_LINKS = "/partner/links",
   PARTNER_LINK_DETAIL = "/partner/links/detail",
   PARTNER_CREATE_LINK = "/partner/links/create",
-  PARTNER_NOTIFICATIONS =  "/partner/notifications",
+  PARTNER_NOTIFICATIONS = "/partner/notifications",
   PARTNER_PAYMENTS = "/partner/payments",
   PARTNER_PAYMENTS_DETAIL = "/partner/payments/detail",
 
@@ -34,10 +35,10 @@ export enum AppRoutes {
   ADMIN_LINKS = "/admin/links",
   ADMIN_LINK_DETAIL = "/admin/links/detail",
   ADMIN_CREATE_LINK = "/admin/links/create",
-  ADMIN_NOTIFICATIONS =  "/admin/notifications",
+  ADMIN_NOTIFICATIONS = "/admin/notifications",
 
   // AUTH
   SIGNIN = "/auth/signin",
   SIGNUP = "/auth/signup",
-  SETTINGS_ACCOUNT = "/settings/account"
+  SETTINGS_ACCOUNT = "/settings/account",
 }

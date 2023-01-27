@@ -10,6 +10,7 @@ import Sidenav from "../components/shared/Sidenav";
 import "../styles/globals.css";
 import { trpc } from "../utils/trpc";
 import NonAuthNavbar from "../components/shared/NonAuthNavbar";
+import Footer from "../components/shared/Footer";
 
 timeago.register('tr', tr);
 
@@ -43,6 +44,7 @@ const MyApp: AppType<{ session: Session | null }> = ({
           right: 20,
         }} />
       </div>
+      <Footer />
     </SessionProvider >
   );
 };
