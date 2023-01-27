@@ -46,7 +46,7 @@ const Navbar: React.FC = () => {
   }
 
   return (
-    <Disclosure as='nav' className='h-16 bg-violet-900 fixed top-0 left-0 right-0 shadow-lg z-10'>
+    <Disclosure as='nav' className='h-16 bg-violet-900x bg-white fixed top-0 left-0 right-0 shadow-sm z-10'>
       {() => (
         <>
           {busy && <TopBarProgress />}

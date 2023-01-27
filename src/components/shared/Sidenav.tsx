@@ -66,7 +66,7 @@ const Sidenav = () => {
                 'hidden lg:block fixed top-0 left-0',
                 'h-full w-64 border border-slate-200  bg-neutral-200 py-2 px-2')}>
             <header className='relative'>
-                <div id="image-text" className="flex items-center">
+                <div id="image-text" className="flex opacity-0 items-center">
                     <span id="image" className="max-w-[60px] flex flex-col">
                         <Image
                             className=''
@@ -237,7 +237,7 @@ const Sidenav = () => {
                 'hidden lg:block fixed top-0 left-0',
                 'h-full w-64 border border-slate-200  bg-neutral-200 py-2 px-2')}>
             <header className='relative'>
-                <div id="image-text" className="flex items-center">
+                <div id="image-text" className="flex opacity-0 items-center">
                     <span id="image" className="max-w-[60px] flex flex-col">
                         <Image
                             className=''
@@ -324,6 +324,28 @@ const Sidenav = () => {
                                     aria-hidden='true' />
 
                                 <span className="font-medium text-sm ">Affiliate Linkleri</span>
+
+                            </Link>
+                        </li>
+
+                        <li id='nav-link'
+                            className={classNames(asPath.startsWith(AppRoutes.PARTNER_PAYMENTS)
+                                ? "bg-violet-600 hover:bg-violet-700 text-white"
+                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
+                                "h-10 rounded-md pl-4 flex items-center",
+                                "cursor-pointer transition-colors"
+                            )}>
+                            <Link
+                                className='flex items-center space-x-6 bg-redo-100 w-full h-full'
+                                href={AppRoutes.PARTNER_PAYMENTS} >
+
+                                <HiLink
+                                    id='toggle'
+                                    className='h-6 w-6 p-1
+                                             text-violet-50 bg-violet-600 rounded-full'
+                                    aria-hidden='true' />
+
+                                <span className="font-medium text-sm ">Ödemelerim</span>
 
                             </Link>
                         </li>

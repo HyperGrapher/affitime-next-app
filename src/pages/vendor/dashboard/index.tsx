@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { Tab } from '@headlessui/react';
 import type { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 import Main from "../../../components/_vendor/dashboard/Main";
 import TabItem from "../../../components/tab-item/TabItem";
@@ -16,6 +16,7 @@ import { trpc } from "../../../utils/trpc";
 const DashboardVendor = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const { data: session } = useSession()
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
@@ -59,7 +60,7 @@ const DashboardVendor = () => {
 
                 <div className="mb-2">
                     <h1 className="text-slate-600 font-bold text-2xl">
-                        Merhaba, Wendy Ticaret A.Ş.
+                    Merhaba, {session?.email}
                     </h1>
                     <small className="text-slate-400 text-sm">
                         Tüm affiliate bilgilerınız bu sayfada bir arada görüntüleyebilirsiiniz.
@@ -68,7 +69,7 @@ const DashboardVendor = () => {
 
                 <Tab.Group defaultIndex={0} selectedIndex={selectedIndex} onChange={setSelectedIndex}>
                     <Tab.List className={classNames(
-                        "flex space-x-8 "
+                        "flexx hidden space-x-8 "
                     )}>
                         <TabItem id="0" title="Genel" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Second" selected={selectedIndex} query="1" />

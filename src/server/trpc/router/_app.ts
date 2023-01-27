@@ -8,6 +8,7 @@ import { userIpsRouter } from "./ips";
 import { VendorDashboardRouter } from "./dashboard_vendor";
 import { visitRouter } from "./visit";
 import { PaymentsRouter } from "./payments";
+import { PartnerDashboardRouter } from "./dashboard_partner";
 
 export const appRouter = router({
   auth: authRouter,
@@ -17,6 +18,7 @@ export const appRouter = router({
   notifications: notificationRouter,
   ips: userIpsRouter,
   dashboardVendor: VendorDashboardRouter,
+  dashboardPartner: PartnerDashboardRouter,
   visit: visitRouter,
   payments: PaymentsRouter,
 });

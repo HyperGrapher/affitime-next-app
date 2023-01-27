@@ -23,6 +23,8 @@ export enum AppRoutes {
   PARTNER_LINK_DETAIL = "/partner/links/detail",
   PARTNER_CREATE_LINK = "/partner/links/create",
   PARTNER_NOTIFICATIONS =  "/partner/notifications",
+  PARTNER_PAYMENTS = "/partner/payments",
+  PARTNER_PAYMENTS_DETAIL = "/partner/payments/detail",
 
   // ADMIN
   ADMIN_DASHBOARD = "/admin/dashboard",
