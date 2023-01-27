@@ -6,6 +6,10 @@ import type { Link, Partner } from "@prisma/client";
 import { CommissionType } from "@prisma/client";
 import { LinkStatus } from "@prisma/client";
 
+// ! TODO WARN - Possible bug - test every reducer if type is NONE
+// ! Currently checking if it's CASH or PERC.
+// ! Might need to return acc if NONE
+
 export const VendorDashboardRouter = router({
   getLinkStats: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;

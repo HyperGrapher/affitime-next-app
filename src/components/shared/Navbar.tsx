@@ -15,7 +15,11 @@ import TopBarProgress from "react-topbar-progress-indicator";
 const pathsToExlude = [
   '/r/',
   '/auth/',
-  // '/rules-and-policies',
+  '/rules-and-policies',
+  '/pricing',
+  '/blog',
+  '/contact-us',
+
 ]
 
 const Navbar: React.FC = () => {

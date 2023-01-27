@@ -10,7 +10,7 @@ import crypto from "crypto";
 import { CommissionType, LinkStatus } from "@prisma/client";
 
 export const linkRouter = router({
-  // Used by both vendor and partner
+  // for both vendor and partner
   // * ../links/detail/[id]
   getLinkDetails: protectedProcedure
     .input(z.object({ id: z.string() }))
@@ -172,7 +172,7 @@ export const linkRouter = router({
             url: randUrl,
             categoryId: product.categoryId,
             status: LinkStatus.AWAITING,
-            // cookieLife: product.cookieLife, // ! TODO 
+            cookieLife: product.cookieLife, 
             price: product.price,
             perClick: product.perClick,
             perSale: product.perSale,

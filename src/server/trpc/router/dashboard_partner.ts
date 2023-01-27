@@ -5,6 +5,9 @@ import { CommissionType, LinkStatus } from "@prisma/client";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
 import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
 
+// ! TODO WARN - Possible bug - test every reducer if type is NONE
+// ! Currently checking if it's CASH or PERC.
+// ! Might need to return acc if NONE
 export const PartnerDashboardRouter = router({
   getLinkStats: partnerProcedure.query(async ({ ctx }) => {
     const { partnerId } = ctx.session;
@@ -88,8 +91,6 @@ export const PartnerDashboardRouter = router({
 
   calculateLinksAndPayments: partnerProcedure.query(async ({ ctx }) => {
     const { partnerId } = ctx.session;
-    // console.log({ partnerId });
-    console.log("\n");
 
     const visits = await ctx.prisma.visit.findMany({
       where: {
@@ -109,8 +110,8 @@ export const PartnerDashboardRouter = router({
     const valid = visits.filter((x) => !x.dubious);
     const invalid = visits.filter((x) => x.dubious);
 
-    const x = groupBy(unpaid, "link.product.id");
-    console.log(x);
+    // const x = groupBy(unpaid, "link.product.id");
+    // console.log(x);
 
     const paidLinks = paid.map((x) => x.link);
     const unpaidLinks = unpaid.map((x) => x.link);
@@ -131,19 +132,9 @@ export const PartnerDashboardRouter = router({
         res = (cur.perClick ?? 0) + acc;
       } else if (cur.perClickType === CommissionType.PERC) {
         res = ((cur.price ?? 0) / 100) * (cur.perClick ?? 0) + acc;
-      }
+      } // else return acc // ! WARN - test every reducer if type is NONE
       return res;
     }, 0);
-
-    console.log({
-      unpaidTotal,
-      paidTotal,
-      unpaid: unpaidLinks.length,
-      paid: paidLinks.length,
-      total: visits.length,
-      valid: valid.length,
-      invalid: invalid.length,
-    });
 
     return {
       unpaidTotal: String(unpaidTotal),

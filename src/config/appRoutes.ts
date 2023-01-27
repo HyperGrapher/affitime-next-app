@@ -2,6 +2,7 @@ export enum AppRoutes {
   // PUBLIC
   HOME = "/",
   LEGAL = "/rules-and-policies",
+  CONTACT = "/contact-us",
   PUBLIC_PRODUCT_DETAIL = "/products/detail",
 
   // VENDOR

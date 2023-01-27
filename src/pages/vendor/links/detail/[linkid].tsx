@@ -35,8 +35,6 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     const { data: pd, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
 
-
-    // ! TODO: Get cookie life from link
     return (
         <div className={"auth-container"}>
             {sts === 'loading' && <TopBarProgress />}
@@ -162,15 +160,8 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                 )}>
 
-                    <h3
-                        className={classNames(
-                            "font-medium text-base px-2 py-4"
-                        )}
-                    >
-                        {/*  // ! TODO: Get cookie life from link */}
-                        Cookie Süresi:  <span> {pd?.link.product.cookieLife} Gün</span>
-
-
+                    <h3 className="font-medium text-base px-2 py-4">
+                        Cookie Süresi:  <span> {pd?.link.cookieLife} Gün</span>
                     </h3>
 
                 </section>
