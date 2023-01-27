@@ -28,10 +28,23 @@ export type IPartnerAndLinks = {
   partner_links: Link[];
 };
 
-export type IUnpaidPartnerAndVisits = {
+export type IUnpaidItemForVendor = {
   id: string;
   userId: string;
   username: string;
+  image: string;
+  createdAt: Date;
+  updatedAt: Date;
+  visits: Visit[];
+  calc: number;
+  links: number;
+};
+
+export type IUnpaidItemForPartner = {
+  id: string;
+  userId: string;
+  brand: string;
+  website: string;
   image: string;
   createdAt: Date;
   updatedAt: Date;

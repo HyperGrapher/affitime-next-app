@@ -1,5 +1,5 @@
 import PageCard from "../../../components/card/Card";
-import type { IUnpaidPartnerAndVisits } from "../../../interface/dashboard.interface";
+import type { IUnpaidItemForVendor } from "../../../interface/dashboard.interface";
 import EmptyListView from "../../shared/EmptyListView";
 import AwaitingItem from "./AwaitingItem";
 
@@ -15,7 +15,7 @@ type TitleProps = {
 };
 
 type Props = {
-  partners: IUnpaidPartnerAndVisits[] | undefined
+  partners: IUnpaidItemForVendor[] | undefined
 }
 
 const AwaitingPayments: React.FC<Props> = ({ partners }) => {

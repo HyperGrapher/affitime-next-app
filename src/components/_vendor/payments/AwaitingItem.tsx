@@ -2,14 +2,14 @@ import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 import profileImg from '../../../assets/profile.webp'
-import type { IUnpaidPartnerAndVisits } from '../../../interface/dashboard.interface'
+import type { IUnpaidItemForVendor } from '../../../interface/dashboard.interface'
 import classNames from '../../../utils/classnames'
 import { numberWithCommas } from '../../../utils/helpers'
 import Divider from '../../shared/Divider'
 import { Lira } from '../../shared/HtmlCodes'
 
 type Props = {
-    item: IUnpaidPartnerAndVisits
+    item: IUnpaidItemForVendor
 }
 
 const AwaitingItem: React.FC<Props> = ({ item }) => {

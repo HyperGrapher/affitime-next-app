@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { router, vendorProcedure } from "../trpc";
-import { z } from "zod";
+import type { Link, Partner, Product, Vendor, Visit } from "@prisma/client";
+import { CommissionType, LinkStatus } from "@prisma/client";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
-import type { IUnpaidPartnerAndVisits } from "../../../interface/dashboard.interface";
-import type { Link, Partner, Product, Visit } from "@prisma/client";
-import { CommissionType } from "@prisma/client";
-import { LinkStatus } from "@prisma/client";
+import { z } from "zod";
+import type { IUnpaidItemForVendor, IUnpaidItemForPartner } from "../../../interface/dashboard.interface";
+import { partnerProcedure, router, vendorProcedure } from "../trpc";
 
 export const PaymentsRouter = router({
   getLinkStats: vendorProcedure.query(async ({ ctx }) => {
@@ -37,7 +36,56 @@ export const PaymentsRouter = router({
     };
   }),
 
-  // * payments-awaitingPayments [DONE]
+  // * vendor/payments-awaitingPayments [DONE]
+  getUnpaidForPartner: partnerProcedure.query(async ({ ctx }) => {
+    const { partnerId } = ctx.session;
+
+    const visits = await ctx.prisma.visit.findMany({
+      where: {
+        partner_id: partnerId,
+        dubious: false,
+        paid: null,
+      },
+      include: {
+        link: true,
+        vendor: true,
+      },
+    });  
+
+    const func = flow(
+      partialRight(groupBy, "vendor.brand"),
+      partialRight(
+        map,
+        (
+          group: (Visit & {
+            vendor: Vendor;
+            link: Link;
+          })[]
+        ) => ({
+          ...get(head(group), "vendor"),
+          visits: group.map((o) => omit(o, "vendor")),
+          calc: group
+            .reduce((acc, cur) => {
+              let total = 0;
+              if (cur.link.perClickType === CommissionType.CASH) {
+                total = (cur.link.perClick ?? 0) + acc;
+              } else if (cur.link.perClickType === CommissionType.PERC) {
+                total = ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
+              }
+
+              return total;
+            }, 0),
+          links: new Set(group.map((x) => x.link_id)).size,
+        })
+      )
+    );
+
+    const funcRes = func(visits) as IUnpaidItemForPartner[];
+    
+    return funcRes.filter(x => x.calc !== 0);
+  }),
+
+  // * vendor/payments-awaitingPayments [DONE]
   getUnpaidPartners: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -82,7 +130,7 @@ export const PaymentsRouter = router({
       )
     );
 
-    const funcRes = func(visits) as IUnpaidPartnerAndVisits[];
+    const funcRes = func(visits) as IUnpaidItemForVendor[];
 
 
     return funcRes.filter(x => x.calc !== 0);
