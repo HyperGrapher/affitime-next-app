@@ -72,7 +72,7 @@ const validationSchema = z.object({
     desc: z.string().trim().min(20, "Lütfen ürün hakkında açıklayıcı bilgi giriniz"),
     product_url: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!"),
     image: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!").optional().nullable(),
-    price: z.number()?.positive("Pozitif bir rakam giriniz"),
+    price: z.number()?.positive("Pozitif bir rakam giriniz"),// todo .min(100),
     perSale: z.number().default(0),
     perClick: z.number().default(0),
     perClickType: z.string().optional().nullable(),
@@ -243,9 +243,8 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
                 {edit ? null : <div className='mb-6 ml-2 w-1/2 md:w-1/3'>
                     <p className="text-slate-400 text-sm font- leading-tight">
-                        Asagıdakı formu doldurarak Kampanya ürünü olusturun.
-                        Daha sonra her bir urun icin affiliate kullanicilarina atanacak
-                        paylasim linki olusturabilirsiniz.
+                        Aşağıdaki formu doldurarak Kampanya ürünü olusturun.
+                        Her bir ürün için affiliate isteği geldiginde bildirim yollanacak.
                     </p>
                 </div>}
 

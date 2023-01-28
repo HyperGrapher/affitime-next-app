@@ -25,6 +25,7 @@ const Sidenav = () => {
 
     const setUnread = useNotificationStore(store => store.setUnread)
 
+    // TODO refactor these notifs & effects & trpc 
     useEffect(() => {
 
         if (session && session.role === UserRoles.PARTNER) {

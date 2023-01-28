@@ -5,6 +5,7 @@ import { trpc } from '../../utils/trpc';
 import VendorProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
 import dynamic from 'next/dynamic'
+import EmptyListView from "../shared/EmptyListView";
 
 const DynamicModalContainer = dynamic(() => import('../modals/ModalContainer'), {
   ssr: false,
@@ -46,7 +47,7 @@ const VendorProductList: React.FC<Props> = ({ prod, refetch }) => {
 
   return (<>
 
-    {prod?.length === 0 ? <p className='text-center'>Henüz ürün eklemediniz</p> : (<>
+    {prod?.length === 0 ? <EmptyListView title="Henüz bir ürün eklemediniz" /> : (<>
 
       <ProductListHeader />
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>

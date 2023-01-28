@@ -51,7 +51,7 @@ const Products: NextPage = () => {
                 <div className="flex items-center mb-6">
 
                     <div className="ml-2">
-                        <h2 className="font-bold text-xl text-slate-700">Kampanya Ürünleri</h2>
+                        <h2 className="font-bold text-xl text-slate-700">Kampanya Ürünleriniz</h2>
                         {vendor?.products && vendor?.products.length > 0 ? (
                             <small>
                                 Toplam {vendor?.products.length} adet ürün
