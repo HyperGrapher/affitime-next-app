@@ -3,6 +3,7 @@ import Logo from '../../assets/logo-sm.png';
 import Link from "next/link";
 import Image from "next/image";
 import classNames from '../../utils/classnames';
+import { AppRoutes } from "../../config/appRoutes";
 
 const NonAuthNavbar = () => {
 
@@ -33,7 +34,7 @@ const NonAuthNavbar = () => {
                         Blog
                     </Link>
 
-                    <Link href="/contact">
+                    <Link href={AppRoutes.CONTACT}>
                         İletişim
                     </Link>
 

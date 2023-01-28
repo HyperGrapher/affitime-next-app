@@ -4,7 +4,6 @@ import { getSession, signIn } from "next-auth/react";
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
-import ErrorMessage from '../../components/error-messages/ErrorMessage';
 import Loader from '../../components/loader/Loader';
 import { AppRoutes } from '../../config/appRoutes';
 import { notifyError } from '../../utils/notifications';
@@ -17,7 +16,6 @@ import IconButton from "../../components/buttons/IconButton";
 const Signin: NextPage = (): JSX.Element => {
 
     const [busy, setBusy] = useState(false)
-    const [error, setError] = useState("")
     const router = useRouter()
 
 
@@ -34,7 +32,6 @@ const Signin: NextPage = (): JSX.Element => {
         })
 
         if (signinResult?.error) {
-            setError("Kullanici bilgiliresi hatali")
             setBusy(false)
             notifyError('Kullanici bilgiliresi hatali')
         }
@@ -81,12 +78,6 @@ const Signin: NextPage = (): JSX.Element => {
                 </form>
 
                 <Link className='text-center text-blue-600' href={AppRoutes.SIGNUP}>Kayit Ol</Link>
-
-                <div>
-                    <ErrorMessage
-                        state={!!error}
-                        message={error} />
-                </div>
 
                 {busy ? <div className="fixed inset-0 mt-16 backdrop-blur-nope-sm bg-black/10 flex justify-center items-center">
                     <Loader scale={0.9} />

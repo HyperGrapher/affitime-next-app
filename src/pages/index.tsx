@@ -55,7 +55,7 @@ const Accords = () => {
   return (<section className="text-white">
     <div className="container px-5 py-24 mx-auto" >
       <div className="flex flex-col text-center w-full mb-20" >
-        <h3 className="sm:text-3xl text-2xl font-medium title-font text-gray-900/50">
+        <h3 className="z-10 sm:text-3xl text-2xl font-medium title-font text-gray-900/50">
           Sıkça Sorulan Sorular
         </h3>
       </div>
@@ -103,12 +103,12 @@ const FooterTop = () => {
   return (<div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-indigo-900 to-violet-500">
 
     <div className="flex flex-col items-center space-y-8 py-8">
-      <h4 className="font-bold text-3xl text-center text-white">
+      <h4 className="z-10 font-bold text-3xl text-center text-white">
         Lorem ipsum dolor sit amet, consectetur <br /> adipiscing elit, sed do eiusmod
       </h4>
 
       <Link href={'#'}
-        className="whitespace-nowrap text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded text-lg"
+        className="z-10 whitespace-nowrap text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded text-lg"
       >Planları İncele</Link>
     </div>
 
@@ -121,7 +121,7 @@ const FooterTop = () => {
 
     <div className="absolute right-0 bottom-0">
       <svg width="154" height="159" viewBox="0 0 154 159" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="99.5" cy="99.5" r="99.5" fill="#FF7E50" />
+        <circle cx="99.5" cy="99.5" r="99.5" fill="#5087ff" />
       </svg>
 
     </div>
@@ -133,7 +133,7 @@ const Feat2 = () => {
   return (<section className="bg-violet-600 text-white relative  bg-gradient-to-r from-teal-800 to-green-500">
     <div className="container px-5 py-24 mx-auto" >
       <div className="flex flex-col text-center w-full mb-20" >
-        <h3 className="sm:text-3xl text-2xl font-medium title-font text-white/80">Affitime ile neler yapabilirsiniz?</h3>
+        <h3 className="z-10  sm:text-3xl text-2xl font-medium title-font text-white/80">Affitime ile neler yapabilirsiniz?</h3>
         <p className="mt-6 text-white/70">Lorem ipsum dolor sit amet consectetur adipisicing elit.
           <br />
           Illum iure dolores maxime! Nam, error autem. Numquam, dolorum.</p>
@@ -143,13 +143,13 @@ const Feat2 = () => {
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">01</b>
-            <p className="text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+            <p className="z-10 text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
               Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
           </section>
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">02</b>
-            <p className="text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+            <p className="z-10 text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
               Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
           </section>
 
@@ -165,7 +165,7 @@ const Feat2 = () => {
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">04</b>
-            <p className="text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
+            <p className="z-10 text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
               Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
           </section>
 
@@ -175,7 +175,7 @@ const Feat2 = () => {
     </div>
 
 
-    <div className="absolute left-0 top-0">
+    <div className="absolute left-0 top-0 z-0">
       <svg width="141" height="157" viewBox="0 0 141 157" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="41.5" cy="57.5" r="99.5" fill="#e51fec" />
       </svg>
@@ -199,7 +199,7 @@ const Feat = () => {
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto" >
         <div className="flex flex-col text-center w-full mb-20" >
-          <h3 className="sm:text-3xl text-2xl font-medium title-font text-gray-900">Neden Affitime?</h3>
+          <h3 className="z-10 sm:text-3xl text-2xl font-medium title-font text-gray-900">Neden Affitime?</h3>
           <p className="a">Lorem ipsum dolor sit amet consectetur adipisicing elit.
             <br />
             Illum iure dolores maxime! Nam, error autem. Numquam, dolorum.</p>
