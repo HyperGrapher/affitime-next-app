@@ -5,6 +5,7 @@ export enum AppRoutes {
   SIGNUP = "/auth/signup",
   LEGAL = "/rules-and-policies",
   CONTACT = "/contact-us",
+  PRICING = "/pricing",
   PUBLIC_PRODUCT_DETAIL = "/products/detail",
   // VENDOR
   VENDOR_DASHBOARD = "/vendor/dashboard",

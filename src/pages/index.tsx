@@ -6,7 +6,8 @@ import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
 import MacMock from '../assets/home/mac-mockup.png';
-import AccordItem from "../components/accordion/AccordItem";
+import { FaqIndex } from "../components/shared/Faq"
+import { AppRoutes } from "../config/appRoutes";
 
 
 const Home: NextPage = () => {
@@ -22,13 +23,23 @@ const Home: NextPage = () => {
     <header className="text-white body-font bg-violet-700 py-12  bg-gradient-to-r from-indigo-900 to-violet-500">
       <div className="container mx-auto flex px-8 py-24 md:flex-row flex-col items-center" >
         <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center" >
-          <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">Lorem ipsum dolor sit amet
-            <br className="hidden lg:inline-block" />consect adi elit.
+          <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">
+            affitime ile birden çok affiliate marketing kampanyası oluştur
+
+            <br className="hidden lg:inline-block" />ve affiliatelerini yönet.
+
           </h1>
-          <p className="mb-8 leading-relaxed">Copper mug try-hard pitchfork pour-over freegan heirloom neutra air plant cold-pressed tacos poke beard tote bag. Heirloom echo park mlkshk tote bag selvage hot chicken authentic tumeric truffaut hexagon try-hard chambray.</p>
+          <p className="mb-8 leading-relaxed text-lg">affitime marka bilinirliğini,
+            satışlarını reklam maliyetleri olmadan arttırmanı sağlar.
+            affitime ile affiliate marketing kampanyaları oluşturabilir bu kampanyalar
+            için hem yeni affiliatelere ulaşabilir hem kendi çalışmak
+            istediğin affiliateleri kampanyana dahil edebilirsin.</p>
           <div className="flex justify-center" >
 
-            <button className="inline-flex text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded text-lg">Hadi Başlayalım</button>
+            <Link href={AppRoutes.SIGNUP}
+              className="inline-flex text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded text-lg">
+              Hadi Başlayalım
+            </Link>
           </div>
         </div>
         <div className="lg:max-w-lg lg:w-full md:w-1/2 w-5/6" >
@@ -42,60 +53,12 @@ const Home: NextPage = () => {
     <Feat />
     <Feat2 />
 
-    <Accords />
+    <FaqIndex />
     <FooterTop />
 
   </div>
 
 };
-
-
-
-const Accords = () => {
-  return (<section className="text-white">
-    <div className="container px-5 py-24 mx-auto" >
-      <div className="flex flex-col text-center w-full mb-20" >
-        <h3 className="z-10 sm:text-3xl text-2xl font-medium title-font text-gray-900/50">
-          Sıkça Sorulan Sorular
-        </h3>
-      </div>
-
-      <section className="space-y-8 mx-auto max-w-screen-md">
-
-        <AccordItem
-          id="1"
-          title="Lorem ipsum dolor sit amet consectetur adipisicing."
-          desc="Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-            Dolore vel placeat labore doloremque inventore magni optio tenetur. 
-            Labore deserunt aut est cumque, eveniet molestias odio quibusdam, 
-            velit quidem laudantium amet consequuntur, accusantium ipsum neque!"
-        />
-
-        <AccordItem
-          id="2"
-          title="Lorem ipsum dolor sit amet consectetur adipisicing."
-          desc="Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-            Dolore vel placeat labore doloremque inventore magni optio tenetur. 
-            Labore deserunt aut est cumque, eveniet molestias odio quibusdam, 
-            velit quidem laudantium amet consequuntur, accusantium ipsum neque!"
-        />
-
-        <AccordItem
-          id="3"
-          title="Lorem ipsum dolor sit amet consectetur adipisicing."
-          desc="Lorem ipsum dolor sit, amet consectetur adipisicing elit. 
-            Dolore vel placeat labore doloremque inventore magni optio tenetur. 
-            Labore deserunt aut est cumque, eveniet molestias odio quibusdam, 
-            velit quidem laudantium amet consequuntur, accusantium ipsum neque!"
-        />
-
-      </section>
-    </div>
-  </section>
-  )
-
-}
-
 
 // <div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-teal-900 to-teal-500">
 
@@ -104,10 +67,16 @@ const FooterTop = () => {
 
     <div className="flex flex-col items-center space-y-8 py-8">
       <h4 className="z-10 font-bold text-3xl text-center text-white">
-        Lorem ipsum dolor sit amet, consectetur <br /> adipiscing elit, sed do eiusmod
+        Affiliate marketing programınızı şimdi başlatın.
       </h4>
 
-      <Link href={'#'}
+      <p className="text-lg text-center text-white/70">
+        affitime affiliatelerini ve raporları yönetme, teklifleri duyurma ve ödeme yapma imkanı verecektir.
+        <br />
+        Performanstan ödün vermeden basit ve işlevsel kontrol paneli ile programınızı şimdi başlatın.
+      </p>
+
+      <Link href={AppRoutes.PRICING}
         className="z-10 whitespace-nowrap text-white bg-orange-500 border-0 py-2 px-6 focus:outline-none hover:bg-orange-600 rounded text-lg"
       >Planları İncele</Link>
     </div>
@@ -134,23 +103,23 @@ const Feat2 = () => {
     <div className="container px-5 py-24 mx-auto" >
       <div className="flex flex-col text-center w-full mb-20" >
         <h3 className="z-10  sm:text-3xl text-2xl font-medium title-font text-white/80">Affitime ile neler yapabilirsiniz?</h3>
-        <p className="mt-6 text-white/70">Lorem ipsum dolor sit amet consectetur adipisicing elit.
-          <br />
-          Illum iure dolores maxime! Nam, error autem. Numquam, dolorum.</p>
-      </div>
+        </div>
       <main className="flex flex-wrap justify-center gap-2 lg:gap-24 -m-4 mx-auto bg-red-100/20z" >
         <article className="flex flex-col gap-4">
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">01</b>
-            <p className="z-10 text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
+            <p className="z-10 text-white/70 w-[300px]">
+              Tıklama başına ödeme ve/veya satış başına belirli bir yüzdeyle ödeme istediğin ödeme şeklini seç.
+            </p>
           </section>
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">02</b>
-            <p className="z-10 text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
+            <p className="z-10 text-white/70 w-[300px]">
+              Fraud Protection: affitime kendi geliştirdiği algoritmalarla sahte tıklamaların önüne geçer.
+              Sadece Türkiye’de bulunan ve VPN kullanmayan kullanıcıların yapmış olduğu bir tıklama geçerlidir.
+            </p>
           </section>
 
         </article>
@@ -159,14 +128,18 @@ const Feat2 = () => {
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">03</b>
-            <p className="text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
+            <p className="text-white/70 w-[300px]">
+              Kampanya oluştur ve başvuran influencerlar arasından onay verdiklerinle çalış.
+              Tüm verileri anlık olarak görüntüle.
+
+            </p>
           </section>
 
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">04</b>
-            <p className="z-10 text-white/70 w-[300px]">Lorem ipsum dolor sit amet consectetur, adipisicing elit.
-              Assumenda, eos voluptatum. Laudantium, sapiente corrupti.</p>
+            <p className="z-10 text-white/70 w-[300px]">
+              Tek tıkla ödeme: Afffiliatelere yapacağın ödemeleri platform üzerinden tek seferde öde.
+            </p>
           </section>
 
         </article>
@@ -200,9 +173,12 @@ const Feat = () => {
       <div className="container px-5 py-24 mx-auto" >
         <div className="flex flex-col text-center w-full mb-20" >
           <h3 className="z-10 sm:text-3xl text-2xl font-medium title-font text-gray-900">Neden Affitime?</h3>
-          <p className="a">Lorem ipsum dolor sit amet consectetur adipisicing elit.
+          <p className="text-lg mt-2">affitime marka bilinirliğini, satışlarını reklam maliyetleri olmadan arttırmanı sağlar.
             <br />
-            Illum iure dolores maxime! Nam, error autem. Numquam, dolorum.</p>
+            affitime ile affiliate marketing kampanyaları oluşturabilir bu kampanyalar için
+            hem yeni affiliatelere ulaşabilir
+            <br />
+            hem kendi çalışmak istediğin affiliateleri kampanyana dahil edebilirsin.</p>
         </div>
         <div className="flex flex-wrap -m-4" >
           <div className="p-4 md:w-1/3" >
@@ -213,10 +189,13 @@ const Feat = () => {
                     <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
                   </svg>
                 </div>
-                <h2 className="text-gray-900 text-lg title-font font-medium">Shooting Stars</h2>
+                <h2 className="text-gray-900 text-lg title-font font-medium">Reklam maliyeti yok</h2>
               </div>
               <div className="flex-grow" >
-                <p className="leading-relaxed text-base">Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.</p>
+                <p className="leading-relaxed text-base">
+                  Affiliatelerden aldığın sonuç başına ödeme yap ve giderlerini düşür
+
+                </p>
 
               </div>
             </div>
@@ -230,10 +209,13 @@ const Feat = () => {
                     <circle cx="12" cy="7" r="4"></circle>
                   </svg>
                 </div>
-                <h2 className="text-gray-900 text-lg title-font font-medium">The Catalyzer</h2>
+                <h2 className="text-gray-900 text-lg title-font font-medium">Marka bilinirliğini arttır</h2>
               </div>
               <div className="flex-grow" >
-                <p className="leading-relaxed text-base">Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.</p>
+                <p className="leading-relaxed text-base">
+                  Her kategoriden influencerla çalış bu sana sponsorlu reklamlardan daha çok etkileşim sağlayacaktır.
+
+                </p>
 
               </div>
             </div>
@@ -248,10 +230,12 @@ const Feat = () => {
                     <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
                   </svg>
                 </div>
-                <h2 className="text-gray-900 text-lg title-font font-medium">Neptune</h2>
+                <h2 className="text-gray-900 text-lg title-font font-medium">Marka sadakati</h2>
               </div>
               <div className="flex-grow" >
-                <p className="leading-relaxed text-base">Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.</p>
+                <p className="leading-relaxed text-base">
+                  Düzenli kampanyalar sayesinde hem affiliatelerinin hem takipçilerinin marka sadakatini arttır.
+                </p>
 
               </div>
             </div>
