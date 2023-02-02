@@ -181,9 +181,9 @@ const AffiProduct: NextPage = ({
             },
             {
                 onSuccess: async () => {
-                    console.log("Success")
+                    window.location.href = product_url;
                 },
-
+                
                 onSettled: () => {
                     console.log(product_url, isBot);
 
