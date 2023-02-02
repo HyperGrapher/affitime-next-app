@@ -12,6 +12,8 @@ import { AppRoutes } from "../../../config/appRoutes";
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from '../../../utils/classnames';
 import { trpc } from '../../../utils/trpc';
+import Head from "next/head";
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -46,6 +48,10 @@ const LinkCreate: NextPage = () => {
 
     return (
         <div className='auth-container'>
+
+            <Head>
+                <title>Affitime | Link Olustur</title>
+            </Head>
 
             <PageCard>
 

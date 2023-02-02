@@ -146,7 +146,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
         <div className={session ? "auth-container" : "px-1 pt-16"}>
 
             <Head>
-                <title>{pd?.title ?? ""}</title>
+                <title>Affitime | {pd?.title ?? ""}</title>
                 <meta name="description" content={pd?.desc ?? ""} />
                 <meta name="theme-color" content="#8b71ff" />
 

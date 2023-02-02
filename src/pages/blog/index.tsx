@@ -48,7 +48,7 @@ const BlogIndex = ({ blogs }: InferGetStaticPropsType<typeof getStaticProps>) =>
                 Her bir blog item uzerinde admin icin delete btn
             */}
             <Head>
-                <title>Affitime Blog</title>
+                <title>Affitime | Blog</title>
             </Head>
 
             {session?.role === "ADMIN" &&

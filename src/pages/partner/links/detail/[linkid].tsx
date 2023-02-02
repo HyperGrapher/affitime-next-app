@@ -17,6 +17,8 @@ import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
+import Head from "next/head";
+
 
 const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -39,7 +41,12 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     return (
         <div className={"auth-container"}>
-            {sts === 'loading' && <TopBarProgress />}
+            {sts === 'loading' && <TopBarProgress />} 
+
+            <Head>
+                <title>Affitime | Link Detayı</title>
+            </Head>
+
             <PageCard>
                 <div className="flex items-center">
 

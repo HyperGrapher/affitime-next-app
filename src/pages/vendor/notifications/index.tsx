@@ -10,7 +10,7 @@ import { AppRoutes } from "../../../config/appRoutes";
 import { UserRoles } from '../../../interface/auth.interface';
 import useNotificationStore from "../../../store/notifications.store";
 import { trpc } from '../../../utils/trpc';
-
+import Head from "next/head";
 
 
 const Notifications: NextPage = () => {
@@ -26,6 +26,11 @@ const Notifications: NextPage = () => {
     return (
         <div className="auth-container">
             {(sts === 'loading') && <TopBarProgress />}
+
+
+            <Head>
+                <title>Affitime | Bildirimler</title>
+            </Head>
 
             <PageCard>
 

@@ -9,6 +9,7 @@ import { trpc } from '../../../utils/trpc';
 import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
 import { AppRoutes } from "../../../config/appRoutes";
+import Head from "next/head";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -45,6 +46,10 @@ const Products: NextPage = () => {
     return (
         <main className="auth-container">
             {sts === 'loading' && <TopBarProgress />}
+
+            <Head>
+                <title>Affitime | Ürünler</title>
+            </Head>
 
             <PageCard>
 

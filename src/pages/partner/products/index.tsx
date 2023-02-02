@@ -7,7 +7,9 @@ import PageCard from "../../../components/card/Card";
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { AppRoutes } from "../../../config/appRoutes";
-// import Pager from "../../../components/pager/Pager";
+import Head from "next/head";
+
+
 
 // https://mantine.dev/hooks/use-pagination/
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -46,6 +48,10 @@ const Products: NextPage = () => {
     return (
         <main className="auth-container">
             {sts === 'loading' && <TopBarProgress />}
+
+            <Head>
+                <title>Affitime | Ürünler</title>
+            </Head>
 
             <PageCard>
 

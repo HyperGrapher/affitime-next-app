@@ -23,6 +23,7 @@ import { prisma } from "../../../server/db/client";
 import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessBR, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
+import Head from "next/head";
 
 interface IServerSideProps {
     cats: Category[]
@@ -223,6 +224,11 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     return (
         <div className='auth-container' style={{ overflowX: 'hidden' }}>
             {busy && <TopBarProgress />}
+
+
+            <Head>
+                <title>Affitime | Ürün Oluştur</title>
+            </Head>
 
             <PageCard>
 
@@ -571,7 +577,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                     />
 
                                     {/* <span className="translate-x-24 scroll-mx-0"> */}
-                                        <FormFieldError state={!!errors.perClick} message={errors.perClick?.message} />
+                                    <FormFieldError state={!!errors.perClick} message={errors.perClick?.message} />
                                     {/* </span> */}
 
                                 </FormFieldWrapper>
@@ -643,7 +649,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                         })}
                                     />
                                     {/* <span className="translate-x-24 scroll-mx-0"> */}
-                                        <FormFieldError state={!!errors.perSale} message={errors.perSale?.message} />
+                                    <FormFieldError state={!!errors.perSale} message={errors.perSale?.message} />
                                     {/* </span> */}
 
 

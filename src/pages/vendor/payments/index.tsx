@@ -12,6 +12,8 @@ import { AppRoutes } from "../../../config/appRoutes";
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from "../../../utils/classnames";
 import { trpc } from "../../../utils/trpc";
+import Head from "next/head";
+
 
 const Payments = () => {
 
@@ -23,6 +25,10 @@ const Payments = () => {
     return (
         <div className="auth-container">
             {sts === "loading" && <TopBarProgress />}
+
+            <Head>
+                <title>Affitime | Ödemeler</title>
+            </Head>
             <main className="mx-auto container min-h-screen px-2 pt-6">
 
                 <div className="mb-2">

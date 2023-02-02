@@ -7,6 +7,8 @@ import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import LinkList from '../../../components/_vendor/links/LinkList';
 import { AppRoutes } from "../../../config/appRoutes";
+import Head from "next/head";
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -44,6 +46,10 @@ const LinkPage: NextPage = () => {
     return (
         <main className="auth-container">
             {sts === 'loading' && <TopBarProgress />}
+
+            <Head>
+                <title>Affitime | Linkler</title>
+            </Head>
 
             <PageCard>
 

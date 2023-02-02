@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import PageCard from '../../components/card/Card';
 import TabItem from "../../components/tab-item/TabItem";
 import classNames from "../../utils/classnames";
+import Head from "next/head";
+
 
 
 const PrivacyPolicy = dynamic(() => import('../../components/rules-and-policies/PrivacyPolicy'), {
@@ -36,7 +38,9 @@ const RulesAndPolicies = ({ tab }: InferGetServerSidePropsType<typeof getServerS
 
     return (
         <div className={data ? 'auth-container' : "container mx-auto"}>
-
+            <Head>
+                <title>Affitime | Politikalar</title>
+            </Head>
             <Tab.Group defaultIndex={0} selectedIndex={selectedIndex} onChange={setSelectedIndex}>
                 <Tab.List className={classNames(
                     "flex space-x-8 mt-16"

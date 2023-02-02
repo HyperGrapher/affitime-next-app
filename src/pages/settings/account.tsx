@@ -69,9 +69,7 @@ const Account = () => {
     return (
         <div className={"auth-container"}>
             <Head>
-                <title>Affitime Ayarlar</title>
-                <meta name="description" content="Affiliate uygulamasi" />
-                <link rel="icon" href="/favicon.ico" />
+                <title>Affitime | Ayarlar</title>
             </Head>
 
             {busy && <TopBarProgress />}

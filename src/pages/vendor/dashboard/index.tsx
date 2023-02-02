@@ -12,6 +12,8 @@ import { IpSchema } from "../../../interface/zod.schema";
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
+import Head from "next/head";
+
 
 const DashboardVendor = () => {
 
@@ -55,12 +57,15 @@ const DashboardVendor = () => {
 
     return (
         <div className="auth-container">
+            <Head>
+                <title>Affitime | Dashboard</title>
+            </Head>
 
             <main className="mx-auto container min-h-screen px-2 pt-6">
 
                 <div className="mb-2">
                     <h1 className="text-slate-600 font-bold text-2xl">
-                    Merhaba, {session?.email}
+                        Merhaba, {session?.email}
                     </h1>
                     <small className="text-slate-400 text-sm">
                         Tüm affiliate bilgilerınız bu sayfada bir arada görüntüleyebilirsiiniz.

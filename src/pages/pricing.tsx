@@ -4,7 +4,7 @@ import Faq from "../components/shared/Faq"
 import { Lira, Space } from "../components/shared/HtmlCodes"
 import Link from "next/link"
 import { AppRoutes } from "../config/appRoutes"
-
+import Head from "next/head";
 
 const Pricing = () => {
 
@@ -12,7 +12,9 @@ const Pricing = () => {
 
     return (
         <div>
-
+            <Head>
+                <title>Affitime | Fiyatlandırma</title>
+            </Head>
             <section className="text-gray-600 body-font overflow-hidden">
                 <div className="container px-5 py-24 mx-auto">
                     <div className="flex flex-col text-center w-full mb-20">
@@ -292,7 +294,7 @@ const Pricing = () => {
                 </div>
             </section>
 
-{/* 
+            {/* 
             <section className="text-gray-600 body-font">
                 <div className="container px-5 py-24 mx-auto" >
                     <div className="flex flex-col text-center w-full mb-20" >

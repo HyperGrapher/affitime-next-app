@@ -12,6 +12,8 @@ import { IpSchema } from "../../../interface/zod.schema";
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
+import Head from "next/head";
+
 
 const DashboardVendor = () => {
 
@@ -56,6 +58,10 @@ const DashboardVendor = () => {
 
     return (
         <div className="auth-container">
+
+            <Head>
+                <title>Affitime | Dashboard</title>
+            </Head>
 
             <main className="mx-auto container min-h-screen px-2 pt-6">
 
