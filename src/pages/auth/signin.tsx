@@ -87,7 +87,7 @@ const Signin: NextPage = (): JSX.Element => {
                     <Image src={SigninImg} alt="signin" />
                 </div>
                 <div
-                    className="lg:w-2/5 md:w-1/2 bg-white flex flex-col 
+                    className="lg:w-2/5 md:w-1/2 bg-white flex flex-col items-center
                 md:ml-auto w-full py-8 md:py-8 mt-8 md:mt-0 px-4 xl:px-24 min-w-[356]"
                 >
                     <div className="text-center">
@@ -154,7 +154,7 @@ const Signin: NextPage = (): JSX.Element => {
 
                     <div className="flex flex-col mt-8 gap-6">
                         <div className='text-center text-slate-300'>ya da</div>
-
+{/* 
                         <button className={classNames(
                             "w-full bg-white text-blue-500 border border-blue-500",
                             'flex items-center justify-center space-x-2',
@@ -169,7 +169,7 @@ const Signin: NextPage = (): JSX.Element => {
                             <span className='font-medium'>
                                 Google ile devam et
                             </span>
-                        </button>
+                        </button> */}
 
                         <p className="text-center">
                             Affitime hesabınız yok mu?
