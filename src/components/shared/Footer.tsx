@@ -33,6 +33,7 @@ const Footer = () => {
                 <Link href={`${AppRoutes.LEGAL}?tab=0`} className="text-slate-800 hover:text-blue-500 hover:underline">Kullanıcı sözleşmesi</Link>
                 <Link href={`${AppRoutes.LEGAL}?tab=1`} className="text-slate-800 hover:text-blue-500 hover:underline">Gizlilik sözleşmesi</Link>
                 <Link href={`${AppRoutes.LEGAL}?tab=2`} className="text-slate-800 hover:text-blue-500 hover:underline">Çerez Politikası</Link>
+                <Link href={AppRoutes.CONTACT} className="text-slate-800 hover:text-blue-500 hover:underline">İletişim</Link>
             </section>
 
             <section className="flex flex-col space-y-8">

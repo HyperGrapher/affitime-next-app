@@ -81,7 +81,7 @@ const Pricing = () => {
                                         <path d="M5 12h14M12 5l7 7-7 7"></path>
                                     </svg>
                                 </Link>
-                                {/* <p className="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p> */}
+                                <p className="text-xs text-gray-500 mt-3">14 gün ücretsiz deneme</p>
                             </div>
                         </div>
 
@@ -176,7 +176,7 @@ const Pricing = () => {
                                         <path d="M5 12h14M12 5l7 7-7 7"></path>
                                     </svg>
                                 </Link>
-                                {/* <p className="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p> */}
+                                <p className="text-xs text-gray-500 mt-3">14 gün ücretsiz deneme</p>
                             </div>
                         </div>
 
@@ -286,7 +286,7 @@ const Pricing = () => {
                                         <path d="M5 12h14M12 5l7 7-7 7"></path>
                                     </svg>
                                 </Link>
-                                {/* <p className="text-xs text-gray-500 mt-3">Literally you probably haven't heard of them jean shorts.</p> */}
+                                <p className="text-xs text-gray-500 mt-3">14 gün ücretsiz deneme</p>
                             </div>
                         </div>
 
