@@ -32,7 +32,10 @@ const IconButton: React.FC<Props> = ({ title, twColorCode = "violet", twClasses,
 
             {icon ? icon : null}
 
-            <span className="text-slate-50 text-xs font-medium tracking-wide text-center">
+            <span className={classNames(
+                "text-slate-50 text-xs font-medium tracking-wide text-center",
+                `${twClasses}`
+            )}>
                 {title}
             </span>
         </button>
