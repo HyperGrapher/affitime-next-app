@@ -173,7 +173,7 @@ const Signin: NextPage = (): JSX.Element => {
 
                         <p className="text-center">
                             Affitime hesabınız yok mu?
-                            <Link className='pl-2 text-blue-500' href={AppRoutes.SIGNIN}>Kayıt Ol</Link>
+                            <Link className='pl-2 text-blue-500' href={AppRoutes.SIGNUP}>Kayıt Ol</Link>
                         </p>
 
                     </div>

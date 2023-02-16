@@ -1,44 +1,96 @@
-import { Switch } from '@headlessui/react';
+/* eslint-disable react-hooks/exhaustive-deps */
+import { zodResolver } from '@hookform/resolvers/zod';
 import { QueryClient } from '@tanstack/react-query';
 import type { GetServerSideProps, NextPage } from 'next';
 import { getSession, signIn } from "next-auth/react";
+import Head from "next/head";
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import ErrorMessage from '../../components/error-messages/ErrorMessage';
-import Loader from '../../components/loader/Loader';
-import type { RegisterFormElement } from '../../interface/auth.interface';
-import { UserRoles } from '../../interface/auth.interface';
-import { trpc } from '../../utils/trpc';
-import { AppRoutes } from '../../config/appRoutes';
-import { HiPlus } from 'react-icons/hi';
-import Head from "next/head";
+import { useEffect, useState } from 'react';
+import type { SubmitHandler } from "react-hook-form";
+import { useForm } from "react-hook-form";
+import { HiLogin } from 'react-icons/hi';
+import { z } from 'zod';
+import SigninImg from '../../assets/signin.png';
 import IconButton from "../../components/buttons/IconButton";
+import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import { AppRoutes } from '../../config/appRoutes';
+import { UserRoles } from '../../interface/auth.interface';
+import { notifyError } from '../../utils/notifications';
+import { trpc } from '../../utils/trpc';
 
+interface IFormData {
+    email: string;
+    password: string;
+    password2: string;
+    brand: string;
+    username: string;
+    website: string;
+    phone: string;
+    role: UserRoles.VENDOR | UserRoles.PARTNER;
+
+}
+const validationSchema = z.object({
+    role: z.enum(["VENDOR", "PARTNER"]),
+    email: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
+    phone: z.string().trim().min(10, "En az 10 haneli numaranızı giriniz"),
+    username: z.string().trim().min(5, "En az 5 karakter olmalı!"),
+    brand: z.string().trim().min(5, "En az 5 karakter olmalı!"),
+    website: z.string().trim().url("Geçerli bir adres giriniz!"),
+    password: z.string().trim().min(8, "En az 8 karakter olmalı!"),
+    password2: z.string().trim().min(8, "En az 8 karakter olmalı!"),
+}).required().superRefine(({ password, password2 }, ctx) => {
+    if (password !== password2) {
+        ctx.addIssue({
+            code: "custom",
+            message: "Şifre tekrarı aynı olmalı",
+            path: ['password2']
+        });
+    }
+});
 
 const SignUp: NextPage = (): JSX.Element => {
 
     const createUser = trpc.auth.createUser.useMutation()
-    const [isVendor, setIsVendor] = useState(false)
+    const [isVendor, setIsVendor] = useState(true)
     const [busy, setBusy] = useState(false)
-    const [error, setError] = useState("")
     const router = useRouter()
     const client = new QueryClient()
     client.invalidateQueries()
 
-    async function handleSubmit(e: React.FormEvent<RegisterFormElement>) {
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IFormData>({
+        resolver: zodResolver(validationSchema),
+        reValidateMode: 'onBlur',
+        mode: 'onBlur',
+    });
+
+    useEffect(() => {
+
+        if (isVendor) {
+            setValue('role', UserRoles.VENDOR)
+            setValue('username', "----------")
+            // reset on change
+            setValue('brand', "")
+            setValue('website', "")
+        } else {
+            setValue('role', UserRoles.PARTNER)
+            setValue('brand', "----------")
+            setValue('website', "https://example.com")
+
+            // reset on change
+            setValue('username', "")
+
+        }
+
+    }, [isVendor])
+
+
+    const onSubmit: SubmitHandler<IFormData> = async (data) => {
 
         setBusy(true)
-        e.preventDefault();
 
-        createUser.mutate({
-            email: e.currentTarget.elements.email.value,
-            password: e.currentTarget.elements.password.value,
-            username: !isVendor ? e.currentTarget.elements.username.value : "______",
-            brand: isVendor ? e.currentTarget.elements.brand.value : "______",
-            website: isVendor ? e.currentTarget.elements.website.value : "https://example.com",
-            role: isVendor ? UserRoles.VENDOR : UserRoles.PARTNER
-        },
+        createUser.mutate(data,
             {
                 onSuccess: async (data, variables) => {
 
@@ -51,11 +103,15 @@ const SignUp: NextPage = (): JSX.Element => {
 
                     })
 
-                    if (signinResult?.ok) router.replace('/vendor/dashboard?reg=true')
+                    console.log(variables)
+                    console.log((signinResult?.ok))
+
+                    if (signinResult?.ok) router.replace('/vendor/dashboard')
 
                 },
                 onError(error) {
-                    setError(error.message)
+                    console.log(error.message)
+                    notifyError(`${error.message}`)
                 },
                 onSettled: () => {
                     setBusy(false)
@@ -64,106 +120,206 @@ const SignUp: NextPage = (): JSX.Element => {
 
         )
 
+
+
     }
 
-
     return (
-        <div className='flex justify-center pt-24'>
+        <div className=''>
             <Head>
                 <title>Affitime Kayıt</title>
             </Head>
-            <div className="w-64 flex flex-col gap-4">
-                <h1 className='text-xl font-bold text-center mb-6'>Kayıt Ol</h1>
+            <div className="container px-2 py-12 mx-auto flex sm:flex-nowrap flex-wrap">
+                <div className="lg:w-3/5 md:w-1/2 rounded-lg overflow-hidden sm:mr-10 hidden md:flex items-start justify-start relative">
+                    <Image src={SigninImg} alt="signin" />
+                </div>
+                <div className="lg:w-2/5 md:w-1/2 bg-white flex flex-col items-center
+                     md:ml-auto w-full py-8 md:py-8 mt-8 md:mt-0 px-4 xl:px-24 min-w-[356]">
+                    <div className="text-center">
+                        <h2 className="text-gray-900 text-xl mb-1 font-medium title-font">Kayıt ol</h2>
+                        <p className="text-slate-400 text-sm">
+                            Hesap oluşturmak için bilgilerinizi giriniz
+                        </p>
+                    </div>
 
-                <div className="flex flex-row w-48 justify-between mx-auto mb-4">
-                    <p className="text-sm">Partner</p>
-                    <Switch
-                        checked={isVendor}
-                        onChange={setIsVendor}
-                        className={`${isVendor ? 'bg-blue-600' : 'bg-gray-200'
-                            } relative inline-flex h-6 w-11 items-center rounded-full`}>
-                        <span className="sr-only">Role secimi</span>
-                        <span
-                            className={`${isVendor ? 'translate-x-6' : 'translate-x-1'
-                                } inline-block h-4 w-4 transform rounded-full bg-white transition`}
-                        />
-                    </Switch>
-                    <p className="text-sm">Vendor</p>
+                    <div className="flex flex-col text-center w-full mt-4">
+                        <h1 className="sm:text-sm text-sm font-medium title-font mb-0 text-gray-900">Profil seçiniz</h1>
+                        <div className="scale-90 flex mx-auto border-2 border-violet-600 rounded overflow-hidden mt-2">
+                            <button
+                                onClick={() => setIsVendor(true)}
+                                className={` ${isVendor ? "bg-violet-600  text-white" : ""} py-1 px-4 focus:outline-none`}>Vendor</button>
+                            <button
+                                onClick={() => setIsVendor(false)}
+                                className={`${isVendor ? "" : "bg-violet-600  text-white"}  py-1 px-4 focus:outline-none`}>Affiliate</button>
+                        </div>
+                    </div>
+
+                    <form className='flex flex-col items-center gap-6 mt-6 xl:w-[300px]' onSubmit={handleSubmit(onSubmit)}>
+
+                        <div className="block w-full ">
+                            <FormFieldWrapper>
+                                <label htmlFor="email" className="leading-7 text-sm font-bold text-gray-600">Email</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="email"
+                                    placeholder='Email'
+                                    {...register("email", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.email} message={errors.email?.message} />
+
+                            </FormFieldWrapper>
+                        </div>
+
+                        <div className="block w-full ">
+                            <FormFieldWrapper>
+                                <label htmlFor="phone" className="leading-7 text-sm font-bold text-gray-600">Telefon</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="text"
+                                    placeholder='5xx'
+                                    {...register("phone", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.phone} message={errors.phone?.message} />
+
+                            </FormFieldWrapper>
+
+                        </div>
+
+                        {/* {isVendor ? <> */}
+                        <div className={`w-full ${isVendor ? "block" : "hidden"} `}>
+                            <FormFieldWrapper>
+                                <label htmlFor="brand" className="leading-7 text-sm font-bold text-gray-600">Firma İsmi</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="text"
+                                    placeholder='Firma ismi'
+                                    {...register("brand", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.brand} message={errors.brand?.message} />
+
+                            </FormFieldWrapper>
+
+                        </div>
+
+                        <div className={`w-full ${isVendor ? "block" : "hidden"}`}>
+                            <FormFieldWrapper>
+                                <label htmlFor="website" className="leading-7 text-sm font-bold text-gray-600">Website</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="text"
+                                    placeholder='https://'
+                                    {...register("website", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.website} message={errors.website?.message} />
+
+                            </FormFieldWrapper>
+
+                        </div>
+
+                        <div className={`${isVendor ? "hidden" : "block"} w-full`}>
+                            <FormFieldWrapper>
+                                <label htmlFor="username" className="leading-7 text-sm font-bold text-gray-600">Kullanıcı İsmi</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="text"
+                                    placeholder='Kullanıcı İsmi'
+                                    {...register("username", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.username} message={errors.username?.message} />
+
+                            </FormFieldWrapper>
+
+                        </div>
+
+
+                        {/* end */}
+
+
+
+                        <div className="block w-full">
+                            <FormFieldWrapper>
+                                <label htmlFor="password" className="leading-7 text-sm font-bold text-gray-600">Şifre</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="password"
+                                    placeholder='Şifre'
+                                    {...register("password", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.password} message={errors.password?.message} />
+
+                            </FormFieldWrapper>
+
+                        </div>
+
+                        <div className="block w-full mb-4">
+                            <FormFieldWrapper>
+                                <label htmlFor="password2" className="leading-7 text-sm font-bold text-gray-600">Şifre Tekrarı</label>
+
+                                <input
+                                    className='disabled:bg-slate-200 block w-full 
+                                    rounded-md border-gray-300 shadow-sm 
+                                  focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                    disabled={busy}
+                                    type="password"
+                                    placeholder='Şifre Tekrarı'
+                                    {...register("password2", { required: true })}
+                                />
+
+                                <FormFieldError state={!!errors.password2} message={errors.password2?.message} />
+
+                            </FormFieldWrapper>
+
+                        </div>
+
+                        <IconButton
+                            icon={<HiLogin color="white" size={"16px"} />}
+                            title="Kayıt ol"
+                            // disabled={busy}
+                            twClasses='w-full'
+                            fn={() => null} />
+
+
+                    </form>
+
+                    <div className="flex flex-col mt-8 gap-6">
+                        <p className="text-center">
+                            Zaten bir Affitime hesabın var mı?
+                            <Link className='pl-2 text-blue-500' href={AppRoutes.SIGNIN}>Giriş yap</Link>
+                        </p>
+
+                    </div>
 
                 </div>
-
-                <form className='flex flex-col gap-8' onSubmit={handleSubmit}>
-                    <input
-                        className='disabled:bg-slate-200 block w-full 
-                        rounded-md border-gray-300 shadow-sm 
-                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                        disabled={busy}
-                        type="email"
-                        name="email"
-                        id="email"
-                        placeholder='Email' />
-
-                    {!isVendor ? <input
-                        className='disabled:bg-slate-200 block w-full 
-                        rounded-md border-gray-300 shadow-sm 
-                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                        disabled={busy}
-                        type="text"
-                        name="username"
-                        id="username"
-                        placeholder='Kullanici ismi' />
-                        : <>
-                            <input
-                                className='disabled:bg-slate-200 block w-full 
-                                    rounded-md border-gray-300 shadow-sm 
-                                 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                disabled={busy}
-                                type="text"
-                                name="brand"
-                                id="brand"
-                                placeholder='Firma ismi' />
-
-                            <input
-                                className='disabled:bg-slate-200 block w-full 
-                                    rounded-md border-gray-300 shadow-sm 
-                                 focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                disabled={busy}
-                                type="text"
-                                name="website"
-                                id="website"
-                                placeholder='Website adresi' />
-                        </>
-                    }
-                    <input
-                        className='disabled:bg-slate-200 block w-full 
-                        rounded-md border-gray-300 shadow-sm 
-                        focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                        disabled={busy}
-                        type="password"
-                        name="password"
-                        id="password"
-                        placeholder='Password' />
-
-                    <IconButton
-                        icon={<HiPlus color="white" size={"16px"} />}
-                        title="Kayıt Ol"
-                        disabled={busy}
-                        fn={() => null} />
-
-                </form>
-
-                <Link className='text-center text-blue-600' href={AppRoutes.SIGNIN}>Giris Yap</Link>
-
-                <div>
-                    <ErrorMessage
-                        state={!!error}
-                        message={error} />
-                </div>
-
-                {busy ? <div className="fixed inset-0 mt-16 backdrop-blur-nope-sm bg-black/10 flex justify-center items-center">
-                    <Loader scale={0.9} />
-                </div> : null}
-
             </div>
         </div>
     )

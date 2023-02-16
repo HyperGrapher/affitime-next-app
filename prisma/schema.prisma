@@ -124,6 +124,7 @@ model Vendor {
   user          User           @relation(fields: [userId], references: [id])
   userId        String         @unique
   brand         String         @unique()
+  phone         String?
   website       String         @unique()
   image         String?        @db.Text
   products      Product[]
@@ -142,6 +143,7 @@ model Partner {
   user          User           @relation(fields: [userId], references: [id])
   userId        String         @unique
   username      String         @unique
+  phone         String?
   image         String?        @db.Text
   links         Link[]
   createdAt     DateTime       @default(now())

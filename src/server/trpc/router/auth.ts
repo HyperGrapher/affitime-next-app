@@ -32,29 +32,72 @@ export const authRouter = router({
   createUser: publicProcedure
     .input(
       z.object({
-        email: z.string().email(),
-        password: z.string().min(8),
-        username: z.string().min(5),
-        brand: z.string().min(5),
-        website: z.string().url(),
+        email: z.string().trim().email(),
+        password: z.string().trim().min(8),
+        password2: z.string().trim().min(8),
+        username: z.string().trim().min(5),
+        brand: z.string().trim().min(5),
+        website: z.string().trim().url(),
+        phone: z.string().trim().min(10),
         role: z.enum(["VENDOR", "PARTNER"]),
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { email, password, role, username, brand, website } = input;
-
-      const isExist = await ctx.prisma.user.findUnique({
+      const { email, password, role, username, brand, website, phone } = input;
+      console.log({ email, password, role, username, brand, website, phone });
+      const isEmailExist = await ctx.prisma.user.findUnique({
         where: {
           email,
         },
       });
 
-      if (isExist)
+      if (isEmailExist)
         throw new TRPCError({
           message: "Bu email zaten kayıtlı",
           code: "CONFLICT",
           cause: "Email Conflict",
         });
+
+      if (role === UserRoles.VENDOR) {
+        const isBrandExist = await ctx.prisma.vendor.findUnique({
+          where: {
+            brand,
+          },
+        });
+
+        if (isBrandExist)
+          throw new TRPCError({
+            message: "Bu firma zaten kayıtlı",
+            code: "CONFLICT",
+            cause: "Brand Conflict",
+          });
+
+        const isWebsiteExist = await ctx.prisma.vendor.findUnique({
+          where: {
+            website,
+          },
+        });
+
+        if (isWebsiteExist)
+          throw new TRPCError({
+            message: "Bu website zaten kayıtlı",
+            code: "CONFLICT",
+            cause: "Website Conflict",
+          });
+      } else if (role === UserRoles.PARTNER) {
+        const isUsernameExist = await ctx.prisma.partner.findUnique({
+          where: {
+            username,
+          },
+        });
+
+        if (isUsernameExist)
+          throw new TRPCError({
+            message: "Bu kullanici ismi zaten kayıtlı",
+            code: "CONFLICT",
+            cause: "Username Conflict",
+          });
+      }
 
       try {
         const salt = await bcrypt.genSalt(10);
@@ -70,14 +113,19 @@ export const authRouter = router({
           },
         });
 
+        console.log("userId", user.id);
+
         if (role === UserRoles.VENDOR) {
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
               brand,
               website,
+              phone,
             },
           });
+
+          console.log({ vendor_id: vendor.id });
 
           await ctx.prisma.user.update({
             where: { id: user.id },
@@ -90,6 +138,7 @@ export const authRouter = router({
             data: {
               userId: user.id,
               username,
+              phone,
             },
           });
 
