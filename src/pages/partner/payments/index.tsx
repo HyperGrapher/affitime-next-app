@@ -36,7 +36,7 @@ const Payments = () => {
                         Ödemelerim
                     </h1>
                     <small className="text-slate-400 text-sm">
-                        Ödeme detaylarınızı bu sayfada görüntüleyebilirsiiniz.
+                    Ödeme detaylarını bu sayfada görüntüleyebilirsin.
                         <Link href={AppRoutes.VENDOR_LINKS}> </Link>
                     </small>
                 </div>

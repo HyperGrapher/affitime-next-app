@@ -45,7 +45,7 @@ const Notifications: NextPage = () => {
                                 Olusturulan affiliate linklerini onaylayın yada iptal edin.
                             </small>
                         ) : <small>
-                            Bildiriminiz bulunmuyor
+                            Bildirimin bulunmuyor.
                         </small>}
                     </div>
 

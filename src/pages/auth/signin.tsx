@@ -69,7 +69,8 @@ const Signin: NextPage = (): JSX.Element => {
 
         if (signinResult?.error) {
             setBusy(false)
-            notifyError('Kullanici bilgiliresi hatali')
+            notifyError('E-mail adresiniz veya şifreniz yanlış')
+            setValue('password', "")
         }
         else {
             router.replace(AppRoutes.VENDOR_DASHBOARD)

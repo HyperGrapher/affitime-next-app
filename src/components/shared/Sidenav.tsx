@@ -110,7 +110,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm">Vendor Dashboard</span>
+                                <span className="font-medium text-sm">Dashboard</span>
 
                             </Link>
                         </li>
@@ -281,7 +281,7 @@ const Sidenav = () => {
                                              text-violet-50 bg-violet-600 rounded-full'
                                     aria-hidden='true' />
 
-                                <span className="font-medium text-sm">Partner Dashboard</span>
+                                <span className="font-medium text-sm">Dashboard</span>
 
                             </Link>
                         </li>

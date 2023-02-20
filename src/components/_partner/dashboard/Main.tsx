@@ -23,11 +23,11 @@ const Main = () => {
             <PageCard>
                 <Title>Affiliate Linkleri</Title>
                 <hr />
-                <section className="mt-4 flex justify-between items-center xs:flex-wrap md:flex-wrap gap-4">
+                <section className="mt-4 flex justify-between items-center flex-wrap xl:flex-nowrap gap-4">
 
                     <SqrBox
                         title={'Linkler'}
-                        desc={"Vendor affiliate link sayısı"}
+                        desc={"Affiliate link sayısı"}
                         info={linkStats?.all ?? "0"}
 
                     />
@@ -35,7 +35,7 @@ const Main = () => {
 
                     <SqrBox
                         title={'Onay Bekleyen'}
-                        desc={"Aktif link sayısı"}
+                        desc={"Onay Bekleyen link sayısı"}
                         info={linkStats?.awaiting ?? "0"}
 
                     />
@@ -47,8 +47,8 @@ const Main = () => {
                     />
 
                     <SqrBox
-                        title={'Rededilen'}
-                        desc={"Rededlen link sayısı"}
+                        title={'Reddedilen'}
+                        desc={"Reddedilen link sayısı"}
                         info={linkStats?.refused ?? "0"}
 
                     />
@@ -69,7 +69,7 @@ const Main = () => {
             <PageCard>
                 <Title>Link Tıklamaları</Title>
                 <hr />
-                <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
+                <section className="mt-4 flex justify-between flex-wrap xl:flex-nowrap gap-4">
 
                     <SqrBox
                         title={'Toplam'}
@@ -88,7 +88,7 @@ const Main = () => {
 
                     <SqrBox
                         title={'Geçersiz'}
-                        desc={"Bot ve partner tıklamaları"}
+                        desc={"Bot tıklamaları"}
                         info={calculated?.invalid ?? "0"}
 
                     />

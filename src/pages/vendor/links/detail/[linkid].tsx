@@ -188,7 +188,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                             "font-medium text-base  pl-2 mb-4"
                         )}
                     >
-                        Tıklama Ödemeleri
+                        Tıklama Detayları
                     </h3>
 
                     <section className='flex items-center justify-between px-2'>

@@ -70,7 +70,7 @@ const DashboardVendor = () => {
                         Merhaba, {session?.email}
                     </h1>
                     <small className="text-slate-400 text-sm">
-                        Tüm affiliate bilgilerinizi bu sayfada bir arada görüntüleyebilirsiiniz.
+                        Tüm affiliate bilgilerini bu sayfada görüntüleyebilirsin
                     </small>
                 </div>
 

@@ -26,7 +26,7 @@ const Main = () => {
 
                     <SqrBox
                         title={'Linkler'}
-                        desc={"Vendor affiliate link sayısı"}
+                        desc={"Affiliate link sayısı"}
                         info={linkStats?.all ?? "0"}
 
                     />
@@ -34,7 +34,7 @@ const Main = () => {
 
                     <SqrBox
                         title={'Onay Bekleyen'}
-                        desc={"Aktif link sayısı"}
+                        desc={"Onay bekleyen link sayısı"}
                         info={linkStats?.awaiting ?? "0"}
 
                     />
@@ -46,8 +46,8 @@ const Main = () => {
                     />
 
                     <SqrBox
-                        title={'Rededilen'}
-                        desc={"Rededlen link sayısı"}
+                        title={'Reddedilen'}
+                        desc={"Reddedilen link sayısı"}
                         info={linkStats?.refused ?? "0"}
 
                     />

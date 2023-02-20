@@ -249,8 +249,8 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
                 {edit ? null : <div className='mb-6 ml-2 w-1/2 md:w-1/3'>
                     <p className="text-slate-400 text-sm font- leading-tight">
-                        Aşağıdaki formu doldurarak Kampanya ürünü olusturun.
-                        Her bir ürün için affiliate isteği geldiginde bildirim yollanacak.
+                        Aşağıdaki formu doldurarak kampanyanı oluştur. Her ürün için
+                        affiliate isteği geldiğinde bildirim alacaksın.
                     </p>
                 </div>}
 
