@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
-import Logo from '../../assets/logo-sm.png';
+// import Logo from '../../assets/logo-sm.png';
+import LogoAFT from '../../assets/aft-and-logo-sm.png';
 import Link from "next/link";
 import Image from "next/image";
 import classNames from '../../utils/classnames';
@@ -17,7 +18,7 @@ const NonAuthNavbar = () => {
         )}>
             <div className="flex items-center justify-between container mx-auto px-0 lg:px-8">
                 <Link href="/">
-                    <Image width={125} src={Logo} alt="Affitime Logo" />
+                    <Image width={125} src={LogoAFT} alt="Affitime Logo" />
                 </Link>
 
                 <div className="hidden md:flex space-x-4 lg:space-x-10 ">

@@ -91,9 +91,9 @@ const Signin: NextPage = (): JSX.Element => {
                 md:ml-auto w-full py-8 md:py-8 mt-8 md:mt-0 px-4 xl:px-24 min-w-[356]"
                 >
                     <div className="text-center">
-                        <h2 className="text-gray-900 text-xl mb-1 font-medium title-font">Hoşgeldiniz</h2>
+                        <h2 className="text-gray-900 text-xl mb-1 font-medium title-font">Hoş geldin</h2>
                         <p className="text-slate-400 text-sm">
-                            Hesap bilgilerinizi girerek giriş yapabilirsiniz
+                        Hesap bilgilerini girerek giriş yapabilirsin
                         </p>
                     </div>
 
@@ -172,8 +172,8 @@ const Signin: NextPage = (): JSX.Element => {
                         </button> */}
 
                         <p className="text-center">
-                            Affitime hesabınız yok mu?
-                            <Link className='pl-2 text-blue-500' href={AppRoutes.SIGNUP}>Kayıt Ol</Link>
+                            affitime hesabın yok mu?
+                            <Link className='pl-2 text-blue-500' href={AppRoutes.SIGNUP}>Hemen kayıt ol</Link>
                         </p>
 
                     </div>

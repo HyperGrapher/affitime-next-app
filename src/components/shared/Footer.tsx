@@ -3,7 +3,9 @@ import Image from "next/image"
 import Link from "next/link"
 import FLogo from '../../assets/footer/logo-footer.png'
 import MSStartup from '../../assets/footer/ms-startup-badge.png'
-import Partners from '../../assets/footer/partners.png'
+import partnerMicro from '../../assets/footer/partner-microsoft.png'
+import partnerPay from '../../assets/footer/partner-paytr.png'
+import partnerSend from '../../assets/footer/partner-sendpulse.png'
 import SocFB from '../../assets/footer/social-facebook.png'
 import SocIns from '../../assets/footer/social-instagram.png'
 import SocLinkd from '../../assets/footer/social-linkedin.png'
@@ -23,7 +25,30 @@ const Footer = () => {
 
                 <div className="space-y-4">
                     <b className="text-slate-800">İş Ortaklarımız</b>
-                    <Image width={300} src={Partners} alt="logo" />
+                    <div className="space-x-2">
+                        <a className="inline-block"
+                            href="https://www.microsoft.com/"
+                            target="_blank"
+                            rel="noreferrer">
+                            <Image height={20} src={partnerMicro} alt="logo" />
+                        </a>
+
+                        <a className="inline-block"
+                            href="https://www.paytr.com/"
+                            target="_blank"
+                            rel="noreferrer">
+                            <Image height={20} src={partnerPay} alt="logo" />
+                        </a>
+
+                        <a className="inline-block translate-y-1"
+                            href="https://sendpulse.com/"
+                            target="_blank"
+                            rel="noreferrer">
+                            <Image height={30} src={partnerSend} alt="logo" />
+                        </a>
+
+
+                    </div>
                 </div>
 
             </section>
@@ -42,9 +67,27 @@ const Footer = () => {
                     <b className="text-slate-800">Sosyal Ağlar</b>
                     <div className="flex space-x-2 mt-2 justify-betweens">
 
-                        <Image width={24} src={SocFB} alt="facebook social" />
-                        <Image width={24} src={SocIns} alt="instagram social" />
-                        <Image width={24} src={SocLinkd} alt="linkedin social" />
+                        <a className="#"
+                            href="https://www.facebook.com/affitimecom/"
+                            target="_blank"
+                            rel="noreferrer">
+                            <Image width={24} src={SocFB} alt="facebook social" />
+
+                        </a>
+                        <a className="#"
+                            href="https://www.instagram.com/affitimecom/"
+                            target="_blank"
+                            rel="noreferrer">
+                            <Image width={24} src={SocIns} alt="instagram social" />
+
+                        </a>
+                        <a className="#"
+                            href="https://www.linkedin.com/company/affitime/"
+                            target="_blank"
+                            rel="noreferrer">
+
+                            <Image width={24} src={SocLinkd} alt="linkedin social" />
+                        </a>
                     </div>
                 </div>
             </section>

@@ -96,6 +96,13 @@ export const VendorDashboardRouter = router({
     // console.log({ vendorId });
     console.log("\n");
 
+    // delete bots
+    await ctx.prisma.visit.deleteMany({
+      where: {
+        ipapi: null
+      }
+    })
+
     const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
@@ -114,8 +121,8 @@ export const VendorDashboardRouter = router({
     const valid = visits.filter((x) => !x.dubious);
     const invalid = visits.filter((x) => x.dubious);
 
-    const x = groupBy(unpaid, "link.product.id");
-    console.log(x);
+    // const x = groupBy(unpaid, "link.product.id");
+    // console.log(x);
 
     const paidLinks = paid.map((x) => x.link);
     const unpaidLinks = unpaid.map((x) => x.link);
@@ -140,15 +147,15 @@ export const VendorDashboardRouter = router({
       return res;
     }, 0);
 
-    console.log({
-      unpaidTotal,
-      paidTotal,
-      unpaid: unpaidLinks.length,
-      paid: paidLinks.length,
-      total: visits.length,
-      valid: valid.length,
-      invalid: invalid.length,
-    });
+    // console.log({
+    //   unpaidTotal,
+    //   paidTotal,
+    //   unpaid: unpaidLinks.length,
+    //   paid: paidLinks.length,
+    //   total: visits.length,
+    //   valid: valid.length,
+    //   invalid: invalid.length,
+    // });
 
     return {
       unpaidTotal: String(unpaidTotal),

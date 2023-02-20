@@ -34,19 +34,22 @@ const Faq = () => {
                 <AccordItem
                     id="3"
                     title="Yıllık faturalandırılan üyeliğimi taksitlendirebilir miyim?"
-                    desc={<p>Harcamanızı affitime ile anlaşmalı bankaların kredi kartlarına 12 taksit olarak taksitlendirebilirsiniz.
-                    </p>} />
+                    desc={<p>Harcamanı affitime ile anlaşmalı bankaların kredi kartlarına 12 taksit olarak taksitlendirebilirsin </p>} />
 
                 <AccordItem
                     id="3"
                     title="Fatura gönderecek misiniz?"
-                    desc={<p>Ödeme işleminiz gerçekleştikten sonra en kısa süre içinde sistemde kayıtlı e-posta adresinize e-arşiv faturanız gönderilecektir.
+                    desc={<p>Ödeme işlemin gerçekleştikten sonra en kısa süre içinde sistemde kayıtlı e-posta adresine affitime’a kaydolurken belirttiğin firma bilgilerine göre düzenlenen e-arşiv
+                        faturan gönderilecektir.
                     </p>} />
 
                 <AccordItem
                     id="3"
                     title="Kredi kartı bilgilerimi saklıyor musunuz?"
-                    desc={<p>Kredi kartı bilgileriniz affitime tarafından kesinlikle saklanmamaktadır. Tüm ödeme işlemleri BDDK tarafından ödeme sistemleri lisansı verilmiş olan PAYTR tarafından gerçekleştirilir. Ödeme ve güvenlik ile ilgili sorularınızla ilgili bizimle her zaman iletişime geçebilirsiniz.</p>} />
+                    desc={<p>Kredi kartı bilgilerin affitime tarafından kesinlikle saklanmamaktadır. 
+                        Tüm ödeme işlemleri BDDK tarafından ödeme sistemleri lisansı verilmiş olan PAYTR
+                        tarafından gerçekleştirilir. Ödeme ve güvenlik ile ilgili sorularınızla ilgili bizimle her zaman
+                        iletişime geçebilirsin.</p>} />
 
             </section>
         </div>

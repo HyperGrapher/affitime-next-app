@@ -18,6 +18,13 @@ export const linkRouter = router({
       const { id } = input;
       const { role } = ctx.session;
 
+      // delete bots
+      await ctx.prisma.visit.deleteMany({
+        where: {
+          ipapi: null
+        }
+      })
+
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
       const link = await ctx.prisma.link.findUnique({

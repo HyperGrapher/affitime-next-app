@@ -8,6 +8,10 @@ import Link from "next/link";
 import MacMock from '../assets/home/mac-mockup.png';
 import { FaqIndex } from "../components/shared/Faq"
 import { AppRoutes } from "../config/appRoutes";
+import { TbHeartHandshake } from "react-icons/tb";
+import { GiReceiveMoney } from "react-icons/gi";
+import { BiLineChart } from "react-icons/bi";
+import Balancer from "react-wrap-balancer";
 
 
 const Home: NextPage = () => {
@@ -24,16 +28,18 @@ const Home: NextPage = () => {
       <div className="container mx-auto flex px-8 py-24 md:flex-row flex-col items-center" >
         <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center" >
           <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">
-            affitime ile birden çok affiliate marketing kampanyası oluştur
 
-            <br className="hidden lg:inline-block" />ve affiliatelerini yönet.
+            <Balancer>
+              affitime ile birden çok affiliate marketing kampanyası oluştur
+              ve affiliatelerini yönet.
+            </Balancer>
 
           </h1>
-          <p className="mb-8 leading-relaxed text-lg">affitime marka bilinirliğini,
-            satışlarını reklam maliyetleri olmadan arttırmanı sağlar.
-            affitime ile affiliate marketing kampanyaları oluşturabilir bu kampanyalar
-            için hem yeni affiliatelere ulaşabilir hem kendi çalışmak
-            istediğin affiliateleri kampanyana dahil edebilirsin.</p>
+          <p className="mb-8 leading-relaxed text-xl">
+            affitime ile firmanın satışlarını arttır.
+            <br />
+            affitime ile gelir elde et.
+          </p>
           <div className="flex justify-center" >
 
             <Link href={AppRoutes.SIGNUP}
@@ -67,13 +73,13 @@ const FooterTop = () => {
 
     <div className="flex flex-col items-center space-y-8 py-8">
       <h4 className="z-10 font-bold text-3xl text-center text-white">
-        Affiliate marketing programınızı şimdi başlatın.
+      Affiliate marketing programını şimdi başlat
       </h4>
 
       <p className="text-lg text-center text-white/70">
         affitime affiliatelerini ve raporları yönetme, teklifleri duyurma ve ödeme yapma imkanı verecektir.
         <br />
-        Performanstan ödün vermeden basit ve işlevsel kontrol paneli ile programınızı şimdi başlatın.
+        Performanstan ödün vermeden basit ve işlevsel kontrol paneli ile programını şimdi başlat.
       </p>
 
       <Link href={AppRoutes.PRICING}
@@ -102,8 +108,8 @@ const Feat2 = () => {
   return (<section className="bg-violet-600 text-white relative  bg-gradient-to-r from-teal-800 to-green-500">
     <div className="container px-5 py-24 mx-auto" >
       <div className="flex flex-col text-center w-full mb-20" >
-        <h3 className="z-10  sm:text-3xl text-2xl font-medium title-font text-white/80">Affitime ile neler yapabilirsiniz?</h3>
-        </div>
+        <h3 className="z-10  sm:text-3xl text-2xl font-medium title-font text-white/80">affitime ile neler yapabilirsiniz?</h3>
+      </div>
       <main className="flex flex-wrap justify-center gap-2 lg:gap-24 -m-4 mx-auto bg-red-100/20z" >
         <article className="flex flex-col gap-4">
 
@@ -118,7 +124,7 @@ const Feat2 = () => {
             <b className="text-slate-200 font-bold text-3xl">02</b>
             <p className="z-10 text-white/70 w-[300px]">
               Fraud Protection: affitime kendi geliştirdiği algoritmalarla sahte tıklamaların önüne geçer.
-              Sadece Türkiye’de bulunan ve VPN kullanmayan kullanıcıların yapmış olduğu bir tıklama geçerlidir.
+              Sadece Türkiye’de bulunan ve gerçek kullanıcıların yapmış olduğu tek tıklama geçerli sayılır.
             </p>
           </section>
 
@@ -138,7 +144,7 @@ const Feat2 = () => {
           <section className="flex space-x-4">
             <b className="text-slate-200 font-bold text-3xl">04</b>
             <p className="z-10 text-white/70 w-[300px]">
-              Tek tıkla ödeme: Afffiliatelere yapacağın ödemeleri platform üzerinden tek seferde öde.
+              Tek tıkla ödeme: Affiliatelere yapacağın ödemeleri platform üzerinden tek seferde öde.
             </p>
           </section>
 
@@ -150,7 +156,7 @@ const Feat2 = () => {
 
     <div className="absolute left-0 top-0 z-0">
       <svg width="141" height="157" viewBox="0 0 141 157" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <circle cx="41.5" cy="57.5" r="99.5" fill="#e51fec" />
+        <circle cx="41.5" cy="57.5" r="99.5" fill="#46cf6f" />
       </svg>
 
     </div>
@@ -172,7 +178,7 @@ const Feat = () => {
     <section className="text-gray-600 body-font">
       <div className="container px-5 py-24 mx-auto" >
         <div className="flex flex-col text-center w-full mb-20" >
-          <h3 className="z-10 sm:text-3xl text-2xl font-medium title-font text-gray-900">Neden Affitime?</h3>
+          <h3 className="z-10 sm:text-3xl text-2xl font-medium title-font text-gray-900">Neden affitime?</h3>
           <p className="text-lg mt-2">affitime marka bilinirliğini, satışlarını reklam maliyetleri olmadan arttırmanı sağlar.
             <br />
             affitime ile affiliate marketing kampanyaları oluşturabilir bu kampanyalar için
@@ -185,9 +191,7 @@ const Feat = () => {
             <div className="flex rounded-lg h-full bg-gray-200 p-8 flex-col" >
               <div className="flex items-center mb-3" >
                 <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-indigo-500 text-white flex-shrink-0" >
-                  <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"></path>
-                  </svg>
+                  <GiReceiveMoney />
                 </div>
                 <h2 className="text-gray-900 text-lg title-font font-medium">Reklam maliyeti yok</h2>
               </div>
@@ -204,10 +208,7 @@ const Feat = () => {
             <div className="flex rounded-lg h-full bg-gray-200 p-8 flex-col" >
               <div className="flex items-center mb-3" >
                 <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-indigo-500 text-white flex-shrink-0" >
-                  <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
-                    <circle cx="12" cy="7" r="4"></circle>
-                  </svg>
+                  <BiLineChart />
                 </div>
                 <h2 className="text-gray-900 text-lg title-font font-medium">Marka bilinirliğini arttır</h2>
               </div>
@@ -224,11 +225,7 @@ const Feat = () => {
             <div className="flex rounded-lg h-full bg-gray-200 p-8 flex-col" >
               <div className="flex items-center mb-3" >
                 <div className="w-8 h-8 mr-3 inline-flex items-center justify-center rounded-full bg-indigo-500 text-white flex-shrink-0" >
-                  <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                    <circle cx="6" cy="6" r="3"></circle>
-                    <circle cx="6" cy="18" r="3"></circle>
-                    <path d="M20 4L8.12 15.88M14.47 14.48L20 20M8.12 8.12L12 12"></path>
-                  </svg>
+                  <TbHeartHandshake height={'32px'} width={'32px'} />
                 </div>
                 <h2 className="text-gray-900 text-lg title-font font-medium">Marka sadakati</h2>
               </div>

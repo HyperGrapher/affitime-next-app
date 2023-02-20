@@ -22,7 +22,7 @@ const Main = () => {
             <PageCard>
                 <Title>Affiliate Linkleri</Title>
                 <hr />
-                <section className="mt-4 flex justify-between items-center xs:flex-wrap md:flex-wrap gap-4">
+                <section className="mt-4 flex justify-between items-center flex-wrap xl:flex-nowrap gap-4">
 
                     <SqrBox
                         title={'Linkler'}
@@ -68,7 +68,7 @@ const Main = () => {
             <PageCard>
                 <Title>Link Tıklamaları</Title>
                 <hr />
-                <section className="mt-4 flex justify-between xs:flex-wrap md:flex-wrap gap-4">
+                <section className="mt-4 flex justify-between flex-wrap xl:flex-nowrap gap-4">
 
                     <SqrBox
                         title={'Toplam'}
