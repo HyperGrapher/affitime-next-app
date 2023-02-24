@@ -55,6 +55,7 @@ const SignUp: NextPage = (): JSX.Element => {
     const createUser = trpc.auth.createUser.useMutation()
     const [isVendor, setIsVendor] = useState(true)
     const [busy, setBusy] = useState(false)
+    const [accept, setAccept] = useState(false)
     const router = useRouter()
     const client = new QueryClient()
     client.invalidateQueries()
@@ -301,10 +302,18 @@ const SignUp: NextPage = (): JSX.Element => {
 
                         </div>
 
+                        <div className="scales space-x-2">
+                            <input
+                                onClick={() => setAccept(prev => !prev)}
+                                type="checkbox" className="scales" name="accept" id="accept" checked={accept} />
+                            <label className="text-sm" htmlFor="accept">
+                                <Link className="text-blue-500" href={AppRoutes.LEGAL}>Kullanım koşullarını</Link> kabul ediyorum
+                            </label>
+                        </div>
                         <IconButton
                             icon={<HiLogin color="white" size={"16px"} />}
                             title="Kayıt ol"
-                            // disabled={busy}
+                            disabled={!accept}
                             twClasses='w-full'
                             fn={() => null} />
 
