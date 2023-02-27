@@ -12,6 +12,7 @@ import useNotificationStore from '../../store/notifications.store'
 import classNames from '../../utils/classnames'
 import { trpc } from "../../utils/trpc"
 import { useEffect } from "react"
+import { pathsToExludeSidenav } from "../../config/uiExcludes"
 
 const Sidenav = () => {
 
@@ -47,20 +48,13 @@ const Sidenav = () => {
     }, [nv, vp])
 
 
-
-    const pathsToExlude = [
-        '/r/',
-        '/blog',
-        '/pricing',
-    ]
-    for (const excluded of pathsToExlude) {
+    if (!session) return null
+  
+    for (const excluded of pathsToExludeSidenav) {
 
         if (pathname.startsWith(excluded)) return null
 
     }
-
-
-    if (!session) return null
 
     return session.role === UserRoles.VENDOR ? (
         <nav

@@ -94,7 +94,7 @@ export const VendorDashboardRouter = router({
   calculateLinksAndPayments: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
     // console.log({ vendorId });
-    console.log("\n");
+    // console.log("\n");
 
     // delete bots
     await ctx.prisma.visit.deleteMany({

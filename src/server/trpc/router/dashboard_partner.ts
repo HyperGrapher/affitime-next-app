@@ -92,6 +92,13 @@ export const PartnerDashboardRouter = router({
   calculateLinksAndPayments: partnerProcedure.query(async ({ ctx }) => {
     const { partnerId } = ctx.session;
 
+    // delete bots
+    await ctx.prisma.visit.deleteMany({
+      where: {
+        ipapi: null,
+      },
+    });
+
     const visits = await ctx.prisma.visit.findMany({
       where: {
         partner_id: partnerId,

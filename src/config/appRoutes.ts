@@ -5,7 +5,11 @@ export enum AppRoutes {
   SIGNUP = "/auth/signup",
   LEGAL = "/rules-and-policies",
   CONTACT = "/contact-us",
+  BLOG = "/blog",
   PRICING = "/pricing",
+  PAYWALL = "/payments/payment-required",
+  PAYPAGE = "/payments/purchase",
+  
   PUBLIC_PRODUCT_DETAIL = "/products/detail",
   // VENDOR
   VENDOR_DASHBOARD = "/vendor/dashboard",

@@ -2,6 +2,7 @@
 import { Tab } from '@headlessui/react';
 import type { GetServerSideProps } from "next";
 import { getSession, useSession } from "next-auth/react";
+import Head from "next/head";
 import { useEffect, useState } from "react";
 import Main from "../../../components/_vendor/dashboard/Main";
 import TabItem from "../../../components/tab-item/TabItem";
@@ -9,11 +10,20 @@ import { AppRoutes } from '../../../config/appRoutes';
 import { USER_IP_SESSION_STORAGE } from "../../../config/constants";
 import { UserRoles } from '../../../interface/auth.interface';
 import { IpSchema } from "../../../interface/zod.schema";
+import { checkTrial } from '../../../utils/checkTrial';
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
-import Head from "next/head";
+// import dynamic from 'next/dynamic'
 
+// const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
+//     ssr: false,
+//   })
+  
+//   const DynamicRemaingTrialModal = dynamic(() => import('../../../components/modals/TrialRemaining'), {
+//     ssr: false,
+//   })
+  
 
 const DashboardVendor = () => {
 
@@ -68,7 +78,7 @@ const DashboardVendor = () => {
                         Merhaba, {session?.email}
                     </h1>
                     <small className="text-slate-400 text-sm">
-                    Tüm affiliate bilgilerinizi bu sayfada görüntüleyebilirsiniz
+                        Tüm affiliate bilgilerinizi bu sayfada görüntüleyebilirsiniz
                     </small>
                 </div>
 
@@ -95,8 +105,6 @@ const DashboardVendor = () => {
 
 export default DashboardVendor
 
-
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)
@@ -114,6 +122,17 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
+
+
+    const isTrialEnded = await checkTrial(session)
+    if (isTrialEnded) return {
+        redirect: {
+            destination: AppRoutes.PAYWALL,
+            permanent: false
+        }
+    }
+
+
 
     return { props: {} }
 }
