@@ -107,7 +107,11 @@ const SignUp: NextPage = (): JSX.Element => {
                     console.log(variables)
                     console.log((signinResult?.ok))
 
-                    if (signinResult?.ok) router.replace('/vendor/dashboard')
+                    if (signinResult?.ok) {
+
+                        if(data?.partner_id) router.replace(`${AppRoutes.WELCOME}?reg=true`)
+                        else router.replace(AppRoutes.PARTNER_DASHBOARD)
+                    }
 
                 },
                 onError(error) {

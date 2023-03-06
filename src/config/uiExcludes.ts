@@ -6,5 +6,6 @@ export const pathsToExludeSidenav = [
     AppRoutes.CONTACT,
     AppRoutes.PAYWALL,
     AppRoutes.PAYPAGE,
+    AppRoutes.WELCOME,
 
 ]

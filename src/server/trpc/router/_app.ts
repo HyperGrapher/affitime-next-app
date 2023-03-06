@@ -9,10 +9,12 @@ import { VendorDashboardRouter } from "./dashboard_vendor";
 import { visitRouter } from "./visit";
 import { PaymentsRouter } from "./payments";
 import { PartnerDashboardRouter } from "./dashboard_partner";
+import { partnerRouter } from "./partner";
 
 export const appRouter = router({
   auth: authRouter,
   user: userRouter,
+  partner: partnerRouter,
   link: linkRouter,
   product: productRouter,
   notifications: notificationRouter,

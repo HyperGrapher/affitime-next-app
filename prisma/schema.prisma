@@ -151,10 +151,10 @@ model Vendor {
   image         String?        @db.Text
   products      Product[]
   links         Link[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
   notifications Notification[]
   visits        Visit[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@index([id, userId])
   @@map("user_vendor")
@@ -168,10 +168,12 @@ model Partner {
   phone         String?
   image         String?        @db.Text
   links         Link[]
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
   notifications Notification[]
   visits        Visit[]
+  interests     Json?
+  socials       Json?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
 
   @@index([id, userId])
   @@map("user_partner")
@@ -367,3 +369,26 @@ model Faq {
   @@index([id])
   @@map("faq")
 }
+
+// enum PollType {
+//   CATEGORY
+// }
+
+// model PollItem {
+//   id        Int      @id @default(autoincrement())
+//   poll_type PollType
+//   name      String
+//   checked   Boolean
+
+//   @@index([id])
+//   @@map("poll_item")
+// }
+
+// model Poll {
+//   id        Int    @id @default(autoincrement())
+//   vendor    Vendor @relation(fields: [vendor_id], references: [id])
+//   vendor_id String
+
+//   @@index([id])
+//   @@map("poll")
+// }
