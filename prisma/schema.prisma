@@ -52,6 +52,8 @@ enum PackageType {
   BASIC
   MEDIUM
   ADVANCED
+  TRIAL
+  FREE
   OTHER
 }
 
@@ -66,19 +68,28 @@ model Session {
   @@map("session")
 }
 
-model Payment {
-  id          String       @id @default(cuid())
-  userId      String
-  amount      Float
-  packageType PackageType? @default(BASIC)
-  user        User         @relation(fields: [userId], references: [id])
-  error       Boolean      @default(false)
-  errorReason String?
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+model PlanPayment {
+  id             String       @id @default(cuid())
+  merchant_oid   String       @unique()
+  token          String // salted paytr token in base64
+  user           User         @relation(fields: [userId], references: [id])
+  userId         String
+  user_basket    String
+  user_phone     String
+  user_name      String
+  user_address   String
+  payment_amount Float
+  packageType    PackageType? @default(TRIAL)
+  validTill      DateTime?
+  annual         Boolean      @default(false)
+  success        Boolean?
+  seen           Boolean?     @default(false)
+  errorReason    String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
 
   @@index([id, userId])
-  @@map("payment")
+  @@map("plan_payment")
 }
 
 model Taxinfo {
@@ -103,30 +114,31 @@ model Taxinfo {
 }
 
 model User {
-  id            String       @id @default(cuid())
+  id            String        @id @default(cuid())
   fname         String?
   lname         String?
-  email         String       @unique
+  email         String        @unique
   password      String
-  role          Role         @default(PARTNER)
+  role          Role          @default(PARTNER)
   vendor_id     String?
   partner_id    String?
   emailVerified DateTime?
-  image         String?      @db.Text
+  image         String?       @db.Text
   accounts      Account[]
   sessions      Session[]
-  payments      Payment[] // vendor and 
+  plan_payments PlanPayment[] // vendor and 
   taxinfo       Taxinfo?
   vendor        Vendor?
   partner       Partner?
-  active        Boolean      @default(true)
-  trial         Boolean      @default(true)
-  pro           Boolean      @default(false)
-  packageType   PackageType? @default(BASIC)
+  active        Boolean       @default(true)
+  trial         Boolean       @default(true)
+  pro           Boolean       @default(false)
+  packageType   PackageType?  @default(TRIAL)
+  validTill     DateTime? // if pro is true then plan is valid until
   proDetails    Json?
   ipdata        Json?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @updatedAt
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
 
   @@index([id, email])
   @@map("user")

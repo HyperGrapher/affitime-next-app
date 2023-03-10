@@ -125,7 +125,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 
     const isTrialEnded = await checkTrial(session)
-    if (isTrialEnded) return {
+    if (true) return {
         redirect: {
             destination: AppRoutes.PAYWALL,
             permanent: false

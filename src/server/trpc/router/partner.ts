@@ -1,6 +1,6 @@
 import { router, partnerProcedure } from "../trpc";
 import { z } from "zod";
-
+// 137874
 export const partnerRouter = router({
   updateInterests: partnerProcedure
     .input(
@@ -21,7 +21,7 @@ export const partnerRouter = router({
         await ctx.prisma.partner.update({
           where: { id: partnerId },
           data: {
-            interests: { input },
+            interests: [...input],
           },
         });
 

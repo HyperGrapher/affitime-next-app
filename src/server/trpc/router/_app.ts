@@ -10,6 +10,7 @@ import { visitRouter } from "./visit";
 import { PaymentsRouter } from "./payments";
 import { PartnerDashboardRouter } from "./dashboard_partner";
 import { partnerRouter } from "./partner";
+import { purchaseRouter } from "./purchase";
 
 export const appRouter = router({
   auth: authRouter,
@@ -23,6 +24,7 @@ export const appRouter = router({
   dashboardPartner: PartnerDashboardRouter,
   visit: visitRouter,
   payments: PaymentsRouter,
+  purchase: purchaseRouter,
 });
 
 // export type definition of API

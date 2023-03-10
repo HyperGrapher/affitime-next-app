@@ -24,7 +24,7 @@ const IconButton: React.FC<Props> = ({ title, twColorCode = "violet", twClasses,
                     `bg-${twColorCode}-600 hover:bg-${twColorCode}-700 transition`,
                     `flex items-center justify-center flex-nowrap space-x-2`,
                     `shadow-sm hover:shadow-lg rounded-md `,
-                    `py-2 px-8`,
+                    `py-2 px-8 whitespace-nowrap`,
                     `disabled:bg-${twColorCode}-400 disabled:shadow-none`,
                     `aria-disabled:bg-${twColorCode}-400 aria-disabled:shadow-none`,
                     `${twClasses}`

@@ -32,7 +32,7 @@ type FormFieldErrorProps = {
 }
 
 export const FormFieldError: React.FC<FormFieldErrorProps> = ({ state, message }) => state ? (
-    <span className="absolute font-medium bottom-[-25px] text-xs pl-2 text-red-500">
+    <span className="absolute font-medium bottom-[-25px] text-xs pl-2 text-red-500 whitespace-nowrap">
         {message}
     </span>
 

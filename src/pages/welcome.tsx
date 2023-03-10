@@ -12,6 +12,7 @@ import { HiPencil } from 'react-icons/hi';
 import { trpc } from '../utils/trpc';
 import { useRouter } from 'next/router';
 import SocialItem from "../components/poll/SocialItem";
+import {Base64} from 'js-base64';
 
 
 // ? TEST EXIST
@@ -73,7 +74,8 @@ const Welcome: NextPage = () => {
 
     if (truthyCats.length === 0) return notifyError("En az bir kategori seçin!")
 
-
+    const bas = Base64.encode("test text"); 
+    
     updatePartnerInterests.mutate(truthyCats as InterestType[], {
       onSuccess: () => {
         // replace(AppRoutes.PARTNER_DASHBOARD)
