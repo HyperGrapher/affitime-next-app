@@ -4,7 +4,7 @@ import { prisma } from "../../../server/db/client";
 import dayjs from "dayjs";
 
 const callback = async (req: NextApiRequest, res: NextApiResponse) => {
-  const user = await prisma.user.findMany();
+  res.setHeader("Access-Control-Allow-Origin", "*");
 
   const callback = req.body;
   console.log("callback");

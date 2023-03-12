@@ -193,24 +193,47 @@ const PaymentCard: React.FC = () => {
 
                 console.log(postData);
 
+                // axios.post(PAYTR_PLAN_PAYMENT_URL,
+                //     {
+                //         ...postData
+                //     })
+                //     .then(function (response) {
+                //         console.log('success');
+                //         notifySuccessBR("Odeme basarili..")
+                //         console.log(response);
+                //     })
+                //     .catch(function (error) {
+                //         console.log('error');
+                //         notifyError('Odeme hatasi.')
+                //         console.log(error);
+                //     });
+
                 axios.post(PAYTR_PLAN_PAYMENT_URL, {
-                    ...postData
-                })
-                    .then(function (response) {
-                        console.log('success');
-                        notifySuccessBR("Odeme basarili..")
-                        console.log(response);
-                    })
-                    .catch(function (error) {
-                        console.log('error');
-                        notifyError('Odeme hatasi.')
-                        console.log(error);
-                    });
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Access-Control-Allow-Origin": "*",
+                        "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
+                        "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length"
+                    },
+                    data: {
+                        ...postData
+                    }
+                }).then(response => {
+                    console.log('success');
+                    notifySuccessBR("Odeme basarili..")
+                    console.log(response);
+                }).catch(function (error) {
+                    console.log('error');
+                    notifyError('Odeme hatasi.')
+                    console.log(error);
+                });
+
+
 
             },
             onError(error) {
                 console.log(error)
-                notifyError('Hata.')
+                notifyError('DB Hata.')
                 //   replace(AppRoutes.PARTNER_DASHBOARD)
                 // setBusy(false)
             },
