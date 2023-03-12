@@ -7,10 +7,10 @@ import { FormFieldError, FormFieldWrapper } from '../../components/error-message
 import { Container, Stack, TextField, Typography } from '@mui/material';
 import Card from '../../components/credit-card/card/Card';
 import axios from 'axios';
-import { PAYTR } from '../../config/constants';
+import { PAYTR, PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
 import { trpc } from '../../utils/trpc';
 import { Base64 } from 'js-base64';
-import { notifyError } from '../../utils/notifications';
+import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { IpSchema } from '../../interface/zod.schema';
 import getClientIp from '../../utils/getClientIp';
 import { useEffect, useMemo, useState } from "react";
@@ -18,6 +18,7 @@ import { useRouter } from "next/router";
 import classNames from "../../utils/classnames";
 import { zodResolver } from '@hookform/resolvers/zod';
 import { PatternFormat } from 'react-number-format';
+import { IPlanPaymentData } from "../../interface/payments.interface";
 
 
 // axios.post(paytr_post_url, {
@@ -147,11 +148,8 @@ const PaymentCard: React.FC = () => {
     }, [])
 
     const puchase = trpc.purchase.purchasePack.useMutation()
-    const onSubmit: SubmitHandler<ICardFormData> = async (data) => {
-        console.log(data);
-
-    }
-    const doPayment = async () => {
+    const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
+        console.log({ cardData });
 
         setBusy(true)
 
@@ -166,7 +164,7 @@ const PaymentCard: React.FC = () => {
         });
 
 
-        const data = {
+        const datam = {
             user_ip: userIp.ip,
             currency: 'TL',
             user_address: taxInfo.address,
@@ -174,10 +172,41 @@ const PaymentCard: React.FC = () => {
             annual
         }
 
-        puchase.mutate(data, {
-            onSuccess: () => {
+
+        puchase.mutate(datam, {
+            onSuccess: (data) => {
                 // replace(AppRoutes.PARTNER_DASHBOARD)
-                console.log("ok");
+                console.log("ok", data.payment_amount);
+
+
+                const [month, year] = cardData.expiryDate.split('/')
+
+                const postData: IPlanPaymentData = {
+                    ...data,
+                    cc_owner: cardData.cardHolderName,
+                    card_number: cardData.card_number.replaceAll(' ', ''),
+                    expiry_month: month,
+                    expiry_year: year,
+                    cvv: cardData.cvvNumber,
+                    payment_amount: "1290.00",
+                }
+
+                console.log(postData);
+
+                axios.post(PAYTR_PLAN_PAYMENT_URL, {
+                    ...postData
+                })
+                    .then(function (response) {
+                        console.log('success');
+                        notifySuccessBR("Odeme basarili..")
+                        console.log(response);
+                    })
+                    .catch(function (error) {
+                        console.log('error');
+                        notifyError('Odeme hatasi.')
+                        console.log(error);
+                    });
+
             },
             onError(error) {
                 console.log(error)
@@ -190,6 +219,11 @@ const PaymentCard: React.FC = () => {
             }
 
         })
+
+    }
+    const doPayment = async () => {
+
+
 
     }
 

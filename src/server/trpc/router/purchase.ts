@@ -7,7 +7,7 @@ import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
 import { PRICING_ANNUALY, PRICING_MONTHLY } from "../../../config/pricing";
 import { taxinfoValidationSchema } from "../../../interface/zod.schema";
-type PlanType = "BASIC" | "PRO" | "ULTIMATE";
+import { IPlanPaymentData } from "../../../interface/payments.interface";
 
 const paytr_post_url = "https://www.paytr.com/odeme";
 const merchant_ok_url = "http://affitime.com/payments/success";
@@ -23,6 +23,8 @@ const payment_type = "card"; // Ödeme türü
 const non_3d = "1"; //3d'siz işlem
 const card_type = ""; // taksit icin gerekli yoksa degil. Alabileceği değerler; advantage, axess, combo, bonus, cardfinans, maximum, paraf, world, saglamkart
 const installment_count = "0"; // Taksit Sayısı
+
+export type PlanType = "BASIC" | "PRO" | "ULTIMATE";
 
 export const purchaseRouter = router({
   getTaxInfo: protectedProcedure.query(({ ctx }) => {
@@ -107,10 +109,9 @@ export const purchaseRouter = router({
       // > microtime.now()
       // 1297448895297028
 
-      const basket = JSON.stringify([
+      const user_basket = JSON.stringify([
         [`${annual ? "YILLIK" : "AYLIK"}-${plan}-PLAN`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
       ]);
-      const user_basket = basket;
 
       const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
       const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
@@ -130,38 +131,49 @@ export const purchaseRouter = router({
         .digest("base64");
 
       try {
-        await ctx.prisma.vendor.findUnique({
-          where: { id: vendorId },
-          include: { user: true },
+        await ctx.prisma.planPayment.create({
+          data: {
+            userId: vendor.userId,
+            merchant_oid,
+            token,
+            user_basket,
+            user_phone,
+            user_name,
+            user_address,
+            payment_amount: parseFloat(payment_amount),
+            packageType: plan as PlanType,
+            annual,
+          },
         });
-      } catch (error) {}
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Cannot create paymen plan",
+        });
+      }
 
-      console.log({
-        input,
-        payment_amount,
-        user_basket,
+      const response: IPlanPaymentData = {
+        merchant_id: PAYTR.merchant_id,
+        paytr_token: token,
+        user_ip,
         merchant_oid,
-        token,
+        email: vendor.user.email,
+        payment_type,
+        payment_amount: parseFloat(payment_amount), // double
+        installment_count: parseInt(installment_count),
+        non_3d: parseInt(non_3d),
+        non3d_test_failed: parseInt(non3d_test_failed),
+        test_mode: parseInt(test_mode),
+        currency,
+        merchant_ok_url,
+        merchant_fail_url,
         user_name,
+        user_address,
         user_phone,
-      });
-      //   console.log({ hashSTR });
-      //   console.log({ token });
+        user_basket,
+        debug_on, // 0,1
+      };
 
-      return { success: true, error: false };
-
-      //   try {
-      //     await ctx.prisma.partner.update({
-      //       where: { id: partnerId },
-      //       data: {
-      //         interests: { input },
-      //       },
-      //     });
-
-      //     return { success: true, error: false };
-      //   } catch (error) {
-      //     console.error(error);
-      //     return { success: false, error: error };
-      //   }
+      return response;
     }),
 });

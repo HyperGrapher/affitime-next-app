@@ -50,8 +50,8 @@ enum Role {
 enum PackageType {
   NONE
   BASIC
-  MEDIUM
-  ADVANCED
+  PRO
+  ULTIMATE
   TRIAL
   FREE
   OTHER
