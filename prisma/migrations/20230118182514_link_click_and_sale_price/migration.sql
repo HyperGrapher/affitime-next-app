@@ -1,6 +1,0 @@
--- AlterTable
-ALTER TABLE `link` ADD COLUMN `price` DOUBLE NULL,
-    ADD COLUMN `perClick` DOUBLE NULL,
-    ADD COLUMN `perClickType` ENUM('CASH', 'PERC') NOT NULL DEFAULT 'CASH',
-    ADD COLUMN `perSale` DOUBLE NULL,
-    ADD COLUMN `perSaleType` ENUM('CASH', 'PERC') NOT NULL DEFAULT 'CASH';

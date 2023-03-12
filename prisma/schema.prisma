@@ -96,9 +96,9 @@ model Taxinfo {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [user_id], references: [id])
   user_id   String   @unique
-  title     String // unvan
-  fname     String
-  lname     String
+  title     String? // unvan
+  fname     String?
+  lname     String?
   tckn      String?
   vkn       String?
   taxOffice String?

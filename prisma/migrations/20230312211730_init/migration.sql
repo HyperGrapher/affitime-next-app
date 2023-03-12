@@ -31,17 +31,49 @@ CREATE TABLE `session` (
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- CreateTable
-CREATE TABLE `payment` (
+CREATE TABLE `plan_payment` (
     `id` VARCHAR(191) NOT NULL,
+    `merchant_oid` VARCHAR(191) NOT NULL,
+    `token` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
-    `amount` DOUBLE NOT NULL,
-    `packageType` ENUM('NONE', 'BASIC', 'MEDIUM', 'ADVANCED', 'OTHER') NULL DEFAULT 'BASIC',
-    `error` BOOLEAN NOT NULL DEFAULT false,
+    `user_basket` VARCHAR(191) NOT NULL,
+    `user_phone` VARCHAR(191) NOT NULL,
+    `user_name` VARCHAR(191) NOT NULL,
+    `user_address` VARCHAR(191) NOT NULL,
+    `payment_amount` DOUBLE NOT NULL,
+    `packageType` ENUM('NONE', 'BASIC', 'PRO', 'ULTIMATE', 'TRIAL', 'FREE', 'OTHER') NULL DEFAULT 'TRIAL',
+    `validTill` DATETIME(3) NULL,
+    `annual` BOOLEAN NOT NULL DEFAULT false,
+    `success` BOOLEAN NULL,
+    `seen` BOOLEAN NULL DEFAULT false,
     `errorReason` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
-    INDEX `payment_id_userId_idx`(`id`, `userId`),
+    UNIQUE INDEX `plan_payment_merchant_oid_key`(`merchant_oid`),
+    INDEX `plan_payment_id_userId_idx`(`id`, `userId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `taxinfo` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `user_id` VARCHAR(191) NOT NULL,
+    `title` VARCHAR(191) NULL,
+    `fname` VARCHAR(191) NULL,
+    `lname` VARCHAR(191) NULL,
+    `tckn` VARCHAR(191) NULL,
+    `vkn` VARCHAR(191) NULL,
+    `taxOffice` VARCHAR(191) NULL,
+    `address` VARCHAR(191) NOT NULL,
+    `city` VARCHAR(191) NULL,
+    `country` VARCHAR(191) NOT NULL DEFAULT 'turkiye',
+    `code` VARCHAR(191) NOT NULL DEFAULT 'tr',
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    UNIQUE INDEX `taxinfo_user_id_key`(`user_id`),
+    INDEX `taxinfo_id_user_id_idx`(`id`, `user_id`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -60,7 +92,8 @@ CREATE TABLE `user` (
     `active` BOOLEAN NOT NULL DEFAULT true,
     `trial` BOOLEAN NOT NULL DEFAULT true,
     `pro` BOOLEAN NOT NULL DEFAULT false,
-    `packageType` ENUM('NONE', 'BASIC', 'MEDIUM', 'ADVANCED', 'OTHER') NULL DEFAULT 'BASIC',
+    `packageType` ENUM('NONE', 'BASIC', 'PRO', 'ULTIMATE', 'TRIAL', 'FREE', 'OTHER') NULL DEFAULT 'TRIAL',
+    `validTill` DATETIME(3) NULL,
     `proDetails` JSON NULL,
     `ipdata` JSON NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -86,7 +119,9 @@ CREATE TABLE `user_vendor` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `brand` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NULL,
     `website` VARCHAR(191) NOT NULL,
+    `image` TEXT NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -102,6 +137,10 @@ CREATE TABLE `user_partner` (
     `id` VARCHAR(191) NOT NULL,
     `userId` VARCHAR(191) NOT NULL,
     `username` VARCHAR(191) NOT NULL,
+    `phone` VARCHAR(191) NULL,
+    `image` TEXT NULL,
+    `interests` JSON NULL,
+    `socials` JSON NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -127,7 +166,6 @@ CREATE TABLE `category` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
-
 -- CreateTable
 CREATE TABLE `tags_on_products` (
     `productId` VARCHAR(191) NOT NULL,
@@ -145,9 +183,9 @@ CREATE TABLE `product` (
     `price` DOUBLE NULL,
     `cookieLife` INTEGER NOT NULL DEFAULT 60,
     `perClick` DOUBLE NULL,
-    `perClickType` ENUM('CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    `perClickType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
     `perSale` DOUBLE NULL,
-    `perSaleType` ENUM('CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    `perSaleType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
     `vendor_profile_id` VARCHAR(191) NOT NULL,
     `vendor_user_id` VARCHAR(191) NULL,
     `product_url` TEXT NULL,
@@ -167,31 +205,35 @@ CREATE TABLE `product` (
 CREATE TABLE `visit` (
     `id` VARCHAR(191) NOT NULL,
     `link_id` VARCHAR(191) NOT NULL,
-    `visiterIp` VARCHAR(191) NULL,
-    `country` VARCHAR(191) NOT NULL DEFAULT 'tr',
+    `vendor_id` VARCHAR(191) NOT NULL,
+    `partner_id` VARCHAR(191) NOT NULL,
+    `ipapi` VARCHAR(191) NULL,
+    `country` VARCHAR(191) NOT NULL DEFAULT '-',
     `ipInfo` JSON NULL,
-    `ipwareIp` VARCHAR(191) NULL,
-    `ipwareIsPublic` BOOLEAN NULL,
-    `ipwareIsRouteTrusted` BOOLEAN NULL,
+    `ipware` VARCHAR(191) NULL,
     `hasCookie` BOOLEAN NOT NULL,
-    `cookieInfo` JSON NULL,
-    `lastVisit` DATETIME(3) NULL,
+    `cookie` JSON NULL,
     `prevIp` VARCHAR(191) NULL,
-    `isSold` BOOLEAN NOT NULL DEFAULT false,
-    `isVpn` BOOLEAN NOT NULL DEFAULT false,
-    `isUnique` BOOLEAN NOT NULL DEFAULT true,
+    `sold` BOOLEAN NOT NULL DEFAULT false,
+    `vpn` BOOLEAN NOT NULL DEFAULT false,
+    `unique` BOOLEAN NOT NULL DEFAULT true,
     `params` VARCHAR(191) NULL,
     `dubious` BOOLEAN NULL,
-    `dubiousCause` VARCHAR(191) NULL,
-    `partnerVisit` BOOLEAN NULL,
-    `vendorVisit` BOOLEAN NULL,
+    `cause` VARCHAR(191) NULL,
+    `isPartner` BOOLEAN NULL,
+    `isVendor` BOOLEAN NULL,
     `paid` BOOLEAN NULL,
-    `os` VARCHAR(191) NULL DEFAULT 'undetected',
-    `device` VARCHAR(191) NULL,
-    `userAgent` TEXT NULL,
-    `isAgentBot` BOOLEAN NULL,
-    `ua_family` VARCHAR(191) NULL,
-    `ua_major` VARCHAR(191) NULL,
+    `os` VARCHAR(191) NULL DEFAULT '-',
+    `agent` TEXT NULL,
+    `bot` BOOLEAN NULL,
+    `uaFamily` VARCHAR(191) NULL,
+    `referer` VARCHAR(191) NULL,
+    `uaMajor` VARCHAR(191) NULL,
+    `price` DOUBLE NULL,
+    `perClick` DOUBLE NULL,
+    `perClickType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    `perSale` DOUBLE NULL,
+    `perSaleType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -210,14 +252,16 @@ CREATE TABLE `link` (
     `categoryId` INTEGER NOT NULL,
     `url` VARCHAR(191) NOT NULL,
     `platform` VARCHAR(191) NULL,
-    `count` INTEGER NOT NULL DEFAULT 0,
-    `partnerVisitCount` INTEGER NOT NULL DEFAULT 0,
-    `declined` INTEGER NOT NULL DEFAULT 0,
-    `repeated` INTEGER NOT NULL DEFAULT 0,
+    `status` ENUM('AWAITING', 'CONFIRMED', 'REQUEST_DENIED', 'PAUSED_BY_VENDOR', 'CANCELED_BY_VENDOR', 'CANCELED_BY_PARTNER', 'CANCELED_BY_ADMIN', 'PRODUCT_DELETED') NOT NULL,
     `active` BOOLEAN NULL,
-    `confirmed` BOOLEAN NULL,
     `vendor_notified` BOOLEAN NOT NULL DEFAULT false,
     `partner_notified` BOOLEAN NOT NULL DEFAULT false,
+    `cookieLife` INTEGER NOT NULL DEFAULT 60,
+    `price` DOUBLE NULL,
+    `perClick` DOUBLE NULL,
+    `perClickType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
+    `perSale` DOUBLE NULL,
+    `perSaleType` ENUM('NONE', 'CASH', 'PERC') NOT NULL DEFAULT 'CASH',
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
 
@@ -257,6 +301,19 @@ CREATE TABLE `notification` (
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
+-- CreateTable
+CREATE TABLE `faq` (
+    `id` INTEGER NOT NULL AUTO_INCREMENT,
+    `quest` TEXT NOT NULL,
+    `active` BOOLEAN NOT NULL DEFAULT true,
+    `answer` TEXT NOT NULL,
+    `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updatedAt` DATETIME(3) NOT NULL,
+
+    INDEX `faq_id_idx`(`id`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
 -- AddForeignKey
 ALTER TABLE `account` ADD CONSTRAINT `account_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
@@ -264,7 +321,10 @@ ALTER TABLE `account` ADD CONSTRAINT `account_userId_fkey` FOREIGN KEY (`userId`
 ALTER TABLE `session` ADD CONSTRAINT `session_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `payment` ADD CONSTRAINT `payment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `plan_payment` ADD CONSTRAINT `plan_payment_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `taxinfo` ADD CONSTRAINT `taxinfo_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `user_vendor` ADD CONSTRAINT `user_vendor_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -286,6 +346,12 @@ ALTER TABLE `product` ADD CONSTRAINT `product_categoryId_fkey` FOREIGN KEY (`cat
 
 -- AddForeignKey
 ALTER TABLE `visit` ADD CONSTRAINT `visit_link_id_fkey` FOREIGN KEY (`link_id`) REFERENCES `link`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `visit` ADD CONSTRAINT `visit_vendor_id_fkey` FOREIGN KEY (`vendor_id`) REFERENCES `user_vendor`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `visit` ADD CONSTRAINT `visit_partner_id_fkey` FOREIGN KEY (`partner_id`) REFERENCES `user_partner`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `link` ADD CONSTRAINT `link_product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `product`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

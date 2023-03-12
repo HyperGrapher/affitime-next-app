@@ -108,7 +108,7 @@ export const authRouter = router({
             email: email,
             password: hashedPassword,
             role: role,
-            packageType: role === "VENDOR" ? "ADVANCED" : "NONE",
+            packageType: role === "VENDOR" ? "ULTIMATE" : "NONE",
             pro: role === "VENDOR",
           },
         });
