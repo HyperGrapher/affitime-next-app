@@ -29,7 +29,7 @@ import { PAYTR } from '../../config/constants';
 import { trpc } from '../../utils/trpc';
 import { Base64 } from 'js-base64';
 import { notifyError } from '../../utils/notifications';
-import { IpSchema } from '../../interface/zod.schema';
+import { IpSchema, taxinfoValidationSchema } from '../../interface/zod.schema';
 import getClientIp from '../../utils/getClientIp';
 import dynamic from 'next/dynamic'
 
@@ -86,27 +86,6 @@ const non3d_test_failed = '0';
 const paytr_post_url = "https://www.paytr.com/odeme";
 
 // (Fatura bilgileri: VKN/TCKN * , Unvan, Ad, Soyad, Vergi Dairesi, Ülke, Adres )
-interface IBillingFormData {
-    vkn: string;
-    tckn: string;
-    title: string;
-    fname: string;
-    lname: string;
-    taxOffice: string;
-    address: string;
-}
-// z.number().default(0),
-const taxinfoValidationSchema = z.object({
-    vkn: z.string().trim().min(10, "10 karakter olmalı"),
-    tckn: z.string().trim().min(11, "11 karakter olmalı"),
-    title: z.string().trim().min(2, "En az 2 karakter olmalı"),
-    fname: z.string().trim().min(2, "En az 2 karakter olmali"),
-    lname: z.string().trim().min(2, "En az 2 karakter olmali"),
-    taxOffice: z.string().trim().min(2, "En az 2 karakter olmali"),
-    address: z.string().trim().min(8, "Geçerli bir adres giriniz"),
-
-}).required();
-// taxinfo {"vkn":"123123123123","tckn":"29170131313","title":"qeqeq","fname":"burak","lname":"mestan","taxOffice":"adana vd","address":"some address that is valid"}
 const Purchase = () => {
 
     const { back, query } = useRouter()
@@ -160,7 +139,7 @@ const Purchase = () => {
                             <b>Toplam: </b>{total} <Lira size='18px' />
                         </p>
 
-                      { false &&  <form onSubmit={checkCoupon}>
+                        {false && <form onSubmit={checkCoupon}>
                             <section className={classNames(
                                 "bg-slate-100 hover:bg-slate-50",
                                 "w-[38ch] rounded-md  py-2 px-2  mt-8 ",
@@ -221,25 +200,64 @@ const Purchase = () => {
 export default Purchase
 
 
-
+interface IBillingFormData {
+    vkn: string;
+    tckn: string;
+    title: string;
+    fname: string;
+    lname: string;
+    taxOffice: string;
+    address: string;
+}
 
 type TaxProps = {
     setStep: (step: string) => void
 }
 const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
 
-    const busy = false
-
-    const { register, handleSubmit, formState: { errors } } = useForm<IBillingFormData>({
+    const [busy, setBusy] = useState(false)
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IBillingFormData>({
         resolver: zodResolver(taxinfoValidationSchema),
         reValidateMode: 'onBlur',
         mode: 'onBlur',
     });
 
+    const upsertTaxInfo = trpc.purchase.upsertTaxInfo.useMutation()
+
+    trpc.purchase.getTaxInfo.useQuery(undefined, {
+
+        onSuccess(data) {
+            setValue("fname", data?.fname ?? '')
+            setValue("lname", data?.lname ?? '')
+            setValue("title", data?.title ?? '')
+            setValue("vkn", data?.vkn ?? '')
+            setValue("tckn", data?.tckn ?? '')
+            setValue("taxOffice", data?.taxOffice ?? '')
+            setValue("address", data?.address ?? '')
+
+
+        }
+    })
+
+
 
     const onSubmitTaxInfo: SubmitHandler<IBillingFormData> = async (data) => {
+        setBusy(true)
         localStorage.setItem("taxinfo", JSON.stringify(data))
-        setStep("1")
+
+        upsertTaxInfo.mutate(data, {
+
+            onError(error) {
+                console.log(error)
+                notifyError('Hata. Vergi bilgileri eklenmedi')
+            },
+            onSettled() {
+                setBusy(false)
+                setStep("1")
+
+            }
+        })
+
 
     }
 

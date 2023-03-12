@@ -20,3 +20,15 @@ export type ILVCookie = {
   c: number;
   previp: string | undefined;
 };
+
+
+export const taxinfoValidationSchema = z.object({
+  vkn: z.string().trim().min(10, "10 karakter olmalı"),
+  tckn: z.string().trim().min(11, "11 karakter olmalı"),
+  title: z.string().trim().min(2, "En az 2 karakter olmalı"),
+  fname: z.string().trim().min(2, "En az 2 karakter olmali"),
+  lname: z.string().trim().min(2, "En az 2 karakter olmali"),
+  taxOffice: z.string().trim().min(2, "En az 2 karakter olmali"),
+  address: z.string().trim().min(8, "Geçerli bir adres giriniz"),
+
+}).required();

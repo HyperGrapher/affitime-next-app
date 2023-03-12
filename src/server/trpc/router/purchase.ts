@@ -1,4 +1,4 @@
-import { router, vendorProcedure } from "../trpc";
+import { router, vendorProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import crypto from "node:crypto";
 import { Base64 } from "js-base64";
@@ -6,6 +6,7 @@ import axios from "axios";
 import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
 import { PRICING_ANNUALY, PRICING_MONTHLY } from "../../../config/pricing";
+import { taxinfoValidationSchema } from "../../../interface/zod.schema";
 type PlanType = "BASIC" | "PRO" | "ULTIMATE";
 
 const paytr_post_url = "https://www.paytr.com/odeme";
@@ -23,9 +24,56 @@ const non_3d = "1"; //3d'siz işlem
 const card_type = ""; // taksit icin gerekli yoksa degil. Alabileceği değerler; advantage, axess, combo, bonus, cardfinans, maximum, paraf, world, saglamkart
 const installment_count = "0"; // Taksit Sayısı
 
-
-
 export const purchaseRouter = router({
+  getTaxInfo: protectedProcedure.query(({ ctx }) => {
+    const { id } = ctx.session;
+
+    if (!id) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const data = ctx.prisma.taxinfo.findFirst({
+      where: {
+        user_id: id,
+      },
+    });
+
+    if (!data) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Tax data not found",
+      });
+    }
+
+    return data;
+  }),
+
+  upsertTaxInfo: protectedProcedure
+    .input(taxinfoValidationSchema)
+    .mutation(async ({ ctx, input }) => {
+      const { id } = ctx.session;
+      const existing = await ctx.prisma.taxinfo.findFirst({
+        where: { user_id: id },
+      });
+
+      try {
+        if (existing) {
+          return await ctx.prisma.taxinfo.update({
+            where: { user_id: id },
+            data: {
+              ...input,
+            },
+          });
+        } else {
+          return await ctx.prisma.taxinfo.create({
+            data: { ...input, user_id: id },
+          });
+        }
+      } catch (error) {
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product ID not found",
+        });
+      }
+    }),
   purchasePack: vendorProcedure
     .input(
       z.object({
