@@ -1,13 +1,41 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
-import { getServerAuthSession } from "../../../server/common/get-server-auth-session";
 import { prisma } from "../../../server/db/client";
 import dayjs from "dayjs";
+import Cors from 'cors'
+
+const cors = Cors({
+  methods: ['POST', 'GET', 'HEAD'],
+})
+
+function runMiddleware(
+  req: NextApiRequest,
+  res: NextApiResponse,
+  fn: Function
+) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result)
+      }
+
+      return resolve(result)
+    })
+  })
+}
+
+
+
+// import Cors from 'cors'
+// https://github.com/vercel/next.js/blob/canary/examples/api-routes-cors/pages/api/cors.ts
 
 const callback = async (req: NextApiRequest, res: NextApiResponse) => {
+
+  await runMiddleware(req, res, cors)
+
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   const callback = req.body;
-  console.log("callback");
+  console.log("affitime.com callback");
   console.log(callback);
   console.log("\n");
 
