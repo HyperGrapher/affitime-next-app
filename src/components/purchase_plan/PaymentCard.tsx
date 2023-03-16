@@ -20,17 +20,6 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { PatternFormat } from 'react-number-format';
 import { IPlanPaymentData } from "../../interface/payments.interface";
 
-
-// axios.post(paytr_post_url, {
-//     firstName: 'Fred',
-//     lastName: 'Flintstone'
-//   })
-//   .then(function (response) {
-//     console.log(response);
-//   })
-//   .catch(function (error) {
-//     console.log(error);
-//   });
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
 interface ICardFormData {
@@ -113,11 +102,8 @@ const PaymentCard: React.FC = () => {
     const annual = (query.ann as string) === "true"
 
     const [cardNo, setCardNo] = useState("");
-    const [datam, setData] = useState<IPlanPaymentData>();
-
-    useEffect(() => {
-
-    }, [])
+    const [payData, setPayData] = useState<IPlanPaymentData>();
+    const [expiryDate, setExpiryDate] = useState("");
 
     const handleCardNoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value =
@@ -130,7 +116,6 @@ const PaymentCard: React.FC = () => {
         setValue('card_number', value);
     };
 
-    const [expiryDate, setExpiryDate] = useState("");
 
     const handleExpiryDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setExpiryDate(e.target.value);
@@ -142,8 +127,6 @@ const PaymentCard: React.FC = () => {
         reValidateMode: 'onBlur',
         mode: 'onBlur',
     });
-
-    // 1234123412341234
 
     const taxInfo = useMemo(() => {
 
@@ -181,7 +164,6 @@ const PaymentCard: React.FC = () => {
 
         puchase.mutate(datam, {
             onSuccess: (data) => {
-                // replace(AppRoutes.PARTNER_DASHBOARD)
                 console.log("ok", data.payment_amount);
 
                 // 4355 0843 5508 4358	
@@ -202,65 +184,21 @@ const PaymentCard: React.FC = () => {
                 }
 
                 console.log(aa);
-                setData(aa)
+                setPayData(aa)
 
                 setTimeout(() => {
                     buttonRef.current?.click()
 
                 }, 3500);
 
-
-
-                /*
-{
-  "status": "failed",
-  "reason": "Zorunlu alan degeri gecersiz veya gonderilmedi (odeme spp): no_installment"
-}
-                */
-
-                // axios.post(`/odeme`, 
-                // `cc_owner=${aa.cc_owner}&card_number=${aa.card_number}&expiry_month=${aa.expiry_month}
-                // &expiry_year=${aa.expiry_year}&cvv=${aa.cvv}&&payment_amount=${aa.payment_amount}
-                // &merchant_id=${aa.merchant_id}&paytr_token=${aa.paytr_token}`,
-
-                // {
-                //     headers: {
-                //         "Content-Type": "application/x--www-form-urlencoded",
-                //         "Access-Control-Allow-Origin": "*",
-                //         "Access-Control-Allow-Methods": "GET, POST, PATCH, PUT, DELETE, OPTIONS",
-                //         "Access-Control-Allow-Headers": "Origin, Content-Type, X-Auth-Token, Authorization, Accept,charset,boundary,Content-Length"
-                //     },
-                //     baseURL: 'https://www.paytr.com'
-                //     // data: {
-                //     //     ...postData
-                //     // }
-                // }).then(response => {
-                //     console.log('success');
-                //     notifySuccessBR("Odeme basarili..")
-                //     console.log(response);
-                // }).catch(function (error) {
-                //     console.log('error');
-                //     notifyError('Odeme hatasi.')
-                //     console.log(error);
-                // });
-
-
-
             },
             onError(error) {
                 console.log(error)
-                notifyError('DB Hata.')
-                //   replace(AppRoutes.PARTNER_DASHBOARD)
-                // setBusy(false)
+                notifyError('Ödeme sırasında bir hata oluştu!')
                 setBusy(false)
             },
 
         })
-
-    }
-    const doPayment = async () => {
-
-
 
     }
 
@@ -272,31 +210,31 @@ const PaymentCard: React.FC = () => {
         </h1>
 
         <form id="post_form" className="hidden" action={PAYTR_PLAN_PAYMENT_URL} method="post">
-            <input type="hidden" name="card_number" value={datam?.card_number} />
-            <input type="hidden" name="cc_owner" value={datam?.cc_owner} />
-            <input type="hidden" name="expiry_month" value={datam?.expiry_month} />
-            <input type="hidden" name="expiry_year" value={datam?.expiry_year} />
-            <input type="hidden" name="cvv" value={datam?.cvv} />
-            <input type="hidden" name="merchant_id" value={datam?.merchant_id} />
-            <input type="hidden" name="user_ip" value={datam?.user_ip} />
-            <input type="hidden" name="merchant_oid" value={datam?.merchant_oid} />
-            <input type="hidden" name="email" value={datam?.email} />
-            <input type="hidden" name="payment_type" value={datam?.payment_type} />
-            <input type="hidden" name="payment_amount" value={datam?.payment_amount} />
-            <input type="hidden" name="currency" value={datam?.currency} />
-            <input type="hidden" name="test_mode" value={datam?.test_mode} />
-            <input type="hidden" name="non_3d" value={datam?.non_3d} />
-            <input type="hidden" name="merchant_ok_url" value={datam?.merchant_ok_url} />
-            <input type="hidden" name="merchant_fail_url" value={datam?.merchant_fail_url} />
-            <input type="hidden" name="user_name" value={datam?.user_name} />
-            <input type="hidden" name="user_address" value={datam?.user_address} />
-            <input type="hidden" name="user_phone" value={datam?.user_phone} />
-            <input type="hidden" name="user_basket" value={datam?.user_basket} />
-            <input type="hidden" name="debug_on" value={datam?.debug_on} />
-            <input type="hidden" name="debug_on" value={datam?.debug_on} />
-            <input type="hidden" name="client_lang" value={datam?.client_lang} />
-            <input type="hidden" name="paytr_token" value={datam?.paytr_token} />
-            <input type="hidden" name="non3d_test_failed" value={datam?.non3d_test_failed} />
+            <input type="hidden" name="card_number" value={payData?.card_number} />
+            <input type="hidden" name="cc_owner" value={payData?.cc_owner} />
+            <input type="hidden" name="expiry_month" value={payData?.expiry_month} />
+            <input type="hidden" name="expiry_year" value={payData?.expiry_year} />
+            <input type="hidden" name="cvv" value={payData?.cvv} />
+            <input type="hidden" name="merchant_id" value={payData?.merchant_id} />
+            <input type="hidden" name="user_ip" value={payData?.user_ip} />
+            <input type="hidden" name="merchant_oid" value={payData?.merchant_oid} />
+            <input type="hidden" name="email" value={payData?.email} />
+            <input type="hidden" name="payment_type" value={payData?.payment_type} />
+            <input type="hidden" name="payment_amount" value={payData?.payment_amount} />
+            <input type="hidden" name="currency" value={payData?.currency} />
+            <input type="hidden" name="test_mode" value={payData?.test_mode} />
+            <input type="hidden" name="non_3d" value={payData?.non_3d} />
+            <input type="hidden" name="merchant_ok_url" value={payData?.merchant_ok_url} />
+            <input type="hidden" name="merchant_fail_url" value={payData?.merchant_fail_url} />
+            <input type="hidden" name="user_name" value={payData?.user_name} />
+            <input type="hidden" name="user_address" value={payData?.user_address} />
+            <input type="hidden" name="user_phone" value={payData?.user_phone} />
+            <input type="hidden" name="user_basket" value={payData?.user_basket} />
+            <input type="hidden" name="debug_on" value={payData?.debug_on} />
+            <input type="hidden" name="debug_on" value={payData?.debug_on} />
+            {/* <input type="hidden" name="client_lang" value={payData?.client_lang} /> */}
+            <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
+            <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
             <input type="number" name="installment_count" value={0} />
             {/* <input type="hidden" name="card_type" value={"advantage"} /> */}
 
