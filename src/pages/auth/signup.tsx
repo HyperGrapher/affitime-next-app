@@ -128,6 +128,8 @@ const SignUp: NextPage = (): JSX.Element => {
 
 
     }
+
+    return <div></div>
     
     return (
         <div className=''>

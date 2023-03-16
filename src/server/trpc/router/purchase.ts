@@ -130,6 +130,12 @@ export const purchaseRouter = router({
         .update(paytr_token)
         .digest("base64");
 
+        /*
+1|affiti.m | ---------> FAILED - token != callback.hash
+1|affiti.m | ---------> callback.hash:  a5+nIiuduXG3g/S2daUNhnvsGTtCiMNqE6XYk6SWJrc=
+1|affiti.m | ---------> record.token:  LYJQZpP3pa24lOO5tQ2+g7SWAY9Z/muhMrFlX/IMtF0=
+        */
+
       try {
         await ctx.prisma.planPayment.create({
           data: {
