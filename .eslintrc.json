@@ -9,7 +9,6 @@
     "@typescript-eslint/consistent-type-imports": "warn",
     "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-non-null-assertion": "warn",
-    "@next/next/no-img-element": "off",
-    "react/jsx-curly-brace-presence": "always"
+    "@next/next/no-img-element": "off"
   }
 }

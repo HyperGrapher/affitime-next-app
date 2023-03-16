@@ -36,11 +36,18 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   //     }
   // }
 
+  const {
+		req,
+    // res
+	} = context;
+
+  req.method = 'get'
 
   return {
       redirect: {
           destination: `/payments/failing`,
-          permanent: false
+          permanent: false,
+
       }
   }
 
