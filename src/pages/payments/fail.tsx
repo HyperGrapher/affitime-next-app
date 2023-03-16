@@ -1,6 +1,10 @@
+import { getSession } from 'next-auth/react'
+import { GetServerSideProps } from 'next/types'
 import React from 'react'
+import { AppRoutes } from '../../config/appRoutes'
+import { UserRoles } from '../../interface/auth.interface'
 
-const Success = () => {
+const Fail = () => {
   return (
     <div className='auth-container'>
 
@@ -11,4 +15,34 @@ const Success = () => {
   )
 }
 
-export default Success
+export default Fail
+
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+
+  // const session = await getSession(context)
+
+  // if (!session) return {
+  //     redirect: {
+  //         destination: AppRoutes.SIGNIN,
+  //         permanent: false
+  //     }
+  // }
+
+  // if (session.role !== UserRoles.VENDOR) return {
+  //     redirect: {
+  //         destination: `/${session.role.toLowerCase()}/dashboard`,
+  //         permanent: false
+  //     }
+  // }
+
+
+  return {
+      redirect: {
+          destination: `/payments/failing`,
+          permanent: false
+      }
+  }
+
+
+}
