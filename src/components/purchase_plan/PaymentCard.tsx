@@ -181,6 +181,7 @@ const PaymentCard: React.FC = () => {
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
                     user_name: "test user",
+                    email: ' burakmestan@gmail.com'
                 }
 
                 console.log(aa);
