@@ -185,6 +185,7 @@ const PaymentCard: React.FC = () => {
                 console.log("ok", data.payment_amount);
 
                 // 4355 0843 5508 4358	
+                // 4355 0843 5508 4358
                 const [month, year] = cardData.expiryDate.split('/')
 
                 const aa: IPlanPaymentData = {
@@ -194,21 +195,21 @@ const PaymentCard: React.FC = () => {
                     expiry_month: month,
                     expiry_year: year,
                     cvv: cardData.cvvNumber,
-                    payment_amount: "1590.00",
+                    payment_amount: "1290.00",
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
                     user_name: "test user",
                 }
 
+                console.log(aa);
                 setData(aa)
 
                 setTimeout(() => {
                     buttonRef.current?.click()
 
-                }, 500);
+                }, 3500);
 
 
-                console.log(aa);
 
                 /*
 {
@@ -297,7 +298,7 @@ const PaymentCard: React.FC = () => {
             <input type="hidden" name="paytr_token" value={datam?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={datam?.non3d_test_failed} />
             <input type="number" name="installment_count" value={0} />
-            <input type="hidden" name="card_type" value={"advantage"} />
+            {/* <input type="hidden" name="card_type" value={"advantage"} /> */}
 
             <button id="post" ref={buttonRef}>click</button>
         </form>
