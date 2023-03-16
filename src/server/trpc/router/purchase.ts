@@ -90,10 +90,10 @@ export const purchaseRouter = router({
       const { vendorId } = ctx.session;
       const { user_ip, annual, currency, user_address, plan } = input;
 
-      let payment_amount = annual
-        ? PRICING_ANNUALY[plan as PlanType]
-        : PRICING_MONTHLY[plan as PlanType];
-      payment_amount += ".00";
+      // let payment_amount = annual
+      //   ? PRICING_ANNUALY[plan as PlanType]
+      //   : PRICING_MONTHLY[plan as PlanType];
+      const payment_amount = "1290.00";
       const vendor = await ctx.prisma.vendor.findUnique({
         where: { id: vendorId },
         include: { user: true },
@@ -114,7 +114,7 @@ export const purchaseRouter = router({
       ]);
 
       const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
-      const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
+      const user_name = 'test user' // `${vendor.user.fname} ${vendor.user.lname}`;
       const user_phone = vendor.phone?.startsWith("0")
         ? vendor.phone
         : `0${vendor.phone}`;

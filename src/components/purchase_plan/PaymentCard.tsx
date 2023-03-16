@@ -181,7 +181,6 @@ const PaymentCard: React.FC = () => {
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
                     user_name: "test user",
-                    email: ' burakmestan@gmail.com'
                 }
 
                 console.log(aa);
@@ -232,11 +231,10 @@ const PaymentCard: React.FC = () => {
             <input type="hidden" name="user_phone" value={payData?.user_phone} />
             <input type="hidden" name="user_basket" value={payData?.user_basket} />
             <input type="hidden" name="debug_on" value={payData?.debug_on} />
-            <input type="hidden" name="debug_on" value={payData?.debug_on} />
             {/* <input type="hidden" name="client_lang" value={payData?.client_lang} /> */}
             <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
-            <input type="number" name="installment_count" value={0} />
+            <input type="hidden" name="installment_count" value={payData?.installment_count} />
             {/* <input type="hidden" name="card_type" value={"advantage"} /> */}
 
             <button id="post" ref={buttonRef}>click</button>
