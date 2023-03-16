@@ -14,7 +14,7 @@ const merchant_ok_url = "http://affitime.com/payments/success";
 // Ödeme sürecinde beklenmedik bir hata oluşması durumunda müşterinizin yönlendirileceği sayfa
 // Bu sayfa siparişi iptal edeceğiniz sayfa değildir! Yalnızca müşterinizi bilgilendireceğiniz sayfadır!
 const merchant_fail_url = "http://affitime.com/payments/fail";
-const debug_on = 1;
+const debug_on = 0;
 const test_mode = "1";
 //non3d işlemde, başarısız işlemi test etmek için 1 gönderilir (test_mode ve non_3d değerleri 1 ise dikkate alınır!)
 const non3d_test_failed = "0";
