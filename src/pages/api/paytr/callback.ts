@@ -1,27 +1,27 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { prisma } from "../../../server/db/client";
 import dayjs from "dayjs";
-import Cors from 'cors'
+// import Cors from 'cors'
 
-const cors = Cors({
-  methods: ['POST', 'GET', 'HEAD'],
-})
+// const cors = Cors({
+//   methods: ['POST', 'GET', 'HEAD'],
+// })
 
-function runMiddleware(
-  req: NextApiRequest,
-  res: NextApiResponse,
-  fn: Function
-) {
-  return new Promise((resolve, reject) => {
-    fn(req, res, (result: any) => {
-      if (result instanceof Error) {
-        return reject(result)
-      }
+// function runMiddleware(
+//   req: NextApiRequest,
+//   res: NextApiResponse,
+//   fn: (Function)
+// ) {
+//   return new Promise((resolve, reject) => {
+//     fn(req, res, (result: any) => {
+//       if (result instanceof Error) {
+//         return reject(result)
+//       }
 
-      return resolve(result)
-    })
-  })
-}
+//       return resolve(result)
+//     })
+//   })
+// }
 
 
 
@@ -30,7 +30,7 @@ function runMiddleware(
 
 const callback = async (req: NextApiRequest, res: NextApiResponse) => {
 
-  await runMiddleware(req, res, cors)
+  // await runMiddleware(req, res, cors)
 
   res.setHeader("Access-Control-Allow-Origin", "*");
 
