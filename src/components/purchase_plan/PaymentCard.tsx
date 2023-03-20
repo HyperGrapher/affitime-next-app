@@ -217,7 +217,7 @@ const PaymentCard: React.FC = () => {
                 setPayData(aa)
 
                 setTimeout(() => {
-                    // buttonRef.current?.click()
+                    buttonRef.current?.click()
 
                 }, 3500);
 
