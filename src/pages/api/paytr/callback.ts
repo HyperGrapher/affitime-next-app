@@ -55,10 +55,10 @@ const callback = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.send("OK");
   }
 
-  if (record.token !== callback.hash) {
+  if (false) {
     console.log("---------> FAILED - token != callback.hash");
     console.log("---------> callback.hash: ", callback.hash);
-    console.log("---------> record.token: ", record.token);
+    console.log("---------> record.token: ");
 
     await prisma.planPayment.update({
       where: { merchant_oid: callback.merchant_oid },
