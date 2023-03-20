@@ -213,6 +213,8 @@ export const TestingRouter = router({
       where: { id },
       data: {
         trialTill: nowDate,
+        pro: false,
+        trial: true
       },
     });
   }),

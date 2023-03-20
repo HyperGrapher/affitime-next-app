@@ -180,17 +180,17 @@ const Account = () => {
 
             <div id="testing" className="text-center">
 
-                <button className="text-slate-100 py-2 px-3 rounded-md"
+                <button className="text-slate-100 py-2 px-3 rounded-md hover:bg-slate-300 transition-all duration-500"
                     onClick={() => {
 
                         endTrialForTest.mutate(undefined, {
                             onSuccess: () => {
-                                notifySuccessBR("Trial Güncellendi!")
+                                notifySuccessBR("Trial Sonlandi!")
 
                                 setTimeout(() => {
-                                    
+
                                     replace(AppRoutes.VENDOR_DASHBOARD)
-                                }, 1000);
+                                }, 1500);
 
                             },
                             onError(error) {
