@@ -4,6 +4,7 @@ import { z } from "zod";
 import { UserRoles } from "../../../interface/auth.interface";
 import bcrypt from "bcrypt";
 import { comparePassword } from "../../../utils/comparePassword";
+import dayjs from "dayjs";
 
 export const authRouter = router({
   getSessionUser: protectedProcedure.query(({ ctx }) => {
@@ -108,7 +109,7 @@ export const authRouter = router({
             email: email,
             password: hashedPassword,
             role: role,
-            packageType: role === "VENDOR" ? "ULTIMATE" : "NONE",
+            packageType: role === "VENDOR" ? "ULTIMATE" : "PARTNER",
             pro: role === "VENDOR",
           },
         });
@@ -116,6 +117,10 @@ export const authRouter = router({
         console.log("userId", user.id);
 
         if (role === UserRoles.VENDOR) {
+          const nowDate = dayjs(new Date())
+          const trialTill = nowDate.add(14, 'day').toDate()
+
+
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
@@ -131,6 +136,7 @@ export const authRouter = router({
             where: { id: user.id },
             data: {
               vendor_id: vendor.id,
+              trialTill
             },
           });
         } else if (role === UserRoles.PARTNER) {

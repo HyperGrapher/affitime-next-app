@@ -19,11 +19,11 @@ import { trpc } from "../../../utils/trpc";
 // const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
 //     ssr: false,
 //   })
-  
+
 //   const DynamicRemaingTrialModal = dynamic(() => import('../../../components/modals/TrialRemaining'), {
 //     ssr: false,
 //   })
-  
+
 
 const DashboardVendor = () => {
 
@@ -124,10 +124,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
 
-    const isTrialEnded = await checkTrial(session)
-    if (true) return {
+    const check = await checkTrial(session)
+    if (check.paymentRequired) return {
         redirect: {
-            destination: AppRoutes.PAYWALL,
+            destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,
             permanent: false
         }
     }

@@ -24,6 +24,7 @@ import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessBR, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
 import Head from "next/head";
+import { checkTrial } from '../../../utils/checkTrial';
 
 interface IServerSideProps {
     cats: Category[]
@@ -45,6 +46,15 @@ export const getServerSideProps: GetServerSideProps<IServerSideProps> = async (c
             permanent: false
         }
     }
+
+    const check = await checkTrial(session)
+    if (check.paymentRequired) return {
+        redirect: {
+            destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,
+            permanent: false
+        }
+    }
+
 
     const cats = await prisma.category.findMany()
 

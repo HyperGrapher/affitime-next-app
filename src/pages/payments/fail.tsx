@@ -1,16 +1,18 @@
-import { getSession } from 'next-auth/react'
-import { GetServerSideProps } from 'next/types'
-import React from 'react'
-import { AppRoutes } from '../../config/appRoutes'
-import { UserRoles } from '../../interface/auth.interface'
+import type { GetServerSideProps } from 'next/types'
+import Head from "next/head";
 
 const Fail = () => {
   return (
-    <div className='auth-container'>
+    <div className='container bg-redx-100 mx-auto'>
 
-      <h1 className="text-2xl text-center font-bold text-red-600">
-        Odeme Hatali
-      </h1>
+      <Head>
+        <title>Affitime | Bilgilendirme</title>
+      </Head>
+
+      <div className="mt-16 bg-yellow-50 py-8">
+        <h1 className="text-3xl text-green-500 font-bold text-center">Tebrikler, Ödeme Başarılı</h1>
+      </div>
+
     </div>
   )
 }

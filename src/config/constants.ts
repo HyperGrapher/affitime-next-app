@@ -22,26 +22,25 @@ export const POLL_CATEGORIES = {
   cat10: "Takı, Mücevher & Altın",
 };
 
-/*
-
-https://www.paytr.com/magaza/ayarlar
-Destek / kurulum -> ayarlar
-site adresi olarak affitime.com
-
-Logo boyutu en fazla 300px X 100px ölçülerinde, PNG formatında olmalıdır.
 
 
+export interface IAppPaymentRequiredType {
+  NONE: string;
+  END_OF_TRIAL: string;
+  END_OF_PLAN: string;
+  UNKNOWN: string;
+}
 
+export const appPaymentRequiredTypes = {
+  NONE: "none",
+  END_OF_TRIAL: "end_of_trial",
+  END_OF_PLAN: "end_of_plan",
+  UNKNOWN: "unknown",
+} as const;
 
-Elektronik
-Giyim & Aksesuar
-Müzik Aletleri
-Cep Telefonu
-Elektrikli Ev Aletleri
-Anne & Bebek
-Hobi & Oyuncak
-Kişisel Bakım & Kozmetik
-Oyun & Konsol
-Takı, Mücevher & Altın
+export interface IUserPlanCheck {
+  type: IAppPaymentRequiredType;
+  paymentRequired: boolean;
+  packageType: string;
+}
 
-*/

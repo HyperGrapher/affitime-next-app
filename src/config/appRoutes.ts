@@ -10,6 +10,8 @@ export enum AppRoutes {
   PRICING = "/pricing",
   PAYWALL = "/payments/payment-required",
   PAYPAGE = "/payments/purchase",
+  PAYMENT_SUCCESS = "/payments/success",
+  PAYMENT_FAIL = "/payments/fail",
   
   PUBLIC_PRODUCT_DETAIL = "/products/detail",
   // VENDOR

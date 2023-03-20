@@ -1,15 +1,44 @@
 // import classNames from "../../utils/classnames";
 import Link from "next/link";
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Balancer from 'react-wrap-balancer';
 import { Lira, Space } from "../../components/shared/HtmlCodes";
 import { AppRoutes } from "../../config/appRoutes";
 import { PRICING_ANNUALY, PRICING_MONTHLY } from "../../config/pricing";
 import Head from "next/head";
+import { useRouter } from "next/router";
+import { appPaymentRequiredTypes } from "../../config/constants";
 
 const Paywall = () => {
 
   const [isAnnual, setIsAnnual] = useState(true)
+  const [title, setTitle] = useState("")
+  const [desc, setDesc] = useState("")
+  const { query } = useRouter()
+
+  const reason = query.reason as string || 'unknown'
+
+  useEffect(() => {
+
+    switch (reason) {
+      case appPaymentRequiredTypes.END_OF_TRIAL:
+        setTitle('Deneme Süresi Sona Erdi!')
+        setDesc('14 günlük deneme süresi sona erdi. Uygulamayı kullanmaya devam edebilmek için lütfen bir plan seçin.')
+        break;
+
+      case appPaymentRequiredTypes.END_OF_PLAN:
+        setTitle('Plan Kullanım Süresi Sona Erdi')
+        setDesc('Plan kullanım süresi sona erdi. Uygulamayı kullanmaya devam edebilmek için lütfen bir plan seçin.')
+        break;
+
+      default:
+        setTitle('Deneme Süresi Sona Erdi')
+        setDesc('14 günlük deneme süresi sona erdi. Uygulamayı kullanmaya devam edebilmek için lütfen bir plan seçin.')
+        break;
+    }
+
+  }, [reason])
+
 
   return (
     <div className='container bg-redx-100 mx-auto'>
@@ -19,11 +48,10 @@ const Paywall = () => {
       </Head>
 
       <div className="mt-16 bg-yellow-50 py-8">
-        <h1 className="text-3xl text-red-500 font-bold text-center">Deneme Süresi Sona Erdi</h1>
+        <h1 className="text-3xl text-red-500 font-bold text-center">{title}</h1>
         <p className="text-lg text-center">
           <Balancer>
-            14 günlük deneme süresi sona erdi. Uygulamayı kullanmaya devam edebilmek için lütfen
-            bir plan seçin.
+            {desc}
           </Balancer>
         </p>
       </div>

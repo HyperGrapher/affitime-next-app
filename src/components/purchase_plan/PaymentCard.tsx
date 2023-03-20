@@ -1,24 +1,21 @@
 'use client'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from "next/router";
+import { useMemo, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiArrowLeft as BackIcon, HiPencil, HiPlus } from 'react-icons/hi';
-import { z } from 'zod';
-import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
-import { Container, Stack, TextField, Typography } from '@mui/material';
-import Card from '../../components/credit-card/card/Card';
-import axios from 'axios';
-import { PAYTR, PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
-import { trpc } from '../../utils/trpc';
-import { Base64 } from 'js-base64';
-import { notifyError, notifySuccessBR } from '../../utils/notifications';
-import { IpSchema } from '../../interface/zod.schema';
-import getClientIp from '../../utils/getClientIp';
-import { useEffect, useMemo, useRef, useState } from "react";
-import { useRouter } from "next/router";
-import classNames from "../../utils/classnames";
-import { zodResolver } from '@hookform/resolvers/zod';
 import { PatternFormat } from 'react-number-format';
-import { IPlanPaymentData } from "../../interface/payments.interface";
+import { z } from 'zod';
+import Card from '../../components/credit-card/card/Card';
+import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import { PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
+import type { IPlanPaymentData } from "../../interface/payments.interface";
+import { IpSchema } from '../../interface/zod.schema';
+import classNames from "../../utils/classnames";
+import getClientIp from '../../utils/getClientIp';
+import { notifyError, notifySuccessBR } from '../../utils/notifications';
+import { trpc } from '../../utils/trpc';
+import { AppRoutes } from '../../config/appRoutes';
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
@@ -95,7 +92,7 @@ const validationSchema = z.object({
 
 const PaymentCard: React.FC = () => {
 
-    const { query } = useRouter()
+    const { query, replace } = useRouter()
     const [busy, setBusy] = useState(false)
     const buttonRef = useRef<HTMLButtonElement>(null)
     const plan = (query.plan as string).toUpperCase() as PlanType
@@ -137,6 +134,39 @@ const PaymentCard: React.FC = () => {
     }, [])
 
     const puchase = trpc.purchase.purchasePack.useMutation()
+    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
+
+    // ! TEST FUNC
+    const payForTest = async () => {
+        const ipData = await getClientIp()
+        const userIp = IpSchema.parse(ipData)
+
+        const datam = {
+            user_ip: userIp.ip,
+            currency: 'TL',
+            user_address: taxInfo.address,
+            plan,
+            annual
+        }
+
+        puchaseForTest.mutate(datam, {
+            onSuccess: (data) => {
+                console.log("ok", data.payment_amount);
+                notifySuccessBR('Test payment OK')
+
+                setTimeout(() => {
+                    replace(AppRoutes.PAYMENT_SUCCESS)
+                }, 3000);
+            },
+            onError(error) {
+                console.log(error)
+                notifyError('Ödeme sırasında bir hata oluştu!')
+                setBusy(false)
+            },
+
+        })
+    }
+
     const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
         console.log({ cardData });
 
@@ -181,14 +211,13 @@ const PaymentCard: React.FC = () => {
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
                     user_name: "test user",
-                    user_phone: "05537214824"
                 }
 
                 console.log(aa);
                 setPayData(aa)
 
                 setTimeout(() => {
-                    buttonRef.current?.click()
+                    // buttonRef.current?.click()
 
                 }, 3500);
 
@@ -415,14 +444,10 @@ const PaymentCard: React.FC = () => {
 
                         </div>
 
-                        {/* <SubmitButton busy={busy} text={'Ödeme Yap'} /> */}
-
-
                         <button
                             className='bg-violet-600 text-white px-8 py-2 rounded-md w-full'
                             type="submit"
-                            disabled={busy}
-                        >
+                            disabled={busy}>
                             Ödeme Yap
                         </button>
 
@@ -431,7 +456,11 @@ const PaymentCard: React.FC = () => {
             </div>
 
         </div>
-
+        <button
+            onClick={() => payForTest()}
+            className="text-slate-100 mt-8 py-2 px-3">
+            p
+        </button>
     </div>)
 }
 

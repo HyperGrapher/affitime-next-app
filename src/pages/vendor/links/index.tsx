@@ -8,6 +8,7 @@ import { trpc } from '../../../utils/trpc';
 import LinkList from '../../../components/_vendor/links/LinkList';
 import { AppRoutes } from "../../../config/appRoutes";
 import Head from "next/head";
+import { checkTrial } from '../../../utils/checkTrial';
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -33,8 +34,16 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
-    return { props: {} }
 
+    const check = await checkTrial(session)
+    if (check.paymentRequired) return {
+        redirect: {
+            destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,
+            permanent: false
+        }
+    }
+
+    return { props: {} }
 }
 
 // https://mantine.dev/hooks/use-pagination/

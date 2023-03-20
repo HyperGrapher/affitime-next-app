@@ -12,6 +12,8 @@ import { FormFieldError, FormFieldWrapper } from '../../components/error-message
 import classNames from '../../utils/classnames';
 import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useRouter } from "next/router";
+import { AppRoutes } from "../../config/appRoutes";
 
 
 interface IFormData {
@@ -39,6 +41,8 @@ const validationSchema = z.object({
 const Account = () => {
     const [busy, setBusy] = useState(false)
     const updatePassword = trpc.auth.updatePassword.useMutation()
+    const endTrialForTest = trpc.testing.endTrialForTest.useMutation()
+    const { replace } = useRouter()
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<IFormData>({
         resolver: zodResolver(validationSchema),
@@ -173,6 +177,34 @@ const Account = () => {
 
                 </div>
             </PageCard>
+
+            <div id="testing" className="text-center">
+
+                <button className="text-slate-100 py-2 px-3 rounded-md"
+                    onClick={() => {
+
+                        endTrialForTest.mutate(undefined, {
+                            onSuccess: () => {
+                                notifySuccessBR("Trial Güncellendi!")
+
+                                setTimeout(() => {
+                                    
+                                    replace(AppRoutes.VENDOR_DASHBOARD)
+                                }, 1000);
+
+                            },
+                            onError(error) {
+                                console.log(error)
+                                notifyError(error.message ?? 'Hata. Trial Güncellenemedi!')
+                            },
+
+                        })
+
+                    }}>
+                    Trial sonlandir
+                </button>
+            </div>
+
         </div>
     )
 }

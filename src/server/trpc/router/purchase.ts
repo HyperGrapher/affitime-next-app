@@ -7,7 +7,7 @@ import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
 import { PRICING_ANNUALY, PRICING_MONTHLY } from "../../../config/pricing";
 import { taxinfoValidationSchema } from "../../../interface/zod.schema";
-import { IPlanPaymentData } from "../../../interface/payments.interface";
+import type { IPlanPaymentData } from "../../../interface/payments.interface";
 
 const paytr_post_url = "https://www.paytr.com/odeme";
 const merchant_ok_url = "http://affitime.com/payments/success";
@@ -25,6 +25,12 @@ const card_type = ""; // taksit icin gerekli yoksa degil. Alabileceği değerler
 const installment_count = "0"; // Taksit Sayısı
 
 export type PlanType = "BASIC" | "PRO" | "ULTIMATE";
+
+const total = (annual: boolean, price: string) => {
+  const calc = annual ? parseInt(price) * 12 : price;
+
+  return String(calc);
+};
 
 export const purchaseRouter = router({
   getTaxInfo: protectedProcedure.query(({ ctx }) => {
@@ -57,6 +63,10 @@ export const purchaseRouter = router({
       });
 
       try {
+        await ctx.prisma.user.update({
+          where: { id },
+          data: { fname: input.fname, lname: input.lname },
+        });
         if (existing) {
           return await ctx.prisma.taxinfo.update({
             where: { user_id: id },
@@ -90,10 +100,11 @@ export const purchaseRouter = router({
       const { vendorId } = ctx.session;
       const { user_ip, annual, currency, user_address, plan } = input;
 
-      // let payment_amount = annual
-      //   ? PRICING_ANNUALY[plan as PlanType]
-      //   : PRICING_MONTHLY[plan as PlanType];
-      const payment_amount = "1290.00";
+      const payment_amount_as_plan = annual
+        ? PRICING_ANNUALY[plan as PlanType]
+        : PRICING_MONTHLY[plan as PlanType];
+      const payment_amount = total(annual, payment_amount_as_plan) + ".00";
+      console.log({ payment_amount });
       const vendor = await ctx.prisma.vendor.findUnique({
         where: { id: vendorId },
         include: { user: true },
@@ -106,15 +117,13 @@ export const purchaseRouter = router({
         });
 
       const merchant_oid = "IN" + Date.now(); // En fazla 64 karakter, Alfa numerik
-      // > microtime.now()
-      // 1297448895297028
 
       const user_basket = JSON.stringify([
         [`${annual ? "YILLIK" : "AYLIK"}-${plan}-PLAN`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
       ]);
 
       const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
-      const user_name = 'test user' // `${vendor.user.fname} ${vendor.user.lname}`;
+      const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
       const user_phone = vendor.phone?.startsWith("0")
         ? vendor.phone
         : `0${vendor.phone}`;
@@ -130,18 +139,11 @@ export const purchaseRouter = router({
         .update(paytr_token)
         .digest("base64");
 
-        /*
-1|affiti.m | ---------> FAILED - token != callback.hash
-1|affiti.m | ---------> callback.hash:  a5+nIiuduXG3g/S2daUNhnvsGTtCiMNqE6XYk6SWJrc=
-1|affiti.m | ---------> record.token:  LYJQZpP3pa24lOO5tQ2+g7SWAY9Z/muhMrFlX/IMtF0=
-        */
-
       try {
         await ctx.prisma.planPayment.create({
           data: {
             userId: vendor.userId,
             merchant_oid,
-            token,
             user_basket,
             user_phone,
             user_name,

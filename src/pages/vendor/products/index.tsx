@@ -10,6 +10,9 @@ import { HiPlus } from 'react-icons/hi'
 import LinkButton from "../../../components/buttons/LinkButton";
 import { AppRoutes } from "../../../config/appRoutes";
 import Head from "next/head";
+import { checkTrial } from '../../../utils/checkTrial';
+
+
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -33,7 +36,14 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
-
+    
+    const check = await checkTrial(session)
+    if (check.paymentRequired) return {
+        redirect: {
+            destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,
+            permanent: false
+        }
+    }
 
     return { props: {} }
 

@@ -1,37 +1,29 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { UserRoles } from '../../interface/auth.interface'
-import { AppRoutes } from '../../config/appRoutes'
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
+import { AppRoutes } from '../../config/appRoutes';
+import { UserRoles } from '../../interface/auth.interface';
 import classNames from "../../utils/classnames";
 // import { trpc } from "../../utils/trpc";
 // import { prisma } from "../../server/db/client";
-import { checkTrial } from '../../utils/checkTrial';
-import { useRouter } from 'next/router';
-import PageCard from '../../components/card/Card';
-import { Lira, Space } from "../../components/shared/HtmlCodes";
-import { PRICING_MONTHLY, PRICING_ANNUALY } from '../../config/pricing';
-import { useEffect, useMemo, useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import dynamic from 'next/dynamic';
 import Head from 'next/head';
-import IconButton from '../../components/buttons/IconButton';
+import { useRouter } from 'next/router';
+import { useMemo, useState } from 'react';
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiArrowLeft as BackIcon, HiPencil, HiPlus } from 'react-icons/hi';
-import TopBarProgress from 'react-topbar-progress-indicator';
-import { z } from 'zod';
+import { HiArrowLeft as BackIcon, HiPlus } from 'react-icons/hi';
+import IconButton from '../../components/buttons/IconButton';
+import PageCard from '../../components/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
-import { zodResolver } from '@hookform/resolvers/zod';
 import ScrollToTop from '../../components/scroll-to-top/ScrollToTop';
-import { Container, Stack, TextField, Typography } from '@mui/material';
-import Card from '../../components/credit-card/card/Card';
-import axios from 'axios';
+import { Lira } from "../../components/shared/HtmlCodes";
 import { PAYTR } from '../../config/constants';
-import { trpc } from '../../utils/trpc';
-import { Base64 } from 'js-base64';
+import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
+import { taxinfoValidationSchema } from '../../interface/zod.schema';
 import { notifyError } from '../../utils/notifications';
-import { IpSchema, taxinfoValidationSchema } from '../../interface/zod.schema';
-import getClientIp from '../../utils/getClientIp';
-import dynamic from 'next/dynamic'
+import { trpc } from '../../utils/trpc';
 
 const DynamicPaymentCard = dynamic(() => import('../../components/purchase_plan/PaymentCard'), {
     ssr: false,
