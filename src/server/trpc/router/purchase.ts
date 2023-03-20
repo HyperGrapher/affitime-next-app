@@ -167,7 +167,7 @@ export const purchaseRouter = router({
         merchant_oid,
         email: vendor.user.email,
         payment_type,
-        payment_amount: parseFloat(payment_amount), // double
+        payment_amount: payment_amount, 
         installment_count: parseInt(installment_count),
         non_3d: parseInt(non_3d),
         non3d_test_failed: parseInt(non3d_test_failed),

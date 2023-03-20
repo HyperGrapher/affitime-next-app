@@ -207,10 +207,8 @@ const PaymentCard: React.FC = () => {
                     expiry_month: month,
                     expiry_year: year,
                     cvv: cardData.cvvNumber,
-                    payment_amount: "1290.00",
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
-                    user_name: "test user",
                 }
 
                 console.log(aa);
