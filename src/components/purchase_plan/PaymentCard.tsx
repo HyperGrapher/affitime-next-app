@@ -16,6 +16,8 @@ import getClientIp from '../../utils/getClientIp';
 import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
 import { AppRoutes } from '../../config/appRoutes';
+import TopBarProgress from "react-topbar-progress-indicator";
+
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
@@ -232,6 +234,7 @@ const PaymentCard: React.FC = () => {
 
 
     return (<div className="bg-white rounded-xl px-4 py-8 w-full mx-auto shadow-xl">
+        {busy && <TopBarProgress />}
 
         <h1 className="text-xl text-center font-bold mb-4 text-slate-500">
             Ödeme Yapın
