@@ -7,7 +7,12 @@ import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
 import { PRICING_ANNUALY, PRICING_MONTHLY } from "../../../config/pricing";
 import { taxinfoValidationSchema } from "../../../interface/zod.schema";
-import type { IPlanPaymentData } from "../../../interface/payments.interface";
+import type {
+  IPlanPaymentData,
+  InstallmentType,
+} from "../../../interface/payments.interface";
+// import FormData from 'form-data'
+// import request from 'node:request';
 
 const paytr_post_url = "https://www.paytr.com/odeme";
 const merchant_ok_url = "http://affitime.com/payments/success";
@@ -167,7 +172,7 @@ export const purchaseRouter = router({
         merchant_oid,
         email: vendor.user.email,
         payment_type,
-        payment_amount: payment_amount, 
+        payment_amount: payment_amount,
         installment_count: parseInt(installment_count),
         non_3d: parseInt(non_3d),
         non3d_test_failed: parseInt(non3d_test_failed),
@@ -184,4 +189,47 @@ export const purchaseRouter = router({
 
       return response;
     }),
+
+  getInstallmentInfo: protectedProcedure.query(async ({ ctx }) => {
+    const { id } = ctx.session;
+
+    if (!id) throw new TRPCError({ code: "NOT_FOUND" });
+
+    const merchant_id = PAYTR.merchant_id;
+    const merchant_key = PAYTR.merchant_key;
+    const merchant_salt = PAYTR.merchant_salt;
+    const request_id = "RI" + Date.now();
+
+    const paytr_token = crypto
+      .createHmac("sha256", merchant_key)
+      .update(merchant_id + request_id + merchant_salt)
+      .digest("base64");
+
+    try {
+
+      const formData = new URLSearchParams(); // new FormData();
+      formData.append("merchant_id", String(merchant_id));
+      formData.append("request_id", request_id);
+      formData.append("merchant_key", merchant_key);
+      formData.append("merchant_salt", merchant_salt);
+      formData.append("paytr_token", paytr_token);
+      formData.append("single_ratio", "1");
+      formData.append("abroad_ratio", "0");
+
+      const data = await axios.request({
+        url: "https://www.paytr.com/odeme/taksit-oranlari",
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        data: formData,
+      });
+
+      return data.data as InstallmentType;
+    } catch (error) {
+      console.log(error);
+      throw new TRPCError({
+        code: "INTERNAL_SERVER_ERROR",
+        message: "Taksit oranlari alinamadi",
+      });
+    }
+  }),
 });

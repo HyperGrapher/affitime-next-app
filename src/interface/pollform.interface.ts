@@ -19,3 +19,22 @@ export interface InterestType {
   name: string;
   checked: boolean;
 }
+
+
+interface PollSocialFormElements extends HTMLFormControlsCollection {
+  instagram: HTMLInputElement;
+  twitter: HTMLInputElement;
+  facebook: HTMLInputElement;
+  tiktok: HTMLInputElement;
+  linkedin: HTMLInputElement;
+}
+
+export interface PollSocialFormElement extends HTMLFormElement {
+  readonly elements: PollSocialFormElements;
+}
+
+export interface SocialType {
+  platform: string;
+  handle: string;
+}
+

@@ -6,7 +6,7 @@ export enum AppRoutes {
   LEGAL = "/rules-and-policies",
   CONTACT = "/contact-us",
   BLOG = "/blog",
-  WELCOME = "/partner/dashboard",
+  WELCOME = "/welcome",
   PRICING = "/pricing",
   PAYWALL = "/payments/payment-required",
   PAYPAGE = "/payments/purchase",

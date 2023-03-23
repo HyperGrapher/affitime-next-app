@@ -31,4 +31,35 @@ export const partnerRouter = router({
         return { success: false, error: error };
       }
     }),
+
+    updateSocials: partnerProcedure
+    .input(
+      z.array(
+        z.object({
+          platform: z.string(),
+          handle: z.string(),
+        })
+      )
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { partnerId } = ctx.session;
+
+      console.log({ partnerId });
+      console.log(input);
+
+      try {
+        await ctx.prisma.partner.update({
+          where: { id: partnerId },
+          data: {
+            socials: [...input],
+          },
+        });
+
+        return { success: true, error: false };
+      } catch (error) {
+        console.error(error);
+        return { success: false, error: error };
+      }
+    }),
+
 });

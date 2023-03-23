@@ -19,7 +19,6 @@ import PageCard from '../../components/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
 import ScrollToTop from '../../components/scroll-to-top/ScrollToTop';
 import { Lira } from "../../components/shared/HtmlCodes";
-import { PAYTR } from '../../config/constants';
 import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
 import { taxinfoValidationSchema } from '../../interface/zod.schema';
 import { notifyError } from '../../utils/notifications';
@@ -34,48 +33,6 @@ const DynamicPaymentCard = dynamic(() => import('../../components/purchase_plan/
 // https://www.npmjs.com/package/payment
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
-// const x = trpc.payments.updateUserTime.useMutation()
-// useEffect(() => {
-// }, [plan, annual, step])
-// const [pricing, setPricing] = useState<IPlanPricing>()
-// vkmo 10
-// tc 11
-
-const basket = JSON.stringify([
-    ['Örnek Ürün 1', '50.00', 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
-
-]);
-
-const merchant_id = PAYTR.merchant_id;
-const merchant_key = PAYTR.merchant_key;
-const merchant_salt = PAYTR.merchant_salt;
-const user_basket = basket;
-const merchant_oid = "IN" + Date.now(); // En fazla 64 karakter, Alfa numerik
-// > microtime.now()
-// 1297448895297028
-
-const email = 'testnon3d@paytr.com'; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
-const payment_amount = '100.99'; // Tahsil edilecek tutar.
-const currency = 'TL';
-const test_mode = '1';
-const user_name = 'PayTR Test';
-const user_address = 'test test test'; // Müşterinizin sitenizde kayıtlı veya form aracılığıyla aldığınız adres bilgisi.
-const user_phone = '05555555555';
-const user_ip = '176.33.107.198';
-const merchant_ok_url = 'http://affitime.com/payments/success';
-// Ödeme sürecinde beklenmedik bir hata oluşması durumunda müşterinizin yönlendirileceği sayfa
-// Bu sayfa siparişi iptal edeceğiniz sayfa değildir! Yalnızca müşterinizi bilgilendireceğiniz sayfadır!
-const merchant_fail_url = 'http://affitime.com/payments/fail';
-const debug_on = 1;
-const client_lang = 'tr'; //Ödeme süreci dil seçeneği tr veya en.
-const payment_type = 'card'; // Ödeme türü
-const installment_count = '0'; // Taksit Sayısı
-const non_3d = '1'; //3d'siz işlem
-const card_type = '';  // advantage, axess, combo, bonus, cardfinans, maximum, paraf, world, saglamkart
-//non3d işlemde, başarısız işlemi test etmek için 1 gönderilir (test_mode ve non_3d değerleri 1 ise dikkate alınır!)
-const non3d_test_failed = '0';
-
-const paytr_post_url = "https://www.paytr.com/odeme";
 
 // (Fatura bilgileri: VKN/TCKN * , Unvan, Ad, Soyad, Vergi Dairesi, Ülke, Adres )
 const Purchase = () => {

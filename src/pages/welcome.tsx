@@ -12,7 +12,10 @@ import { HiPencil } from 'react-icons/hi';
 import { trpc } from '../utils/trpc';
 import { useRouter } from 'next/router';
 import SocialItem from "../components/poll/SocialItem";
-import {Base64} from 'js-base64';
+import { Base64 } from 'js-base64';
+import { useEffect, useState } from "react";
+import InterestForm from "../components/poll/InterestForm";
+import SocialForm from "../components/poll/SocialForm";
 
 
 // ? TEST EXIST
@@ -20,81 +23,14 @@ const Welcome: NextPage = () => {
 
 
   const { replace } = useRouter()
-
-  const updatePartnerInterests = trpc.partner.updateInterests.useMutation()
-
-
-  const onPollSubmit = (e: React.FormEvent<PollCatsFormElement>) => {
-    e.preventDefault()
-    const data = [
-      {
-        name: POLL_CATEGORIES["cat1"],
-        checked: e.currentTarget.elements.cat1.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat2"],
-        checked: e.currentTarget.elements.cat2.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat3"],
-        checked: e.currentTarget.elements.cat3.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat4"],
-        checked: e.currentTarget.elements.cat4.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat5"],
-        checked: e.currentTarget.elements.cat5.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat6"],
-        checked: e.currentTarget.elements.cat6.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat7"],
-        checked: e.currentTarget.elements.cat7.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat8"],
-        checked: e.currentTarget.elements.cat8.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat9"],
-        checked: e.currentTarget.elements.cat9.checked,
-      },
-      {
-        name: POLL_CATEGORIES["cat10"],
-        checked: e.currentTarget.elements.cat10.checked,
-      },
-
-    ]
-
-    const truthyCats = data.map(x => x.checked ? x : undefined).filter(x => x !== undefined)
-
-    if (truthyCats.length === 0) return notifyError("En az bir kategori seçin!")
-
-    const bas = Base64.encode("test text"); 
-    
-    updatePartnerInterests.mutate(truthyCats as InterestType[], {
-      onSuccess: () => {
-        // replace(AppRoutes.PARTNER_DASHBOARD)
-        console.log("ok");
-
-      },
-      onError(error) {
-        console.log(error)
-        notifyError('Hata. ilgi alanları düzenlenemedi!')
-        replace(AppRoutes.PARTNER_DASHBOARD)
-
-        // setBusy(false)
-      },
-    })
+  const [step, setStep] = useState(0)
 
 
+  useEffect(() => {
+    console.log(`Step: ${step}`);
 
+  }, [step])
 
-  }
 
   return (
     <main className='mt-24'>
@@ -104,67 +40,8 @@ const Welcome: NextPage = () => {
       <div className="flex flex-col items-center gap-2 container mx-auto px-2 md:px-24">
 
 
-        <PageCard>
-          <h1 className='text-xl text-center font-medium text-slate-600'>Takipçilerin hangi kategorilerdeki ürünlerle ilgileniyor? (Birden fazla seçim yapabilirsin.)</h1>
-
-          <section className="my-8">
-
-            <form onSubmit={onPollSubmit} className="mx-auto">
-
-              <div className="flex flex-wrap lg:w-4/5 sm:mx-auto sm:mb-2 -mx-2">
-
-                <InterestItem label={POLL_CATEGORIES.cat1} cat="cat1" />
-                <InterestItem label={POLL_CATEGORIES.cat2} cat="cat2" />
-                <InterestItem label={POLL_CATEGORIES.cat3} cat="cat3" />
-                <InterestItem label={POLL_CATEGORIES.cat4} cat="cat4" />
-                <InterestItem label={POLL_CATEGORIES.cat5} cat="cat5" />
-                <InterestItem label={POLL_CATEGORIES.cat6} cat="cat6" />
-                <InterestItem label={POLL_CATEGORIES.cat7} cat="cat7" />
-                <InterestItem label={POLL_CATEGORIES.cat8} cat="cat8" />
-                <InterestItem label={POLL_CATEGORIES.cat9} cat="cat9" />
-                <InterestItem label={POLL_CATEGORIES.cat10} cat="cat10" />
-
-
-              </div>
-
-              <div className="mt-4">
-                <SocialItem name="insta" label="Instagram" />
-              </div>
-
-
-
-              <div className="bg-redx-100 mt-8 px-2 md:px-24">
-
-                {/* <IconButton title={"Gonder"} fn={() => null} /> */}
-
-                <button
-                  type='submit'
-                  className={classNames(
-                    "bg-violet-600 hover:bg-violet-700 transition-colors",
-                    "flex items-center justify-center flex-nowrap space-x-2",
-                    "shadow-sm hover:shadow-lg rounded-md ",
-                    "py-2 px-8",
-                    "disabled:bg-violet-400 disabled:shadow-none",
-                    "w-full"
-                  )}
-                >
-
-                  <HiPencil color="white" size="16px" />
-
-                  <span className="text-slate-50 text-xs font-medium tracking-wide text-center">
-                    Gönder
-                  </span>
-                </button>
-
-              </div>
-
-
-            </form>
-
-
-          </section>
-
-        </PageCard>
+        {step === 0 && <InterestForm setStep={setStep} />}
+        {step === 1 && <SocialForm setStep={setStep} />}
 
       </div>
 

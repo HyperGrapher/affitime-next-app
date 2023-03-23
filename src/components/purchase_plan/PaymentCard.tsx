@@ -1,4 +1,4 @@
-'use client'
+// 'use client'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from "next/router";
 import { useMemo, useRef, useState } from "react";
@@ -17,7 +17,9 @@ import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
 import { AppRoutes } from '../../config/appRoutes';
 import TopBarProgress from "react-topbar-progress-indicator";
-
+import type { GetServerSideProps } from "next";
+import { getSession } from "next-auth/react";
+import { UserRoles } from '../../interface/auth.interface';
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
@@ -92,8 +94,7 @@ const validationSchema = z.object({
     });
 
 
-const PaymentCard: React.FC = () => {
-
+const PaymentCard = () => {
     const { query, replace } = useRouter()
     const [busy, setBusy] = useState(false)
     const buttonRef = useRef<HTMLButtonElement>(null)
@@ -136,6 +137,7 @@ const PaymentCard: React.FC = () => {
     }, [])
 
     const puchase = trpc.purchase.purchasePack.useMutation()
+    const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
     const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
 
     // ! TEST FUNC

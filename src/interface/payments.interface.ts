@@ -36,3 +36,28 @@ export interface IPlanPaymentData {
   debug_on?: number; // 0,1
   sync_mode?: number; // 0,1
 }
+
+
+export interface InstallmentType {
+  status:           string;
+  request_id:       string;
+  max_inst_non_bus: string;
+  oranlar:          Oranlar;
+}
+
+export interface Oranlar {
+  world:      { [key: string]: number };
+  axess:      { [key: string]: number };
+  maximum:    { [key: string]: number };
+  cardfinans: { [key: string]: number };
+  paraf:      { [key: string]: number };
+  advantage:  { [key: string]: number };
+  combo:      { [key: string]: number };
+  bonus:      { [key: string]: number };
+  saglamkart: { [key: string]: number };
+  tumu:       Tumu;
+}
+
+export interface Tumu {
+  tek_cekim: string;
+}
