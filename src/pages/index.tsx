@@ -35,7 +35,7 @@ const Home: NextPage = () => {
             </Balancer>
 
           </h1>
-          <p className="mb-8 leading-relaxed text-xl">
+          <p className="mb-8 leading-relaxed text-lg md:text-xl whitespace-nowrap">
             affitime ile firmanın satışlarını arttır.
             <br />
             affitime ile gelir elde et.
