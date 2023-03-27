@@ -87,7 +87,7 @@ const ProductItem: React.FC<ItemProps> = ({ p }) => {
 
                     <div className="flex justify-between w-full">
 
-                        <b className="text-stone-800 text-xs ">Tiklama:</b>
+                        <b className="text-stone-800 text-xs ">Tıklama:</b>
 
                         <p className="text-stone-600 text-xs font-medium whitespace-nowrap">
                             {numberWithCommas(p.perClick)} {p.perClickType === "CASH" ? <Lira /> : "%"}

@@ -78,7 +78,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
                     <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${pd?.link.product_id}`}>
-                        <h1 className='text-slate-600 text-2xl  mb-2 font-medium leading-tight'>
+                        <h1 className='text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight'>
                             {pd?.link.product.title}
                         </h1>
 

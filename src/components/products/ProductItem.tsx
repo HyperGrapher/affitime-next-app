@@ -92,7 +92,7 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
 
                     <div className="flex justify-between w-full">
 
-                        <b className="text-stone-800 text-xs ">Tiklama:</b>
+                        <b className="text-stone-800 text-xs ">Tıklama:</b>
 
                         <p className="text-stone-600 text-xs font-medium whitespace-nowrap">
                             {numberWithCommas(p.perClick)} {p.perClickType === "CASH" ? <Lira /> : "%"}
@@ -129,7 +129,7 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
 
                         {p.product_url ? <>{p.product_url.length > 25
                             ? p.product_url.substring(0, 25) + " ..." : p.product_url}</>
-                            : <span className="w-[50px]">Lutfen bir ürün linki Ekleyiniz!</span>}
+                            : <span className="w-[50px]">Lütfen bir ürün linki ekleyin!</span>}
                     </a>
                 </div>
 

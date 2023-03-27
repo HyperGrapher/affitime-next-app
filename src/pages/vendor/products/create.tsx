@@ -531,7 +531,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                                 "font-medium text-sm text-center  mb-4"
                                             )}
                                             htmlFor="product_url">
-                                            Tiklama Bedeli
+                                            Tıklama Bedeli
                                         </label>
 
                                         <RadioGroup

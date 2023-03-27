@@ -92,7 +92,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
                     <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link?.link.product_id}`}>
-                        <h1 className='text-slate-600 text-xl md:text-2xl  mb-2 font-medium leading-tight'>
+                        <h1 className='text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight'>
                             {link?.link.product.title}
                         </h1>
 
@@ -145,10 +145,10 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 <b className='text-neutral-500'> Hedef Link: </b>
                                 <a title={link?.link.product.product_url ?? ""} className='text-blue-500' href={link?.link.product.product_url ?? "#"}>{link?.link.product.product_url?.slice(0, 20)} ...</a>
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'>Ürün Sahibi:</b> {link?.link.vendor.brand}
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'>Website:</b>
                                 <a title={link?.link.vendor.website ?? ""} className='text-blue-500' href={link?.link.vendor.website ?? "#"}> {link?.link.vendor.website?.slice(0, 48)}</a>
 

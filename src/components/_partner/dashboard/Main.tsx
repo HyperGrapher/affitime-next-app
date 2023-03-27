@@ -134,8 +134,8 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
             <div className="flex items-center justify-between">
                 <b className="text-blue-500">{pl.username}</b>
 
-                <p>Link Sayisi: {String(pc.links)}</p>
-                <p>Urun sayisi: {String(pc.products)}</p>
+                <p>Link Sayısı: {String(pc.links)}</p>
+                <p>Ürün Sayısı: {String(pc.products)}</p>
                 <p>Aktif: {String(pc.active)}</p>
 
                 <Link href={'/'}>Detaylar</Link>
