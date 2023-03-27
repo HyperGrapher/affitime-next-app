@@ -105,7 +105,10 @@ const Navbar: React.FC = () => {
                     leaveTo='transform opacity-0 scale-95'>
                     <Menu.Items className='absolute right-0 z-10 mt-5 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
 
-                      <Menu.Item>
+                      
+                      {!sessionData ? <Fragment>
+
+                        <Menu.Item>
                         {({ active }) => (
                           <Link
                             href='/'
@@ -118,7 +121,6 @@ const Navbar: React.FC = () => {
                         )}
                       </Menu.Item>
 
-                      {!sessionData ? <Fragment>
 
                         <Menu.Item>
                           {({ active }) => (
@@ -163,7 +165,7 @@ const Navbar: React.FC = () => {
                             )}
                           </Menu.Item>
 
-                          {sessionData.role === UserRoles.VENDOR ? <Menu.Item>
+                          {sessionData.role === UserRoles.VENDOR ? <><Menu.Item>
                             {({ active }) => (
                               <Link
                                 href={AppRoutes.VENDOR_PRODUCTS}
@@ -174,7 +176,102 @@ const Navbar: React.FC = () => {
                                 Ürünler
                               </Link>
                             )}
-                          </Menu.Item> : null}
+                          </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.VENDOR_LINKS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Affiliate Linkleri
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.VENDOR_PAYMENTS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Ödemeler
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.VENDOR_NOTIFICATIONS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Bildirimler
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                          </> : (<>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.PARTNER_PRODUCTS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Ürünler
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.PARTNER_LINKS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Affiliate Linklerim
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.PARTNER_PAYMENTS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Ödemelerim
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.PARTNER_NOTIFICATIONS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block px-4 py-2 text-sm text-gray-700'
+                                  )}>
+                                  Bildirimler
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                          </>
+                          )}
 
                           <Menu.Item>
                             {({ active }) => (
