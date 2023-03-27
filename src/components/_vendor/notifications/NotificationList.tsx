@@ -4,6 +4,8 @@ import { notifyError } from "../../../utils/notifications";
 import { trpc } from '../../../utils/trpc';
 import NotificationItem from "./NotificationItem";
 import dynamic from 'next/dynamic'
+import { useMediaQuery as useMQ } from 'react-responsive';
+import NotificationItemMobile from "./NotificationItemMobile";
 
 const DynamicModalContainer = dynamic(() => import('../../modals/ModalContainer'), {
   ssr: false,
@@ -28,6 +30,10 @@ const NotificationList: React.FC<Props> = ({ links, refetch }) => {
   const [cancelModal, setCancelModal] = useState(false)
   const [confirmModal, setConfirmModal] = useState(false)
   const [linkId, setLinkId] = useState('')
+
+  const isMobile = useMQ({
+    maxWidth: 767,
+  })
 
   const update = trpc.link.confirmOrDenyLinkRequest.useMutation()
 
@@ -57,13 +63,25 @@ const NotificationList: React.FC<Props> = ({ links, refetch }) => {
       {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {links?.map(p => (
-          <NotificationItem
-            key={p.id}
-            link={p}
-            setLinkId={setLinkId}
-            confirmModal={() => setConfirmModal(true)}
-            cancelModal={() => setCancelModal(true)}
-          />))}
+          <React.Fragment key={p.id}>
+            {isMobile ? <NotificationItemMobile
+              key={p.id}
+              link={p}
+              setLinkId={setLinkId}
+              confirmModal={() => setConfirmModal(true)}
+              cancelModal={() => setCancelModal(true)}
+            /> : <NotificationItem
+              key={p.id}
+              link={p}
+              setLinkId={setLinkId}
+              confirmModal={() => setConfirmModal(true)}
+              cancelModal={() => setCancelModal(true)}
+            />}
+
+          </React.Fragment>
+        ))
+
+        }
       </ul>
 
       <DynamicModalContainer state={cancelModal}>

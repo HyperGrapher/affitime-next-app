@@ -1,9 +1,12 @@
-import type { Visit} from "@prisma/client";
+import type { Visit } from "@prisma/client";
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
 import React, { useState } from "react";
 import { trpc } from '../../../utils/trpc';
 import VendorLinkItem from "./LinkItem";
 import dynamic from 'next/dynamic'
+import { useMediaQuery as useMQ } from 'react-responsive';
+import LinkItemMobile from "./LinkItemMobile";
+
 
 const DynamicModalContainer = dynamic(() => import('../../modals/ModalContainer'), {
   ssr: false,
@@ -22,7 +25,9 @@ type Props = {
 const VendorLinkList: React.FC<Props> = ({ links }) => {
   const [modal, setModal] = useState(false)
   const [deleteId, setDeleteId] = useState('')
-
+  const isMobile = useMQ({
+    maxWidth: 767,
+  })
   const pasifyLinkMutation = trpc.product.pasifyProduct.useMutation()
 
   const handlePasifyLink = async () => {
@@ -41,11 +46,22 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
       {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {links?.map(p => (
-          <VendorLinkItem
-            key={p.id}
-            link={p}
-            setDeleteId={setDeleteId}
-            confirmModal={() => setModal(true)} />))}
+          <React.Fragment key={p.id}>
+            {isMobile
+              ? <LinkItemMobile
+                key={p.id}
+                link={p}
+                setDeleteId={setDeleteId}
+                confirmModal={() => setModal(true)} />
+              : <VendorLinkItem
+                key={p.id}
+                link={p}
+                setDeleteId={setDeleteId}
+                confirmModal={() => setModal(true)} />}
+
+          </React.Fragment>
+
+        ))}
       </ul>
 
       <DynamicModalContainer state={modal} key={"adda"}>

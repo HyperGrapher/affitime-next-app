@@ -172,23 +172,24 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
             <PageCard>
                 <div className="flex items-center">
 
-                    <h2 className="font-bold text-xl text-slate-700 ml-2">
+                    <h2 className="font-bold text-lg md:text-xl text-slate-700 ml-2">
                         Ürün Detayları
                     </h2>
-
-                    <IconButton
-                        title={"Geri Git"}
-                        disabled={busy}
-                        icon={<BackIcon color="white" size="16px" />}
-                        twClasses="ml-auto w-38"
-                        fn={back} />
+                    <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
+                        <IconButton
+                            title={"Geri Git"}
+                            disabled={busy}
+                            icon={<BackIcon color="white" size="16px" />}
+                            twClasses="ml-auto w-38"
+                            fn={back} />
+                    </div>
 
                 </div>
 
                 <div className='mb-6 ml-2 w-1/2 sm:w-80'>
 
 
-                    <p className="text-slate-400 text-sm leading-tight">
+                    <p className="text-slate-400 text-xs md:text-sm leading-tight">
                         <Balancer>
                             Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz
                             bir affiliate linki oluşturun.
@@ -201,7 +202,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                 {partnerHasLink && (
                     <div className="bg-yellow-50 px-2 py-2 rounded mb-2 flex items-center space-x-3">
                         <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
-                        <b className="text-neutral-500 text-sm">
+                        <b className="text-neutral-500 text-xs md:text-sm">
                             Bu ürün için zaten bir link mevcut.  <Space />
                             <Link className="text-blue-500 underline" href={`${AppRoutes.PARTNER_LINK_DETAIL}/${partnerLinkId}`}>Link Detay Sayfası</Link>
                         </b>
@@ -213,7 +214,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                 <hr className='' />
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
-                    <h1 className='text-slate-600 text-2xl  mb-2 font-medium leading-tight'>
+                    <h1 className='text-slate-600 text-xl md:text-2xl  mb-2 font-medium leading-tight'>
                         {pd?.title}
                     </h1>
                     <div className="flex space-x-4 mt-4 items-center">
@@ -235,17 +236,17 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                         }
 
                         <div className='space-y-2'>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'> Hedef Link: </b>
-                                <a title={pd?.product_url ?? ""} className='text-blue-500' href={pd?.product_url ?? "#"}>{pd?.product_url?.slice(0, 44)} ...</a>
+                                <a title={pd?.product_url ?? ""} className='text-blue-500' href={pd?.product_url ?? "#"}>{pd?.product_url?.slice(0, 20)} ...</a>
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'> ID:</b> {pd?.id}
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'>Ürün Sahibi:</b> {pd?.vendor.brand}
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'>Website:</b>
                                 <a title={pd?.vendor.website ?? ""} className='text-blue-500' href={pd?.vendor.website ?? "#"}> {pd?.vendor.website?.slice(0, 48)}</a>
 
@@ -274,14 +275,17 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-slate-500'>Tiklama Odeme Sekli: </b> {pd?.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-sm md:text-base'><b className='text-slate-500'>
+                                Tıklama:
+                            </b> {pd?.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}
+                            </p>
                             <hr />
-                            <p className='text-base'><b className='text-slate-500'>Tiklama Basi Bedeli: </b> {pd?.perClick} {pd?.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-sm md:text-base'><b className='text-slate-500'>Tıklama Bedeli: </b> {pd?.perClick} {pd?.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-slate-500'>Satis Odeme Sekli: </b> {pd?.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-sm md:text-base'><b className='text-slate-500'>Satış: </b> {pd?.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-slate-500'>Satis Basi Bedeli: </b>{pd?.perSale} {pd?.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-sm md:text-base'><b className='text-slate-500'>Satış Bedeli: </b>{pd?.perSale} {pd?.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 

@@ -244,17 +244,17 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
                 <div className="flex items-center mb-6">
 
-                    <h2 className="font-bold text-xl text-slate-700 ml-2">
+                    <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
                         {edit ? "Ürün Düzenle" : "Ürün Ekle"}
                     </h2>
-
-                    <IconButton
-                        title={"Geri Git"}
-                        disabled={busy}
-                        icon={<BackIcon color="white" size="16px" />}
-                        twClasses="ml-auto w-38"
-                        fn={back} />
-
+                    <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
+                        <IconButton
+                            title={"Geri Git"}
+                            disabled={busy}
+                            icon={<BackIcon color="white" size="16px" />}
+                            twClasses="ml-auto w-38"
+                            fn={back} />
+                    </div>
                 </div>
 
                 {edit ? null : <div className='mb-6 ml-2 w-1/2 md:w-1/3'>

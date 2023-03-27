@@ -41,7 +41,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     return (
         <div className={"auth-container"}>
-            {sts === 'loading' && <TopBarProgress />} 
+            {sts === 'loading' && <TopBarProgress />}
 
             <Head>
                 <title>Affitime | Link Detayı</title>
@@ -50,23 +50,25 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
             <PageCard>
                 <div className="flex items-center">
 
-                    <h2 className="font-bold text-xl text-slate-700 ml-2">
+                    <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
                         Link Detayları
                     </h2>
 
-                    <IconButton
-                        title={"Geri Git"}
-                        disabled={busy}
-                        icon={<BackIcon color="white" size="16px" />}
-                        twClasses="ml-auto w-38"
-                        fn={back} />
+                    <div className="ml-auto scale-75 md:scale-100">
+                        <IconButton
+                            title={"Geri Git"}
+                            disabled={busy}
+                            icon={<BackIcon color="white" size="16px" />}
+                            twClasses="ml-auto w-38"
+                            fn={back} />
+                    </div>
 
                 </div>
 
                 <div className='mb-6 ml-2 w-1/2 sm:w-80'>
 
 
-                    <p className="text-slate-400 text-sm leading-tight">
+                    <p className="text-slate-400 text-xs md:text-sm leading-tight">
                         <Balancer>
                             Affiliate linki detay sayfasi
                         </Balancer>
@@ -90,22 +92,22 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
                     <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link?.link.product_id}`}>
-                        <h1 className='text-slate-600 text-2xl  mb-2 font-medium leading-tight'>
+                        <h1 className='text-slate-600 text-xl md:text-2xl  mb-2 font-medium leading-tight'>
                             {link?.link.product.title}
                         </h1>
 
                     </Link>
 
-                    <div className="flex space-x-4 mt-4 items-center">
+                    <div className="flex space-x-4 mt-4 items-start md:items-center">
                         {link?.link.product.image ?
                             <img
-                                className="object-cover hover:shadow rounded object-center w-32 h-32 aspect-square"
+                                className="object-cover hover:shadow rounded object-center w-28 h-28 md:w-32 md:h-32 aspect-square"
                                 src={link?.link.product.image}
                                 alt={link?.link.product.title ?? ""} />
                             : <Image
                                 className={classNames(
                                     "object-cover rounded hover:shadow object-center",
-                                    "w-32 h-32 aspect-square",
+                                    "w-28 h-28 md:w-32 md:h-32 aspect-square",
                                     "border border-1 border-stone-300"
                                 )}
                                 width={"85"}
@@ -115,7 +117,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         }
 
                         <div className='space-y-[0.18rem]'>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'> Durum: </b>
                                 <b className={`${link?.link.active ? "text-green-500" : "text-red-500"}`}>
                                     {link?.link.active
@@ -126,11 +128,11 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                     }
                                 </b>
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'> Ürün Fiyatı: </b>
                                 <span className=''>{link?.link.product.price} <Lira /> </span>
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'> Affiliate Linki:</b>
 
                                 {link?.link.active
@@ -139,9 +141,9 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                                 }
 
                             </p>
-                            <p className="text-sm">
+                            <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'> Hedef Link: </b>
-                                <a title={link?.link.product.product_url ?? ""} className='text-blue-500' href={link?.link.product.product_url ?? "#"}>{link?.link.product.product_url?.slice(0, 44)} ...</a>
+                                <a title={link?.link.product.product_url ?? ""} className='text-blue-500' href={link?.link.product.product_url ?? "#"}>{link?.link.product.product_url?.slice(0, 20)} ...</a>
                             </p>
                             <p className="text-sm">
                                 <b className='text-neutral-500'>Ürün Sahibi:</b> {link?.link.vendor.brand}
@@ -173,16 +175,16 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         Komisyon Oranları
                     </h3>
 
-                    <section className='flex items-center justify-between px-2'>
+                    <section className='flex items-center justify-between px-0 md:px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Tıklama Ödeme Şekli: </b> {link?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Tıklama: </b> {link?.link.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Tıklama Başı Bedeli: </b> {link?.link.perClick} {link?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Tıklama Bedeli: </b> {link?.link.perClick} {link?.link.perClickType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Satış Ödeme Şekli: </b> {link?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Satış: </b> {link?.link.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Satış Başı Bedeli: </b>{link?.link.perSale} {link?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Satış Bedeli: </b>{link?.link.perSale} {link?.link.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
                         </div>
                     </section>
 
@@ -224,14 +226,14 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <section className='flex items-center justify-between px-2'>
                         <div className=" flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Toplam Tıklama: </b> {(link?.validClicks ?? 0) + (link?.dubiousClicks ?? 0)} </p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Toplam Tıklama: </b> {(link?.validClicks ?? 0) + (link?.dubiousClicks ?? 0)} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Geçersiz Tıklama: </b> {link?.dubiousClicks} </p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Geçersiz Tıklama: </b> {link?.dubiousClicks} </p>
                         </div>
                         <div className="flex-1">
-                            <p className='text-base'><b className='text-neutral-500'>Geçerli Tıklama: </b> {link?.validClicks} </p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Geçerli Tıklama: </b> {link?.validClicks} </p>
                             <hr />
-                            <p className='text-base'><b className='text-neutral-500'>Ödeme Bedeli: </b> {link?.totalDuePayment}  <Lira />  </p>
+                            <p className='text-xs md:text-sm'><b className='text-neutral-500'>Ödeme Bedeli: </b> {link?.totalDuePayment}  <Lira />  </p>
                         </div>
                     </section>
 

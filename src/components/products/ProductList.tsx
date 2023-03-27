@@ -6,6 +6,9 @@ import VendorProductItem from "./ProductItem";
 import ProductListHeader from "./ProductListHeader";
 import dynamic from 'next/dynamic'
 import EmptyListView from "../shared/EmptyListView";
+import { useMediaQuery as useMQ } from 'react-responsive';
+import VendorProductItemMobile from "./ProductItemMobile";
+
 
 const DynamicModalContainer = dynamic(() => import('../modals/ModalContainer'), {
   ssr: false,
@@ -24,10 +27,12 @@ type Props = {
 }
 
 const VendorProductList: React.FC<Props> = ({ prod, refetch }) => {
-  
+
   const [modal, setModal] = useState(false)
   const [deleteId, setDeleteId] = useState('')
-
+  const isMobile = useMQ({
+    maxWidth: 767,
+  })
   const pasifyProduct = trpc.product.pasifyProduct.useMutation()
 
   const handleDelete = async () => {
@@ -49,14 +54,23 @@ const VendorProductList: React.FC<Props> = ({ prod, refetch }) => {
 
     {prod?.length === 0 ? <EmptyListView title="Henüz bir ürün eklemediniz" /> : (<>
 
-      <ProductListHeader />
+      {isMobile ? null : <ProductListHeader />}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (
-          <VendorProductItem
-            key={p.id}
-            p={p}
-            setDeleteId={setDeleteId}
-            confirmModal={() => setModal(true)} />))}
+          <React.Fragment key={p.id}>
+            {isMobile
+              ? <VendorProductItemMobile
+                key={p.id}
+                p={p}
+                setDeleteId={setDeleteId}
+                confirmModal={() => setModal(true)} />
+              : <VendorProductItem
+                key={p.id}
+                p={p}
+                setDeleteId={setDeleteId}
+                confirmModal={() => setModal(true)} />}
+
+          </React.Fragment>))}
       </ul>
 
       <DynamicModalContainer state={modal} key={"adda"}>

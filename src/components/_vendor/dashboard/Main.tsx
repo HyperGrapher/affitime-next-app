@@ -177,7 +177,7 @@ type Props = {
 const SqrBox: React.FC<Props> = ({ title, desc, info }) => {
     return (
         <section className={classNames(
-            'bg-slate-100 hover:bg-slate-50 rounded xs:w-full-md:w-64 min-w-[12rem] 2xl:w-full px-4 py-2 aspect-auto',
+            'bg-slate-100 hover:bg-slate-50 rounded  w-full md:w-fit min-w-[12rem] 2xl:w-full px-4 py-2 aspect-auto',
             'shadow hover:shadow-md shadow-slate-300 bg-greenx-100',
             'flex items-center'
 

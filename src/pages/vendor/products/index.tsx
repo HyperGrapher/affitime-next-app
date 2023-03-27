@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
-    
+
     const check = await checkTrial(session)
     if (check.paymentRequired) return {
         redirect: {
@@ -66,20 +66,22 @@ const Products: NextPage = () => {
                 <div className="flex items-center mb-6">
 
                     <div className="ml-2">
-                        <h2 className="font-bold text-xl text-slate-700">Kampanya Ürünleriniz</h2>
+                        <h2 className="font-bold text-base md:text-xl text-slate-700">Kampanya Ürünleriniz</h2>
                         {vendor?.products && vendor?.products.length > 0 ? (
-                            <small>
+                            <small className="text-xs md:text-sm">
                                 Toplam {vendor?.products.length} adet ürün
                             </small>
                         ) : null}
                     </div>
+                    <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
 
-                    <LinkButton
-                        title={"Ürün Ekle"}
-                        href={AppRoutes.VENDOR_CREATE_PRODUCT}
-                        icon={<HiPlus color="white" size="16px" />}
-                        twClasses="ml-auto w-38" />
+                        <LinkButton
+                            title={"Ürün Ekle"}
+                            href={AppRoutes.VENDOR_CREATE_PRODUCT}
+                            icon={<HiPlus color="white" size="16px" />}
+                            twClasses="ml-auto w-38" />
 
+                    </div>
                 </div>
 
 
