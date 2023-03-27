@@ -1,13 +1,14 @@
-// 'use client'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from "next/router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from 'react-number-format';
+import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from 'zod';
 import Card from '../../components/credit-card/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import { AppRoutes } from '../../config/appRoutes';
 import { PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
 import type { IPlanPaymentData } from "../../interface/payments.interface";
 import { IpSchema } from '../../interface/zod.schema';
@@ -15,18 +16,11 @@ import classNames from "../../utils/classnames";
 import getClientIp from '../../utils/getClientIp';
 import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
-import { AppRoutes } from '../../config/appRoutes';
-import TopBarProgress from "react-topbar-progress-indicator";
-import type { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
-import { UserRoles } from '../../interface/auth.interface';
-
-import FormControl from '@mui/material/FormControl';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
-import InstallmentTable from '../../pages/payments/InstallmentTable';
 import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
+import InstallmentTable from '../../pages/payments/InstallmentTable';
 
 type InstProps = {
     setIsTaksit: React.Dispatch<React.SetStateAction<boolean>>
@@ -272,7 +266,7 @@ const PaymentCard = () => {
                     cvv: cardData.cvvNumber,
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
-                    installment_count: installmentAmount
+                    installment_count: isTaksit ? installmentAmount : "0"
                 }
 
                 console.log(aa);

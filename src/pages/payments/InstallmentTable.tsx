@@ -1,16 +1,14 @@
 import React, { useState } from 'react'
+import { Lira } from '../../components/shared/HtmlCodes'
 import type { InstallmentType } from '../../interface/payments.interface'
 import { numberWithCommas } from '../../utils/helpers'
-import { Lira } from '../../components/shared/HtmlCodes'
 
 
 type Props = {
     price?: number,
     table?: InstallmentType | undefined
     setInstallmentAmount: React.Dispatch<React.SetStateAction<string>>
-
 }
-
 
 const calcMonthlyPayment = (price: number | undefined, rate: number | undefined, month: number) => {
 
@@ -27,20 +25,12 @@ const calcTotalPayment = (price: number | undefined, rate: number | undefined) =
     if (!price) return 0;
     if (!rate) return 0;
 
-    const tot = (price * (rate / 100) + price)
+    const tot = price * (1 + rate / 100)
     return tot.toFixed(2)
 }
 
 
 const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount }) => {
-
-    const [instAmount, setInstAmount] = useState("0")
-
-
-    const handleOnchange = (val: string) => {
-        setInstallmentAmount(val)
-        setInstAmount(val)
-    }
 
 
     return (
@@ -68,7 +58,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_2'], 2)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_2'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="2" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="2" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -78,7 +68,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_3'], 3)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_3'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="3" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="3" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -89,7 +79,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_4'], 4)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_4'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="4" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="4" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -100,7 +90,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_5'], 5)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_5'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="5" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="5" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -112,7 +102,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_6'], 6)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_6'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="6" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="6" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -124,7 +114,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_7'], 7)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_7'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="7" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="7" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -136,7 +126,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_8'], 8)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_8'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="8" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="8" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -149,7 +139,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_9'], 9)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_9'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="9" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="9" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -162,7 +152,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_10'], 10)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_10'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="10" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="10" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -174,7 +164,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_11'], 11)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_11'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="11" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="11" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 
@@ -186,7 +176,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                                 <td className="px-4 py-2 text-center">{String(numberWithCommas(calcMonthlyPayment(price, table?.oranlar.advantage['taksit_12'], 12)))} <Lira /></td>
                                 <td className="px-4 py-2 text-gray-900 text-center">{String(numberWithCommas(calcTotalPayment(price, table?.oranlar.advantage['taksit_12'])))} <Lira /></td>
                                 <td className="w-10 text-center">
-                                    <input name="installment_amount" type="radio" value="12" onChange={(e) => handleOnchange(e.currentTarget.value)} />
+                                    <input name="installment_amount" type="radio" value="12" onChange={(e) => setInstallmentAmount(e.currentTarget.value)} />
                                 </td>
                             </tr>
 

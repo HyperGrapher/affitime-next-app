@@ -21,6 +21,7 @@ import ScrollToTop from '../../components/scroll-to-top/ScrollToTop';
 import { Lira } from "../../components/shared/HtmlCodes";
 import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
 import { taxinfoValidationSchema } from '../../interface/zod.schema';
+import { numberWithCommas } from "../../utils/helpers";
 import { notifyError } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
 
@@ -46,7 +47,6 @@ const Purchase = () => {
     const annual = (query.ann as string) === "true"
     const s = query.s as string
     const [step, setStep] = useState(s)
-    const [counter, setCounter] = useState(0)
 
     const checkCoupon = (event: React.FormEvent<HTMLFormElement>) => {
         // event.preventDefault()
@@ -86,7 +86,7 @@ const Purchase = () => {
                             {annual ? PRICING_ANNUALY[plan] : PRICING_MONTHLY[plan]}  <Lira size='18px' /> / Ay - {annual ? "Yıllık faturalandırılır" : "Aylık faturalandırılır"}
                         </p>
                         <p className="text-lg">
-                            <b>Toplam: </b>{total} <Lira size='18px' />
+                            <b>Toplam: </b>{numberWithCommas(total)} <Lira size='18px' />
                         </p>
 
                         {false && <form onSubmit={checkCoupon}>
@@ -137,7 +137,6 @@ const Purchase = () => {
                         fn={back} />
 
                 </div>
-                {/* <InstallmentTable />                              */}
             </PageCard>
 
             {step === "0" && <TaxInfo setStep={setStep} />}
@@ -184,8 +183,6 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
             setValue("tckn", data?.tckn ?? '')
             setValue("taxOffice", data?.taxOffice ?? '')
             setValue("address", data?.address ?? '')
-
-
         }
     })
 
