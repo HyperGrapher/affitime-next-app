@@ -24,8 +24,8 @@ const Home: NextPage = () => {
       <meta name="description" content="Affiliate uygulamasi" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-    <header className="text-white body-font bg-violet-700 py-12  bg-gradient-to-r from-indigo-900 to-violet-500">
-      <div className="container mx-auto flex px-8 py-24 md:flex-row flex-col items-center" >
+    <header className="text-white body-font bg-violet-700 py-8  bg-gradient-to-r from-indigo-900 to-violet-500">
+      <div className="container mx-auto flex px-4 md:flex-row flex-col items-center" >
         <div className="lg:flex-grow md:w-1/2 lg:pr-24 md:pr-16 flex flex-col md:items-start md:text-left mb-16 md:mb-0 items-center text-center" >
           <h1 className="title-font sm:text-4xl text-3xl mb-4 font-medium text-white">
 
@@ -57,7 +57,8 @@ const Home: NextPage = () => {
     </header>
 
     <Feat />
-    <Feat2 />
+    <FeatTwoMob />
+    {/* <Feat2 /> */}
 
     <FaqIndex />
     <FooterTop />
@@ -69,14 +70,14 @@ const Home: NextPage = () => {
 // <div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-teal-900 to-teal-500">
 
 const FooterTop = () => {
-  return (<div className="relative flex justify-center items-center h-[350px] bg-gradient-to-r from-indigo-900 to-violet-500">
+  return (<div className="relative flex justify-center px-3 items-center bg-gradient-to-r from-indigo-900 to-violet-500">
 
-    <div className="flex flex-col items-center space-y-8 py-8">
+    <div className="flex flex-col items-center space-y-8 py-16">
       <h4 className="z-10 font-bold text-3xl text-center text-white">
-      Affiliate marketing programını şimdi başlat
+        Affiliate marketing programını şimdi başlat
       </h4>
 
-      <p className="text-lg text-center text-white/70">
+      <p className="text-lg text-center text-white/70 relative z-10">
         affitime affiliatelerini ve raporları yönetme, teklifleri duyurma ve ödeme yapma imkanı verecektir.
         <br />
         Performanstan ödün vermeden basit ve işlevsel kontrol paneli ile programını şimdi başlat.
@@ -110,7 +111,7 @@ const Feat2 = () => {
       <div className="flex flex-col text-center w-full mb-20" >
         <h3 className="z-10  sm:text-3xl text-2xl font-medium title-font text-white/80">affitime ile neler yapabilirsiniz?</h3>
       </div>
-      <main className="flex flex-wrap justify-center gap-2 lg:gap-24 -m-4 mx-auto bg-red-100/20z" >
+      <main className="flex flex-wrap justify-center gap-2 lg:gap-24 mx-auto bg-red-100/20z" >
         <article className="flex flex-col gap-4">
 
           <section className="flex space-x-4">
@@ -173,6 +174,78 @@ const Feat2 = () => {
 }
 
 
+const FeatTwoMob = () => {
+  return (
+    <section className="text-white relative bg-gradient-to-r from-teal-800 to-green-500 min-h-[250px]">
+
+      <div className="relative text-center w-full mb-20 pt-14 z-10" >
+        <h3 className="text-xl sm:text-3xl w-full font-medium title-font text-white/80">affitime ile neler yapabilirsiniz?</h3>
+      </div>
+
+      <main className="flex flex-wrap justify-center gap-2 lg:gap-24 mx-auto px-3 pb-8" >
+
+        <article className="flex flex-col gap-4">
+
+          <section className="flex space-x-4">
+            <b className="text-slate-200 font-bold text-3xl">01</b>
+            <p className="z-10 text-white/70 md:w-[300px]">
+              Tıklama başına ödeme ve/veya satış başına belirli bir yüzdeyle ödeme istediğin ödeme şeklini seç.
+            </p>
+          </section>
+
+          <section className="flex space-x-4">
+            <b className="text-slate-200 font-bold text-3xl">02</b>
+            <p className="z-10 text-white/70 md:w-[300px]">
+              Fraud Protection: affitime kendi geliştirdiği algoritmalarla sahte tıklamaların önüne geçer.
+              Sadece Türkiye’de bulunan ve gerçek kullanıcıların yapmış olduğu tek tıklama geçerli sayılır.
+            </p>
+          </section>
+
+        </article>
+
+        <article className="flex flex-col gap-4">
+
+          <section className="flex space-x-4">
+            <b className="text-slate-200 font-bold text-3xl">03</b>
+            <p className="z-10 text-white/70 md:w-[300px]">
+              Kampanya oluştur ve başvuran influencerlar arasından onay verdiklerinle çalış.
+              Tüm verileri anlık olarak görüntüle.
+            </p>
+          </section>
+
+          <section className="flex space-x-4">
+            <b className="text-slate-200 font-bold text-3xl">04</b>
+            <p className="z-10 text-white/70 md:w-[300px]">
+              Tek tıkla ödeme: Affiliatelere yapacağın ödemeleri platform üzerinden tek seferde öde.
+            </p>
+          </section>
+
+        </article>
+
+      </main>
+
+
+
+      <div className="absolute left-0 top-0 z-0">
+        <svg width="141" height="157" viewBox="0 0 141 157" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="41.5" cy="57.5" r="99.5" fill="#46cf6f" />
+        </svg>
+
+      </div>
+
+      <div className="absolute right-0 bottom-0">
+        <svg width="154" height="159" viewBox="0 0 154 159" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="99.5" cy="99.5" r="99.5" fill="#ffc850" />
+        </svg>
+
+      </div>
+
+    </section>
+  )
+
+}
+
+// Header altindaki ilk section -> ok
 const Feat = () => {
   return (
     <section className="text-gray-600 body-font">
