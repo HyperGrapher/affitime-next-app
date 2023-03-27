@@ -1,23 +1,17 @@
-import PageCard from "../card/Card";
-import InterestItem from "./InterestItem";
-import { POLL_CATEGORIES } from "../../config/constants";
-import type { PollSocialFormElement, SocialType } from "../../interface/pollform.interface";
-import { notifyError } from "../../utils/notifications";
-import classNames from "../../utils/classnames";
-import { HiPencil } from 'react-icons/hi';
-import { trpc } from '../../utils/trpc';
 import { useRouter } from 'next/router';
 import { useState } from "react";
-import { AppRoutes } from "../../config/appRoutes";
-import SocialItem from "./SocialItem";
-import type { Dispatch, SetStateAction } from 'react';
+import { HiChevronRight } from 'react-icons/hi';
 import TopBarProgress from "react-topbar-progress-indicator";
+import Balancer from "react-wrap-balancer";
+import { AppRoutes } from "../../config/appRoutes";
+import type { PollSocialFormElement, SocialType } from "../../interface/pollform.interface";
+import classNames from "../../utils/classnames";
+import { notifyError } from "../../utils/notifications";
+import { trpc } from '../../utils/trpc';
+import PageCard from "../card/Card";
+import SocialItem from "./SocialItem";
 
-type Props = {
-  setStep: Dispatch<SetStateAction<number>>
-}
-
-const SocialForm: React.FC<Props> = ({ setStep }) => {
+const SocialForm: React.FC = () => {
 
   const { replace } = useRouter()
   const [busy, setBusy] = useState(false)
@@ -26,7 +20,7 @@ const SocialForm: React.FC<Props> = ({ setStep }) => {
 
   const onPollSubmit = (e: React.FormEvent<PollSocialFormElement>) => {
     e.preventDefault()
-    setBusy(true)
+
     const data = [
       {
         platform: "instagram",
@@ -48,44 +42,40 @@ const SocialForm: React.FC<Props> = ({ setStep }) => {
         platform: "tiktok",
         handle: e.currentTarget.elements.tiktok.value,
       },
-
-
-
     ]
 
-    const truthySocials = data.map(x => x.handle ? x : undefined).filter(x => x !== undefined)
+    const truthySocials = data.map(x => x.handle.trim() ? x : undefined).filter(x => x !== undefined)
 
-    if (truthySocials.length === 0) {
-      setBusy(false)
-      return notifyError("En az bir sosyal platform ismi girin!")
-    }
+    if (truthySocials.length === 0) return notifyError("En az bir sosyal platform ismi girin!")
+
+    setBusy(true)
 
     updatePartnerSocials.mutate(truthySocials as SocialType[], {
       onSuccess: () => {
-        console.log("ok");
-        setBusy(false)
         replace(AppRoutes.PARTNER_DASHBOARD)
-        
-
       },
       onError(error) {
         console.log(error)
         notifyError('Hata. ilgi alanları düzenlenemedi!')
         replace(AppRoutes.PARTNER_DASHBOARD)
-        setBusy(false)
-
       },
+      onSettled() {
+        setBusy(false)
+      }
     })
-
-
-
 
   }
 
   return (
     <PageCard>
       {busy && <TopBarProgress />}
-      <h1 className='text-xl text-center font-medium text-slate-600'>Seni daha iyi tanıyabilmemiz için sosyal medya platformlarındaki profilinin linkine ihtiyacımız var. Bu yüzden aşağıdaki bilgileri doldurmana ihtiyacımız var.</h1>
+      <h1 className='text-xl text-center font-medium text-slate-600'>
+        <Balancer>
+          Seni daha iyi tanıyabilmemiz için sosyal medya platformlarındaki profilinin linkine ihtiyacımız var.
+          Bu yüzden aşağıdaki bilgileri doldurmana ihtiyacımız var.
+        </Balancer>
+      </h1>
+
 
       <section className="my-8">
 
@@ -99,15 +89,9 @@ const SocialForm: React.FC<Props> = ({ setStep }) => {
             <SocialItem name="linkedin" label="LinkedIn" />
             <SocialItem name="tiktok" label="TikTok" />
 
-
           </div>
 
-
-
-
           <div className="bg-redx-100 mt-8 px-2 md:px-24">
-
-            {/* <IconButton title={"Gonder"} fn={() => null} /> */}
 
             <button
               type='submit'
@@ -118,10 +102,9 @@ const SocialForm: React.FC<Props> = ({ setStep }) => {
                 "py-2 px-8",
                 "disabled:bg-violet-400 disabled:shadow-none",
                 "w-full"
-              )}
-            >
+              )} >
 
-              <HiPencil color="white" size="16px" />
+              <HiChevronRight color="white" size="16px" />
 
               <span className="text-slate-50 text-xs font-medium tracking-wide text-center">
                 Gönder
@@ -129,7 +112,6 @@ const SocialForm: React.FC<Props> = ({ setStep }) => {
             </button>
 
           </div>
-
 
         </form>
 

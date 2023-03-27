@@ -16,6 +16,12 @@ import { IpSchema } from "../../interface/zod.schema";
 import { prisma } from "../../server/db/client";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from '../../utils/trpc';
+
+/*
+import { Base64 } from 'js-base64';
+Base64.toBase64('')
+Base64.formBase64('')
+*/
 // import { BlockList } from "net"
 // https://www.npmjs.com/package/user-agents
 // https://www.npmjs.com/package/keygrip for checking .sig cookie value
@@ -27,7 +33,6 @@ twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor b
 */
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-
     const session = await getSession(context)
     const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
     const ipware = new Ipware();
@@ -48,7 +53,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const ckData: ILVCookie = { dt: new Date().toISOString(), c: cookie ? cookie.c + 1 : 1, previp: ipwareObj?.ip }
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
 
-    // if the server is behind a proxy
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
     console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
@@ -70,26 +74,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         dubious: boolean, cause: string | null
     } => {
 
-        if (isbot(agentObj.source)) {
-
-            return {
-                unique: false, ipData: prevUserIp, dubious: true,
-                cause: `bot`
-            }
-
+        if (isbot(agentObj.source)) return {
+            unique: false, ipData: prevUserIp, dubious: true,
+            cause: `bot`
         }
 
-        if (context.req.headers['user-agent'] === undefined) {
-
-            return {
-                unique: false, ipData: prevUserIp, dubious: true,
-                cause: `bot`
-            }
+        if (context.req.headers['user-agent'] === undefined) return {
+            unique: false, ipData: prevUserIp, dubious: true,
+            cause: `bot`
         }
+
 
         if (session) {
 
-            if(session.role === UserRoles.ADMIN) return { unique: false, ipData: prevUserIp, dubious: true, cause: 'bot' }
+            if (session.role === UserRoles.ADMIN) return { unique: false, ipData: prevUserIp, dubious: true, cause: 'bot' }
 
             return {
                 unique: false, ipData: prevUserIp, dubious: true,
@@ -98,13 +96,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         }
 
-        if (prevUserIp) {
-
-            return {
-                unique: false, ipData: prevUserIp, dubious: true,
-                cause: `${prevUserIp.partner_id ? "partner" : "vendor"}`
-            }
+        if (prevUserIp) return {
+            unique: false, ipData: prevUserIp, dubious: true,
+            cause: `${prevUserIp.partner_id ? "partner" : "vendor"}`
         }
+
 
         if (!!cookie) return { unique: false, ipData: null, dubious: false, cause: null }
         return { unique: true, ipData: prevUserIp, dubious: false, cause: null }
@@ -139,7 +135,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
     const visit = await prisma.visit.create({ data: visitData })
 
-
     prisma.$disconnect()
 
     return {
@@ -154,7 +149,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
 }
-// * server'a atilacak
 
 const AffiProduct: NextPage = ({
     visitId,
@@ -166,14 +160,14 @@ const AffiProduct: NextPage = ({
 
 }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
-    // ? if isBot dont redirect and get the list of last 100 product page link from serverSideProps
     const updateVisit = trpc.visit.updateVisit.useMutation()
 
     const setUserIp = async () => {
         const userIp = await getClientIp()
         const ipData = IpSchema.parse(userIp)
 
-        if (typeof visitId !== 'string') return
+        if (typeof visitId !== 'string') return;
+
         updateVisit.mutate(
             {
                 visitId,
@@ -183,14 +177,13 @@ const AffiProduct: NextPage = ({
                 onSuccess: async () => {
                     window.location.href = product_url;
                 },
-                
+
                 onSettled: () => {
                     console.log(product_url, isBot);
 
                 }
             })
 
-        return
     }
 
     useEffect(() => { setUserIp() }, [])

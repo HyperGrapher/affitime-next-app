@@ -5,12 +5,11 @@ type Props = {
     name: string
 }
 
-
 const SocialItem: React.FC<Props> = ({ label, name }) => {
     return (
         <div className="p-2 sm:w-1/2 w-full flex flex-col">
             <label>
-                <span className="pl-2">{label}</span>
+                <span className="pl-2 text-slate-500 font-medium">{label}</span>
             </label>
             <input type="text" name={name} className={classNames(
                 'block w-full rounded-md shadow-sm sm:text-sm',

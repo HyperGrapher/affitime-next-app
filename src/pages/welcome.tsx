@@ -1,36 +1,16 @@
 import type { GetServerSideProps } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
-import { AppRoutes } from '../config/appRoutes';
-import PageCard from "../components/card/Card";
-import InterestItem from "../components/poll/InterestItem";
-import { POLL_CATEGORIES } from "../config/constants";
-import type { InterestType, PollCatsFormElement } from "../interface/pollform.interface";
-import { notifyError } from "../utils/notifications";
-import classNames from "../utils/classnames";
-import { HiPencil } from 'react-icons/hi';
-import { trpc } from '../utils/trpc';
-import { useRouter } from 'next/router';
-import SocialItem from "../components/poll/SocialItem";
-import { Base64 } from 'js-base64';
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import InterestForm from "../components/poll/InterestForm";
 import SocialForm from "../components/poll/SocialForm";
-
+import { AppRoutes } from '../config/appRoutes';
+import { UserRoles } from "../interface/auth.interface";
 
 // ? TEST EXIST
 const Welcome: NextPage = () => {
 
-
-  const { replace } = useRouter()
   const [step, setStep] = useState(0)
-
-
-  useEffect(() => {
-    console.log(`Step: ${step}`);
-
-  }, [step])
-
 
   return (
     <main className='mt-24'>
@@ -41,7 +21,7 @@ const Welcome: NextPage = () => {
 
 
         {step === 0 && <InterestForm setStep={setStep} />}
-        {step === 1 && <SocialForm setStep={setStep} />}
+        {step === 1 && <SocialForm />}
 
       </div>
 
@@ -50,25 +30,6 @@ const Welcome: NextPage = () => {
 }
 
 export default Welcome
-
-
-
-const TPollItem = () => {
-
-  return (
-    <div className="p-2 sm:w-1/2 w-full">
-      <div className="bg-gray-100 rounded flex p-4 h-full items-center">
-
-        <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" className="text-indigo-500 w-6 h-6 flex-shrink-0 mr-4" viewBox="0 0 24 24">
-          <path d="M22 11.08V12a10 10 0 11-5.93-9.14"></path>
-          <path d="M22 4L12 14.01l-3-3"></path>
-        </svg>
-
-        <span className="title-font font-medium">Pack Truffaut Blue</span>
-      </div>
-    </div>
-  )
-}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
@@ -81,7 +42,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
   }
 
-  return { props: { session } }
+
+  if (session.role !== UserRoles.PARTNER) return {
+    redirect: {
+      destination: `/${session.role.toLowerCase()}/dashboard`,
+      permanent: false
+    }
+  }
+
+  return { props: {} }
 
 }
 
@@ -94,24 +63,6 @@ Kanka selam son olarak kontrol ettim affiliate kısmını
 3) Affiliate kayıt olurken instagram, facebook, twitter, tiktok, linkedin hesap bilgilerini sormak kullanıcı adı veya hesap linki olarak
 4) Affiliate kayıt olurken telefon numarası da soralım ama bu zorunlu olmasın mesela
 bunların hepsini firma fatura ekranı gibi bişiyde talep edelim ilk kayıt olduktan sonra ve ileride ayarlardan bunları da değiştirebilirsin affiliateler bence
-
-1) Takipçilerin hangi kategorilerdeki ürünlerle ilgileniyor? (Birden fazla seçim yapabilirsin.)
-Elektronik
-Giyim & Aksesuar
-Müzik Aletleri
-Cep Telefonu
-Elektrikli Ev Aletleri
-Anne & Bebek
-Hobi & Oyuncak
-Kişisel Bakım & Kozmetik
-Oyun & Konsol
-Takı, Mücevher & Altın
-2) Seni daha iyi tanıyabilmemiz için sosyal medya platformlarındaki profilinin linkine ihtiyacımız var. Bu yüzden aşağıdaki bilgileri doldurmana ihtiyacımız var.
-Instagram
-Facebook
-Twitter
-LinkedIn
-Tiktok
 
 3) (ayri bir sayfada olabilir bu soru)
 Firmaların sana yapacağı ödemeler için banka hesap bilgilerine ihtiyacımız var.

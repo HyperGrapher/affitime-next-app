@@ -1,16 +1,16 @@
-import PageCard from "../card/Card";
-import InterestItem from "./InterestItem";
+import { useRouter } from 'next/router';
+import type { Dispatch, SetStateAction } from 'react';
+import { useState } from "react";
+import { HiChevronRight } from 'react-icons/hi';
+import TopBarProgress from "react-topbar-progress-indicator";
+import { AppRoutes } from "../../config/appRoutes";
 import { POLL_CATEGORIES } from "../../config/constants";
 import type { InterestType, PollCatsFormElement } from "../../interface/pollform.interface";
-import { notifyError } from "../../utils/notifications";
 import classNames from "../../utils/classnames";
-import { HiPencil } from 'react-icons/hi';
+import { notifyError } from "../../utils/notifications";
 import { trpc } from '../../utils/trpc';
-import { useRouter } from 'next/router';
-import { useState } from "react";
-import { AppRoutes } from "../../config/appRoutes";
-import type { Dispatch, SetStateAction } from 'react';
-import TopBarProgress from "react-topbar-progress-indicator";
+import PageCard from "../card/Card";
+import InterestItem from "./InterestItem";
 
 type Props = {
     setStep: Dispatch<SetStateAction<number>>
@@ -26,7 +26,7 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
 
     const onPollSubmit = (e: React.FormEvent<PollCatsFormElement>) => {
         e.preventDefault()
-        setBusy(true)
+
         const data = [
             {
                 name: POLL_CATEGORIES["cat1"],
@@ -71,12 +71,11 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
 
         ]
 
-        const truthyCats = data.map(x => x.checked ? x : undefined).filter(x => x !== undefined)
+        const truthyCats = data.map(x => x.checked ? x : undefined).filter(x => x !== undefined) // Boolean
 
-        if (truthyCats.length === 0) {
-            setBusy(false)
-            return notifyError("En az bir kategori seçin!")
-        }
+        if (truthyCats.length === 0) return notifyError("En az bir kategori seçin!")
+
+        setBusy(true)
 
         updatePartnerInterests.mutate(truthyCats as InterestType[], {
             onSuccess: () => {
@@ -96,7 +95,11 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
     return (
         <PageCard>
             {busy && <TopBarProgress />}
-            <h1 className='text-xl text-center font-medium text-slate-600'>Takipçilerin hangi kategorilerdeki ürünlerle ilgileniyor? (Birden fazla seçim yapabilirsin.)</h1>
+            <h1 className='text-xl text-center font-medium text-slate-600'>
+                Takipçilerin hangi kategorilerdeki ürünlerle ilgileniyor?
+                <br />
+                (Birden fazla seçim yapabilirsin.)
+            </h1>
 
             <section className="my-8">
 
@@ -114,9 +117,8 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
                         <InterestItem label={POLL_CATEGORIES.cat8} cat="cat8" />
                         <InterestItem label={POLL_CATEGORIES.cat9} cat="cat9" />
                         <InterestItem label={POLL_CATEGORIES.cat10} cat="cat10" />
-
-
                     </div>
+
                     <div className="bg-redx-100 mt-8 px-2 md:px-24">
 
                         <button
@@ -128,13 +130,12 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
                                 "py-2 px-8",
                                 "disabled:bg-violet-400 disabled:shadow-none",
                                 "w-full"
-                            )}
-                        >
+                            )} >
 
-                            <HiPencil color="white" size="16px" />
+                            <HiChevronRight color="white" size="16px" />
 
                             <span className="text-slate-50 text-xs font-medium tracking-wide text-center">
-                                Gönder
+                                Sonraki
                             </span>
                         </button>
 
