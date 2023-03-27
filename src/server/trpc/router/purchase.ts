@@ -206,7 +206,6 @@ export const purchaseRouter = router({
       .digest("base64");
 
     try {
-
       const formData = new URLSearchParams(); // new FormData();
       formData.append("merchant_id", String(merchant_id));
       formData.append("request_id", request_id);
@@ -222,6 +221,8 @@ export const purchaseRouter = router({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         data: formData,
       });
+
+      console.log(data.data);
 
       return data.data as InstallmentType;
     } catch (error) {

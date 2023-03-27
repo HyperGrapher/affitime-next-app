@@ -24,6 +24,7 @@ import { taxinfoValidationSchema } from '../../interface/zod.schema';
 import { notifyError } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
 
+
 const DynamicPaymentCard = dynamic(() => import('../../components/purchase_plan/PaymentCard'), {
     ssr: false,
 })
@@ -136,7 +137,7 @@ const Purchase = () => {
                         fn={back} />
 
                 </div>
-
+                {/* <InstallmentTable />                              */}
             </PageCard>
 
             {step === "0" && <TaxInfo setStep={setStep} />}

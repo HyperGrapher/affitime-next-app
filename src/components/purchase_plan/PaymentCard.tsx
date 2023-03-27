@@ -1,7 +1,7 @@
 // 'use client'
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from "next/router";
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { PatternFormat } from 'react-number-format';
@@ -20,6 +20,53 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
 import { UserRoles } from '../../interface/auth.interface';
+
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import InstallmentTable from '../../pages/payments/InstallmentTable';
+import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
+
+type InstProps = {
+    setIsTaksit: React.Dispatch<React.SetStateAction<boolean>>
+}
+const TaksitRadio: React.FC<InstProps> = ({ setIsTaksit }) => {
+
+    const [taksit, setTaksit] = useState(false)
+
+    const handleOnchange = (val: boolean) => {
+        setTaksit(val)
+        setIsTaksit(val)
+    }
+
+    return (
+        <FormFieldWrapper>
+
+            <RadioGroup
+                aria-labelledby="perSalex"
+                className='text-xs bg-red-0 scale-90 xsm:scale-100'
+                value={taksit}>
+
+                <div className="flex">
+
+                    <FormControlLabel
+                        value={false}
+                        onChange={() => handleOnchange(false)}
+                        control={<Radio size="small" />}
+                        label="Tek Çekim" />
+                    <FormControlLabel
+                        className='text-xs bg-red-0'
+                        value={true}
+                        onChange={() => handleOnchange(true)}
+                        control={<Radio size="small" />}
+                        label="Taksit ile öde" />
+
+
+                </div>
+            </RadioGroup>
+        </FormFieldWrapper>)
+}
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
@@ -94,8 +141,14 @@ const validationSchema = z.object({
     });
 
 
+const calcTotal = (annual: boolean, price: string) => annual ? parseInt(price) * 12 : parseInt(price);
+
+
+
+
 const PaymentCard = () => {
     const { query, replace } = useRouter()
+    const [isTaksit, setIsTaksit] = useState(false)
     const [busy, setBusy] = useState(false)
     const buttonRef = useRef<HTMLButtonElement>(null)
     const plan = (query.plan as string).toUpperCase() as PlanType
@@ -104,6 +157,12 @@ const PaymentCard = () => {
     const [cardNo, setCardNo] = useState("");
     const [payData, setPayData] = useState<IPlanPaymentData>();
     const [expiryDate, setExpiryDate] = useState("");
+    const [installmentAmount, setInstallmentAmount] = useState("0");
+
+
+    const payment_amount_as_plan = annual
+        ? PRICING_ANNUALY[plan as PlanType]
+        : PRICING_MONTHLY[plan as PlanType];
 
     const handleCardNoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const value =
@@ -213,6 +272,7 @@ const PaymentCard = () => {
                     cvv: cardData.cvvNumber,
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
+                    installment_count: installmentAmount
                 }
 
                 console.log(aa);
@@ -238,9 +298,16 @@ const PaymentCard = () => {
     return (<div className="bg-white rounded-xl px-4 py-8 w-full mx-auto shadow-xl">
         {busy && <TopBarProgress />}
 
-        <h1 className="text-xl text-center font-bold mb-4 text-slate-500">
-            Ödeme Yapın
-        </h1>
+        <div className="flex flex-col mb-4 items-center ">
+            <h1 className="text-xl text-center font-bold text-slate-500">
+                Ödeme Yapın
+            </h1>
+            <div className="text-center">
+                <TaksitRadio setIsTaksit={setIsTaksit} />
+            </div>
+
+        </div>
+
 
         <form id="post_form" className="hidden" action={PAYTR_PLAN_PAYMENT_URL} method="post">
             <input type="hidden" name="card_number" value={payData?.card_number} />
@@ -288,6 +355,12 @@ const PaymentCard = () => {
                             cvc={watch().cvvNumber || ''}
                             focused={''}
                         />
+
+                        {isTaksit && <InstallmentTable
+                            price={calcTotal(annual, payment_amount_as_plan)}
+                            table={tx}
+                            setInstallmentAmount={setInstallmentAmount}
+                        />}
 
                         <div className="flex flex-col bg-redx-100 w-full justify-between gap-6">
 

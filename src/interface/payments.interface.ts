@@ -15,7 +15,7 @@ export interface IPlanPaymentData {
   email: string;
   payment_type: string;
   payment_amount: number | string; // double
-  installment_count: number;
+  installment_count: number | string;
   non_3d: number;
   non3d_test_failed?: number;
   test_mode?: number;
