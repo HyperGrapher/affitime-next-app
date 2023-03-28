@@ -1,19 +1,23 @@
-import TopBarProgress from "react-topbar-progress-indicator";
-import { trpc } from '../../utils/trpc';
-import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
+import Head from "next/head";
+import { useRouter } from "next/router";
+import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
 import { HiPencil } from 'react-icons/hi';
-import { useState } from "react";
-import PageCard from "../../components/card/Card";
-import Head from "next/head";
+import TopBarProgress from "react-topbar-progress-indicator";
+import { z } from 'zod';
 import IconButton from "../../components/buttons/IconButton";
+import PageCard from "../../components/card/Card";
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
-import classNames from '../../utils/classnames';
-import { notifyError, notifySuccessBR } from '../../utils/notifications';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useRouter } from "next/router";
 import { AppRoutes } from "../../config/appRoutes";
+import { UserRoles } from "../../interface/auth.interface";
+import { IpSchema } from "../../interface/zod.schema";
+import classNames from '../../utils/classnames';
+import getClientIp from "../../utils/getClientIp";
+import { notifyError, notifySuccessBR } from '../../utils/notifications';
+import { trpc } from '../../utils/trpc';
 
 
 interface IFormData {
@@ -42,7 +46,9 @@ const Account = () => {
     const [busy, setBusy] = useState(false)
     const updatePassword = trpc.auth.updatePassword.useMutation()
     const endTrialForTest = trpc.testing.endTrialForTest.useMutation()
+    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
     const { replace } = useRouter()
+    const { data: session } = useSession()
 
     const { register, handleSubmit, reset, formState: { errors } } = useForm<IFormData>({
         resolver: zodResolver(validationSchema),
@@ -67,6 +73,45 @@ const Account = () => {
             }
         })
 
+    }
+
+    // ! TEST FUNC
+    const payForTest = async () => {
+        const ipData = await getClientIp()
+        const userIp = IpSchema.parse(ipData)
+
+        const tax = localStorage.getItem("taxinfo")
+
+        if (!tax) return notifyError('Vergi bilgileri eksik')
+        const taxInfo = JSON.parse(tax)
+        type PlanType = "BASIC" | "PRO" | "ULTIMATE"
+        const plan = "BASIC" as PlanType
+        const annual = false
+
+        const datam = {
+            user_ip: userIp.ip,
+            currency: 'TL',
+            user_address: taxInfo.address,
+            plan,
+            annual
+        }
+
+        puchaseForTest.mutate(datam, {
+            onSuccess: (data) => {
+                console.log("ok", data.payment_amount);
+                notifySuccessBR('Test payment OK')
+
+                setTimeout(() => {
+                    replace(AppRoutes.PAYMENT_SUCCESS)
+                }, 3000);
+            },
+            onError(error) {
+                console.log(error)
+                notifyError('Ödeme sırasında bir hata oluştu!')
+                setBusy(false)
+            },
+
+        })
     }
 
 
@@ -178,9 +223,11 @@ const Account = () => {
                 </div>
             </PageCard>
 
-            <div id="testing" className="text-center">
-
-                <button className="text-slate-100 py-2 px-3 rounded-md hover:bg-slate-300 transition-all duration-500"
+            {(session?.role === UserRoles.VENDOR && session.email === 'wendy@email.com') && <div id="testing" className="text-center flex flex-col gap-2 px-8">
+                <h3 className="text-center text-red-500">Bu alan sadece wendy@email.com icin goruntulenir</h3>
+                {/* <h3 className="text-center">{session.trial ? "Trial surecinde veya sonlanmis" : "Plan Satin Alinmis"}</h3>
+                <h3 className="text-center">{session.pro ? "Plan satin almis" : "Plan satin alinmamis"}</h3> */}
+                <button className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500"
                     onClick={() => {
 
                         endTrialForTest.mutate(undefined, {
@@ -201,9 +248,18 @@ const Account = () => {
                         })
 
                     }}>
-                    Trial sonlandir
+                    Trial suresini veya Plani sonlandir
                 </button>
-            </div>
+
+
+                <button
+                    onClick={payForTest}
+                    className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500">
+                    Basic plan satin al
+                </button>
+
+
+            </div>}
 
         </div>
     )
