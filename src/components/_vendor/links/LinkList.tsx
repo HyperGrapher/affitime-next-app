@@ -68,8 +68,8 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
         <DynamicWarnDialog
           title="Affiliate linkini duraklatmak istiyor musunuz?"
           desc="
-          Link pasif hale gelerek ve oluşturulan 
-          tüm Affiliate Linklerim hata sayfasina yönlendirilecektir. 
+          Link pasif hale gelerek hata sayfasina yönlendirilecektir. 
+          Link tıklamaları mağazanıza ulaşmayacatır.
           "
           confirmBtnText='Sil'
           dismissFn={() => setModal(false)}
