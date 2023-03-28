@@ -3,7 +3,7 @@ import Head from "next/head";
 import Image from "next/image";
 import { useRouter } from 'next/router';
 import { useEffect } from "react";
-import Loaderx from '../../assets/gif/loader.gif';
+import Loader from '../../assets/gif/loader.gif';
 import { AppRoutes } from '../../config/appRoutes';
 
 const Success = () => {
@@ -11,10 +11,7 @@ const Success = () => {
 
   useEffect(() => {
 
-    setTimeout(() => {
-      replace(AppRoutes.VENDOR_DASHBOARD)
-
-    }, 2500);
+    setTimeout(() => { replace(AppRoutes.VENDOR_DASHBOARD) }, 3000);
 
   }, [])
 
@@ -29,7 +26,7 @@ const Success = () => {
         <p className="text-base md:text-lg text-center">
           Dashboard&apos;a yönlendiriliyorsunuz.
         </p>
-        <Image className="mt-16" width={60} height={60} src={Loaderx} alt="adada" />
+        <Image className="mt-16" width={60} height={60} src={Loader} alt="adada" />
       </div>
 
     </div>
