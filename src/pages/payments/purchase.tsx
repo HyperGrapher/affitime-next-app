@@ -38,7 +38,6 @@ const Purchase = () => {
 
     const { back, query } = useRouter()
     const [busy, setBusy] = useState(false)
-    const [invalidCoupon, setInvalidCoupon] = useState({ error: false, message: "" })
 
     const plan = (query.plan as string).toUpperCase() as PlanType
     const annual = (query.ann as string) === "true"
@@ -54,12 +53,12 @@ const Purchase = () => {
     }, [plan, annual])
 
     return (
-        <div className='containerx mx-auto px-6 sm:px-24 mt-24 max-w-[1280px] pb-16 '>
+        <div className='containerx mx-auto px-0 md:px-6 sm:px-24 mt-24 max-w-[1280px] pb-16 '>
             <Head>
                 <title>Affitime | Ödeme Yapın</title>
             </Head>
             <PageCard>
-                <div className="flex items-start">
+                <div className="flex items-start px-2">
 
                     <div className="w-full">
                         <h1 className="text-sm md:text-xl font-bold mb-4 text-slate-500">
@@ -100,7 +99,7 @@ const Purchase = () => {
                                         disabled={busy}
                                         placeholder='Kod numarasi'
                                     />
-                                    <FormFieldError state={invalidCoupon.error} message={"İndirim kodu geçersiz"} />
+                                    <FormFieldError state={false} message={"İndirim kodu geçersiz"} />
                                 </FormFieldWrapper>
                                 <IconButton
                                     title={"Indirim kodu Onayla"}
@@ -201,7 +200,7 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
                 Fatura Bilgileri
             </h1>
 
-            <div className="">
+            <div className="px-2">
 
                 <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmitTaxInfo)} >
 

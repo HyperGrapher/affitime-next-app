@@ -3,21 +3,19 @@ import type { Dispatch, SetStateAction } from 'react';
 import { Fragment, useState } from 'react';
 import { HiCheck, HiSwitchVertical } from 'react-icons/hi';
 import type { ICreditCard } from '../../interface/payments.interface';
-import { capitalize } from '../../utils/helpers';
 
 const cards = [
-  { id: 1, name: 'world' },
-  { id: 2, name: 'axess' },
-  { id: 3, name: 'maximum' },
-  { id: 4, name: 'cardfinans' },
-  { id: 5, name: 'paraf' },
-  { id: 6, name: 'advantage' },
-  { id: 7, name: 'combo' },
-  { id: 8, name: 'bomus' },
-  { id: 9, name: 'saglamkart' },
+  { id: 1, name: 'World', value: 'world' },
+  { id: 2, name: 'Axess', value: 'axess' },
+  { id: 3, name: 'Maximum', value: 'maximum' },
+  { id: 4, name: 'Card Finans', value: 'cardfinans' },
+  { id: 5, name: 'Paraf', value: 'paraf' },
+  { id: 6, name: 'Advantage', value: 'advantage' },
+  { id: 7, name: 'Combo', value: 'combo' },
+  { id: 8, name: 'Bonus', value: 'bonus' },
+  { id: 9, name: 'Sağlam Kart', value: 'saglamkart' },
 ]
-
-//   tumu: { tek_cekim: '1.89' }
+// tumu: { tek_cekim: '1.89' }
 
 type Props = {
   setSelected: Dispatch<SetStateAction<ICreditCard>>
@@ -26,7 +24,6 @@ type Props = {
 
 const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
 
-  // const [selected, setSelected] = useState({id: 0, name: ""})
   const [query, setQuery] = useState('')
 
   const filteredCard =
@@ -47,7 +44,7 @@ const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-              displayValue={() => capitalize(selected?.name)}
+              displayValue={() => selected?.name}
               placeholder="Kart Seçin"
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -78,15 +75,13 @@ const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-violet-600 text-white' : 'text-gray-900'
                       }`
                     }
-                    value={card}
-                  >
+                    value={card}>
                     {({ selected, active }) => (
                       <>
                         <span
                           className={`block truncate ${selected ? 'font-medium' : 'font-normal'
-                            }`}
-                        >
-                          {capitalize(card.name)}
+                            }`}>
+                          {card.name}
                         </span>
                         {selected ? (
                           <span

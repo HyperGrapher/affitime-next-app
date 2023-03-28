@@ -29,7 +29,7 @@ body.modal {
     background-color: var(--bg-primary);
     border-radius: 3px;
 }
-
+/* pt-8 md:pt-16 */
 @layer components {
     .auth-container {
       @apply px-1 pt-16 ml-0 lg:ml-64;

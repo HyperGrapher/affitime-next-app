@@ -1,6 +1,7 @@
 export interface ICreditCard {
   id: number;
-  name: string
+  name: string;
+  value: string;
 }
 
 

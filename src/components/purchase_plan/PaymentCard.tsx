@@ -150,7 +150,7 @@ const PaymentCard = () => {
     const [payData, setPayData] = useState<IPlanPaymentData>();
     const [expiryDate, setExpiryDate] = useState("");
     const [installmentAmount, setInstallmentAmount] = useState("0");
-    const [selectedCard, setSelectedCard] = useState<ICreditCard>({ id: 0, name: '' });
+    const [selectedCard, setSelectedCard] = useState<ICreditCard>({ id: 0, name: '', value: '' });
 
 
     const payment_amount_as_plan = annual
@@ -265,7 +265,8 @@ const PaymentCard = () => {
                     cvv: cardData.cvvNumber,
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
-                    installment_count: isTaksit ? installmentAmount : "0"
+                    installment_count: isTaksit ? installmentAmount : "0",
+                    card_type: selectedCard.value,
                 }
 
                 console.log(aa);
@@ -288,7 +289,7 @@ const PaymentCard = () => {
     }
 
 
-    return (<div className="bg-white rounded-xl px-4 py-8 w-full mx-auto shadow-xl">
+    return (<div className="bg-white rounded-xl px-2 md:px-4 py-8 w-full mx-auto shadow-xl">
         {busy && <TopBarProgress />}
 
         <div className="flex flex-col mb-4 items-center ">
@@ -328,7 +329,7 @@ const PaymentCard = () => {
             <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
             <input type="hidden" name="installment_count" value={payData?.installment_count} />
-            <input type="hidden" name="card_type" value={selectedCard.name} />
+            <input type="hidden" name="card_type" value={payData?.card_type} />
 
             <button id="post" ref={buttonRef}>c</button>
         </form>

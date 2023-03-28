@@ -43,7 +43,7 @@ const RulesAndPolicies = ({ tab }: InferGetServerSidePropsType<typeof getServerS
             </Head>
             <Tab.Group defaultIndex={0} selectedIndex={selectedIndex} onChange={setSelectedIndex}>
                 <Tab.List className={classNames(
-                    "flex space-x-8 mt-16"
+                    "flex space-x-2 sm:space-x-8 mt-16"
                 )}>
                     <TabItem id="0" title="Kullanıcı Sözleşmesi" selected={selectedIndex} query="0" />
                     <TabItem id="1" title="Gizlilik Sözleşmesi" selected={selectedIndex} query="1" />

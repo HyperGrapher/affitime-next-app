@@ -16,9 +16,9 @@ const TabItem: React.FC<TabProps> = ({ id, selected, query, title }) => {
     return (
         <Tab
             className={classNames(
-                "bg-slate-100  py-1 text-sm text-slate-500",
+                "bg-slate-100 py-1 text-xs sm:text-sm text-slate-500",
                 `${String(selected) === id && "underline underline-offset-8 "}`,
-                'outline-0 font-medium',
+                'outline-0 font-medium whitespace-nowrap',
             )}
             onClick={() => push({ query: { tab: query } })}>
             {title}
