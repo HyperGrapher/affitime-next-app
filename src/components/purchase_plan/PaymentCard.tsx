@@ -136,10 +136,7 @@ const validationSchema = z.object({
     });
 
 
-const calcTotal = (annual: boolean, price: string) => annual ? parseInt(price) * 12 : parseInt(price);
-
-
-
+const calcTotalFromPlan = (annual: boolean, price: string) => annual ? parseInt(price) * 12 : parseInt(price);
 
 const PaymentCard = () => {
     const { query, replace } = useRouter()
@@ -333,7 +330,7 @@ const PaymentCard = () => {
             <input type="hidden" name="installment_count" value={payData?.installment_count} />
             <input type="hidden" name="card_type" value={selectedCard.name} />
 
-            <button id="post" ref={buttonRef}>click</button>
+            <button id="post" ref={buttonRef}>c</button>
         </form>
 
 
@@ -358,7 +355,7 @@ const PaymentCard = () => {
                         />}
 
                         {isTaksit && <InstallmentTable
-                            price={calcTotal(annual, payment_amount_as_plan)}
+                            price={calcTotalFromPlan(annual, payment_amount_as_plan)}
                             table={tx}
                             setInstallmentAmount={setInstallmentAmount}
                         />}
@@ -502,7 +499,6 @@ const PaymentCard = () => {
                                                 'disabled:bg-slate-200 border-gray-300 transition-colors',
                                                 'focus:border-indigo-500 focus:ring-indigo-500'
                                             )}
-                                            // type="text"
                                             disabled={busy}
                                             placeholder='CVV'
                                             type="number"

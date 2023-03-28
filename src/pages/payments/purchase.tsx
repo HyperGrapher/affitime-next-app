@@ -1,12 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
+import { zodResolver } from '@hookform/resolvers/zod';
 import type { GetServerSideProps } from "next";
 import { getSession } from "next-auth/react";
-import { AppRoutes } from '../../config/appRoutes';
-import { UserRoles } from '../../interface/auth.interface';
-import classNames from "../../utils/classnames";
-// import { trpc } from "../../utils/trpc";
-// import { prisma } from "../../server/db/client";
-import { zodResolver } from '@hookform/resolvers/zod';
 import dynamic from 'next/dynamic';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
@@ -19,8 +14,11 @@ import PageCard from '../../components/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
 import ScrollToTop from '../../components/scroll-to-top/ScrollToTop';
 import { Lira } from "../../components/shared/HtmlCodes";
+import { AppRoutes } from '../../config/appRoutes';
 import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
+import { UserRoles } from '../../interface/auth.interface';
 import { taxinfoValidationSchema } from '../../interface/zod.schema';
+import classNames from "../../utils/classnames";
 import { numberWithCommas } from "../../utils/helpers";
 import { notifyError } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
@@ -36,7 +34,6 @@ const DynamicPaymentCard = dynamic(() => import('../../components/purchase_plan/
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
-// (Fatura bilgileri: VKN/TCKN * , Unvan, Ad, Soyad, Vergi Dairesi, Ülke, Adres )
 const Purchase = () => {
 
     const { back, query } = useRouter()
@@ -47,19 +44,6 @@ const Purchase = () => {
     const annual = (query.ann as string) === "true"
     const s = query.s as string
     const [step, setStep] = useState(s)
-
-    const checkCoupon = (event: React.FormEvent<HTMLFormElement>) => {
-        // event.preventDefault()
-        // console.log(event.target.coupon.value)
-
-        // if (counter > 3) return setInvalidCoupon({ error: true, message: "3 denemeden fazla kod giremezsiniz" });
-
-        // if (event.target.coupon.value !== "affi") {
-        //     setCounter((x) => x + 1)
-        //     return setInvalidCoupon({ error: true, message: "İndirim kodu geçersiz" })
-        // }
-
-    }
 
     const total = useMemo(() => {
 
@@ -72,7 +56,7 @@ const Purchase = () => {
     return (
         <div className='containerx mx-auto px-6 sm:px-24 mt-24 max-w-[1280px] pb-16 '>
             <Head>
-                <title>Affitime | Fatura Bilgileri</title>
+                <title>Affitime | Ödeme Yapın</title>
             </Head>
             <PageCard>
                 <div className="flex items-start">
@@ -89,7 +73,7 @@ const Purchase = () => {
                             <b>Toplam: </b>{numberWithCommas(total)} <Lira size='18px' />
                         </p>
 
-                        {false && <form onSubmit={checkCoupon}>
+                        {false && <form onSubmit={() => null}>
                             <section className={classNames(
                                 "bg-slate-100 hover:bg-slate-50",
                                 "w-[38ch] rounded-md  py-2 px-2  mt-8 ",
@@ -532,19 +516,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
-
-
-    // const isTrialEnded = await checkTrial(session)
-    // console.log("isTrialEnded: ", isTrialEnded);
-
-    // if (!isTrialEnded) return {
-    //     redirect: {
-    //         destination: AppRoutes.VENDOR_DASHBOARD,
-    //         permanent: false
-    //     }
-    // }
-
-
 
     return { props: {} }
 }

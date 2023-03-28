@@ -1,8 +1,9 @@
+import { Combobox, Transition } from '@headlessui/react';
 import type { Dispatch, SetStateAction } from 'react';
-import { Fragment, useState } from 'react'
-import { Combobox, Transition } from '@headlessui/react'
-import { HiCheck, HiSwitchVertical } from 'react-icons/hi'
-import type { ICreditCard } from '../../interface/payments.interface'
+import { Fragment, useState } from 'react';
+import { HiCheck, HiSwitchVertical } from 'react-icons/hi';
+import type { ICreditCard } from '../../interface/payments.interface';
+import { capitalize } from '../../utils/helpers';
 
 const cards = [
   { id: 1, name: 'world' },
@@ -16,6 +17,7 @@ const cards = [
   { id: 9, name: 'saglamkart' },
 ]
 
+//   tumu: { tek_cekim: '1.89' }
 
 type Props = {
   setSelected: Dispatch<SetStateAction<ICreditCard>>
@@ -45,7 +47,7 @@ const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
             <Combobox.Input
               className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-              displayValue={() => selected?.name.toUpperCase()}
+              displayValue={() => capitalize(selected?.name)}
               placeholder="Kart Seçin"
               onChange={(event) => setQuery(event.target.value)}
             />
@@ -69,14 +71,14 @@ const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
                   Bulunamadi.
                 </div>
               ) : (
-                filteredCard.map((person) => (
+                filteredCard.map((card) => (
                   <Combobox.Option
-                    key={person.id}
+                    key={card.id}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${active ? 'bg-violet-600 text-white' : 'text-gray-900'
                       }`
                     }
-                    value={person}
+                    value={card}
                   >
                     {({ selected, active }) => (
                       <>
@@ -84,7 +86,7 @@ const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
                           className={`block truncate ${selected ? 'font-medium' : 'font-normal'
                             }`}
                         >
-                          {person.name.toUpperCase()}
+                          {capitalize(card.name)}
                         </span>
                         {selected ? (
                           <span
@@ -108,127 +110,3 @@ const CardSelector: React.FC<Props> = ({ setSelected, selected }) => {
 }
 
 export default CardSelector
-
-/*
-oranlar: {
-  world: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  axess: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  maximum: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  cardfinans: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  paraf: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  advantage: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  combo: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  bonus: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  saglamkart: {
-    taksit_2: 3.33,
-    taksit_3: 4.16,
-    taksit_4: 4.98,
-    taksit_5: 5.82,
-    taksit_6: 6.65,
-    taksit_7: 7.47,
-    taksit_8: 8.3,
-    taksit_9: 9.14,
-    taksit_10: 9.96,
-    taksit_11: 10.79,
-    taksit_12: 11.62
-  },
-  tumu: { tek_cekim: '1.89' }
-}
-
-*/
