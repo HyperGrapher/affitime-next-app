@@ -10,7 +10,7 @@ import Card from '../../components/credit-card/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
 import { AppRoutes } from '../../config/appRoutes';
 import { PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
-import type { IPlanPaymentData } from "../../interface/payments.interface";
+import type { ICreditCard, IPlanPaymentData } from "../../interface/payments.interface";
 import { IpSchema } from '../../interface/zod.schema';
 import classNames from "../../utils/classnames";
 import getClientIp from '../../utils/getClientIp';
@@ -21,6 +21,7 @@ import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
 import InstallmentTable from '../../pages/payments/InstallmentTable';
+import CardSelector from '../credit-card/CardSelector';
 
 type InstProps = {
     setIsTaksit: React.Dispatch<React.SetStateAction<boolean>>
@@ -152,6 +153,7 @@ const PaymentCard = () => {
     const [payData, setPayData] = useState<IPlanPaymentData>();
     const [expiryDate, setExpiryDate] = useState("");
     const [installmentAmount, setInstallmentAmount] = useState("0");
+    const [selectedCard, setSelectedCard] = useState<ICreditCard>({ id: 0, name: '' });
 
 
     const payment_amount_as_plan = annual
@@ -329,7 +331,7 @@ const PaymentCard = () => {
             <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
             <input type="hidden" name="installment_count" value={payData?.installment_count} />
-            {/* <input type="hidden" name="card_type" value={"advantage"} /> */}
+            <input type="hidden" name="card_type" value={selectedCard.name} />
 
             <button id="post" ref={buttonRef}>click</button>
         </form>
@@ -349,6 +351,11 @@ const PaymentCard = () => {
                             cvc={watch().cvvNumber || ''}
                             focused={''}
                         />
+
+                        {isTaksit && <CardSelector
+                            selected={selectedCard}
+                            setSelected={setSelectedCard}
+                        />}
 
                         {isTaksit && <InstallmentTable
                             price={calcTotal(annual, payment_amount_as_plan)}

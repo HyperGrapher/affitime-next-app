@@ -2,33 +2,13 @@ import React, { useState } from 'react'
 import { Lira } from '../../components/shared/HtmlCodes'
 import type { InstallmentType } from '../../interface/payments.interface'
 import { numberWithCommas } from '../../utils/helpers'
-
+import { calcMonthlyPayment, calcTotalPayment } from '../../utils/paymentCalc'
 
 type Props = {
     price?: number,
     table?: InstallmentType | undefined
     setInstallmentAmount: React.Dispatch<React.SetStateAction<string>>
 }
-
-const calcMonthlyPayment = (price: number | undefined, rate: number | undefined, month: number) => {
-
-    if (!price) return 0;
-    if (!rate) return 0;
-
-    const tot = (price * (rate / 100) + price)
-    const res = tot / month
-    return res.toFixed(2)
-}
-
-const calcTotalPayment = (price: number | undefined, rate: number | undefined) => {
-
-    if (!price) return 0;
-    if (!rate) return 0;
-
-    const tot = price * (1 + rate / 100)
-    return tot.toFixed(2)
-}
-
 
 const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount }) => {
 
@@ -38,7 +18,7 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
             <div className="py-2 mx-auto">
                 <div className="flex flex-col text-center w-full mb-4">
                     <h1 className="sm:text-xl text-lg font-medium title-font mb-2 text-gray-900">Taksit Tablosu</h1>
-                    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Tüm kartlar için</p>
+                    <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Ödeme tutarı için bir vade seçin</p>
                 </div>
                 <div className="lg:w-2/3 w-full mx-auto overflow-auto">
                     <table className="table-auto w-full text-left whitespace-no-wrap text-sm">

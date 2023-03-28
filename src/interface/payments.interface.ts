@@ -1,3 +1,9 @@
+export interface ICreditCard {
+  id: number;
+  name: string
+}
+
+
 export type PlanTypes =
   | "NONE"
   | "TRIAL"
