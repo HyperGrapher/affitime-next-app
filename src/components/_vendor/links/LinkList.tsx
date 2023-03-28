@@ -1,10 +1,10 @@
 import type { Visit } from "@prisma/client";
 import { type Link as LinkEntity, type Partner, type Product } from "@prisma/client";
+import dynamic from 'next/dynamic';
 import React, { useState } from "react";
+import { useMediaQuery as useMQ } from 'react-responsive';
 import { trpc } from '../../../utils/trpc';
 import VendorLinkItem from "./LinkItem";
-import dynamic from 'next/dynamic'
-import { useMediaQuery as useMQ } from 'react-responsive';
 import LinkItemMobile from "./LinkItemMobile";
 
 
@@ -41,44 +41,49 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
   return (<>
 
 
-    {links?.length === 0 ? <p className='text-center'>Henüz bir affiliate linki bulunmuyor</p> : (<>
+    {links?.length === 0
+      ? <p className='text-center'>Henüz bir affiliate linki bulunmuyor</p>
+      :
+      (
+        <>
 
-      {/* <LinkListHeader /> */}
-      <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
-        {links?.map(p => (
-          <React.Fragment key={p.id}>
-            {isMobile
-              ? <LinkItemMobile
-                key={p.id}
-                link={p}
-                setDeleteId={setDeleteId}
-                confirmModal={() => setModal(true)} />
-              : <VendorLinkItem
-                key={p.id}
-                link={p}
-                setDeleteId={setDeleteId}
-                confirmModal={() => setModal(true)} />}
+          {/* <LinkListHeader /> */}
+          <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
+            {links?.map(p => (
+              <React.Fragment key={p.id}>
+                {isMobile
+                  ? <LinkItemMobile
+                    key={p.id}
+                    link={p}
+                    setDeleteId={setDeleteId}
+                    confirmModal={() => setModal(true)} />
+                  : <VendorLinkItem
+                    key={p.id}
+                    link={p}
+                    setDeleteId={setDeleteId}
+                    confirmModal={() => setModal(true)} />}
 
-          </React.Fragment>
+              </React.Fragment>
 
-        ))}
-      </ul>
+            ))}
+          </ul>
 
-      <DynamicModalContainer state={modal} key={"adda"}>
-        <DynamicWarnDialog
-          title="Affiliate linkini duraklatmak istiyor musunuz?"
-          desc="
+          <DynamicModalContainer state={modal} key={"justakey"}>
+            <DynamicWarnDialog
+              title="Affiliate linkini duraklatmak istiyor musunuz?"
+              desc="
           Link pasif hale gelerek hata sayfasina yönlendirilecektir. 
           Link tıklamaları mağazanıza ulaşmayacatır.
           "
-          confirmBtnText='Sil'
-          dismissFn={() => setModal(false)}
-          confirmFn={() => handlePasifyLink()}
-        />
-      </DynamicModalContainer>
+              confirmBtnText='Duraklat'
+              dismissFn={() => setModal(false)}
+              confirmFn={() => handlePasifyLink()}
+            />
+          </DynamicModalContainer>
 
-    </>
-    )}
+        </>
+      )
+    }
 
   </>);
 };
