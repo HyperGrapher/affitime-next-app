@@ -55,7 +55,7 @@ const TaksitRadio: React.FC<InstProps> = ({ setIsTaksit }) => {
                         value={true}
                         onChange={() => handleOnchange(true)}
                         control={<Radio size="small" />}
-                        label="Taksit ile öde" />
+                        label="Taksit" />
 
 
                 </div>
@@ -292,7 +292,7 @@ const PaymentCard = () => {
         {busy && <TopBarProgress />}
 
         <div className="flex flex-col mb-4 items-center ">
-            <h1 className="text-xl text-center font-bold text-slate-500">
+            <h1 className="text-base md:text-xl text-center font-bold text-slate-500">
                 Ödeme Yapın
             </h1>
             <div className="text-center">
@@ -360,7 +360,7 @@ const PaymentCard = () => {
                             setInstallmentAmount={setInstallmentAmount}
                         />}
 
-                        <div className="flex flex-col bg-redx-100 w-full justify-between gap-6">
+                        <div className="flex flex-col bg-redx-100 w-full justify-between gap-6 whitespace-nowrap">
 
 
                             <section className={classNames(

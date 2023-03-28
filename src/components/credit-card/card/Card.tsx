@@ -11,7 +11,7 @@ const Card: React.FC<any> = (props) => {
 
   useEffect(() => {
     const name = document.querySelector('.rccs__name')
-    if(name) name.textContent = "Ad Soyad"
+    if (name) name.textContent = "Ad Soyad"
   }, [])
 
   return (
@@ -31,6 +31,10 @@ const CardStyle = styled.div`
     -webkit-perspective: 1000px;
     perspective: 1000px;
     width: 290px;
+
+    @media (max-width: 400px) {
+      width: 260px;
+    }
   }
   .rccs__card {
     height: 182.873px;
@@ -41,6 +45,11 @@ const CardStyle = styled.div`
     -webkit-transition: all 0.4s linear;
     transition: all 0.4s linear;
     width: 290px;
+
+    @media (max-width: 400px) {
+      width: 260px;
+      height: 170px;
+    }
   }
   .rccs__card--front,
   .rccs__card--back {

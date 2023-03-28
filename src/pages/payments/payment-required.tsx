@@ -48,8 +48,8 @@ const Paywall = () => {
       </Head>
 
       <div className="mt-16 bg-yellow-50 py-8">
-        <h1 className="text-3xl text-red-500 font-bold text-center">{title}</h1>
-        <p className="text-lg text-center">
+        <h1 className="text-xl md:text-3xl text-red-500 font-bold text-center">{title}</h1>
+        <p className="text-sm md:text-lg text-center">
           <Balancer>
             {desc}
           </Balancer>
@@ -60,7 +60,7 @@ const Paywall = () => {
         <div className="container px-5 py-8 mx-auto">
           <div className="flex flex-col text-center w-full mb-20">
             <h1 className="sm:text-3xl text-2xl font-medium title-font mb-2 text-gray-900">Planlar</h1>
-            <p className="lg:w-2/3 mx-auto leading-relaxed text-base text-gray-500">
+            <p className="lg:w-2/3 mx-auto leading-relaxed text-sm md:text-base text-gray-500">
               Sana en uygun paketi seç satışlarını, marka bilinirliğini ve karlılığını arttırmaya başla
             </p>
             <div className="flex mx-auto border-2 border-indigo-500 rounded overflow-hidden mt-6">
@@ -81,21 +81,21 @@ const Paywall = () => {
                   <span>{isAnnual ? PRICING_ANNUALY.BASIC : PRICING_MONTHLY.BASIC} <Lira size="30px" /></span>
                   <span className="text-lg ml-1 font-normal text-gray-500"><Space /> /ay</span>
                 </h1>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>Sınırsız Affiliate
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>1.000 Tıklama/Ay
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -103,7 +103,7 @@ const Paywall = () => {
                   </span>Fraud Koruması
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -135,21 +135,21 @@ const Paywall = () => {
                   <span>{isAnnual ? PRICING_ANNUALY.PRO : PRICING_MONTHLY.PRO} <Lira size="30px" /></span>
                   <span className="text-lg ml-1 font-normal text-gray-500"> <Space /> /ay</span>
                 </h1>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>Sınırsız Affiliate
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>2.000 Tıklama/Ay
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -157,7 +157,7 @@ const Paywall = () => {
                   </span>Fraud Koruması
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -165,7 +165,7 @@ const Paywall = () => {
                   </span>Süreli Link Oluşturma
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -173,7 +173,7 @@ const Paywall = () => {
                   </span>Türkiye bazlı link kabulü
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -183,14 +183,14 @@ const Paywall = () => {
 
 
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>Kampanya Raporlama
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -221,21 +221,21 @@ const Paywall = () => {
                   <span>{isAnnual ? PRICING_ANNUALY.ULTIMATE : PRICING_MONTHLY.ULTIMATE} <Lira size="30px" /></span>
                   <span className="text-lg ml-1 font-normal text-gray-500"><Space /> /ay</span>
                 </h1>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>Sınırsız Affiliate
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>4.000 Tıklama/Ay
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -243,7 +243,7 @@ const Paywall = () => {
                   </span>Fraud Koruması
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -251,7 +251,7 @@ const Paywall = () => {
                   </span>Süreli Link Oluşturma
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -259,7 +259,7 @@ const Paywall = () => {
                   </span>Türkiye bazlı link kabulü
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -268,14 +268,14 @@ const Paywall = () => {
                 </p>
 
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
                     </svg>
                   </span>Kampanya Raporlama
                 </p>
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -284,7 +284,7 @@ const Paywall = () => {
                 </p>
 
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>
@@ -292,7 +292,7 @@ const Paywall = () => {
                   </span>Tıklamaların cihaz bilgisi
                 </p>
 
-                <p className="flex items-center text-gray-600 mb-2">
+                <p className="flex items-center text-gray-600 mb-2 text-sm md:text-base">
                   <span className="w-4 h-4 mr-2 inline-flex items-center justify-center bg-gray-400 text-white rounded-full flex-shrink-0">
                     <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" className="w-3 h-3" viewBox="0 0 24 24">
                       <path d="M20 6L9 17l-5-5"></path>

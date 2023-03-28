@@ -61,15 +61,15 @@ const Purchase = () => {
             <PageCard>
                 <div className="flex items-start">
 
-                    <div className="a bg-redx-100 w-full">
-                        <h1 className="text-xl font-bold mb-4 text-slate-500">
+                    <div className="w-full">
+                        <h1 className="text-sm md:text-xl font-bold mb-4 text-slate-500">
                             1 {annual ? "Yıllık" : "Aylık"} {plan} Plan
                         </h1>
 
-                        <p className="text-lg">
+                        <p className="text-sm md:text-lg whitespace-nowrapx">
                             {annual ? PRICING_ANNUALY[plan] : PRICING_MONTHLY[plan]}  <Lira size='18px' /> / Ay - {annual ? "Yıllık faturalandırılır" : "Aylık faturalandırılır"}
                         </p>
-                        <p className="text-lg">
+                        <p className="text-sm md:text-lg">
                             <b>Toplam: </b>{numberWithCommas(total)} <Lira size='18px' />
                         </p>
 
@@ -113,12 +113,14 @@ const Purchase = () => {
 
                     </div>
 
-                    <IconButton
-                        title={"Geri Git"}
-                        disabled={busy}
-                        icon={<BackIcon color="white" size="16px" />}
-                        twClasses="ml-auto w-38"
-                        fn={back} />
+                    <div className='ml-auto scale-75 md:scale-100'>
+                        <IconButton
+                            title={"Geri Git"}
+                            disabled={busy}
+                            icon={<BackIcon color="white" size="16px" />}
+                            twClasses="ml-auto w-38"
+                            fn={back} />
+                    </div>
 
                 </div>
             </PageCard>
@@ -193,10 +195,9 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
     }
 
 
-
     return (
         <PageCard>
-            <h1 className="text-xl font-bold mb-4 text-slate-500">
+            <h1 className="text-base md:text-xl font-bold mb-4 text-slate-500">
                 Fatura Bilgileri
             </h1>
 
