@@ -45,5 +45,6 @@ export enum AppRoutes {
   ADMIN_CREATE_LINK = "/admin/links/create",
   ADMIN_NOTIFICATIONS = "/admin/notifications",
   // COMMON AUTH
-  SETTINGS_ACCOUNT = "/settings/account",
+  VENDOR_ACCOUNT_SETTINGS = "/vendor/settings/account",
+  PARTNER_ACCOUNT_SETTINGS = "partner/settings/account",
 }

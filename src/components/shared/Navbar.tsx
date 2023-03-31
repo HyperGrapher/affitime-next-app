@@ -105,21 +105,21 @@ const Navbar: React.FC = () => {
                     leaveTo='transform opacity-0 scale-95'>
                     <Menu.Items className='absolute right-0 z-10 mt-5 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
 
-                      
+
                       {!sessionData ? <Fragment>
 
                         <Menu.Item>
-                        {({ active }) => (
-                          <Link
-                            href='/'
-                            className={classNames(
-                              active ? 'bg-gray-100' : '',
-                              'block px-4 py-2 text-sm text-gray-700'
-                            )}>
-                            Anasayfa
-                          </Link>
-                        )}
-                      </Menu.Item>
+                          {({ active }) => (
+                            <Link
+                              href='/'
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700'
+                              )}>
+                              Anasayfa
+                            </Link>
+                          )}
+                        </Menu.Item>
 
 
                         <Menu.Item>
@@ -217,6 +217,20 @@ const Navbar: React.FC = () => {
                               )}
                             </Menu.Item>
 
+                            
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.VENDOR_ACCOUNT_SETTINGS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                  )}>
+                                  Hesap Ayarlari
+                                </Link>
+                              )}
+                            </Menu.Item>
+
                           </> : (<>
                             <Menu.Item>
                               {({ active }) => (
@@ -270,21 +284,23 @@ const Navbar: React.FC = () => {
                               )}
                             </Menu.Item>
 
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.PARTNER_ACCOUNT_SETTINGS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                  )}>
+                                  Hesap Ayarlari
+                                </Link>
+                              )}
+                            </Menu.Item>
+
                           </>
                           )}
 
-                          <Menu.Item>
-                            {({ active }) => (
-                              <Link
-                                href={AppRoutes.SETTINGS_ACCOUNT}
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block w-full px-4 py-2 text-left text-sm text-gray-700'
-                                )}>
-                                Hesap Ayarlari
-                              </Link>
-                            )}
-                          </Menu.Item>
+
 
                           <Menu.Item>
                             {({ active }) => (

@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure, vendorProcedure } from "../trpc";
+import { router, protectedProcedure, vendorProcedure, partnerProcedure } from "../trpc";
 import { z } from "zod";
 
 export const userRouter = router({
@@ -146,6 +146,52 @@ export const userRouter = router({
       }
     }),
 
+    updatePartnerAccount: partnerProcedure
+    .input(
+      z.object({
+        email: z.string().trim().email().optional(),
+        fname: z.string().trim().optional(),
+        lname: z.string().trim().optional(),
+        image: z.string().trim().optional(),
+        phone: z.string().trim().min(10).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const id = ctx.session.id;
+      const partnerId = ctx.session.partnerId;
+      const { email, fname, lname,  phone, image } = input;
+
+      console.log(image?.length);
+      
+
+      if (!id)
+        throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
+
+      try {
+        await ctx.prisma.user.update({
+          where: { id },
+          data: {
+            email,
+            fname,
+            lname,
+            image,
+          },
+        });
+
+        await ctx.prisma.partner.update({
+          where: { id: partnerId },
+          data: {
+            phone,
+          },
+        });
+
+        return { error: false, message: "ok" };
+      } catch (error) {
+        console.log(error);
+        return { error: true, message: "IP upsert failed" };
+      }
+    }),
+
   getVendorAccount: vendorProcedure.query(({ ctx }) => {
     const { id } = ctx.session;
 
@@ -165,6 +211,28 @@ export const userRouter = router({
             phone: true,
             brand: true,
             website: true,
+          },
+        },
+      },
+    });
+  }),
+  getPartnerAccount: partnerProcedure.query(({ ctx }) => {
+    const { id } = ctx.session;
+
+    if (!id) throw new TRPCError({ code: "NOT_FOUND" });
+
+    return ctx.prisma.user.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        email: true,
+        fname: true,
+        lname: true,
+        image: true,
+        partner: {
+          select: {
+            phone: true,
           },
         },
       },

@@ -1,3 +1,4 @@
+import { Tab } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
 import Head from "next/head";
@@ -11,6 +12,7 @@ import { z } from 'zod';
 import IconButton from "../../components/buttons/IconButton";
 import PageCard from "../../components/card/Card";
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
+import TabItem from "../../components/tab-item/TabItem";
 import { AppRoutes } from "../../config/appRoutes";
 import { UserRoles } from "../../interface/auth.interface";
 import { IpSchema } from "../../interface/zod.schema";
@@ -18,10 +20,8 @@ import classNames from '../../utils/classnames';
 import getClientIp from "../../utils/getClientIp";
 import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
-import { Tab } from '@headlessui/react';
-import TabItem from "../../components/tab-item/TabItem";
-import Image from 'next/image';
-import profileImg from '../../assets/profile.webp'
+// import Image from 'next/image';
+// import profileImg from '../../assets/profile.webp'
 
 const Account = () => {
 
