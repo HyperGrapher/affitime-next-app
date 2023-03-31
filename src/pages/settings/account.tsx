@@ -18,16 +18,406 @@ import classNames from '../../utils/classnames';
 import getClientIp from "../../utils/getClientIp";
 import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
+import { Tab } from '@headlessui/react';
+import TabItem from "../../components/tab-item/TabItem";
+import Image from 'next/image';
+import profileImg from '../../assets/profile.webp'
+
+const Account = () => {
+
+    const [selectedIndex, setSelectedIndex] = useState(0)
 
 
-interface IFormData {
+
+    return (
+        <div className={"auth-container"}>
+            <Head>
+                <title>Affitime | Hesap Ayarları</title>
+            </Head>
+
+            <main className="mx-auto container min-h-screen px-2 pt-6">
+
+                <div className="mb-2">
+                    <h1 className="text-slate-600 font-bold text-2xl">
+                        Hesap Ayarları
+                    </h1>
+                    <small className="text-slate-400 text-sm">
+                        Hesabınızla ilgili bilgileri bu sayfada güncelleyebilirsiniz
+                    </small>
+                </div>
+
+
+                <Tab.Group defaultIndex={0} selectedIndex={selectedIndex} onChange={setSelectedIndex}>
+                    <Tab.List className={classNames(
+                        "space-x-8 "
+                    )}>
+                        <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
+                        <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
+                        <TabItem id="2" title="Third" selected={selectedIndex} query="2" />
+
+                    </Tab.List>
+                    <Tab.Panels>
+                        <Tab.Panel>{selectedIndex === 0 && <VendorAccountInfo />}</Tab.Panel>
+                        <Tab.Panel>{selectedIndex === 1 && <UpdatePassword />}</Tab.Panel>
+                        <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel>
+                    </Tab.Panels>
+                </Tab.Group>
+
+            </main>
+
+            <TestButtonsSection />
+
+        </div>
+    )
+}
+
+export default Account
+
+
+interface IVendorAccountInfoFormData {
+    email: string;
+    fname: string;
+    lname: string;
+    brand: string;
+    website: string;
+    phone: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    // image: any;
+
+
+}
+const MAX_FILE_SIZE = 100000;
+const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
+
+// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
+// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
+
+const vendorAccountValidationSchema = z.object({
+    email: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
+    fname: z.string().trim().min(3, "En az 3 karakter olmalı!"),
+    lname: z.string().trim().min(2, "En az 2 karakter olmalı!"),
+    brand: z.string().trim().min(5, "En az 5 karakter olmalı!"),
+    website: z.string().trim().url("Geçerli bir adres giriniz!"),
+    phone: z.string().trim().min(10, "En az 10 haneli numaranızı giriniz"),
+    // image: z.string().optional()
+}).required();
+
+
+
+
+interface ImageUploadData {
+    name: string;
+    data: string;
+}
+
+const imageUploadSchema = z.object({
+    name: z.string(),
+    data: z.string(),
+});
+
+const VendorAccountInfo = () => {
+
+    const [busy, setBusy] = useState(false)
+    // const [imgErr, setImgErr] = useState('')
+    // const [imgBase64, setImgBase64] = useState<string>()
+
+
+    const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
+        resolver: zodResolver(vendorAccountValidationSchema),
+        reValidateMode: 'onBlur',
+        mode: 'onBlur',
+    });
+
+    const updateVendorAccount = trpc.user.updateVendorAccount.useMutation()
+    trpc.user.getVendorAccount.useQuery(undefined, {
+        onSuccess(data) {
+            setValue("email", data?.email ?? "")
+            setValue("fname", data?.fname ?? "")
+            setValue("lname", data?.lname ?? "")
+            // setValue("image", data?.image ?? "")
+            // setImgBase64(data?.image ?? "")
+            setValue("phone", data?.vendor?.phone ?? "")
+            setValue("brand", data?.vendor?.brand ?? "")
+            setValue("website", data?.vendor?.website ?? "")
+        }
+    })
+
+
+    const onSubmit: SubmitHandler<IVendorAccountInfoFormData> = async (data) => {
+
+        // console.log(data.image);
+
+        setBusy(true)
+        updateVendorAccount.mutate(data, {
+            onSuccess: () => {
+                notifySuccessBR("Bilgileriniz Güncellendi!")
+            },
+            onError(error) {
+                console.log(error)
+                notifyError(error.message ?? 'Hata. Bilgileriniz Güncellenemedi!')
+            },
+            onSettled: () => {
+
+                setBusy(false)
+            }
+        })
+
+    }
+
+
+    const convertToBase64GPT = async (file: File) => {
+        try {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            // setValue('image', file)
+
+            return new Promise<ImageUploadData>((resolve, reject) => {
+                reader.onload = () => {
+                    const base64String = reader.result?.toString()?.split(',')[1]?.replace(/\s/g, '');
+                    console.log({ name: file.name });
+
+                    const imageData = {
+                        name: file.name,
+                        data: base64String || '',
+                    };
+                    try {
+                        imageUploadSchema.parse(imageData);
+                        resolve(imageData);
+                    } catch (err) {
+                        console.error(err);
+                        reject(err);
+                    }
+                };
+
+                reader.onerror = () => {
+                    reject(reader.error);
+                };
+            });
+        } catch (err) {
+            console.error(err);
+            throw err;
+        }
+    }
+
+
+    return (
+        <PageCard>
+            <h2 className="text-center text-lg font-bold text-slate-500">Bilgilerinizi Güncelleyin</h2>
+
+            <div className="w-64 flex flex-col gap-4 mx-auto">
+
+                <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
+
+
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="email">
+                            Email adresiniz
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="email"
+                            placeholder='Email Adresi'
+                            {...register("email", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.email} message={errors.email?.message} />
+
+                    </FormFieldWrapper>
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="fname">
+                            Adınız
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="text"
+                            placeholder='Adınız'
+                            {...register("fname", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.fname} message={errors.fname?.message} />
+
+                    </FormFieldWrapper>
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="lname">
+                            Soyadınız
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="text"
+                            placeholder='Soyadınız'
+                            {...register("lname", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.lname} message={errors.lname?.message} />
+
+                    </FormFieldWrapper>
+
+
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="lname">
+                            Firma ismi
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="text"
+                            placeholder='Firma ismi'
+                            {...register("brand", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.brand} message={errors.brand?.message} />
+
+                    </FormFieldWrapper>
+
+
+                    <FormFieldWrapper>
+                        <label htmlFor="website" className={classNames(
+                            "font-medium text-sm pl-2 "
+                        )}>Website</label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="text"
+                            placeholder='https://'
+                            {...register("website", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.website} message={errors.website?.message} />
+
+                    </FormFieldWrapper>
+
+
+
+                    <FormFieldWrapper>
+                        <label htmlFor="phone" className={classNames(
+                            "font-medium text-sm pl-2 "
+                        )}>Telefon No</label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="text"
+                            placeholder='5xx'
+                            {...register("phone", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.phone} message={errors.phone?.message} />
+
+                    </FormFieldWrapper>
+
+
+
+                    <IconButton
+                        icon={<HiPencil color="white" size={"16px"} />}
+                        title="Güncelle"
+                        disabled={busy}
+                        fn={() => null} />
+                </form>
+
+
+
+            </div>
+        </PageCard>
+    )
+}
+
+// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
+
+// This is the list of mime types you will accept with the schema
+// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
+
+// This is a file validation with a few extra checks in the `superRefine`.
+// The `refine` method could also be used, but `superRefine` offers better
+// control over when the errors are added and can include specific information
+// about the value being parsed.
+// const imageSchema = z.instanceof(File).superRefine((f, ctx) => {
+//     // First, add an issue if the mime type is wrong.
+//     if (!ACCEPTED_MIME_TYPES.includes(f.type)) {
+//         ctx.addIssue({
+//             code: z.ZodIssueCode.custom,
+//             message: `File must be one of [${ACCEPTED_MIME_TYPES.join(
+//                 ", "
+//             )}] but was ${f.type}`
+//         });
+//     }
+//     // Next add an issue if the file size is too large.
+//     if (f.size > 3 * MB_BYTES) {
+//         ctx.addIssue({
+//             code: z.ZodIssueCode.too_big,
+//             type: "array",
+//             message: `The file must not be larger than ${3 * MB_BYTES} bytes: ${f.size
+//                 }`,
+//             maximum: 3 * MB_BYTES,
+//             inclusive: true
+//         });
+//     }
+// });
+
+
+interface IPasswordFormData {
     oldPassword: string;
     password1: string;
     password2: string;
 
 }
 
-const validationSchema = z.object({
+const passwordValidationSchema = z.object({
     oldPassword: z.string().trim().min(8, "En az 8 karakter olmalı!"),
     password1: z.string().trim().min(8, "En az 8 karakter olmalı!"),
     password2: z.string().trim().min(8, "En az 8 karakter olmalı!"),
@@ -41,25 +431,21 @@ const validationSchema = z.object({
     }
 });
 
+const UpdatePassword = () => {
 
-const Account = () => {
     const [busy, setBusy] = useState(false)
-    const updatePassword = trpc.auth.updatePassword.useMutation()
-    const endTrialForTest = trpc.testing.endTrialForTest.useMutation()
-    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
-    const { replace } = useRouter()
-    const { data: session } = useSession()
+    const updatePass = trpc.auth.updatePassword.useMutation()
 
-    const { register, handleSubmit, reset, formState: { errors } } = useForm<IFormData>({
-        resolver: zodResolver(validationSchema),
+    const { register, handleSubmit, reset, formState: { errors } } = useForm<IPasswordFormData>({
+        resolver: zodResolver(passwordValidationSchema),
         reValidateMode: 'onBlur',
         mode: 'onBlur',
     });
 
 
-    const onSubmit: SubmitHandler<IFormData> = async (data) => {
+    const onSubmit: SubmitHandler<IPasswordFormData> = async (data) => {
         setBusy(true)
-        updatePassword.mutate(data, {
+        updatePass.mutate(data, {
             onSuccess: () => {
                 notifySuccessBR("Bilgileriniz Güncellendi!")
             },
@@ -75,7 +461,121 @@ const Account = () => {
 
     }
 
-    // ! TEST FUNC
+
+    return (
+        <PageCard>
+            {busy && <TopBarProgress />}
+            <h2 className="text-center text-lg font-bold text-slate-500">Parolanızı Güncelleyin</h2>
+
+            <div className="w-64 flex flex-col gap-4 mx-auto">
+
+                <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="title">
+                            Eski şifreniz
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="password"
+                            placeholder='Eski şifreniz'
+                            {...register("oldPassword", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.oldPassword} message={errors.oldPassword?.message} />
+
+                    </FormFieldWrapper>
+
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="title">
+                            Yeni şifreniz
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="password"
+                            placeholder='Yeni şifreniz'
+                            {...register("password1", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.password1} message={errors.password1?.message} />
+
+                    </FormFieldWrapper>
+
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="title">
+                            Yeni şifre tekrarı
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="password"
+                            placeholder='Yeni şifrenizi tekrarlayın'
+                            {...register("password2", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.password2} message={errors.password2?.message} />
+
+                    </FormFieldWrapper>
+
+
+                    <IconButton
+                        icon={<HiPencil color="white" size={"16px"} />}
+                        title="Güncelle"
+                        disabled={busy}
+                        fn={() => null} />
+                </form>
+
+
+
+            </div>
+        </PageCard>
+    )
+}
+
+
+
+const TestButtonsSection = () => {
+
+    const endTrialForTest = trpc.testing.endTrialForTest.useMutation()
+    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
+    const { data: session } = useSession()
+    const { replace } = useRouter()
+
+
     const payForTest = async () => {
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
@@ -108,7 +608,7 @@ const Account = () => {
             onError(error) {
                 console.log(error)
                 notifyError('Ödeme sırasında bir hata oluştu!')
-                setBusy(false)
+
             },
 
         })
@@ -116,114 +616,9 @@ const Account = () => {
 
 
     return (
-        <div className={"auth-container"}>
-            <Head>
-                <title>Affitime | Ayarlar</title>
-            </Head>
-
-            {busy && <TopBarProgress />}
-
-            <PageCard>
-                <h2 className="text-center text-lg font-bold text-slate-500">Bilgilerinizi Gücelleyin</h2>
-
-                <div className="w-64 flex flex-col gap-4 mx-auto">
-
-                    <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
-
-                        <FormFieldWrapper>
-
-                            <label
-                                className={classNames(
-                                    "font-medium text-sm pl-2 "
-                                )}
-                                htmlFor="title">
-                                Eski şifreniz
-                            </label>
-
-                            <input
-                                className={classNames(
-                                    'disabled:bg-slate-200 block w-full',
-                                    'rounded-md border-gray-300 shadow-sm ',
-                                    'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                )}
-                                disabled={busy}
-                                type="password"
-                                placeholder='Eski şifreniz'
-                                {...register("oldPassword", { required: true })}
-                            />
-
-                            <FormFieldError state={!!errors.oldPassword} message={errors.oldPassword?.message} />
-
-                        </FormFieldWrapper>
-
-
-                        <FormFieldWrapper>
-
-                            <label
-                                className={classNames(
-                                    "font-medium text-sm pl-2 "
-                                )}
-                                htmlFor="title">
-                                Yeni şifreniz
-                            </label>
-
-                            <input
-                                className={classNames(
-                                    'disabled:bg-slate-200 block w-full',
-                                    'rounded-md border-gray-300 shadow-sm ',
-                                    'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                )}
-                                disabled={busy}
-                                type="password"
-                                placeholder='Yeni şifreniz'
-                                {...register("password1", { required: true })}
-                            />
-
-                            <FormFieldError state={!!errors.password1} message={errors.password1?.message} />
-
-                        </FormFieldWrapper>
-
-
-                        <FormFieldWrapper>
-
-                            <label
-                                className={classNames(
-                                    "font-medium text-sm pl-2 "
-                                )}
-                                htmlFor="title">
-                                Yeni şifre tekrarı
-                            </label>
-
-                            <input
-                                className={classNames(
-                                    'disabled:bg-slate-200 block w-full',
-                                    'rounded-md border-gray-300 shadow-sm ',
-                                    'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                                )}
-                                disabled={busy}
-                                type="password"
-                                placeholder='Yeni şifrenizi tekrarlayın'
-                                {...register("password2", { required: true })}
-                            />
-
-                            <FormFieldError state={!!errors.password2} message={errors.password2?.message} />
-
-                        </FormFieldWrapper>
-
-
-                        <IconButton
-                            icon={<HiPencil color="white" size={"16px"} />}
-                            title="Güncelle"
-                            disabled={busy}
-                            fn={() => null} />
-                    </form>
-
-
-
-                </div>
-            </PageCard>
-
-            {(session?.role === UserRoles.VENDOR && (session.email === 'wendy@email.com' || session.email === 'veronica@email.com')) && <div id="testing" className="text-center flex flex-col gap-2 px-8">
+        (session?.role === UserRoles.VENDOR
+            && (session.email === 'wendy@email.com' || session.email === 'veronica@email.com'))
+            ? <div id="testing" className="text-center flex flex-col gap-2 px-8">
                 <h3 className="text-center text-red-500">Bu alan sadece wendy@email.com icin goruntulenir</h3>
                 {/* <h3 className="text-center">{session.pro ? "Plan satin almis" : "Plan satin alinmamis"}</h3> */}
                 {/* <h3 className="text-center">{session.trial ? "Trial surecinde veya sonlanmis" : "Plan Satin Alinmis"}</h3> */}
@@ -259,10 +654,58 @@ const Account = () => {
                 </button>
 
 
-            </div>}
-
-        </div>
+            </div>
+            : null
     )
 }
 
-export default Account
+
+
+
+
+/*
+
+
+<FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="image">
+                            Avatar
+                        </label>
+
+                       <img height={100} width={100} src={'data:image/jpeg;base64,' + imgBase64} alt="Base64 Image" /> 
+                            
+
+                        
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            aria-label='Avatar'
+                            type="file"
+                            id='asd'
+                            name='asd'
+                            placeholder='Avatar'
+                            accept='.jpeg, .png, .jpg, .webp'
+                            onChange={async (event) => {
+
+                                if (!event.target.files) return
+                                const file = event?.target?.files[0] as File
+                                console.log({ fs: file.size });
+                                const zSchema = await convertToBase64GPT(file)
+                                setImgBase64(zSchema.data)
+                                setValue('image', zSchema.data)
+                            }}/>
+
+                      <FormFieldError state={!!errors.image} message={errors.image?.message} /> 
+
+                        </FormFieldWrapper>
+
+*/

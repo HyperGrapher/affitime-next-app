@@ -1,5 +1,5 @@
 import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure } from "../trpc";
+import { router, protectedProcedure, vendorProcedure } from "../trpc";
 import { z } from "zod";
 
 export const userRouter = router({
@@ -96,4 +96,78 @@ export const userRouter = router({
         return { error: true, message: "IP upsert failed" };
       }
     }),
+  updateVendorAccount: vendorProcedure
+    .input(
+      z.object({
+        email: z.string().trim().email().optional(),
+        fname: z.string().trim().optional(),
+        lname: z.string().trim().optional(),
+        brand: z.string().trim().optional(),
+        image: z.string().trim().optional(),
+        website: z.string().trim().url().optional(),
+        phone: z.string().trim().min(10).optional(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const id = ctx.session.id;
+      const vendorId = ctx.session.vendorId;
+      const { email, fname, lname, brand, website, phone, image } = input;
+
+      console.log(image?.length);
+      
+
+      if (!id)
+        throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
+
+      try {
+        await ctx.prisma.user.update({
+          where: { id },
+          data: {
+            email,
+            fname,
+            lname,
+            image,
+          },
+        });
+
+        await ctx.prisma.vendor.update({
+          where: { id: vendorId },
+          data: {
+            brand,
+            website,
+            phone,
+          },
+        });
+
+        return { error: false, message: "ok" };
+      } catch (error) {
+        console.log(error);
+        return { error: true, message: "IP upsert failed" };
+      }
+    }),
+
+  getVendorAccount: vendorProcedure.query(({ ctx }) => {
+    const { id } = ctx.session;
+
+    if (!id) throw new TRPCError({ code: "NOT_FOUND" });
+
+    return ctx.prisma.user.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        email: true,
+        fname: true,
+        lname: true,
+        image: true,
+        vendor: {
+          select: {
+            phone: true,
+            brand: true,
+            website: true,
+          },
+        },
+      },
+    });
+  }),
 });
