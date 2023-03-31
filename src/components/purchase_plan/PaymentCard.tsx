@@ -244,7 +244,8 @@ const PaymentCard = () => {
             currency: 'TL',
             user_address: taxInfo.address,
             plan,
-            annual
+            annual,
+            installment_count: isTaksit ? installmentAmount : "0"
         }
 
 

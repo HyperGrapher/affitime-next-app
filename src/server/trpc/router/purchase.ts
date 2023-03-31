@@ -27,7 +27,7 @@ const client_lang = "tr"; //Ödeme süreci dil seçeneği tr veya en.
 const payment_type = "card"; // Ödeme türü
 const non_3d = "0"; //3d'siz işlem
 const card_type = ""; // taksit icin gerekli yoksa degil. Alabileceği değerler; advantage, axess, combo, bonus, cardfinans, maximum, paraf, world, saglamkart
-const installment_count = "0"; // Taksit Sayısı
+// const installment_count = "0"; // Taksit Sayısı
 
 export type PlanType = "BASIC" | "PRO" | "ULTIMATE";
 
@@ -98,12 +98,13 @@ export const purchaseRouter = router({
         currency: z.string(),
         user_address: z.string(),
         plan: z.string(),
+        installment_count: z.string(),
         annual: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { vendorId } = ctx.session;
-      const { user_ip, annual, currency, user_address, plan } = input;
+      const { user_ip, annual, currency, user_address, plan, installment_count } = input;
 
       const payment_amount_as_plan = annual
         ? PRICING_ANNUALY[plan as PlanType]

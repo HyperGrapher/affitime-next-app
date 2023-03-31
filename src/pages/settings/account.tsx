@@ -226,7 +226,7 @@ const Account = () => {
             {(session?.role === UserRoles.VENDOR && (session.email === 'wendy@email.com' || session.email === 'veronica@email.com')) && <div id="testing" className="text-center flex flex-col gap-2 px-8">
                 <h3 className="text-center text-red-500">Bu alan sadece wendy@email.com icin goruntulenir</h3>
                 {/* <h3 className="text-center">{session.pro ? "Plan satin almis" : "Plan satin alinmamis"}</h3> */}
-                <h3 className="text-center">{session.trial ? "Trial surecinde veya sonlanmis" : "Plan Satin Alinmis"}</h3>
+                {/* <h3 className="text-center">{session.trial ? "Trial surecinde veya sonlanmis" : "Plan Satin Alinmis"}</h3> */}
                 <button className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500"
                     onClick={() => {
 
