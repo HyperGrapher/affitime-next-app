@@ -1,4 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import { useRouter } from "next/router";
 import { useMemo, useRef, useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
@@ -8,19 +11,15 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from 'zod';
 import Card from '../../components/credit-card/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
-import { AppRoutes } from '../../config/appRoutes';
 import { PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
+import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
 import type { ICreditCard, IPlanPaymentData } from "../../interface/payments.interface";
 import { IpSchema } from '../../interface/zod.schema';
+import InstallmentTable from '../../pages/payments/InstallmentTable';
 import classNames from "../../utils/classnames";
 import getClientIp from '../../utils/getClientIp';
-import { notifyError, notifySuccessBR } from '../../utils/notifications';
+import { notifyError } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Radio from '@mui/material/Radio';
-import RadioGroup from '@mui/material/RadioGroup';
-import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
-import InstallmentTable from '../../pages/payments/InstallmentTable';
 import CardSelector from '../credit-card/CardSelector';
 
 type InstProps = {
@@ -139,7 +138,7 @@ const validationSchema = z.object({
 const calcTotalFromPlan = (annual: boolean, price: string) => annual ? parseInt(price) * 12 : parseInt(price);
 
 const PaymentCard = () => {
-    const { query, replace } = useRouter()
+    const { query } = useRouter()
     const [isTaksit, setIsTaksit] = useState(false)
     const [busy, setBusy] = useState(false)
     const buttonRef = useRef<HTMLButtonElement>(null)
@@ -180,55 +179,22 @@ const PaymentCard = () => {
         mode: 'onBlur',
     });
 
-    const taxInfo = useMemo(() => {
+    const getTaxInfo = useMemo(() => {
 
         const tax = localStorage.getItem("taxinfo")
-
         if (!tax) return null
         return JSON.parse(tax)
     }, [])
 
     const puchase = trpc.purchase.purchasePack.useMutation()
     const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
-    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
-
-    // ! TEST FUNC
-    const payForTest = async () => {
-        const ipData = await getClientIp()
-        const userIp = IpSchema.parse(ipData)
-
-        const datam = {
-            user_ip: userIp.ip,
-            currency: 'TL',
-            user_address: taxInfo.address,
-            plan,
-            annual
-        }
-
-        puchaseForTest.mutate(datam, {
-            onSuccess: (data) => {
-                console.log("ok", data.payment_amount);
-                notifySuccessBR('Test payment OK')
-
-                setTimeout(() => {
-                    replace(AppRoutes.PAYMENT_SUCCESS)
-                }, 3000);
-            },
-            onError(error) {
-                console.log(error)
-                notifyError('Ödeme sırasında bir hata oluştu!')
-                setBusy(false)
-            },
-
-        })
-    }
 
     const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
         console.log({ cardData });
 
-        setBusy(true)
 
-        if (!taxInfo) return notifyError('Adres bilgisi bulunamadi!')
+        if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
+        setBusy(true)
 
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
@@ -239,22 +205,22 @@ const PaymentCard = () => {
         });
 
 
-        const datam = {
+        const purchaseData = {
             user_ip: userIp.ip,
             currency: 'TL',
-            user_address: taxInfo.address,
+            user_address: getTaxInfo.address,
             plan,
             annual,
             installment_count: isTaksit ? installmentAmount : "0"
         }
 
 
-        puchase.mutate(datam, {
+        puchase.mutate(purchaseData, {
             onSuccess: (data) => {
                 console.log("ok", data.payment_amount);
 
-                // 4355 0843 5508 4358	
-                // 4355 0843 5508 4358
+                // test card 1: 4355 0843 5508 4358	
+                // test card 2: 4355 0843 5508 4358
                 const [month, year] = cardData.expiryDate.split('/')
 
                 const aa: IPlanPaymentData = {
@@ -276,7 +242,7 @@ const PaymentCard = () => {
                 setTimeout(() => {
                     buttonRef.current?.click()
 
-                }, 3500);
+                }, 1000);
 
             },
             onError(error) {
@@ -520,7 +486,9 @@ const PaymentCard = () => {
                         </div>
 
                         <button
-                            className='bg-violet-600 text-white px-8 py-2 rounded-md w-full'
+                            className='bg-violet-600 text-white px-8 py-2 rounded-md w-full 
+                            disabled:bg-violet-400 disabled:shadow-none
+                            aria-disabled:bg-violet-400 aria-disabled:shadow-none'
                             type="submit"
                             disabled={busy}>
                             Ödeme Yap
@@ -531,11 +499,7 @@ const PaymentCard = () => {
             </div>
 
         </div>
-        <button
-            onClick={() => payForTest()}
-            className="text-slate-100 mt-8 py-2 px-3">
-            p
-        </button>
+
     </div>)
 }
 
