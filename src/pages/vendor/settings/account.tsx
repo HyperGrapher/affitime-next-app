@@ -24,6 +24,7 @@ import Image from 'next/image';
 import profileImg from '../../../assets/profile.webp'
 import axios from 'axios';
 import useNavbarStore from '../../../store/navbar.store';
+import { AVATAR_URL } from '../../../config/constants';
 
 
 const Account = () => {
@@ -139,7 +140,7 @@ const VendorAccountInfo = () => {
             setValue("email", data?.email ?? "")
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
-            setSelectedImg(data?.image ?? "")
+            setSelectedImg(data?.image ? `${AVATAR_URL}/${data?.image}`  : "")
             setValue("phone", data?.vendor?.phone ?? "")
             setValue("brand", data?.vendor?.brand ?? "")
             setValue("website", data?.vendor?.website ?? "")
@@ -239,7 +240,7 @@ const VendorAccountInfo = () => {
                     <FormFieldWrapper>
 
                         <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
-
+                        
 
                         <label
                             className={classNames(

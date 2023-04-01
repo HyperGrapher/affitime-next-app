@@ -15,7 +15,8 @@ const allowedExts = ["jpeg", "jpg", "png", "webp"];
 const handleFileUpload = async (
   req: NextApiRequest,
   saveLocally: boolean,
-  userId: string
+  userId: string,
+  role: string
 ): Promise<{
   fields: formidable.Fields;
   files: formidable.Files;
@@ -23,34 +24,44 @@ const handleFileUpload = async (
 }> => {
   const opt: formidable.Options = {};
   let newFilename = "";
+
+  // TODO create uploadFolder var
   if (saveLocally) {
+    const parent = path.dirname(process.cwd()).split("/").pop();
+
+    if (!parent) return Promise.reject(new Error("parent fail"));
+
     const existingFiles = await fs.readdir(
-      path.join(process.cwd() + "/public" + "/avatars")
+      path.join(parent, "app-images", "avatars")
     );
     const existingFile = existingFiles.filter((fn) => fn.startsWith(userId))[0];
 
     if (existingFile) {
-      await fs.unlink(
-        path.join(process.cwd() + "/public" + "/avatars", existingFile)
-      );
+      await fs.unlink(path.join(parent, "app-images", "avatars", existingFile));
     }
 
-    opt.uploadDir = path.join(process.cwd(), "/public/avatars");
-    opt.filename = (name, ext, path, form) => {
-      const filename = path.originalFilename ?? "";
+    console.log(path.join(parent, "app-images", "avatars"), "---------- JOIN");
+    
 
-      if (!filename) Promise.reject(new Error("fail"));
+    opt.uploadDir = path.join(parent, "app-images", "avatars");
+    opt.filename = (name, ext, path, form) => {
+      const originalFilename = path.originalFilename ?? "";
+
+      if (!originalFilename) Promise.reject(new Error("fail"));
 
       const extension =
-        filename.substring(filename.lastIndexOf(".") + 1, filename.length) ||
-        filename;
+        originalFilename.substring(
+          originalFilename.lastIndexOf(".") + 1,
+          originalFilename.length
+        ) || originalFilename;
 
       if (!allowedExts.includes(extension))
         Promise.reject(new Error("ext fail"));
-        const rand = crypto.randomBytes(6).toString("base64url");
+      const randStr = crypto.randomBytes(6).toString("base64url");
 
-
-      const filenameWithExt = `${userId}-${rand}.${extension}`;
+      const filenameWithExt = `${userId}-${role
+        .substring(0, 3)
+        .toLocaleLowerCase()}-${randStr}.${extension}`;
       newFilename = filenameWithExt;
       return filenameWithExt;
     };
@@ -81,14 +92,16 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     return res.status(403).json({ error: true, message: "No user" });
   }
 
+  const parent = path.dirname(process.cwd()).split("/").pop() 
+  
   try {
-    await fs.readdir(path.join(process.cwd() + "/public" + "/avatars"));
+    await fs.readdir(path.join(parent + "/app-images" + "/avatars"));
   } catch (error) {
-    await fs.mkdir(path.join(process.cwd() + "/public" + "/avatars"));
+    await fs.mkdir(path.join(parent + "/app-images" + "/avatars"), { recursive: true });
   }
 
   try {
-    const result = await handleFileUpload(req, true, user.id);
+    const result = await handleFileUpload(req, true, user.id, user.role);
     console.log(result.newFilename);
 
     await prisma.user.update({
@@ -96,14 +109,18 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
         id: session.id,
       },
       data: {
-        image: `/avatars/${result.newFilename}`,
+        image: `${result.newFilename}`,
       },
     });
 
-    res.status(200).json({ error: false, message: "success", path: `/avatars/${result.newFilename}`  });
+    res.status(200).json({
+      error: false,
+      message: "success",
+      path: `${result.newFilename}`,
+    });
   } catch (error) {
+    console.log("-----------> error");
     console.log(error);
-
     res
       .status(501)
       .json({ error: true, message: "failed during file operation" });

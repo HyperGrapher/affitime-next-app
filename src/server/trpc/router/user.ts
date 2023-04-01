@@ -1,6 +1,10 @@
-import { UserRoles } from './../../../interface/auth.interface';
 import { TRPCError } from "@trpc/server";
-import { router, protectedProcedure, vendorProcedure, partnerProcedure } from "../trpc";
+import {
+  router,
+  protectedProcedure,
+  vendorProcedure,
+  partnerProcedure,
+} from "../trpc";
 import { z } from "zod";
 
 export const userRouter = router({
@@ -115,7 +119,6 @@ export const userRouter = router({
       const { email, fname, lname, brand, website, phone, image } = input;
 
       console.log(image?.length);
-      
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
@@ -147,7 +150,7 @@ export const userRouter = router({
       }
     }),
 
-    updatePartnerAccount: partnerProcedure
+  updatePartnerAccount: partnerProcedure
     .input(
       z.object({
         email: z.string().trim().email().optional(),
@@ -160,10 +163,9 @@ export const userRouter = router({
     .mutation(async ({ ctx, input }) => {
       const id = ctx.session.id;
       const partnerId = ctx.session.partnerId;
-      const { email, fname, lname,  phone, image } = input;
+      const { email, fname, lname, phone, image } = input;
 
       console.log(image?.length);
-      
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
@@ -240,62 +242,18 @@ export const userRouter = router({
     });
   }),
 
-  getSessionAccount: protectedProcedure.query(({ ctx }) => {
-    const { id, role } = ctx.session;
+  getAccountImage: protectedProcedure.query(({ ctx }) => {
+    const { id } = ctx.session;
 
     if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
-    if(role === UserRoles.VENDOR) {
-
-      return ctx.prisma.user.findFirst({
-        where: {
-          id,
-        },
-        select: {
-          email: true,
-          fname: true,
-          lname: true,
-          image: true,
-          vendor: {
-            select: {
-              phone: true,
-              brand: true,
-              website: true,
-            },
-          },
-        },
-      });
-
-    } else if (role === UserRoles.PARTNER) {
-      return ctx.prisma.user.findFirst({
-        where: {
-          id,
-        },
-        select: {
-          email: true,
-          fname: true,
-          lname: true,
-          image: true,
-          partner: {
-            select: {
-              phone: true,
-            },
-          },
-        },
-      });
-
-    } else {
-      return ctx.prisma.user.findFirst({
-        where: {
-          id,
-        },
-        select: {
-          email: true,
-          image: true,
-        },
-      });
-      
-    }
-
+    return ctx.prisma.user.findFirst({
+      where: {
+        id,
+      },
+      select: {
+        image: true,
+      },
+    });
   }),
 });
