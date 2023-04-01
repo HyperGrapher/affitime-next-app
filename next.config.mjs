@@ -16,7 +16,10 @@ const config = {
   images: { remotePatterns: [
     {
       protocol: 'https',
-      hostname: 'cdn.dsmcdn.com',
+      hostname: '**',
+      port: '',
+      pathname: '**'
+      
     },
   ], formats: ['image/avif', 'image/webp'], },
 };
