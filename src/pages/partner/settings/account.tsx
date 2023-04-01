@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiPencil } from 'react-icons/hi';
+import { HiPencil, HiUpload as IcUpload } from 'react-icons/hi';
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from 'zod';
 import IconButton from "../../../components/buttons/IconButton";
@@ -20,8 +20,10 @@ import classNames from '../../../utils/classnames';
 import getClientIp from "../../../utils/getClientIp";
 import { notifyError, notifySuccessBR } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
-// import Image from 'next/image';
-// import profileImg from '../../assets/profile.webp'
+import useNavbarStore from '../../../store/navbar.store';
+import axios from 'axios';
+import profileImg from '../../../assets/profile.webp'
+import Image from 'next/image';
 
 const Account = () => {
 
@@ -53,13 +55,13 @@ const Account = () => {
                     )}>
                         <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
-                        <TabItem id="2" title="Third" selected={selectedIndex} query="2" />
+                        {/* <TabItem id="2" title="Third" selected={selectedIndex} query="2" /> */}
 
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>{selectedIndex === 0 && <PartnerAccountInfo />}</Tab.Panel>
                         <Tab.Panel>{selectedIndex === 1 && <UpdatePassword />}</Tab.Panel>
-                        <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel>
+                        {/* <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel> */}
                     </Tab.Panels>
                 </Tab.Group>
 
@@ -114,8 +116,11 @@ const imageUploadSchema = z.object({
 const PartnerAccountInfo = () => {
 
     const [busy, setBusy] = useState(false)
+    const [uploading, setUploading] = useState(false)
     // const [imgErr, setImgErr] = useState('')
-    // const [imgBase64, setImgBase64] = useState<string>()
+    const [selectedImg, setSelectedImg] = useState("")
+    const [selectedFile, setSelectedFile] = useState<File>()
+    const setupdate = useNavbarStore(store => store.setupdate)
 
 
     const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IPartnerAccountInfoFormData>({
@@ -130,12 +135,33 @@ const PartnerAccountInfo = () => {
             setValue("email", data?.email ?? "")
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
-            // setValue("image", data?.image ?? "")
-            // setImgBase64(data?.image ?? "")
+            setSelectedImg(data?.image ?? "")
             setValue("phone", data?.partner?.phone ?? "")
 
         }
     })
+
+    const handleImageUpload = async () => {
+        if (!selectedFile) return notifyError('Foto seçiniz')
+
+        setUploading(true)
+
+        try {
+            const fd = new FormData()
+            fd.append('image', selectedFile)
+            const { data } = await axios.post('/api/image', fd)
+            localStorage.setItem("image", JSON.stringify(data.path))
+            setupdate(data.path)
+            notifySuccessBR('Başarıyla yüklendi')
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.log(error.response?.data);
+
+        }
+
+        setUploading(false)
+    }
 
 
     const onSubmit: SubmitHandler<IPartnerAccountInfoFormData> = async (data) => {
@@ -160,7 +186,7 @@ const PartnerAccountInfo = () => {
     }
 
 
-    const convertToBase64GPT = async (file: File) => {
+    const convertToBase64 = async (file: File) => {
         try {
             const reader = new FileReader();
             reader.readAsDataURL(file);
@@ -202,6 +228,59 @@ const PartnerAccountInfo = () => {
             <div className="w-64 flex flex-col gap-4 mx-auto">
 
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
+
+
+                    <FormFieldWrapper>
+
+
+
+                        <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
+
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm w-full bg-violet-100/50",
+                                'w-full h-16 flex flex-col items-center justify-center',
+                                'cursor-pointer border-2 border-dashed'
+                            )}
+                        >
+                            <IcUpload className='w-16 h-16 text-slate-500' height={42} width={42} />
+                            <div>Foto Secin</div>
+                            <input
+                                type='file'
+                                hidden
+                                onChange={({ target }) => {
+                                    if (target.files) {
+                                        console.log('-------- YES');
+                                        const file = target.files[0]
+                                        setSelectedFile(file)
+                                        if (file) {
+                                            console.log('-------- YES FILE');
+                                            setSelectedImg(URL.createObjectURL(file))
+                                        } else console.log('-------- NO FILE');
+                                    }
+
+
+                                }}
+
+                            />
+                        </label>
+
+                        <div className={classNames(
+                            "bg-violet-600 text-white ",
+                            'px-4 py-1 rounded-md',
+                            'flex justify-center',
+                            'mt-2 cursor-pointer',
+                            `${selectedFile ? "" : 'bg-violet-400'}`,
+                            `${uploading ? "bg-violet-400" : 'bg-violet-600'}`
+
+                        )}
+                            onClick={handleImageUpload}
+                        >Yükle</div>
+
+
+                    </FormFieldWrapper>
+
 
 
                     <FormFieldWrapper>

@@ -1,3 +1,4 @@
+import { UserRoles } from './../../../interface/auth.interface';
 import { TRPCError } from "@trpc/server";
 import { router, protectedProcedure, vendorProcedure, partnerProcedure } from "../trpc";
 import { z } from "zod";
@@ -237,5 +238,64 @@ export const userRouter = router({
         },
       },
     });
+  }),
+
+  getSessionAccount: protectedProcedure.query(({ ctx }) => {
+    const { id, role } = ctx.session;
+
+    if (!id) throw new TRPCError({ code: "NOT_FOUND" });
+
+    if(role === UserRoles.VENDOR) {
+
+      return ctx.prisma.user.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          email: true,
+          fname: true,
+          lname: true,
+          image: true,
+          vendor: {
+            select: {
+              phone: true,
+              brand: true,
+              website: true,
+            },
+          },
+        },
+      });
+
+    } else if (role === UserRoles.PARTNER) {
+      return ctx.prisma.user.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          email: true,
+          fname: true,
+          lname: true,
+          image: true,
+          partner: {
+            select: {
+              phone: true,
+            },
+          },
+        },
+      });
+
+    } else {
+      return ctx.prisma.user.findFirst({
+        where: {
+          id,
+        },
+        select: {
+          email: true,
+          image: true,
+        },
+      });
+      
+    }
+
   }),
 });

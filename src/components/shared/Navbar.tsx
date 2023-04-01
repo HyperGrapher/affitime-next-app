@@ -32,10 +32,12 @@ const Navbar: React.FC = () => {
   const { pathname } = useRouter()
   const deleteUserSession = trpc.auth.deleteSession.useMutation()
   const update = useNavbarStore(store => store.update)
-  const { data, refetch } = trpc.user.getVendorAccount.useQuery()
+  const { data, refetch } = trpc.user.getSessionAccount.useQuery()
 
   useEffect(() => {
     refetch()
+    console.log(update);
+
   }, [update])
 
   const logUserOut = () => {
@@ -95,7 +97,7 @@ const Navbar: React.FC = () => {
               </div>
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
                 {/* dashboard dropdown */}
-                <p className='text-slate-500 text-xs hidden md:inline'>{sessionData?.email}</p>
+                <p className='text-slate-500 text-xs font-medium hidden md:inline'>{sessionData?.email}</p>
                 <Menu as='div' className='relative ml-3'>
                   <div>
                     <Menu.Button className='flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 '>

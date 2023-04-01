@@ -46,5 +46,5 @@ export enum AppRoutes {
   ADMIN_NOTIFICATIONS = "/admin/notifications",
   // COMMON AUTH
   VENDOR_ACCOUNT_SETTINGS = "/vendor/settings/account",
-  PARTNER_ACCOUNT_SETTINGS = "partner/settings/account",
+  PARTNER_ACCOUNT_SETTINGS = "/partner/settings/account",
 }

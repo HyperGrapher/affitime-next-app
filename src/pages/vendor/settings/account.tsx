@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiPencil } from 'react-icons/hi';
+import { HiPencil, HiUpload as IcUpload } from 'react-icons/hi';
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from 'zod';
 import IconButton from "../../../components/buttons/IconButton";
@@ -56,13 +56,13 @@ const Account = () => {
                     )}>
                         <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
-                        <TabItem id="2" title="Third" selected={selectedIndex} query="2" />
+                        {/* <TabItem id="2" title="Third" selected={selectedIndex} query="2" /> */}
 
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>{selectedIndex === 0 && <VendorAccountInfo />}</Tab.Panel>
                         <Tab.Panel>{selectedIndex === 1 && <UpdatePassword />}</Tab.Panel>
-                        <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel>
+                        {/* <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel> */}
                     </Tab.Panels>
                 </Tab.Group>
 
@@ -120,8 +120,6 @@ const imageUploadSchema = z.object({
 
 const VendorAccountInfo = () => {
 
-    const { data: session } = useSession()
-
     const [busy, setBusy] = useState(false)
     const [uploading, setUploading] = useState(false)
     // const [imgErr, setImgErr] = useState('')
@@ -141,7 +139,6 @@ const VendorAccountInfo = () => {
             setValue("email", data?.email ?? "")
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
-            // setValue("image", data?.image ?? "")
             setSelectedImg(data?.image ?? "")
             setValue("phone", data?.vendor?.phone ?? "")
             setValue("brand", data?.vendor?.brand ?? "")
@@ -161,6 +158,7 @@ const VendorAccountInfo = () => {
             const { data } = await axios.post('/api/image', fd)
             localStorage.setItem("image", JSON.stringify(data.path))
             setupdate(data.path)
+            notifySuccessBR('Başarıyla yüklendi')
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
@@ -239,13 +237,20 @@ const VendorAccountInfo = () => {
 
                     <FormFieldWrapper>
 
+
+
+                        <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
+
+
                         <label
                             className={classNames(
-                                "font-medium text-sm pl-2 w-full bg-violet-100",
-                                'cursor-pointer'
+                                "font-medium text-sm w-full bg-violet-100/50",
+                                'w-full h-16 flex flex-col items-center justify-center',
+                                'cursor-pointer border-2 border-dashed'
                             )}
                         >
-                            <Image className='object-cover' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
+                            <IcUpload className='w-16 h-16 text-slate-500' height={42} width={42} />
+                            <div>Foto Secin</div>
                             <input
                                 type='file'
                                 hidden
@@ -265,19 +270,18 @@ const VendorAccountInfo = () => {
 
                             />
                         </label>
-                        <div className="cursor-pointer bg-violet-50/50 flex items-center justify-between">
 
-                            <div className={classNames(
-                                "bg-violet-500 h-3/4 text-white",
-                                'px-6 py-3 rounded-md',
-                                `${selectedFile ? "" : 'bg-violet-400'}`
+                        <div className={classNames(
+                            "bg-violet-600 text-white ",
+                            'px-4 py-1 rounded-md',
+                            'flex justify-center',
+                            'mt-2 cursor-pointer',
+                            `${selectedFile ? "" : 'bg-violet-400'}`,
+                            `${uploading ? "bg-violet-400" : 'bg-violet-600'}`
 
-                            )}
-                                onClick={handleImageUpload}
-                            >Yükle</div>
-                        </div>
-                        <p className='text-xs mt-4'>IMG: {selectedImg}</p>
-
+                        )}
+                            onClick={handleImageUpload}
+                        >Yükle</div>
 
 
                     </FormFieldWrapper>
