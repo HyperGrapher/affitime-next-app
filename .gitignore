@@ -5,6 +5,9 @@
 /.pnp
 .pnp.js
 
+# user avatars
+/public/avatars
+
 # testing
 /coverage
 

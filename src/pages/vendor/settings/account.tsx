@@ -20,8 +20,10 @@ import classNames from '../../../utils/classnames';
 import getClientIp from "../../../utils/getClientIp";
 import { notifyError, notifySuccessBR } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
-// import Image from 'next/image';
-// import profileImg from '../../assets/profile.webp'
+import Image from 'next/image';
+import profileImg from '../../../assets/profile.webp'
+import axios from 'axios';
+
 
 const Account = () => {
 
@@ -117,9 +119,13 @@ const imageUploadSchema = z.object({
 
 const VendorAccountInfo = () => {
 
+    const { data: session } = useSession()
+
     const [busy, setBusy] = useState(false)
+    const [uploading, setUploading] = useState(false)
     // const [imgErr, setImgErr] = useState('')
-    // const [imgBase64, setImgBase64] = useState<string>()
+    const [selectedImg, setSelectedImg] = useState("")
+    const [selectedFile, setSelectedFile] = useState<File>()
 
 
     const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
@@ -135,12 +141,33 @@ const VendorAccountInfo = () => {
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
             // setValue("image", data?.image ?? "")
-            // setImgBase64(data?.image ?? "")
+            setSelectedImg(data?.image ?? "")
             setValue("phone", data?.vendor?.phone ?? "")
             setValue("brand", data?.vendor?.brand ?? "")
             setValue("website", data?.vendor?.website ?? "")
         }
     })
+
+
+    const handleImageUpload = async () => {
+        if (!selectedFile) return notifyError('Foto seçiniz')
+
+        setUploading(true)
+
+        try {
+            const fd = new FormData()
+            fd.append('image', selectedFile)
+            const { data } = await axios.post('/api/image', fd)
+            console.log(data);
+
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.log(error.response?.data);
+
+        }
+
+        setUploading(false)
+    }
 
 
     const onSubmit: SubmitHandler<IVendorAccountInfoFormData> = async (data) => {
@@ -165,11 +192,10 @@ const VendorAccountInfo = () => {
     }
 
 
-    const convertToBase64GPT = async (file: File) => {
+    const convertToBase64 = async (file: File) => {
         try {
             const reader = new FileReader();
             reader.readAsDataURL(file);
-            // setValue('image', file)
 
             return new Promise<ImageUploadData>((resolve, reject) => {
                 reader.onload = () => {
@@ -208,6 +234,51 @@ const VendorAccountInfo = () => {
 
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
 
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 w-full bg-violet-100",
+                                'cursor-pointer'
+                            )}
+                        >
+                            <Image className='object-cover' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
+                            <input
+                                type='file'
+                                hidden
+                                onChange={({ target }) => {
+                                    if (target.files) {
+                                        console.log('-------- YES');
+                                        const file = target.files[0]
+                                        setSelectedFile(file)
+                                        if (file) {
+                                            console.log('-------- YES FILE');
+                                            setSelectedImg(URL.createObjectURL(file))
+                                        } else console.log('-------- NO FILE');
+                                    }
+
+
+                                }}
+
+                            />
+                        </label>
+                        <div className="cursor-pointer bg-violet-50/50 flex items-center justify-between">
+
+                            <div className={classNames(
+                                "bg-violet-500 h-3/4 text-white",
+                                'px-6 py-3 rounded-md',
+                                `${selectedFile ? "" : 'bg-violet-400'}`
+
+                            )}
+                                onClick={handleImageUpload}
+                            >Yükle</div>
+                        </div>
+                        <p className='text-xs mt-4'>IMG: {selectedImg}</p>
+
+
+
+                    </FormFieldWrapper>
 
 
                     <FormFieldWrapper>

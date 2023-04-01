@@ -204,6 +204,20 @@ const PartnerAccountInfo = () => {
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
 
 
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="email">
+                            <input type='file' hidden />
+                        </label>
+
+
+                    </FormFieldWrapper>
+
+
 
                     <FormFieldWrapper>
 
