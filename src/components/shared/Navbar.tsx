@@ -1,9 +1,10 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import { Fragment, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import profileImg from '../../assets/profile.webp'
 import { AppRoutes } from '../../config/appRoutes'
 import { UserRoles } from '../../interface/auth.interface'
@@ -11,6 +12,7 @@ import classNames from '../../utils/classnames'
 import { trpc } from '../../utils/trpc'
 import TopBarProgress from "react-topbar-progress-indicator";
 import { HiOutlineMenu as IcMenu } from 'react-icons/hi'
+import useNavbarStore from '../../store/navbar.store'
 
 
 const pathsToExlude = [
@@ -29,7 +31,12 @@ const Navbar: React.FC = () => {
   const { data: sessionData } = useSession()
   const { pathname } = useRouter()
   const deleteUserSession = trpc.auth.deleteSession.useMutation()
+  const update = useNavbarStore(store => store.update)
+  const { data, refetch } = trpc.user.getVendorAccount.useQuery()
 
+  useEffect(() => {
+    refetch()
+  }, [update])
 
   const logUserOut = () => {
     setBusy(true)
@@ -93,7 +100,7 @@ const Navbar: React.FC = () => {
                   <div>
                     <Menu.Button className='flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 '>
                       <span className='sr-only'>Open user menu</span>
-                      <Image height={40} width={40} className='h-10 w-10 rounded-full hidden lg:block' src={sessionData?.image ?? profileImg} alt='dashboard image' />
+                      <Image height={40} width={40} className='h-10 w-10 rounded-full hidden lg:block' src={data?.image ? data?.image : profileImg} alt='dashboard image' />
                       <IcMenu width={40} height={40} className='block lg:hidden w-10 h-10' />
                     </Menu.Button>
                   </div>

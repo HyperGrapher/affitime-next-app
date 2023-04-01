@@ -23,6 +23,7 @@ import { trpc } from '../../../utils/trpc';
 import Image from 'next/image';
 import profileImg from '../../../assets/profile.webp'
 import axios from 'axios';
+import useNavbarStore from '../../../store/navbar.store';
 
 
 const Account = () => {
@@ -126,7 +127,7 @@ const VendorAccountInfo = () => {
     // const [imgErr, setImgErr] = useState('')
     const [selectedImg, setSelectedImg] = useState("")
     const [selectedFile, setSelectedFile] = useState<File>()
-
+    const setupdate = useNavbarStore(store => store.setupdate)
 
     const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
         resolver: zodResolver(vendorAccountValidationSchema),
@@ -158,7 +159,8 @@ const VendorAccountInfo = () => {
             const fd = new FormData()
             fd.append('image', selectedFile)
             const { data } = await axios.post('/api/image', fd)
-            console.log(data);
+            localStorage.setItem("image", JSON.stringify(data.path))
+            setupdate(data.path)
 
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
