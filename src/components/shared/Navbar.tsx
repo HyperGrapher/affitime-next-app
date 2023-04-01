@@ -10,6 +10,7 @@ import { UserRoles } from '../../interface/auth.interface'
 import classNames from '../../utils/classnames'
 import { trpc } from '../../utils/trpc'
 import TopBarProgress from "react-topbar-progress-indicator";
+import { HiOutlineMenu as IcMenu } from 'react-icons/hi'
 
 
 const pathsToExlude = [
@@ -90,9 +91,10 @@ const Navbar: React.FC = () => {
                 <p className='text-slate-500 text-xs hidden md:inline'>{sessionData?.email}</p>
                 <Menu as='div' className='relative ml-3'>
                   <div>
-                    <Menu.Button className='flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800'>
+                    <Menu.Button className='flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 '>
                       <span className='sr-only'>Open user menu</span>
-                      <Image className='h-8 w-8 rounded-full' src={sessionData?.image ?? profileImg} alt='dashboard image' />
+                      <Image className='h-8 w-8 rounded-full hidden lg:block' src={sessionData?.image ?? profileImg} alt='dashboard image' />
+                      <IcMenu width={40} height={40} className='block lg:hidden w-10 h-10' />
                     </Menu.Button>
                   </div>
                   <Transition
@@ -217,7 +219,7 @@ const Navbar: React.FC = () => {
                               )}
                             </Menu.Item>
 
-                            
+
                             <Menu.Item>
                               {({ active }) => (
                                 <Link
