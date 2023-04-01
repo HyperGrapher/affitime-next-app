@@ -12,7 +12,7 @@ import { TbHeartHandshake } from "react-icons/tb";
 import { GiReceiveMoney } from "react-icons/gi";
 import { BiLineChart } from "react-icons/bi";
 import Balancer from "react-wrap-balancer";
-
+import classNames from "../utils/classnames";
 
 const Home: NextPage = () =>
   <>
@@ -21,7 +21,7 @@ const Home: NextPage = () =>
       <meta name="description" content="Affiliate marketing uygulaması" />
       <link rel="icon" href="/favicon.ico" />
     </Head>
-
+    <MobileNav />
     <Header />
     <FeatOne />
     <FeatTwo />
@@ -29,6 +29,34 @@ const Home: NextPage = () =>
     <FooterTop />
 
   </>;
+
+const MobileNav = () =>
+
+  <nav className={classNames(
+    'flex md:hidden justify-around space-x-2 bg-white px-4',
+    'font-medium text-violet-600 text-sm',
+    'absolute left-0 right-0 top-16'
+  )}>
+
+
+    <Link href={AppRoutes.HOME}>
+      Anasayfa
+    </Link>
+
+    <Link href={AppRoutes.PRICING}>
+      Fiyatlandırma
+    </Link>
+
+    <Link href={AppRoutes.BLOG}>
+      Blog
+    </Link>
+
+    <Link href={AppRoutes.CONTACT}>
+      İletişim
+    </Link>
+
+
+  </nav>;
 
 const Header = () =>
   <header className="text-white body-font bg-violet-700 py-8  bg-gradient-to-r from-indigo-900 to-violet-500">
