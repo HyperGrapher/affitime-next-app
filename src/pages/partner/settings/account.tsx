@@ -235,7 +235,7 @@ const PartnerAccountInfo = () => {
 
                     <FormFieldWrapper>
 
-                        <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
+                        <img className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg.toString() : String(profileImg)} alt='avatar' />
 
 
                         <label
