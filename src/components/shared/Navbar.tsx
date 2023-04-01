@@ -36,8 +36,6 @@ const Navbar: React.FC = () => {
 
   useEffect(() => {
     refetch()
-    console.log(update);
-
   }, [update])
 
   const logUserOut = () => {

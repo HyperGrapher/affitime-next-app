@@ -228,6 +228,7 @@ const VendorAccountInfo = () => {
 
     return (
         <PageCard>
+            {(busy || uploading) && <TopBarProgress />}
             <h2 className="text-center text-lg font-bold text-slate-500">Bilgilerinizi Güncelleyin</h2>
 
             <div className="w-64 flex flex-col gap-4 mx-auto">
@@ -236,8 +237,6 @@ const VendorAccountInfo = () => {
 
 
                     <FormFieldWrapper>
-
-
 
                         <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
 
@@ -250,19 +249,16 @@ const VendorAccountInfo = () => {
                             )}
                         >
                             <IcUpload className='w-16 h-16 text-slate-500' height={42} width={42} />
-                            <div>Foto Secin</div>
+                            <div>Foto Seçin</div>
                             <input
                                 type='file'
                                 hidden
                                 onChange={({ target }) => {
                                     if (target.files) {
-                                        console.log('-------- YES');
                                         const file = target.files[0]
                                         setSelectedFile(file)
-                                        if (file) {
-                                            console.log('-------- YES FILE');
-                                            setSelectedImg(URL.createObjectURL(file))
-                                        } else console.log('-------- NO FILE');
+                                        if (file) setSelectedImg(URL.createObjectURL(file))
+                                        else notifyError('Foto yüklenemedi')
                                     }
 
 
@@ -453,39 +449,6 @@ const VendorAccountInfo = () => {
         </PageCard>
     )
 }
-
-// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
-
-// This is the list of mime types you will accept with the schema
-// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
-
-// This is a file validation with a few extra checks in the `superRefine`.
-// The `refine` method could also be used, but `superRefine` offers better
-// control over when the errors are added and can include specific information
-// about the value being parsed.
-// const imageSchema = z.instanceof(File).superRefine((f, ctx) => {
-//     // First, add an issue if the mime type is wrong.
-//     if (!ACCEPTED_MIME_TYPES.includes(f.type)) {
-//         ctx.addIssue({
-//             code: z.ZodIssueCode.custom,
-//             message: `File must be one of [${ACCEPTED_MIME_TYPES.join(
-//                 ", "
-//             )}] but was ${f.type}`
-//         });
-//     }
-//     // Next add an issue if the file size is too large.
-//     if (f.size > 3 * MB_BYTES) {
-//         ctx.addIssue({
-//             code: z.ZodIssueCode.too_big,
-//             type: "array",
-//             message: `The file must not be larger than ${3 * MB_BYTES} bytes: ${f.size
-//                 }`,
-//             maximum: 3 * MB_BYTES,
-//             inclusive: true
-//         });
-//     }
-// });
-
 
 interface IPasswordFormData {
     oldPassword: string;
@@ -736,53 +699,3 @@ const TestButtonsSection = () => {
     )
 }
 
-
-
-
-
-/*
-
-
-<FormFieldWrapper>
-
-                        <label
-                            className={classNames(
-                                "font-medium text-sm pl-2 "
-                            )}
-                            htmlFor="image">
-                            Avatar
-                        </label>
-
-                       <img height={100} width={100} src={'data:image/jpeg;base64,' + imgBase64} alt="Base64 Image" /> 
-                            
-
-                        
-
-                        <input
-                            className={classNames(
-                                'disabled:bg-slate-200 block w-full',
-                                'rounded-md border-gray-300 shadow-sm ',
-                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                            )}
-                            disabled={busy}
-                            aria-label='Avatar'
-                            type="file"
-                            id='asd'
-                            name='asd'
-                            placeholder='Avatar'
-                            accept='.jpeg, .png, .jpg, .webp'
-                            onChange={async (event) => {
-
-                                if (!event.target.files) return
-                                const file = event?.target?.files[0] as File
-                                console.log({ fs: file.size });
-                                const zSchema = await convertToBase64GPT(file)
-                                setImgBase64(zSchema.data)
-                                setValue('image', zSchema.data)
-                            }}/>
-
-                      <FormFieldError state={!!errors.image} message={errors.image?.message} /> 
-
-                        </FormFieldWrapper>
-
-*/
