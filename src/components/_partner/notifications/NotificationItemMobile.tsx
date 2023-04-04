@@ -119,7 +119,7 @@ const NotificationItemMobile: React.FC<ItemProps> = ({ link, refetch }) => {
 
 
                         <b className="text-violet-600 text-xs font-medium whitespace-nowrap text-center">
-                            {link.active ? `affitime.com/r/${link.url}` : "--"}
+                            {link.active ? `affiti.me/r/${link.url}` : "--"}
                         </b>
 
 

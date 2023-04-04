@@ -135,7 +135,7 @@ const NotificationItem: React.FC<ItemProps> = ({ link, refetch }) => {
                     </b>
 
                     <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                        {link.active ? `affitime.com/r/${link.url}` : "--"}
+                        {link.active ? `affiti.me/r/${link.url}` : "--"}
                     </b>
 
                 </div>
