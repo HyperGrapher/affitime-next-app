@@ -1,2 +1,0 @@
-- profile img user yerine profilde olmali
-- 

@@ -8,16 +8,7 @@
     "postinstall": "prisma generate",
     "lint": "next lint",
     "start": "next start",
-    "test": "jest",
-    "mig": "npx prisma migrate dev",
-    "update": "npx npm-check-updates",
-    "unused": "npx depcheck",
-    "gen": "npx prisma generate",
-    "db:reset": "npx prisma migrate reset",
-    "db:seed": "npx prisma db seed"
-  },
-  "prisma": {
-    "seed": "node --loader ts-node/esm prisma/seed.ts"
+    "test": "jest"
   },
   "dependencies": {
     "@emotion/react": "^11.10.5",

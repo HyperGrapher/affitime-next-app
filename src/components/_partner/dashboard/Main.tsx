@@ -110,7 +110,6 @@ export default Main
 
 type PartnerItemProps = {
     pl: IPartnerAndLinks;
-
 };
 
 
