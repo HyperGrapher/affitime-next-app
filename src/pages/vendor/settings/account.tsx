@@ -237,7 +237,7 @@ const VendorAccountInfo = () => {
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
 
 
-                    <FormFieldWrapper>
+                   {/*  <FormFieldWrapper>
 
                         <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
                         
@@ -281,7 +281,7 @@ const VendorAccountInfo = () => {
                         >Yükle</div>
 
 
-                    </FormFieldWrapper>
+                    </FormFieldWrapper> */}
 
 
                     <FormFieldWrapper>

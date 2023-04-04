@@ -40,26 +40,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     const agentObj = userAgentLib.parse(context.req.headers['user-agent']);
     const url = context.params?.url as string
     const query = context.query
-
     const lastVisitCk = cookies.get('lv', { signed: true })
     const cookie = lastVisitCk ? JSON.parse(lastVisitCk) as ILVCookie : undefined
-
     const daysToExpire = 60
     const cookieOpts = {
         signed: true,
         expires: new Date(Date.now() + (daysToExpire * 24 * 60 * 60 * 1000))
     }
-
     const ckData: ILVCookie = { dt: new Date().toISOString(), c: cookie ? cookie.c + 1 : 1, previp: ipwareObj?.ip }
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
-
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
     console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
-
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
     context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
-
     const link = await prisma.link.findFirst({
         where: { url }, include: { product: true }
     });
@@ -107,6 +101,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
     const visitData = {
+        unique: checkFraudAndUniqness().unique,
+        dubious: checkFraudAndUniqness().dubious,
+        cause: checkFraudAndUniqness().cause,
+        isPartner: checkFraudAndUniqness().ipData?.partner_id ? true : null,
+        isVendor: checkFraudAndUniqness().ipData?.vendor_id ? true : null,
+        params: JSON.stringify(query),
+        bot: isbot(agentObj.source),
         link_id: link.id,
         vendor_id: link.vendor_id,
         partner_id: link.partner_id,
@@ -120,15 +121,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         cookie: !!cookie ? cookie : undefined,
         prevIp: cookie?.previp,
         vpn: false,
-        unique: checkFraudAndUniqness().unique,
-        params: JSON.stringify(query),
-        dubious: checkFraudAndUniqness().dubious,
-        cause: checkFraudAndUniqness().cause,
-        isPartner: checkFraudAndUniqness().ipData?.partner_id ? true : null,
-        isVendor: checkFraudAndUniqness().ipData?.vendor_id ? true : null,
         os: osRegexArray ? osRegexArray[0] : null,
         agent: agentObj.source,
-        bot: isbot(agentObj.source),
         uaFamily: agentObj.family,
         uaMajor: agentObj.major,
         referer: referer ?? (query.referer as string ?? null),

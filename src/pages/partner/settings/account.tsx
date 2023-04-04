@@ -233,7 +233,7 @@ const PartnerAccountInfo = () => {
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
 
 
-                    <FormFieldWrapper>
+                    {/* <FormFieldWrapper>
 
                         <img className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg.toString() : String(profileImg)} alt='avatar' />
 
@@ -277,7 +277,7 @@ const PartnerAccountInfo = () => {
                         >Yükle</div>
 
 
-                    </FormFieldWrapper>
+                    </FormFieldWrapper> */}
 
 
                     <FormFieldWrapper>

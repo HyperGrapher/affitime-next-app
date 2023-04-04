@@ -101,7 +101,8 @@ const Navbar: React.FC = () => {
                   <div>
                     <Menu.Button className='flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 '>
                       <span className='sr-only'>Open user menu</span>
-                      <img height={40} width={40} className='h-10 w-10 rounded-full hidden lg:block object-cover' src={data?.image ? `${AVATAR_URL}/${data?.image}` : String(profileImg)} alt='dashboard image' />
+                      <Image height={40} width={40} className='h-10 w-10 rounded-full hidden lg:block object-cover' 
+                      src={/* data?.image ? `${AVATAR_URL}/${data?.image}` : */ profileImg} alt='dashboard image' />
                       <IcMenu width={40} height={40} className='block lg:hidden w-10 h-10' />
                     </Menu.Button>
                   </div>
