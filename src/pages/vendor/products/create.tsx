@@ -83,7 +83,7 @@ const validationSchema = z.object({
     desc: z.string().trim().min(20, "Lütfen ürün hakkında açıklayıcı bilgi giriniz"),
     product_url: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!"),
     image: z.string().url("Lütfen https ile başlayan mağaza linkini giriniz!").optional().nullable(),
-    price: z.number()?.positive("Pozitif bir rakam giriniz"),// todo .min(100),
+    price: z.number()?.positive("Pozitif bir rakam giriniz"),
     perSale: z.number().default(0),
     perClick: z.number().default(0),
     perClickType: z.string().optional().nullable(),
@@ -152,8 +152,8 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     const onSubmit: SubmitHandler<IProductFormData> = async (data) => {
 
         setBusy(true)
-        data.perClickType = perClickType // fixes a bug where data is causing field null error
-        data.perSaleType = perSaleType // fixes a bug where data is causing field null error
+        data.perClickType = perClickType 
+        data.perSaleType = perSaleType 
 
         if (data.perClick < 0) {
             setError('perClick', { message: 'Negatif rakam girilemez' })
@@ -167,13 +167,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
             return
         }
 
-        if (data.perClick === 0) {
-            // data.perClickType = 'NONE'
-        }
-
-        if (data.perSale === 0) {
-            // data.perSaleType = 'NONE'
-        }
 
         if (selectedCat.id === 0) {
             setCatErr(true)
@@ -586,9 +579,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                         })}
                                     />
 
-                                    {/* <span className="translate-x-24 scroll-mx-0"> */}
                                     <FormFieldError state={!!errors.perClick} message={errors.perClick?.message} />
-                                    {/* </span> */}
 
                                 </FormFieldWrapper>
 
@@ -658,9 +649,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                             setValueAs: (v) => v === "" ? 0 : parseInt(v, 10),
                                         })}
                                     />
-                                    {/* <span className="translate-x-24 scroll-mx-0"> */}
                                     <FormFieldError state={!!errors.perSale} message={errors.perSale?.message} />
-                                    {/* </span> */}
 
 
                                 </FormFieldWrapper>
@@ -674,11 +663,10 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                         </section>
 
 
-                        {/* Submit */}
                         <button
                             disabled={busy}
                             onClick={() => {
-                                // console.log(selectedCat);
+                                
                                 if (selectedCat.id === 0) {
                                     setCatErr(true)
                                 }

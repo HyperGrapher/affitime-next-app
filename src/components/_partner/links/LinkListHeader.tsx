@@ -1,15 +1,3 @@
-// import { type Product } from "@prisma/client";
-// import Image from "next/image";
-// import product from '../../assets/product.png';
-// import { numberWithCommas } from "../../../utils/helpers";
-// import { Lira } from "../../shared/HtmlCodes";
-// import IconButton from '@mui/material/IconButton';
-// import Button from '@mui/material/Button';
-// import DeleteIcon from '@mui/icons-material/DeleteOutlineTwoTone';
-// import EditIcon from '@mui/icons-material/EditOutlined';
-// import SendIcon from '@mui/icons-material/Send';
-// import Chip from '@mui/material/Chip';
-
 
 const ProductListHeader: React.FC = () => {
     return (
@@ -21,10 +9,6 @@ const ProductListHeader: React.FC = () => {
             {/* IMAGE */}
             <div className=" ml-20 flex gap-4 items-center justify-between">
 
-
-                {/* <b className="text-xs w-12 min-w-[32px]" >
-                    Foto
-                </b> */}
 
 
 
@@ -42,7 +26,6 @@ const ProductListHeader: React.FC = () => {
 
 
                 {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
 
 
 
@@ -58,7 +41,6 @@ const ProductListHeader: React.FC = () => {
 
 
                 {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
 
 
 
@@ -72,7 +54,6 @@ const ProductListHeader: React.FC = () => {
 
 
                 {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
 
 
                 {/* EDIT BUTTONS */}

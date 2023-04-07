@@ -389,7 +389,6 @@ const seedProductsForVeronica = async () => {
     data: prods,
   });
 
-  console.log({ productCreation });
 };
 
 createCategories()

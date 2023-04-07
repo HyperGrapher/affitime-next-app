@@ -12,8 +12,7 @@ type Props = {
     fn: () => void
 }
 
-// ? Icon Example
-// ? <HiPlus color="white" size={"16px"} />
+
 const IconButton: React.FC<Props> = ({ title, twColorCode = "violet", twClasses, icon, disabled = false, fn }) => {
     return (
         <button

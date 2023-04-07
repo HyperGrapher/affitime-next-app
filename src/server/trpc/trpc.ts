@@ -12,15 +12,10 @@ const t = initTRPC.context<Context>().create({
 
 export const router = t.router;
 
-/**
- * Unprotected procedure
- **/
+
 export const publicProcedure = t.procedure;
 
-/**
- * Reusable middleware to ensure
- * users are logged in
- */
+
 const isAuthed = t.middleware(({ ctx, next }) => {
   if (!ctx.session || !ctx.session.user) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
@@ -28,7 +23,6 @@ const isAuthed = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
     },
   });
@@ -45,7 +39,6 @@ const isAdmin = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user },
     },
   });
@@ -62,7 +55,6 @@ const isVendor = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user, vendorId: ctx.session.vendorId },
     },
   });
@@ -79,15 +71,12 @@ const isPartner = t.middleware(({ ctx, next }) => {
 
   return next({
     ctx: {
-      // infers the `session` as non-nullable
       session: { ...ctx.session, user: ctx.session.user, partnerId: ctx.session.partnerId },
     },
   });
 });
 
-/**
- * Protected procedures
- **/
+
 export const protectedProcedure = t.procedure.use(isAuthed);
 export const adminProcedure = t.procedure.use(isAdmin);
 export const vendorProcedure = t.procedure.use(isVendor);

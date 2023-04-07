@@ -5,8 +5,6 @@ import SocFB from '../../assets/footer/social-facebook.png'
 import SocIns from '../../assets/footer/social-instagram.png'
 import SocLinkd from '../../assets/footer/social-linkedin.png'
 
-// * https://web3forms.com/
-
 const Contact = () => {
     return (
         <div>

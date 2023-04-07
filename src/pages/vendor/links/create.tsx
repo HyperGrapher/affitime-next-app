@@ -7,7 +7,6 @@ import { HiArrowLeft as BackIcon } from 'react-icons/hi';
 import productImg from '../../../assets/product.png';
 import IconButton from '../../../components/buttons/IconButton';
 import PageCard from '../../../components/card/Card';
-import ACComboBox from '../../../components/combobox/ComboBox';
 import { AppRoutes } from "../../../config/appRoutes";
 import { UserRoles } from '../../../interface/auth.interface';
 import classNames from '../../../utils/classnames';
@@ -36,7 +35,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 }
 
-// !! NOT USED
 const LinkCreate: NextPage = () => {
 
     const { back, query } = useRouter()
@@ -129,10 +127,6 @@ const LinkCreate: NextPage = () => {
                             htmlFor="title">
                             Affiliate kullanici secin
                         </label>
-
-
-                        <ACComboBox />
-
 
                     </section>
                 </main>

@@ -12,10 +12,6 @@ type Props = {
     disabled?: boolean
 }
 
-// ? Icon Example
-// ? <HiPlus color="white" size={"16px"} />
-
-
 const LinkButton: React.FC<Props> = ({ title, href, twClasses, icon, disabled = false }) => {
     return (
         <Link

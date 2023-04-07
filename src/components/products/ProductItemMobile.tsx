@@ -94,14 +94,7 @@ const VendorProductItemMobile: React.FC<ItemProps> = ({ p, confirmModal, setDele
 
                     <div className="flex flex-row">
                         <div className="mr-4 flex flex-nowrap gap-2 ml-auto h-full place-self-center">
-{/* 
-                            <IconButton
-                                size="small"
-                                onClick={() => del(p.id)}
-                                title="Sil"
-                                aria-label="Sil">
-                                <DeleteIcon className="text-red-400 w-4 h-4" />
-                            </IconButton> */}
+
                             <IconButton
                                 size="small"
                                 title="Düzenle"

@@ -28,10 +28,6 @@ const DynamicPaymentCard = dynamic(() => import('../../components/purchase_plan/
     ssr: false,
 })
 
-// "payment": "^2.4.6",
-// "@types/payment": "^2.1.3",
-// https://www.npmjs.com/package/payment
-
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
 const Purchase = () => {
@@ -419,7 +415,6 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
 
                     </section>
 
-                    {/*  VKN/TCKN  */}
                     <section className={classNames(
                         "bg-slate-100 hover:bg-slate-50",
                         "w-full rounded-md  py-2 px-2   ",
@@ -460,17 +455,8 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
                     </section>
 
 
-
-
-
-                    {/* Submit */}
                     <button
                         disabled={busy}
-                        onClick={() => {
-                            // console.log(selectedCat);
-
-
-                        }}
                         type='submit'
                         className={classNames(
                             "bg-violet-600 hover:bg-violet-700 transition-colors",
@@ -478,9 +464,7 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
                             "shadow-sm hover:shadow-lg rounded-md ",
                             "py-2 px-8",
                             "disabled:bg-violet-400 disabled:shadow-none"
-                        )}
-
-                    >
+                        )}>
 
                         <HiPlus color="white" size="16px" />
 

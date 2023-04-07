@@ -1,13 +1,12 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/consistent-type-imports */
-import { PrismaAdapter } from "@next-auth/prisma-adapter"; // Prisma adapter for NextAuth, optional and can be removed
+import { PrismaAdapter } from "@next-auth/prisma-adapter"; 
 import NextAuth, { type NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { randomBytes } from "node:crypto";
 import { prisma } from "../../../server/db/client";
 import { comparePassword } from "../../../utils/comparePassword";
-// import { getToken } from "next-auth/jwt";
-// import { JWT, JWTDecodeParams, JWTEncodeParams } from "next-auth/jwt/types.js";
+
 
 const expireDays = 60;
 const updateAgeHour = 1;
@@ -15,7 +14,7 @@ export const authOptions: NextAuthOptions = {
   session: {
     strategy: "jwt",
     maxAge: 60 * 24 * 60 * expireDays,
-    updateAge: 60 * 60 * updateAgeHour, // 24 hours
+    updateAge: 60 * 60 * updateAgeHour, 
   },
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -29,8 +28,6 @@ export const authOptions: NextAuthOptions = {
           placeholder: "Email adresiniz",
         },
         password: { label: "Password", type: "password" },
-        // userRole: {},
-        // callbackUrl: {},
       },
 
       async authorize(credentials, req) {
@@ -56,11 +53,9 @@ export const authOptions: NextAuthOptions = {
         else return user;
       },
     }),
-    // ...add more providers here
   ],
   callbacks: {
     async session({ session, user, token }) {
-      // console.log("--------  SESSION callback ------ ");
       const email = session.user?.email;
       if (!email) return session;
 
@@ -87,17 +82,14 @@ export const authOptions: NextAuthOptions = {
     },
 
     async jwt({ token, user, account, profile, isNewUser }) {
-      // console.log("-------- JWT CALLBACK ---------");
       return token;
     },
 
-    // If OAuth provider is used, it contains the full OAuth
-    // * "profile" returned by your provider.
+
     async signIn({ user, account, profile, email, credentials }) {
-      // console.log("-------- SIGN IN CALLBACK---------");
       if (user) {
         const sessionToken = randomBytes(32).toString("hex");
-        const sessionExpiry = new Date(Date.now() + 3600); // No effect over cookie,
+        const sessionExpiry = new Date(Date.now() + 3600); 
         await PrismaAdapter(prisma).createSession({
           sessionToken: sessionToken,
           userId: user.id,

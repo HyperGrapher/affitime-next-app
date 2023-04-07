@@ -17,21 +17,6 @@ import { prisma } from "../../server/db/client";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from '../../utils/trpc';
 
-/*
-import { Base64 } from 'js-base64';
-Base64.toBase64('')
-Base64.formBase64('')
-*/
-// import { BlockList } from "net"
-// https://www.npmjs.com/package/user-agents
-// https://www.npmjs.com/package/keygrip for checking .sig cookie value
-/*
-me: '176.33.101.203'
-twitter: '199.16.157.183' -> bot: true
-twitter: '34.82.121.157' -> bot: false postladiktan sonra
-twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor bot false
-*/
-
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context)
     const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
@@ -51,7 +36,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
-    console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
     context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
     const link = await prisma.link.findFirst({
@@ -172,10 +156,7 @@ const AffiProduct: NextPage = ({
                     window.location.href = product_url;
                 },
 
-                onSettled: () => {
-                    console.log(product_url, isBot);
-
-                }
+               
             })
 
     }

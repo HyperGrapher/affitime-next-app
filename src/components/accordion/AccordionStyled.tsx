@@ -35,7 +35,7 @@ export const Accordion = styled((props: AccordionProps) => (
         backgroundColor: '#fff',
         padding: '0.25rem',
         borderRadius: '500px',
-        border: '1px solid rgba(0,0,0,.125)' // circle dropdown
+        border: '1px solid rgba(0,0,0,.125)'
       },
     '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
       transform: 'rotate(90deg)',

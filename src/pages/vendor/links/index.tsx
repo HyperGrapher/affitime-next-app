@@ -46,7 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} }
 }
 
-// https://mantine.dev/hooks/use-pagination/
 const LinkPage: NextPage = () => {
 
 

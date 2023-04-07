@@ -71,15 +71,12 @@ const SignUp: NextPage = (): JSX.Element => {
         if (isVendor) {
             setValue('role', UserRoles.VENDOR)
             setValue('username', "----------")
-            // reset on change
             setValue('brand', "")
             setValue('website', "")
         } else {
             setValue('role', UserRoles.PARTNER)
             setValue('brand', "----------")
             setValue('website', "https://example.com")
-
-            // reset on change
             setValue('username', "")
 
         }
@@ -104,8 +101,6 @@ const SignUp: NextPage = (): JSX.Element => {
 
                     })
 
-                    console.log(variables)
-                    console.log((signinResult?.ok))
 
                     if (signinResult?.ok) {
 
@@ -200,7 +195,6 @@ const SignUp: NextPage = (): JSX.Element => {
 
                         </div>
 
-                        {/* {isVendor ? <> */}
                         <div className={`w-full ${isVendor ? "block" : "hidden"} `}>
                             <FormFieldWrapper>
                                 <label htmlFor="brand" className="leading-7 text-sm font-bold text-gray-600">Firma İsmi</label>
@@ -261,8 +255,6 @@ const SignUp: NextPage = (): JSX.Element => {
 
                         </div>
 
-
-                        {/* end */}
 
 
 

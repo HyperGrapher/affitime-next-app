@@ -22,28 +22,6 @@ export default Fail
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
-  // const session = await getSession(context)
-
-  // if (!session) return {
-  //     redirect: {
-  //         destination: AppRoutes.SIGNIN,
-  //         permanent: false
-  //     }
-  // }
-
-  // if (session.role !== UserRoles.VENDOR) return {
-  //     redirect: {
-  //         destination: `/${session.role.toLowerCase()}/dashboard`,
-  //         permanent: false
-  //     }
-  // }
-
-  const {
-		req,
-    // res
-	} = context;
-
-  req.method = 'get'
 
   return {
       redirect: {

@@ -15,7 +15,6 @@ const cards = [
   { id: 8, name: 'Bonus', value: 'bonus' },
   { id: 9, name: 'Sağlam Kart', value: 'saglamkart' },
 ]
-// tumu: { tek_cekim: '1.89' }
 
 type Props = {
   setSelected: Dispatch<SetStateAction<ICreditCard>>

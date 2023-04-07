@@ -33,7 +33,6 @@ export const notificationRouter = router({
     });
   }),
 
-
   updateNotificationReadByPartner: protectedProcedure
     .input(
       z.object({
@@ -53,7 +52,7 @@ export const notificationRouter = router({
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
-      // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update-a-number-field
+
       try {
         await ctx.prisma.link.update({
           where: { id },

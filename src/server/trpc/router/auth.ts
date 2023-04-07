@@ -45,7 +45,7 @@ export const authRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { email, password, role, username, brand, website, phone } = input;
-      console.log({ email, password, role, username, brand, website, phone });
+
       const isEmailExist = await ctx.prisma.user.findUnique({
         where: {
           email,
@@ -114,7 +114,6 @@ export const authRouter = router({
           },
         });
 
-        console.log("userId", user.id);
 
         if (role === UserRoles.VENDOR) {
           const nowDate = dayjs(new Date())
@@ -130,7 +129,6 @@ export const authRouter = router({
             },
           });
 
-          console.log({ vendor_id: vendor.id });
 
           await ctx.prisma.user.update({
             where: { id: user.id },
@@ -168,7 +166,7 @@ export const authRouter = router({
 
         return resultUser;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }),
 
@@ -213,7 +211,6 @@ export const authRouter = router({
     }),
   deleteSession: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.id;
-    console.log({ userId });
 
     if (!userId) throw new Error("Kullanıcı sezonu sonlanmış");
 
@@ -267,7 +264,7 @@ export const authRouter = router({
 
         return { message: "ok", error: null };
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }),
 });

@@ -1,6 +1,6 @@
 import { router, partnerProcedure } from "../trpc";
 import { z } from "zod";
-// 137874
+
 export const partnerRouter = router({
   updateInterests: partnerProcedure
     .input(
@@ -13,9 +13,6 @@ export const partnerRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { partnerId } = ctx.session;
-
-      console.log({ partnerId });
-      console.log(input);
 
       try {
         await ctx.prisma.partner.update({
@@ -43,9 +40,6 @@ export const partnerRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { partnerId } = ctx.session;
-
-      console.log({ partnerId });
-      console.log(input);
 
       try {
         await ctx.prisma.partner.update({

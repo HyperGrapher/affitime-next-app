@@ -10,15 +10,12 @@ import crypto from "crypto";
 import { CommissionType, LinkStatus } from "@prisma/client";
 
 export const linkRouter = router({
-  // for both vendor and partner
-  // * ../links/detail/[id]
   getLinkDetails: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
       const { role } = ctx.session;
 
-      // delete bots
       await ctx.prisma.visit.deleteMany({
         where: {
           ipapi: null
@@ -76,8 +73,8 @@ export const linkRouter = router({
         },
       });
     }),
-  // * partner/links
-  getPartnerLinks: partnerProcedure.query(({ ctx }) => {
+
+    getPartnerLinks: partnerProcedure.query(({ ctx }) => {
     const { partnerId } = ctx.session;
 
     return ctx.prisma.link.findMany({
@@ -89,7 +86,6 @@ export const linkRouter = router({
     });
   }),
 
-  // * vendor/links
   getVendorLinks: vendorProcedure.query(({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -196,7 +192,7 @@ export const linkRouter = router({
 
         return link;
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return new TRPCError({
           code: "BAD_REQUEST",
           message: "Cannot create link!",
@@ -216,7 +212,6 @@ export const linkRouter = router({
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
-      // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update-a-number-field
       try {
         await ctx.prisma.link.update({
           where: { id },
@@ -236,7 +231,6 @@ export const linkRouter = router({
       }
     }),
 
-  // ! Not used yet
   updateLinkStatusByPartner: partnerProcedure
     .input(
       z.object({

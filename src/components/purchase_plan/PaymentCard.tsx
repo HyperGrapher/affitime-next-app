@@ -190,7 +190,6 @@ const PaymentCard = () => {
     const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
 
     const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
-        console.log({ cardData });
 
 
         if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
@@ -198,12 +197,6 @@ const PaymentCard = () => {
 
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
-
-        console.log({
-            plan,
-            annual
-        });
-
 
         const purchaseData = {
             user_ip: userIp.ip,
@@ -217,10 +210,8 @@ const PaymentCard = () => {
 
         puchase.mutate(purchaseData, {
             onSuccess: (data) => {
-                console.log("ok", data.payment_amount);
 
-                // test card 1: 4355 0843 5508 4358	
-                // test card 2: 4355 0843 5508 4358
+
                 const [month, year] = cardData.expiryDate.split('/')
 
                 const aa: IPlanPaymentData = {
@@ -236,7 +227,6 @@ const PaymentCard = () => {
                     card_type: selectedCard.value,
                 }
 
-                console.log(aa);
                 setPayData(aa)
 
                 setTimeout(() => {
@@ -246,7 +236,6 @@ const PaymentCard = () => {
 
             },
             onError(error) {
-                console.log(error)
                 notifyError('Ödeme sırasında bir hata oluştu!')
                 setBusy(false)
             },
@@ -292,7 +281,6 @@ const PaymentCard = () => {
             <input type="hidden" name="user_phone" value={payData?.user_phone} />
             <input type="hidden" name="user_basket" value={payData?.user_basket} />
             <input type="hidden" name="debug_on" value={payData?.debug_on} />
-            {/* <input type="hidden" name="client_lang" value={payData?.client_lang} /> */}
             <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
             <input type="hidden" name="installment_count" value={payData?.installment_count} />
@@ -443,7 +431,6 @@ const PaymentCard = () => {
                                             onChange={handleExpiryDateChange}
                                             placeholder='Örn: 06/26'
                                             mask="_"
-                                        // valueIsNumericString
                                         />
 
                                         <FormFieldError state={!!errors.expiryDate} message={errors.expiryDate?.message} />

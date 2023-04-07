@@ -21,9 +21,7 @@ export const PaymentsRouter = router({
     const canceledByVendor = links.filter(
       (x) => x.status === LinkStatus.CANCELED_BY_VENDOR
     );
-    // const deniedRequests = links.filter(
-    //   (x) => x.status === LinkStatus.REQUEST_DENIED
-    // );
+
     const passive = links.filter((x) => x.active === false);
     const awaiting = links.filter((x) => x.status === LinkStatus.AWAITING);
 
@@ -36,7 +34,6 @@ export const PaymentsRouter = router({
     };
   }),
 
-  // * vendor/payments-awaitingPayments [DONE]
   getUnpaidForPartner: partnerProcedure.query(async ({ ctx }) => {
     const { partnerId } = ctx.session;
 
@@ -85,7 +82,6 @@ export const PaymentsRouter = router({
     return funcRes.filter(x => x.calc !== 0);
   }),
 
-  // * vendor/payments-awaitingPayments [DONE]
   getUnpaidPartners: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -136,7 +132,6 @@ export const PaymentsRouter = router({
     return funcRes.filter(x => x.calc !== 0);
   }),
 
-  // * Payment Detail Page - Not implemented as page
   getLinkAndVisitDetailsOfPartner: vendorProcedure
     .input(z.object({ partnerId: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -173,9 +168,6 @@ export const PaymentsRouter = router({
           ) => ({
             ...get(head(group), "product"),
             partner_links: group.map((o) => omit(o, "product")),
-            // !REDUCE SUPHELI
-            // !REDUCE SUPHELI
-            // !REDUCE SUPHELI
             calc: group
               .map((o) => omit(o, "product"))
               .reduce((acc, cur) => {
@@ -191,21 +183,15 @@ export const PaymentsRouter = router({
         )
       );
 
-      console.log("func /n");
-      // console.log(func(links));
-
       return func(links);
     }),
 
-  // Dashboard - Main.tsx
   calculateLinksAndPayments: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
     const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
-        // dubious: false,
-        // paid: null,
       },
       include: {
         link: {
@@ -218,9 +204,6 @@ export const PaymentsRouter = router({
     const unpaid = visits.filter((x) => !x.paid && !x.dubious);
     const valid = visits.filter((x) => !x.dubious);
     const invalid = visits.filter((x) => x.dubious);
-
-    // const x = groupBy(unpaid, "link.product.id");
-    // console.log(x);
 
     const paidLinks = paid.map((x) => x.link);
     const unpaidLinks = unpaid.map((x) => x.link);
@@ -244,16 +227,6 @@ export const PaymentsRouter = router({
       }
       return res;
     }, 0);
-
-    console.log({
-      unpaidTotal,
-      paidTotal,
-      unpaid: unpaidLinks.length,
-      paid: paidLinks.length,
-      total: visits.length,
-      valid: valid.length,
-      invalid: invalid.length,
-    });
 
     return {
       unpaidTotal: String(unpaidTotal),

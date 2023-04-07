@@ -1,7 +1,6 @@
 import { router, vendorProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import crypto from "node:crypto";
-import { Base64 } from "js-base64";
 import axios from "axios";
 import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
@@ -11,23 +10,15 @@ import type {
   IPlanPaymentData,
   InstallmentType,
 } from "../../../interface/payments.interface";
-// import FormData from 'form-data'
-// import request from 'node:request';
 
-const paytr_post_url = "https://www.paytr.com/odeme";
+
 const merchant_ok_url = "http://affitime.com/payments/success";
-// Ödeme sürecinde beklenmedik bir hata oluşması durumunda müşterinizin yönlendirileceği sayfa
-// Bu sayfa siparişi iptal edeceğiniz sayfa değildir! Yalnızca müşterinizi bilgilendireceğiniz sayfadır!
 const merchant_fail_url = "http://affitime.com/payments/fail";
 const debug_on = 1;
 const test_mode = "1";
-//non3d işlemde, başarısız işlemi test etmek için 1 gönderilir (test_mode ve non_3d değerleri 1 ise dikkate alınır!)
 const non3d_test_failed = "0";
-const client_lang = "tr"; //Ödeme süreci dil seçeneği tr veya en.
-const payment_type = "card"; // Ödeme türü
-const non_3d = "0"; //3d'siz işlem
-const card_type = ""; // taksit icin gerekli yoksa degil. Alabileceği değerler; advantage, axess, combo, bonus, cardfinans, maximum, paraf, world, saglamkart
-// const installment_count = "0"; // Taksit Sayısı
+const payment_type = "card"; 
+const non_3d = "0"; 
 
 export type PlanType = "BASIC" | "PRO" | "ULTIMATE";
 
@@ -110,7 +101,6 @@ export const purchaseRouter = router({
         ? PRICING_ANNUALY[plan as PlanType]
         : PRICING_MONTHLY[plan as PlanType];
       const payment_amount = total(annual, payment_amount_as_plan) + ".00";
-      console.log({ payment_amount });
       const vendor = await ctx.prisma.vendor.findUnique({
         where: { id: vendorId },
         include: { user: true },
@@ -122,13 +112,13 @@ export const purchaseRouter = router({
           message: "Session user ID not found",
         });
 
-      const merchant_oid = "IN" + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const merchant_oid = "IN" + Date.now();
 
       const user_basket = JSON.stringify([
-        [`${annual ? "YILLIK" : "AYLIK"}-${plan}-PLAN`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
+        [`${annual ? "YILLIK" : "AYLIK"}-${plan}-PLAN`, payment_amount, 1], 
       ]);
 
-      const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
+      const email = vendor.user.email; 
       const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
       const user_phone = vendor.phone?.startsWith("0")
         ? vendor.phone
@@ -185,7 +175,7 @@ export const purchaseRouter = router({
         user_address,
         user_phone,
         user_basket,
-        debug_on, // 0,1
+        debug_on,
       };
 
       return response;
@@ -207,7 +197,7 @@ export const purchaseRouter = router({
       .digest("base64");
 
     try {
-      const formData = new URLSearchParams(); // new FormData();
+      const formData = new URLSearchParams(); 
       formData.append("merchant_id", String(merchant_id));
       formData.append("request_id", request_id);
       formData.append("merchant_key", merchant_key);
@@ -222,8 +212,6 @@ export const purchaseRouter = router({
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         data: formData,
       });
-
-      console.log(data.data);
 
       return data.data as InstallmentType;
     } catch (error) {

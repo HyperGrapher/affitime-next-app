@@ -20,7 +20,7 @@ type ItemProps = {
     cancelModal: () => void;
     setLinkId: (id: string) => void;
 }
-// 812px ve asgisi icin layout degis
+
 const NotificationItem: React.FC<ItemProps> = ({ link, confirmModal, cancelModal, setLinkId }) => {
 
     function cancel() {

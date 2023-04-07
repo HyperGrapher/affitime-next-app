@@ -1,19 +1,13 @@
 import { useSession } from "next-auth/react";
 import Logo from '../../assets/logo-sm.png';
-// import LogoAFT from '../../assets/aft-and-logo-sm.png';
 import Link from "next/link";
 import Image from "next/image";
 import classNames from '../../utils/classnames';
 import { AppRoutes } from "../../config/appRoutes";
-// import { useMediaQuery as useMQ } from 'react-responsive';
 
 const NonAuthNavbar = () => {
 
     const { data: session } = useSession()
-
-    // const isMobile = useMQ({
-    //     maxWidth: 767,
-    // })
 
 
     return session ? null : (
@@ -71,7 +65,6 @@ const NonAuthNavbar = () => {
                             'rounded-lg',
                             'whitespace-nowrap',
                             'border-solid border-2 border-violet-500 ',
-                            // 'outline outline-offset-0 outline-violet-500 ',
                         )}
                         href="/auth/signup">
                         Kayıt Ol
@@ -102,8 +95,6 @@ const MobileView = () => {
                 'text-violet-600 hover:text-violet-500',
                 'py-2 text-sm',
                 'whitespace-nowrap',
-                '',
-                // 'outline outline-offset-0 outline-violet-500 ',
             )}
             href="/auth/signup">
             Kayıt Ol

@@ -25,7 +25,6 @@ const handleFileUpload = async (
   const opt: formidable.Options = {};
   let newFilename = "";
 
-  // TODO create uploadFolder var
   if (saveLocally) {
     const parent = path.dirname(process.cwd()).split("/").pop();
 
@@ -39,8 +38,6 @@ const handleFileUpload = async (
     if (existingFile) {
       await fs.unlink(path.join(parent, "app-images", "avatars", existingFile));
     }
-
-    console.log(path.join(parent, "app-images", "avatars"), "---------- JOIN");
     
 
     opt.uploadDir = path.join(parent, "app-images", "avatars");
@@ -102,7 +99,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
 
   try {
     const result = await handleFileUpload(req, true, user.id, user.role);
-    console.log(result.newFilename);
 
     await prisma.user.update({
       where: {
@@ -119,7 +115,6 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
       path: `${result.newFilename}`,
     });
   } catch (error) {
-    console.log("-----------> error");
     console.log(error);
     res
       .status(501)

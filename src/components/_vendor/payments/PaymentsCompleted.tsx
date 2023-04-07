@@ -1,8 +1,4 @@
-import TopBarProgress from "react-topbar-progress-indicator";
-import classNames from "../../../utils/classnames";
 import PageCard from "../../../components/card/Card";
-import Link from "next/link";
-import { useEffect, useState } from "react";
 import EmptyListView from "../../shared/EmptyListView";
 
 const Title: React.FC<TitleProps> = ({ children }) => <h1

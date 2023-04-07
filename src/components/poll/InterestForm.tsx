@@ -71,7 +71,7 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
 
         ]
 
-        const truthyCats = data.map(x => x.checked ? x : undefined).filter(x => x !== undefined) // Boolean
+        const truthyCats = data.map(x => x.checked ? x : undefined).filter(Boolean)
 
         if (truthyCats.length === 0) return notifyError("En az bir kategori seçin!")
 

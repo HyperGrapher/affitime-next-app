@@ -212,7 +212,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                 }
 
                 <hr className='' />
-                {/*Meta Data with Image */}
+
                 <section className="mb-4 mt-4">
                     <h1 className='text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight'>
                         {pd?.title}

@@ -19,7 +19,6 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
     {prod?.length === 0 ? <p className='text-center'>Bildiriminiz bulunmuyor</p> : (<>
 
-      {/* <LinkListHeader /> */}
       <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
         {prod?.map(p => (
           <React.Fragment key={p.id}>

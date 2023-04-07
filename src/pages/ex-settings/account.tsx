@@ -1,8 +1,6 @@
 import { Tab } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSession } from 'next-auth/react';
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
@@ -13,15 +11,10 @@ import IconButton from "../../components/buttons/IconButton";
 import PageCard from "../../components/card/Card";
 import { FormFieldError, FormFieldWrapper } from '../../components/error-messages/FormError';
 import TabItem from "../../components/tab-item/TabItem";
-import { AppRoutes } from "../../config/appRoutes";
-import { UserRoles } from "../../interface/auth.interface";
-import { IpSchema } from "../../interface/zod.schema";
 import classNames from '../../utils/classnames';
-import getClientIp from "../../utils/getClientIp";
 import { notifyError, notifySuccessBR } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
-// import Image from 'next/image';
-// import profileImg from '../../assets/profile.webp'
+
 
 const Account = () => {
 
@@ -65,7 +58,6 @@ const Account = () => {
 
             </main>
 
-            <TestButtonsSection />
 
         </div>
     )
@@ -81,16 +73,7 @@ interface IVendorAccountInfoFormData {
     brand: string;
     website: string;
     phone: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // image: any;
-
-
 }
-const MAX_FILE_SIZE = 100000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-
-// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
-// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
 
 const vendorAccountValidationSchema = z.object({
     email: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
@@ -99,27 +82,13 @@ const vendorAccountValidationSchema = z.object({
     brand: z.string().trim().min(5, "En az 5 karakter olmalı!"),
     website: z.string().trim().url("Geçerli bir adres giriniz!"),
     phone: z.string().trim().min(10, "En az 10 haneli numaranızı giriniz"),
-    // image: z.string().optional()
 }).required();
 
 
 
-
-interface ImageUploadData {
-    name: string;
-    data: string;
-}
-
-const imageUploadSchema = z.object({
-    name: z.string(),
-    data: z.string(),
-});
-
 const VendorAccountInfo = () => {
 
     const [busy, setBusy] = useState(false)
-    // const [imgErr, setImgErr] = useState('')
-    // const [imgBase64, setImgBase64] = useState<string>()
 
 
     const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
@@ -134,8 +103,6 @@ const VendorAccountInfo = () => {
             setValue("email", data?.email ?? "")
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
-            // setValue("image", data?.image ?? "")
-            // setImgBase64(data?.image ?? "")
             setValue("phone", data?.vendor?.phone ?? "")
             setValue("brand", data?.vendor?.brand ?? "")
             setValue("website", data?.vendor?.website ?? "")
@@ -145,7 +112,6 @@ const VendorAccountInfo = () => {
 
     const onSubmit: SubmitHandler<IVendorAccountInfoFormData> = async (data) => {
 
-        // console.log(data.image);
 
         setBusy(true)
         updateVendorAccount.mutate(data, {
@@ -162,41 +128,6 @@ const VendorAccountInfo = () => {
             }
         })
 
-    }
-
-
-    const convertToBase64GPT = async (file: File) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-            // setValue('image', file)
-
-            return new Promise<ImageUploadData>((resolve, reject) => {
-                reader.onload = () => {
-                    const base64String = reader.result?.toString()?.split(',')[1]?.replace(/\s/g, '');
-                    console.log({ name: file.name });
-
-                    const imageData = {
-                        name: file.name,
-                        data: base64String || '',
-                    };
-                    try {
-                        imageUploadSchema.parse(imageData);
-                        resolve(imageData);
-                    } catch (err) {
-                        console.error(err);
-                        reject(err);
-                    }
-                };
-
-                reader.onerror = () => {
-                    reject(reader.error);
-                };
-            });
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
     }
 
 
@@ -377,37 +308,6 @@ const VendorAccountInfo = () => {
     )
 }
 
-// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
-
-// This is the list of mime types you will accept with the schema
-// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
-
-// This is a file validation with a few extra checks in the `superRefine`.
-// The `refine` method could also be used, but `superRefine` offers better
-// control over when the errors are added and can include specific information
-// about the value being parsed.
-// const imageSchema = z.instanceof(File).superRefine((f, ctx) => {
-//     // First, add an issue if the mime type is wrong.
-//     if (!ACCEPTED_MIME_TYPES.includes(f.type)) {
-//         ctx.addIssue({
-//             code: z.ZodIssueCode.custom,
-//             message: `File must be one of [${ACCEPTED_MIME_TYPES.join(
-//                 ", "
-//             )}] but was ${f.type}`
-//         });
-//     }
-//     // Next add an issue if the file size is too large.
-//     if (f.size > 3 * MB_BYTES) {
-//         ctx.addIssue({
-//             code: z.ZodIssueCode.too_big,
-//             type: "array",
-//             message: `The file must not be larger than ${3 * MB_BYTES} bytes: ${f.size
-//                 }`,
-//             maximum: 3 * MB_BYTES,
-//             inclusive: true
-//         });
-//     }
-// });
 
 
 interface IPasswordFormData {
@@ -559,153 +459,9 @@ const UpdatePassword = () => {
                         fn={() => null} />
                 </form>
 
-
-
             </div>
         </PageCard>
     )
 }
 
 
-
-const TestButtonsSection = () => {
-
-    const endTrialForTest = trpc.testing.endTrialForTest.useMutation()
-    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
-    const { data: session } = useSession()
-    const { replace } = useRouter()
-
-
-    const payForTest = async () => {
-        const ipData = await getClientIp()
-        const userIp = IpSchema.parse(ipData)
-
-        const tax = localStorage.getItem("taxinfo")
-
-        if (!tax) return notifyError('Vergi bilgileri eksik')
-        const taxInfo = JSON.parse(tax)
-        type PlanType = "BASIC" | "PRO" | "ULTIMATE"
-        const plan = "BASIC" as PlanType
-        const annual = false
-
-        const datam = {
-            user_ip: userIp.ip,
-            currency: 'TL',
-            user_address: taxInfo.address,
-            plan,
-            annual
-        }
-
-        puchaseForTest.mutate(datam, {
-            onSuccess: (data) => {
-                console.log("ok", data.payment_amount);
-                notifySuccessBR('Test payment OK')
-
-                setTimeout(() => {
-                    replace(AppRoutes.PAYMENT_SUCCESS)
-                }, 3000);
-            },
-            onError(error) {
-                console.log(error)
-                notifyError('Ödeme sırasında bir hata oluştu!')
-
-            },
-
-        })
-    }
-
-
-    return (
-        (session?.role === UserRoles.VENDOR
-            && (session.email === 'wendy@email.com' || session.email === 'veronica@email.com'))
-            ? <div id="testing" className="text-center flex flex-col gap-2 px-8">
-                <h3 className="text-center text-red-500">Bu alan sadece wendy@email.com icin goruntulenir</h3>
-                {/* <h3 className="text-center">{session.pro ? "Plan satin almis" : "Plan satin alinmamis"}</h3> */}
-                {/* <h3 className="text-center">{session.trial ? "Trial surecinde veya sonlanmis" : "Plan Satin Alinmis"}</h3> */}
-                <button className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500"
-                    onClick={() => {
-
-                        endTrialForTest.mutate(undefined, {
-                            onSuccess: () => {
-                                notifySuccessBR("Trial Sonlandi!")
-
-                                setTimeout(() => {
-
-                                    replace(AppRoutes.VENDOR_DASHBOARD)
-                                }, 1500);
-
-                            },
-                            onError(error) {
-                                console.log(error)
-                                notifyError(error.message ?? 'Hata. Trial Güncellenemedi!')
-                            },
-
-                        })
-
-                    }}>
-                    Trial suresini veya Plani sonlandir
-                </button>
-
-
-                <button
-                    onClick={payForTest}
-                    className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500">
-                    Basic plan satin al
-                </button>
-
-
-            </div>
-            : null
-    )
-}
-
-
-
-
-
-/*
-
-
-<FormFieldWrapper>
-
-                        <label
-                            className={classNames(
-                                "font-medium text-sm pl-2 "
-                            )}
-                            htmlFor="image">
-                            Avatar
-                        </label>
-
-                       <img height={100} width={100} src={'data:image/jpeg;base64,' + imgBase64} alt="Base64 Image" /> 
-                            
-
-                        
-
-                        <input
-                            className={classNames(
-                                'disabled:bg-slate-200 block w-full',
-                                'rounded-md border-gray-300 shadow-sm ',
-                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                            )}
-                            disabled={busy}
-                            aria-label='Avatar'
-                            type="file"
-                            id='asd'
-                            name='asd'
-                            placeholder='Avatar'
-                            accept='.jpeg, .png, .jpg, .webp'
-                            onChange={async (event) => {
-
-                                if (!event.target.files) return
-                                const file = event?.target?.files[0] as File
-                                console.log({ fs: file.size });
-                                const zSchema = await convertToBase64GPT(file)
-                                setImgBase64(zSchema.data)
-                                setValue('image', zSchema.data)
-                            }}/>
-
-                      <FormFieldError state={!!errors.image} message={errors.image?.message} /> 
-
-                        </FormFieldWrapper>
-
-*/

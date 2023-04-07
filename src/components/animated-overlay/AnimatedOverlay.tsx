@@ -34,7 +34,6 @@ const AnimatedOverlay: React.FC<Props> = ({ children, setModal }) => {
             <motion.div
                 onClick={e => e.stopPropagation()}
                 className="innercontent"
-                // variants={animStyle}
                 initial='hidden'
                 animate='visible'
                 exit='exit'

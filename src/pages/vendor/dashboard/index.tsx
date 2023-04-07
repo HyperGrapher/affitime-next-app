@@ -14,15 +14,6 @@ import { checkTrial } from '../../../utils/checkTrial';
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
-// import dynamic from 'next/dynamic'
-
-// const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
-//     ssr: false,
-//   })
-
-//   const DynamicRemaingTrialModal = dynamic(() => import('../../../components/modals/TrialRemaining'), {
-//     ssr: false,
-//   })
 
 
 const DashboardVendor = () => {

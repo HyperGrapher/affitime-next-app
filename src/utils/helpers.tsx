@@ -12,7 +12,6 @@ export const removeFirstWordIfStartsWithYaklasik = (str: string | undefined): st
     return str.slice(9);
 };
 
-/* Database'den gelen created/updated gibi alanlari <3 Ocak 2022> formatina cevirir */
 export const formatDateTR = (date: Date | null | undefined): string => {
     if (!date) return "";
 
@@ -28,7 +27,6 @@ export const formatDateTR = (date: Date | null | undefined): string => {
 
 export const numberWithCommas = (x: string | number | undefined | null) => {
     if (!x) return x = 0;
-    // const num = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(Number(x));
     const num = new Intl.NumberFormat('tr-TR').format(Number(x));
     return num
 };

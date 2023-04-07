@@ -96,8 +96,6 @@ export const productRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { vendorId } = ctx.session;
 
-      console.log({ vendorIdFromSession: vendorId });
-
       if (!vendorId)
         throw new TRPCError({
           code: "NOT_FOUND",
@@ -128,17 +126,6 @@ export const productRouter = router({
             vendor_user_id: vendor.userId,
             vendor_profile_id: vendor.id,
             categoryId: input.category,
-            // tags: {
-            //   create: [
-            //     {
-            //       tag: {
-            //         create: {
-            //           name: "test-1",
-            //         },
-            //       },
-            //     },
-            //   ],
-            // },
           },
           include: { vendor: true },
         });

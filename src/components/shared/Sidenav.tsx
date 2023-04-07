@@ -26,7 +26,6 @@ const Sidenav = () => {
 
     const setUnread = useNotificationStore(store => store.setUnread)
 
-    // TODO refactor these notifs & effects & trpc 
     useEffect(() => {
 
         if (session && session.role === UserRoles.PARTNER) {
@@ -49,7 +48,7 @@ const Sidenav = () => {
 
 
     if (!session) return null
-  
+
     for (const excluded of pathsToExludeSidenav) {
 
         if (pathname.startsWith(excluded)) return null
@@ -81,7 +80,6 @@ const Sidenav = () => {
 
                 </div>
             </header>
-            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-600 hover:bg-violet-700 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
             <div id="menu-bar" className='mt-8'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
@@ -203,7 +201,7 @@ const Sidenav = () => {
                             </Link>
                         </li>
                         <li id='nav-link'
-                            className={classNames(asPath === AppRoutes.VENDOR_ACCOUNT_SETTINGS /* AppRoutes.PRODUCTS */
+                            className={classNames(asPath === AppRoutes.VENDOR_ACCOUNT_SETTINGS
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
                                 : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
                                 "h-10 rounded-md pl-4 flex items-center",
@@ -252,7 +250,6 @@ const Sidenav = () => {
 
                 </div>
             </header>
-            {/* ` ${asPath === AppRoutes.HOME ? "bg-violet-600 hover:bg-violet-700 text-white" : "bg-slate-100 hover:bg-slate-200 text-zinc-700"} h-10 rounded-md mt-3 pl-4 flex items-center cursor-pointer transition-colors` */}
             <div id="menu-bar" className='mt-8'>
                 <div id="menu" className="">
                     <ul id="menu-links" className="space-y-4">
@@ -373,7 +370,6 @@ const Sidenav = () => {
 
                             </Link>
                         </li>
-                        {/* TODO */}
                         <li id='nav-link'
                             className={classNames(asPath === AppRoutes.PARTNER_ACCOUNT_SETTINGS
                                 ? "bg-violet-600 hover:bg-violet-700 text-white"
@@ -515,34 +511,12 @@ const Sidenav = () => {
                                 <span className="font-medium text-sm ">Bildirimler</span>
 
                                 {unreadNotifications > 0 && <span
-                                    className=' scale-75 flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full '
-                                >
+                                    className=' scale-75 flex items-center justify-center font-medium text-center text-xs py-1 px-2 bg-red-500 rounded-full'>
                                     <p className='text-white text-xs'> {unreadNotifications}</p>
                                 </span>}
 
                             </Link>
                         </li>
-                        {/* <li id='nav-link'
-                            className={classNames(asPath === AppRoutes.SETTINGS_ACCOUNT
-                                ? "bg-violet-600 hover:bg-violet-700 text-white"
-                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
-                                "h-10 rounded-md pl-4 flex items-center",
-                                "cursor-pointer transition-colors"
-                            )}>
-                            <Link
-                                className='flex items-center space-x-6 bg-redo-100 w-full h-full'
-                                href={AppRoutes.SETTINGS_ACCOUNT} >
-
-                                <HiCog
-                                    id='toggle'
-                                    className='h-6 w-6 p-1
-                                             text-violet-50 bg-violet-600 rounded-full'
-                                    aria-hidden='true' />
-
-                                <span className="font-medium text-sm ">Hesap Ayarları</span>
-
-                            </Link>
-                        </li> */}
                     </ul>
                 </div>
             </div>

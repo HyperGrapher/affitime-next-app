@@ -1,14 +1,11 @@
 import { router, vendorProcedure } from "../trpc";
-// import { z } from "zod";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
 import type { IPartnerAndLinks } from "../../../interface/dashboard.interface";
 import type { Link, Partner } from "@prisma/client";
 import { CommissionType } from "@prisma/client";
 import { LinkStatus } from "@prisma/client";
 
-// ! TODO WARN - Possible bug - test every reducer if type is NONE
-// ! Currently checking if it's CASH or PERC.
-// ! Might need to return acc if NONE
+
 
 export const VendorDashboardRouter = router({
   getLinkStats: vendorProcedure.query(async ({ ctx }) => {
@@ -24,9 +21,7 @@ export const VendorDashboardRouter = router({
     const canceledByVendor = links.filter(
       (x) => x.status === LinkStatus.CANCELED_BY_VENDOR
     );
-    // const deniedRequests = links.filter(
-    //   (x) => x.status === LinkStatus.REQUEST_DENIED
-    // );
+
     const passive = links.filter((x) => x.active === false);
     const awaiting = links.filter((x) => x.status === LinkStatus.AWAITING);
 
@@ -39,26 +34,9 @@ export const VendorDashboardRouter = router({
     };
   }),
 
-  // https://github.com/prisma/prisma/discussions/4185
   getPartnerAndLinks: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
 
-    // const p = await ctx.prisma.product.findMany({
-    //   where: {
-    //     vendor_profile_id: vendorId,
-    //     active: true,
-    //     links: {
-    //       some: { active: { not: null } },
-    //     },
-    //   },
-    //   include: {
-    //     links: {
-    //       include: { partner: true, visits: true },
-    //     },
-    //   },
-    // });
-
-    // console.log(JSON.stringify(p, null, 4));
 
     const links = await ctx.prisma.link.findMany({
       where: {
@@ -70,9 +48,7 @@ export const VendorDashboardRouter = router({
       include: { partner: true },
     });
 
-    //  DB |-> Links[] + {partner} => partner[] + Links[]
-    // Vendor'e ait herbir link ile gelen single partner yerine
-    // Vendor'e ait link'e sahip herbir partner ile gelen multiple linkler
+
     const func = flow(
       partialRight(groupBy, "partner.id"),
       partialRight(
@@ -93,10 +69,7 @@ export const VendorDashboardRouter = router({
 
   calculateLinksAndPayments: vendorProcedure.query(async ({ ctx }) => {
     const { vendorId } = ctx.session;
-    // console.log({ vendorId });
-    // console.log("\n");
 
-    // delete bots
     await ctx.prisma.visit.deleteMany({
       where: {
         ipapi: null
@@ -106,7 +79,6 @@ export const VendorDashboardRouter = router({
     const visits = await ctx.prisma.visit.findMany({
       where: {
         vendor_id: vendorId,
-        // dubious: false,
         paid: null,
       },
       include: {
@@ -120,9 +92,6 @@ export const VendorDashboardRouter = router({
     const unpaid = visits.filter((x) => !x.paid && !x.dubious);
     const valid = visits.filter((x) => !x.dubious);
     const invalid = visits.filter((x) => x.dubious);
-
-    // const x = groupBy(unpaid, "link.product.id");
-    // console.log(x);
 
     const paidLinks = paid.map((x) => x.link);
     const unpaidLinks = unpaid.map((x) => x.link);
@@ -146,16 +115,6 @@ export const VendorDashboardRouter = router({
       }
       return res;
     }, 0);
-
-    // console.log({
-    //   unpaidTotal,
-    //   paidTotal,
-    //   unpaid: unpaidLinks.length,
-    //   paid: paidLinks.length,
-    //   total: visits.length,
-    //   valid: valid.length,
-    //   invalid: invalid.length,
-    // });
 
     return {
       unpaidTotal: String(unpaidTotal),

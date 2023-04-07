@@ -12,12 +12,10 @@ import VendorProductItemMobile from "./ProductItemMobile";
 
 const DynamicModalContainer = dynamic(() => import('../modals/ModalContainer'), {
   ssr: false,
-  // loading: () => <div></div>
 })
 
 const DynamicWarnDialog = dynamic(() => import('../modals/WarnDialog'), {
   ssr: false,
-  // loading: () => <div></div>
 })
 
 

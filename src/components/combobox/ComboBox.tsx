@@ -3,12 +3,8 @@ import { Combobox, Transition } from '@headlessui/react'
 import { HiCheck, HiSwitchVertical } from 'react-icons/hi'
 
 const people = [
-    { id: 1, name: 'Dath Wader' },
-    { id: 2, name: 'Arlene Mccoy' },
-    { id: 3, name: 'Devon Webb' },
-    { id: 4, name: 'Tom Cook' },
-    { id: 5, name: 'Tanya Fox' },
-    { id: 6, name: 'Hellen Schmidt' },
+    { id: 1, name: 'abc' },
+
 ]
 
 const ACComboBox = () => {

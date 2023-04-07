@@ -22,7 +22,6 @@ const ModalContainer: React.FC<Props> = ({ children, setModal, state }) => {
     }, [state])
 
     return state ? ReactDOM.createPortal(
-        //Backdrop 
         <motion.div
             onClick={() => setModal?.(false)}
             initial={{ opacity: 0 }}
@@ -44,7 +43,6 @@ const ModalContainer: React.FC<Props> = ({ children, setModal, state }) => {
             }} >
 
 
-            {/* If modal content is clicked prevent closing by stopPropagation()  */}
             <motion.div
                 className="grid place-items-center px-3"
                 onClick={e => e.stopPropagation()}

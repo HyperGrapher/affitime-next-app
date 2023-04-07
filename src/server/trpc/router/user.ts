@@ -118,8 +118,6 @@ export const userRouter = router({
       const vendorId = ctx.session.vendorId;
       const { email, fname, lname, brand, website, phone, image } = input;
 
-      console.log(image?.length);
-
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
 
@@ -164,8 +162,6 @@ export const userRouter = router({
       const id = ctx.session.id;
       const partnerId = ctx.session.partnerId;
       const { email, fname, lname, phone, image } = input;
-
-      console.log(image?.length);
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });

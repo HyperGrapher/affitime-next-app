@@ -17,7 +17,6 @@ import { AppRoutes } from "../../config/appRoutes";
 import classNames from "../../utils/classnames";
 import type { IDashboardData, IPartnerAndLinks, IVisitAndPayment } from "../../interface/dashboard.interface";
 import PageCard from "../../components/card/Card";
-// import { Link as LinkEntity } from "@prisma/client";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -278,9 +277,6 @@ type PartnerItemProps = {
 
 const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
 
-    // useEffect(() => {
-
-    // }, [pl])
 
     const pc = useMemo(() => {
         const p = pl.partner_links.map(x => x)

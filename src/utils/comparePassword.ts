@@ -10,7 +10,7 @@ export const comparePassword = async (
       return res;
     })
     .catch((e) => {
-      console.error("comparePassword hata");
+
       console.log(e);
       return false;
     });

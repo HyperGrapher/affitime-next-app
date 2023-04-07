@@ -32,7 +32,6 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
 
   const handlePasifyLink = async () => {
 
-    console.log('pasifyLink', deleteId);
     pasifyLinkMutation.mutate({
       id: "ad"
     })
@@ -47,7 +46,6 @@ const VendorLinkList: React.FC<Props> = ({ links }) => {
       (
         <>
 
-          {/* <LinkListHeader /> */}
           <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
             {links?.map(p => (
               <React.Fragment key={p.id}>
