@@ -1,0 +1,434 @@
+// COMMANDS
+// npx prisma migrate dev --name init
+// npx prisma format
+// npx prisma db push  (If you are prototyping)
+// npx prisma generate
+// npx prisma studio
+// npx prisma migrate reset (Reset DB)
+
+// prisma db pull //make sure that your Prisma schema is up-to-date
+// https://www.prisma.io/docs/guides/database/developing-with-prisma-migrate/add-prisma-migrate-to-a-project
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  // url      = "mysql://burak:Bm123456!@localhost:3306/affprisma?connection_limit=20&socket_timeout=3"
+}
+
+// Necessary for Next auth
+model Account {
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id])
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@map("account")
+}
+
+enum Role {
+  PARTNER
+  VENDOR
+  ADMIN
+  MODERATOR
+}
+
+enum PackageType {
+  NONE
+  BASIC
+  PRO
+  ULTIMATE
+  TRIAL
+  FREE
+  OTHER
+  PARTNER // * new
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@map("session")
+}
+
+model PlanPayment {
+  id                String       @id @default(cuid())
+  merchant_oid      String       @unique()
+  // token          String  // * new
+  user              User         @relation(fields: [userId], references: [id])
+  userId            String
+  user_basket       String
+  user_phone        String
+  user_name         String
+  user_address      String
+  payment_type      String? // * new +
+  payment_amount    Float
+  payed_amount      Float? // * new +
+  installment_count Int          @default(0) // * new
+  card_type         String? // * new
+  packageType       PackageType? @default(PRO)
+  validFrom         DateTime? // * new +
+  validTill         DateTime?
+  annual            Boolean      @default(false)
+  success           Boolean?
+  seen              Boolean?     @default(false)
+  errorCode         String? // * new
+  errorReason       String?
+  test_mode         Boolean? // * new +
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([id, userId])
+  @@map("plan_payment")
+}
+
+model Taxinfo {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [user_id], references: [id])
+  user_id   String   @unique
+  title     String? // unvan
+  fname     String?
+  lname     String?
+  tckn      String?
+  vkn       String?
+  taxOffice String?
+  address   String
+  city      String?
+  country   String   @default("turkiye")
+  code      String   @default("tr")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id, user_id])
+  @@map("taxinfo")
+}
+
+model User {
+  id            String        @id @default(cuid())
+  fname         String?
+  lname         String?
+  email         String        @unique
+  password      String
+  role          Role          @default(PARTNER)
+  vendor_id     String?
+  partner_id    String?
+  emailVerified DateTime?
+  image         String?       @db.Text
+  notes         String?       @db.Text // * new
+  accounts      Account[]
+  sessions      Session[]
+  plan_payments PlanPayment[]
+  apiKey        ApiKey?
+  taxinfo       Taxinfo?
+  vendor        Vendor?
+  partner       Partner?
+  active        Boolean       @default(true)
+  trial         Boolean       @default(true)
+  trialTill     DateTime? // * new
+  pro           Boolean       @default(false) // when vendor reg, it's true
+  packageType   PackageType?  @default(TRIAL)
+  validFrom     DateTime? // if pro is true then plan is valid from // * new
+  validTill     DateTime? // if pro is true then plan is valid until // * new kinda
+  proDetails    Json?
+  ipdata        Json?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([id, email])
+  @@map("user")
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_token")
+}
+
+model Vendor {
+  id            String         @id @default(cuid())
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String         @unique
+  brand         String         @unique
+  phone         String?
+  website       String         @unique
+  image         String?        @db.Text
+  products      Product[]
+  links         Link[]
+  notifications Notification[]
+  visits        Visit[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([id, userId])
+  @@map("user_vendor")
+}
+
+model Partner {
+  id            String         @id @default(cuid())
+  user          User           @relation(fields: [userId], references: [id])
+  userId        String         @unique
+  username      String         @unique
+  phone         String?
+  image         String?        @db.Text
+  links         Link[]
+  notifications Notification[]
+  visits        Visit[]
+  interests     Json?
+  socials       Json?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+
+  @@index([id, userId])
+  @@map("user_partner")
+}
+
+enum CommissionType {
+  NONE
+  CASH
+  PERC
+}
+
+model Tag {
+  id       Int              @id @default(autoincrement())
+  name     String
+  products TagsOnProducts[]
+
+  @@map("tag")
+}
+
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String
+  products Product[]
+  links    Link[]
+
+  @@map("category")
+}
+
+model TagsOnProducts {
+  product   Product @relation(fields: [productId], references: [id])
+  productId String
+  tag       Tag     @relation(fields: [tagId], references: [id])
+  tagId     Int
+
+  @@id([productId, tagId])
+  @@map("tags_on_products")
+}
+
+model Product {
+  id                String           @id @default(cuid())
+  title             String?          @db.Text
+  desc              String?          @db.Text
+  fullDesc          String?          @db.Text
+  price             Float?
+  cookieLife        Int              @default(60)
+  perClick          Float?
+  perClickType      CommissionType   @default(CASH)
+  perSale           Float?
+  perSaleType       CommissionType   @default(CASH)
+  vendor            Vendor           @relation(fields: [vendor_profile_id], references: [id])
+  vendor_profile_id String
+  vendor_user_id    String?
+  product_url       String?          @db.Text
+  image             String?          @db.Text
+  links             Link[]           @relation("ProductLinks")
+  tags              TagsOnProducts[]
+  category          Category         @relation(fields: [categoryId], references: [id])
+  categoryId        Int
+  published         Boolean?         @default(true)
+  active            Boolean?         @default(true)
+  extra_info        Json?
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+
+  @@index([id, vendor_profile_id])
+  @@map("product")
+}
+
+model Visit {
+  id           String         @id @default(cuid())
+  link         Link           @relation("LinkVisits", fields: [link_id], references: [id])
+  link_id      String
+  vendor       Vendor         @relation(fields: [vendor_id], references: [id])
+  vendor_id    String
+  partner      Partner        @relation(fields: [partner_id], references: [id])
+  partner_id   String
+  ipapi        String? // from client
+  country      String         @default("-") // from client
+  ipInfo       Json? // from client
+  ipware       String? // from server
+  hasCookie    Boolean
+  cookie       Json?
+  prevIp       String?
+  sold         Boolean        @default(false)
+  vpn          Boolean        @default(false)
+  unique       Boolean        @default(true)
+  params       String? // query extras
+  dubious      Boolean?
+  cause        String?
+  isPartner    Boolean?
+  isVendor     Boolean?
+  paid         Boolean?
+  os           String?        @default("-")
+  agent        String?        @db.Text
+  bot          Boolean?
+  uaFamily     String?
+  referer      String?
+  uaMajor      String?
+  price        Float?
+  perClick     Float?
+  perClickType CommissionType @default(CASH)
+  perSale      Float?
+  perSaleType  CommissionType @default(CASH)
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+
+  @@index([id, link_id])
+  @@map("visit")
+}
+
+enum LinkStatus {
+  AWAITING
+  CONFIRMED
+  REQUEST_DENIED
+  PAUSED_BY_VENDOR
+  CANCELED_BY_VENDOR
+  CANCELED_BY_PARTNER
+  CANCELED_BY_ADMIN
+  PRODUCT_DELETED
+}
+
+model ApiKey {
+  id        String   @id @default(cuid())
+  apikey    String   @unique()
+  installed Boolean  @default(false)
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  Link      Link[]
+
+  @@index([id, apikey])
+  @@map("api_key")
+}
+
+model Link {
+  id               String         @id @default(cuid())
+  product          Product        @relation("ProductLinks", fields: [product_id], references: [id])
+  product_id       String
+  partner          Partner        @relation(fields: [partner_id], references: [id])
+  partner_id       String
+  partner_user_id  String?
+  vendor           Vendor         @relation(fields: [vendor_id], references: [id])
+  vendor_id        String
+  vendor_user_id   String?
+  category         Category       @relation(fields: [categoryId], references: [id])
+  categoryId       Int
+  url              String         @unique()
+  platform         String?
+  apiKey           ApiKey?        @relation(fields: [apiKeyId], references: [id])
+  apiKeyId         String?
+  visits           Visit[]        @relation("LinkVisits")
+  status           LinkStatus
+  active           Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
+  vendor_notified  Boolean        @default(false)
+  partner_notified Boolean        @default(false)
+  cookieLife       Int            @default(60)
+  price            Float?
+  perClick         Float?
+  perClickType     CommissionType @default(CASH)
+  perSale          Float?
+  perSaleType      CommissionType @default(CASH)
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  @@index([id, product_id, url])
+  @@map("link")
+}
+
+model UserIps {
+  id         Int      @id @default(autoincrement())
+  ip         String
+  country    String
+  partner_id String?
+  vendor_id  String?
+  ipInfo     Json?
+  createdAt  DateTime @default(now())
+
+  @@index([id, ip])
+  @@map("user_ip")
+}
+
+model Notification {
+  id         Int      @id @default(autoincrement())
+  message    String   @db.Text
+  type       String? // * make enum after types are clarified
+  action     String?
+  for        Role     @default(PARTNER)
+  read       Boolean  @default(false)
+  partner    Partner  @relation(fields: [partner_id], references: [id])
+  partner_id String
+  vendor     Vendor   @relation(fields: [vendor_id], references: [id])
+  vendor_id  String
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([id])
+  @@map("notification")
+}
+
+model Faq {
+  id        Int      @id @default(autoincrement())
+  quest     String   @db.Text
+  active    Boolean  @default(true)
+  answer    String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([id])
+  @@map("faq")
+}
+
+// enum PollType {
+//   CATEGORY
+// }
+
+// model PollItem {
+//   id        Int      @id @default(autoincrement())
+//   poll_type PollType
+//   name      String
+//   checked   Boolean
+
+//   @@index([id])
+//   @@map("poll_item")
+// }
+
+// model Poll {
+//   id        Int    @id @default(autoincrement())
+//   vendor    Vendor @relation(fields: [vendor_id], references: [id])
+//   vendor_id String
+
+//   @@index([id])
+//   @@map("poll")
+// }

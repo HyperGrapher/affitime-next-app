@@ -24,6 +24,7 @@ export enum AppRoutes {
   VENDOR_NOTIFICATIONS = "/vendor/notifications",
   VENDOR_PAYMENTS = "/vendor/payments",
   VENDOR_PAYMENTS_DETAIL = "/vendor/payments/detail",
+  VENDOR_STORE_API_KEYS = "/vendor/store-api/api-keys",
   // PARTNER
   PARTNER_DASHBOARD = "/partner/dashboard",
   PARTNER_PRODUCTS = "/partner/products",

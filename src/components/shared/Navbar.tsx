@@ -101,8 +101,8 @@ const Navbar: React.FC = () => {
                   <div>
                     <Menu.Button className='flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 '>
                       <span className='sr-only'>Open user menu</span>
-                      <Image height={40} width={40} className='h-10 w-10 rounded-full hidden lg:block object-cover' 
-                      src={/* data?.image ? `${AVATAR_URL}/${data?.image}` : */ profileImg} alt='dashboard image' />
+                      <Image height={40} width={40} className='h-10 w-10 rounded-full hidden lg:block object-cover'
+                        src={/* data?.image ? `${AVATAR_URL}/${data?.image}` : */ profileImg} alt='dashboard image' />
                       <IcMenu width={40} height={40} className='block lg:hidden w-10 h-10' />
                     </Menu.Button>
                   </div>
@@ -238,6 +238,18 @@ const Navbar: React.FC = () => {
                                     'block w-full px-4 py-2 text-left text-sm text-gray-700'
                                   )}>
                                   Hesap Ayarlari
+                                </Link>
+                              )}
+                            </Menu.Item>
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.VENDOR_STORE_API_KEYS}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                  )}>
+                                  Mağaza API
                                 </Link>
                               )}
                             </Menu.Item>

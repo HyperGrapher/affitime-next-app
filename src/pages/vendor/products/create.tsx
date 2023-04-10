@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiArrowLeft as BackIcon, HiPencil, HiPlus } from 'react-icons/hi';
+import { HiArrowLeft as BackIcon, HiPencil, HiPlus, HiRefresh as IcRefresh } from 'react-icons/hi';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { z } from 'zod';
 import CategoriesCombo from '../../../components/_vendor/products/CategoriesCombo';
@@ -146,9 +146,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
         }
     })
 
-
-
-
     const onSubmit: SubmitHandler<IProductFormData> = async (data) => {
 
         setBusy(true)
@@ -223,10 +220,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                 },
             })
 
-
-
         }
-
 
     };
 
@@ -234,15 +228,68 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     return (
         <div className='auth-container' style={{ overflowX: 'hidden' }}>
             {busy && <TopBarProgress />}
-
-
             <Head>
                 <title>Affitime | Ürün Oluştur</title>
             </Head>
+            <PageCard>
+
+                <div className="flex items-center mb-2">
+
+                    <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
+                        API Anahtarları
+                    </h2>
+                    <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
+                        <IconButton
+                            title={"Oluştur"}
+                            disabled={busy}
+                            icon={<HiPlus color="white" size="16px" />}
+                            twClasses="ml-auto w-38"
+                            fn={() => null} />
+                    </div>
+                </div>
+
+                <div className='mb-0 ml-2 w-1/2 md:w-1/3'>
+                    <p className="text-slate-400 text-sm font- leading-tight">
+                        Mağaza entegrasyonu için API anahtarlarını yönetin.
+                    </p>
+                </div>
+
+                <div className="flex flex-col space-y-2 mt-6 w-full">
+
+                    <div className="flex w-1/2 md:w-2/3 font-medium">
+                        <small className=''>API KEY</small>
+                    </div>
+
+                    <div className="flex items-center w-1/2 md:w-2/3">
+                        <small className=''>4b5292120f6e92a6ec6450439675c45dffbc98d3a9f8be8ff036205f72677d5a
+                        </small>
+                        <button className={
+                            classNames(
+                                `bg-orange-600 hover:bg-orange-700 text-white text-sm transition`,
+                                `flex items-center justify-center flex-nowrap space-x-2`,
+                                `shadow-sm hover:shadow-lg rounded-md `,
+                                `py-1 px-4 whitespace-nowrap ml-auto`,
+                                `disabled:bg-orange-400 disabled:shadow-none`,
+                                `aria-disabled:bg-orange-400 aria-disabled:shadow-none`,
+                            )}>
+
+                            <IcRefresh />
+
+                            <span className={classNames(
+                                "text-slate-50 text-xs font-medium tracking-wide text-center",
+
+                            )}> Yenile
+                            </span>
+                        </button>
+                    </div>
+
+                </div>
+
+            </PageCard>
 
             <PageCard>
 
-                <div className="flex items-center mb-6">
+                <div className="flex items-center mb-2">
 
                     <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
                         {edit ? "Ürün Düzenle" : "Ürün Ekle"}
