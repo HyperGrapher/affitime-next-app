@@ -16,9 +16,10 @@ import Divider from '../../shared/Divider';
 
 type ItemProps = {
     p: Product;
+    store: string;
 }
 
-const ProductItem: React.FC<ItemProps> = ({ p }) => {
+const ProductItem: React.FC<ItemProps> = ({ p, store }) => {
     const { push } = useRouter()
 
 
@@ -71,6 +72,11 @@ const ProductItem: React.FC<ItemProps> = ({ p }) => {
                         <b className="text-stone-500">Fiyat: </b>
                         {numberWithCommas(p.price)}
                         <Lira />
+                    </p>
+
+                    <p className="text-stone-400 text-xs whitespace-nowrap">
+                        <b className="text-stone-500">Magaza: </b>
+                        {store}
                     </p>
 
                 </div>

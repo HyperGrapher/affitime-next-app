@@ -3,6 +3,8 @@ const prisma = new PrismaClient();
 import bcrypt from "bcrypt";
 import { vendors, partners, categories } from "./data";
 import { CommissionType } from "@prisma/client";
+import dayjs from "dayjs";
+
 // https://github.com/orta/vscode-twoslash-queries
 const createCategories = async () => {
   const c = await prisma.category.count();
@@ -30,6 +32,8 @@ const createVendorUsers = async () => {
   for (const v of vendors) {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash("bm123456", salt);
+    const nowDate = dayjs(new Date());
+    const trialTill = nowDate.add(14, "day").toDate();
     v.password = hash;
     const user = await prisma.user.create({
       data: {
@@ -38,10 +42,11 @@ const createVendorUsers = async () => {
         role: "VENDOR",
         fname: v.fname,
         lname: v.lname,
+        trialTill: trialTill
       },
     });
     const vendor = await prisma.vendor.create({
-      data: { userId: user.id, website: v.website, brand: v.brand },
+      data: { userId: user.id, website: v.website, brand: v.brand, phone: v.phone },
     });
     await prisma.user.update({
       where: { id: user.id },

@@ -1,22 +1,17 @@
-import { router, vendorProcedure, protectedProcedure, publicProcedure } from "../trpc";
-import { z } from "zod";
-import crypto from "node:crypto";
-import { Base64 } from "js-base64";
-import axios from "axios";
-import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
-import { PRICING_ANNUALY, PRICING_MONTHLY } from "../../../config/pricing";
-import { taxinfoValidationSchema } from "../../../interface/zod.schema";
-import type { IPlanPaymentData } from "../../../interface/payments.interface";
-import dayjs from "dayjs";
+import crypto from "node:crypto";
+import {
+  router,
+  vendorProcedure
+} from "../trpc";
 
 export const ApikeyRouter = router({
-  getApikey: publicProcedure.query(({ ctx }) => {
-   
+  getApikey: vendorProcedure.query(({ ctx }) => {
+    const { vendorId } = ctx.session;
 
-    const data = ctx.prisma.taxinfo.findFirst({
+    const data = ctx.prisma.apiKey.findFirst({
       where: {
-        user_id: "id",
+        vendorId,
       },
     });
 
@@ -30,34 +25,50 @@ export const ApikeyRouter = router({
     return data;
   }),
 
-  upsertApikey: protectedProcedure
-    .input(taxinfoValidationSchema)
-    .mutation(async ({ ctx, input }) => {
-      const { id } = ctx.session;
-      const existing = await ctx.prisma.taxinfo.findFirst({
-        where: { user_id: id },
-      });
+  upsertApikey: vendorProcedure.mutation(async ({ ctx }) => {
+    const { vendorId, id } = ctx.session;
 
-      try {
-        if (existing) {
-          return await ctx.prisma.taxinfo.update({
-            where: { user_id: id },
-            data: {
-              ...input,
-            },
-          });
-        } else {
-          return await ctx.prisma.taxinfo.create({
-            data: { ...input, user_id: id },
-          });
-        }
-      } catch (error) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Product ID not found",
+    let apikey = crypto
+      .randomBytes(32)
+      .toString("base64url")
+      .replace(/^a-zA-Z0-9 ]/g, "");
+
+    apikey = `affi-${apikey}`;
+
+    const existing = await ctx.prisma.apiKey.findFirst({
+      where: { vendorId },
+    });
+
+    try {
+      if (existing) {
+        return await ctx.prisma.apiKey.update({
+          where: { vendorId },
+          data: {
+            apikey,
+            installed: true // ! TODO -  FOR DEV - Remove on prod
+          },
         });
+      } else {
+        const api = await ctx.prisma.apiKey.create({
+          data: {
+            vendorId,
+            apikey,
+          },
+        });
+
+        await ctx.prisma.vendor.update({
+          where: { id: vendorId },
+          data: {
+            apiKeyId: api.id,
+          },
+        });
+
       }
-    }),
-
-
+    } catch (error) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Product ID not found",
+      });
+    }
+  }),
 });

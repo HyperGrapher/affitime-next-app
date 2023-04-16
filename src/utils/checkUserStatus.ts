@@ -3,12 +3,52 @@ import type { Session } from "next-auth";
 import { appPaymentRequiredTypes } from "../config/constants";
 import { prisma } from "../server/db/client";
 
-// ? turn into middleware
-// ! turn into general package checker
-export const checkTrial = async (
-  //   context: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>,
-  session: Session
-) /* : Promise<IUserPlanCheck> */ => {
+export const checkUserStatus = async (session: Session) => {
+  const { id } = session;
+  const user = await prisma.user.findUnique({
+    where: { id },
+    select: {
+      createdAt: true,
+      validTill: true,
+      trial: true,
+      pro: true,
+      packageType: true,
+    },
+  });
+
+  if (user?.trial || user?.pro) {
+    return {
+      type: appPaymentRequiredTypes.NONE,
+      paymentRequired: false,
+      packageType: user.packageType,
+    };
+  }
+
+  if (user?.pro === false && user?.trial === false) {
+    if (!user.validTill) {
+      return {
+        type: appPaymentRequiredTypes.END_OF_TRIAL,
+        paymentRequired: true,
+        packageType: user.packageType,
+      };
+    }
+
+    return {
+      type: appPaymentRequiredTypes.END_OF_PLAN,
+      paymentRequired: true,
+      packageType: user.packageType,
+    };
+  }
+
+  
+  return {
+    type: appPaymentRequiredTypes.UNKNOWN,
+    paymentRequired: true,
+    packageType: user?.packageType,
+  };
+};
+
+async function checkTrialPrev(session: Session) {
   const { id } = session;
   const user = await prisma.user.findUnique({
     where: { id },
@@ -23,15 +63,19 @@ export const checkTrial = async (
     },
   });
 
-  console.log("checkTrials user: ", user);
-  // ! make sql schedule to change values for this to work
-
   const trialTill = dayjs(user?.trialTill); // can be different for every user, so its much better
   const nowDate = dayjs(new Date());
 
   const trialDiff = trialTill.diff(nowDate, "second");
-  const c = new Date()
-  console.log("Trialdiff", trialDiff, "nowDate: ", nowDate.toDate(), "dateObj: ", c);
+  const c = new Date();
+  console.log(
+    "Trialdiff",
+    trialDiff,
+    "nowDate: ",
+    nowDate.toDate(),
+    "dateObj: ",
+    c
+  );
 
   if (user?.trial) {
     console.log("User is in Trial", trialDiff);
@@ -82,32 +126,4 @@ export const checkTrial = async (
       packageType: user?.packageType,
     };
   }
-
-  // ! WARN This is not checking all possible states.
-  // ! ex: pro is still pro if payment is overdue
-  // if (user?.trial && !user.pro) {
-  //   if (Math.abs(creationDiff) > 14) {
-  //     console.log("Trial is ended");
-
-  // const modal = {
-  //   modalType: AppPaymentModalType.END_OF_TRIAL,
-  //   days: String(Math.abs(diff))
-  // } as IUserPayCheck
-
-  //     return true;
-  //   }
-
-  // const modal = {
-  //   modalType: Math.abs(diff) > 10 ? AppPaymentModalType.REMAINING : AppPaymentModalType.NONE,
-  //   days: String(Math.abs(diff))
-  // } as IUserPayCheck
-
-  //   console.log("User is still on trial");
-  //   return false;
-  // }
-
-  // const modal = {
-  //   modalType: AppPaymentModalType.REMAINING,
-  //   days: String(Math.abs(diff))
-  // } as IUserPayCheck
-};
+}

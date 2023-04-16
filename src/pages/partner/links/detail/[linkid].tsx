@@ -268,7 +268,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         desc="
                         Ürün için web üzerinde paylaşabileceğiniz 
                         bir link oluşturulacaktır. 
-                        Vendor onayindan sonra kullanılabilir hale gelecektir."
+                        Vendor onayından sonra kullanılabilir hale gelecektir."
                         dismissFn={() => setModal(false)}
                         confirmFn={() => null}
                     />

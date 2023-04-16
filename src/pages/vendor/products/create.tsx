@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiArrowLeft as BackIcon, HiPencil, HiPlus, HiRefresh as IcRefresh } from 'react-icons/hi';
+import { HiArrowLeft as BackIcon, HiPencil, HiPlus, HiRefresh as IcRefresh, HiClipboardCopy } from 'react-icons/hi';
 import TopBarProgress from 'react-topbar-progress-indicator';
 import { z } from 'zod';
 import CategoriesCombo from '../../../components/_vendor/products/CategoriesCombo';
@@ -24,7 +24,7 @@ import classNames from '../../../utils/classnames';
 import { notifyError, notifySuccessBR, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
 import Head from "next/head";
-import { checkTrial } from '../../../utils/checkTrial';
+import { checkUserStatus } from '../../../utils/checkUserStatus';
 
 interface IServerSideProps {
     cats: Category[]
@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps<IServerSideProps> = async (c
         }
     }
 
-    const check = await checkTrial(session)
+    const check = await checkUserStatus(session)
     if (check.paymentRequired) return {
         redirect: {
             destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,
@@ -120,6 +120,8 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
+    const updateKey = trpc.apikey.upsertApikey.useMutation()
+    const { data: apikey, refetch } = trpc.apikey.getApikey.useQuery()
     trpc.product.getProductById.useQuery({ id }, {
         enabled: edit && id?.length > 20,
         onSuccess(data) {
@@ -236,42 +238,49 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                 <div className="flex items-center mb-2">
 
                     <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
-                        API Anahtarları
+                        API Anahtarı
                     </h2>
-                    <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
-                        <IconButton
-                            title={"Oluştur"}
-                            disabled={busy}
-                            icon={<HiPlus color="white" size="16px" />}
-                            twClasses="ml-auto w-38"
-                            fn={() => null} />
-                    </div>
+
                 </div>
 
                 <div className='mb-0 ml-2 w-1/2 md:w-1/3'>
                     <p className="text-slate-400 text-sm font- leading-tight">
-                        Mağaza entegrasyonu için API anahtarlarını yönetin.
+                        Mağaza entegrasyonu için API anahtarını yönetin.
                     </p>
                 </div>
 
-                <div className="flex flex-col space-y-2 mt-6 w-full">
+                <div className="flex flex-col space-y-4 mt-6 w-full">
 
-                    <div className="flex w-1/2 md:w-2/3 font-medium">
+                    <div className="flex w-1/2 md:w-2/3 font-bold">
                         <small className=''>API KEY</small>
                     </div>
 
-                    <div className="flex items-center w-1/2 md:w-2/3">
-                        <small className=''>4b5292120f6e92a6ec6450439675c45dffbc98d3a9f8be8ff036205f72677d5a
+                    <div className="flex flex-col sm:flex-row sm:items-center mb-4 w-full sm:w-2/3">
+                        <small className='border-b-2 pb-1 text-xs sm:text-sm'>
+                            {apikey?.apikey}
                         </small>
-                        <button className={
-                            classNames(
-                                `bg-orange-600 hover:bg-orange-700 text-white text-sm transition`,
-                                `flex items-center justify-center flex-nowrap space-x-2`,
-                                `shadow-sm hover:shadow-lg rounded-md `,
-                                `py-1 px-4 whitespace-nowrap ml-auto`,
-                                `disabled:bg-orange-400 disabled:shadow-none`,
-                                `aria-disabled:bg-orange-400 aria-disabled:shadow-none`,
-                            )}>
+                        <button
+                            onClick={() => {
+                                updateKey.mutate(undefined, {
+                                    onSuccess: () => {
+                                        notifySuccessBR("Api anahtari yenilendi.")
+                                        refetch()
+                                    },
+                                    onError(error) {
+                                        console.log(error)
+                                        notifyError('Hata. Apikey yenilenemedi.')
+                                    },
+                                })
+                            }}
+                            className={
+                                classNames(
+                                    `bg-orange-600 hover:bg-orange-700 text-white text-sm transition`,
+                                    `flex items-center justify-center flex-nowrap space-x-2`,
+                                    `shadow-sm hover:shadow-lg rounded-md `,
+                                    `py-1 px-4 whitespace-nowrap ml-auto w-32`,
+                                    `disabled:bg-orange-400 disabled:shadow-none`,
+                                    `aria-disabled:bg-orange-400 aria-disabled:shadow-none`,
+                                )}>
 
                             <IcRefresh />
 
@@ -282,6 +291,36 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                             </span>
                         </button>
                     </div>
+
+                    <button
+                        onClick={async () => {
+                            try {
+                                const key = apikey?.apikey ?? ""
+                                await navigator.clipboard.writeText(key);
+                                notifySuccessBR("Api anahtari kopyalandı.")
+                                console.log('Content copied to clipboard');
+                            } catch (err) {
+                                console.error('Failed to copy: ', err);
+                            }
+                        }}
+                        className={
+                            classNames(
+                                `bg-violet-600 hover:bg-violet-700 text-white text-sm transition`,
+                                `flex items-center justify-center flex-nowrap space-x-2`,
+                                `shadow-sm hover:shadow-lg rounded-md `,
+                                `py-1 px-4 mt-8 whitespace-nowrap w-32`,
+                                `disabled:bg-violet-400 disabled:shadow-none`,
+                                `aria-disabled:bg-violet-400 aria-disabled:shadow-none`,
+                            )}>
+
+                        <HiClipboardCopy />
+
+                        <span className={classNames(
+                            "text-slate-50 text-xs font-medium tracking-wide text-center",
+
+                        )}> Kopyala
+                        </span>
+                    </button>
 
                 </div>
 

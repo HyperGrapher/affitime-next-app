@@ -16,6 +16,7 @@ import { IpSchema } from "../../interface/zod.schema";
 import { prisma } from "../../server/db/client";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from '../../utils/trpc';
+import axios from 'axios';
 
 /*
 import { Base64 } from 'js-base64';
@@ -54,12 +55,66 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
     context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
+
     const link = await prisma.link.findFirst({
-        where: { url }, include: { product: true }
+        where: { url },
+        include: {
+            product: true,
+            vendor: {
+                include: {
+                    apiKey: true,
+                    user: true
+                }
+            }
+        }
     });
 
+    
+    if (!link?.vendor.user.trial && !link?.vendor.user.pro) {
+
+        if (link?.vendor.user.validTill) {
+
+            if (link.product.product_url) {
+
+                // TODO
+                await axios.post(`${link.product.product_url}?err=true&msg=eop`)
+            }
+            
+            
+            // send error "Kullanim suresi sona erdi"
+        } else {
+            
+            if (link?.product.product_url) {
+                
+                // TODO
+                await axios.post(`${link.product.product_url}?err=true&msg=eot`)
+            }
+
+            // send error "Deneme suresi sona erdi"
+
+        }
+
+        return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+
+
+    }
+
     if (!link) return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
-    if (!link.active) return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+
+    if (!link.vendor.apiKey?.installed) {
+        
+
+        // send get request to store link url with error qs
+
+        return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+    }
+    if (!link.active) {
+
+        // send get request to store with error
+
+        return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+
+    }
 
     const prevUserIp = await prisma.userIps.findFirst({ where: { ip: ipwareObj?.ip === '::1' ? "176.33.101.203" : ipwareObj?.ip }, })
 

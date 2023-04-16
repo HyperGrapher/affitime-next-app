@@ -43,7 +43,7 @@ export const partners = [
     username: "Paris",
     fname: "Paris",
     lname: "Dior",
-    packageType: PackageType.BASIC,
+    packageType: PackageType.PARTNER,
   },
   {
     email: "parma@email.com",
@@ -52,7 +52,7 @@ export const partners = [
     username: "Parma",
     fname: "Parma",
     lname: "Sarma",
-    packageType: PackageType.BASIC,
+    packageType: PackageType.PARTNER,
   },
   {
     email: "parloo@email.com",
@@ -61,9 +61,7 @@ export const partners = [
     username: "Parloo",
     fname: "Parloo",
     lname: "Diaz",
-    packageType: PackageType.BASIC,
-    vendor_id: null,
-    partner_id: null,
+    packageType: PackageType.PARTNER,
   },
 ];
 
@@ -76,7 +74,8 @@ export const vendors = [
     website: "https://wendy.com",
     fname: "Wendy",
     lname: "Dior",
-    packageType: PackageType.BASIC,
+    phone: "5535555555",
+    packageType: PackageType.ULTIMATE,
   },
   {
     email: "wendoo@email.com",
@@ -86,7 +85,8 @@ export const vendors = [
     website: "https://wendoo.com",
     fname: "Wendoo",
     lname: "Cartman",
-    packageType: PackageType.BASIC,
+    phone: "5535555555",
+    packageType: PackageType.ULTIMATE,
   },
   {
     email: "veronica@email.com",
@@ -96,6 +96,7 @@ export const vendors = [
     website: "https://veronica.com",
     fname: "Veronica",
     lname: "Diaz",
-    packageType: PackageType.BASIC,
+    phone: "5535555555",
+    packageType: PackageType.ULTIMATE,
   },
 ];

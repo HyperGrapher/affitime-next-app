@@ -99,12 +99,13 @@ export const purchaseRouter = router({
         user_address: z.string(),
         plan: z.string(),
         installment_count: z.string(),
+        card_type: z.string(),
         annual: z.boolean(),
       })
     )
     .mutation(async ({ ctx, input }) => {
       const { vendorId } = ctx.session;
-      const { user_ip, annual, currency, user_address, plan, installment_count } = input;
+      const { user_ip, annual, currency, user_address, plan, installment_count, card_type } = input;
 
       const payment_amount_as_plan = annual
         ? PRICING_ANNUALY[plan as PlanType]
@@ -154,6 +155,9 @@ export const purchaseRouter = router({
             user_phone,
             user_name,
             user_address,
+            payment_type,
+            card_type,
+            installment_count: parseInt(installment_count),
             payment_amount: parseFloat(payment_amount),
             packageType: plan as PlanType,
             annual,

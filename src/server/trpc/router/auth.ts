@@ -5,6 +5,7 @@ import { UserRoles } from "../../../interface/auth.interface";
 import bcrypt from "bcrypt";
 import { comparePassword } from "../../../utils/comparePassword";
 import dayjs from "dayjs";
+import crypto from "crypto";
 
 export const authRouter = router({
   getSessionUser: protectedProcedure.query(({ ctx }) => {
@@ -45,7 +46,7 @@ export const authRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { email, password, role, username, brand, website, phone } = input;
-      console.log({ email, password, role, username, brand, website, phone });
+
       const isEmailExist = await ctx.prisma.user.findUnique({
         where: {
           email,
@@ -109,18 +110,17 @@ export const authRouter = router({
             email: email,
             password: hashedPassword,
             role: role,
-            packageType: role === "VENDOR" ? "ULTIMATE" : "PARTNER",
-            pro: role === "VENDOR",
+            packageType: role === "VENDOR" ? "TRIAL" : "PARTNER",
+            pro: false,
           },
         });
 
-        console.log("userId", user.id);
-
         if (role === UserRoles.VENDOR) {
-          const nowDate = dayjs(new Date())
-          const trialTill = nowDate.add(14, 'day').toDate()
-
-
+          const nowDate = dayjs(new Date());
+          const trialTill = nowDate.add(14, "day").toDate();
+          let apikey = crypto.randomBytes(32).toString("base64url").replace(/^a-zA-Z0-9 ]/g, "");
+          apikey = `affi-${apikey}`;
+          
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
@@ -130,13 +130,25 @@ export const authRouter = router({
             },
           });
 
-          console.log({ vendor_id: vendor.id });
+          const api = await ctx.prisma.apiKey.create({
+            data: {
+              vendorId: vendor.id,
+              apikey,
+            },
+          });
+
+          await ctx.prisma.vendor.update({
+            where: { id: vendor.id },
+            data: {
+              apiKeyId: api.id,
+            },
+          });
 
           await ctx.prisma.user.update({
             where: { id: user.id },
             data: {
               vendor_id: vendor.id,
-              trialTill
+              trialTill,
             },
           });
         } else if (role === UserRoles.PARTNER) {

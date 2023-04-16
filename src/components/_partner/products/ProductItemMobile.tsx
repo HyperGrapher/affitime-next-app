@@ -16,6 +16,7 @@ import Divider from '../../shared/Divider';
 
 type ItemProps = {
     p: Product;
+    store: string;
 }
 
 const ProductItemMobile: React.FC<ItemProps> = ({ p }) => {

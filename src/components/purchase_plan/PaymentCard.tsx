@@ -211,13 +211,13 @@ const PaymentCard = () => {
             user_address: getTaxInfo.address,
             plan,
             annual,
-            installment_count: isTaksit ? installmentAmount : "0"
+            installment_count: isTaksit ? installmentAmount : "0",
+            card_type: selectedCard.value
         }
 
 
         puchase.mutate(purchaseData, {
             onSuccess: (data) => {
-                console.log("ok", data.payment_amount);
 
                 // test card 1: 4355 0843 5508 4358	
                 // test card 2: 4355 0843 5508 4358

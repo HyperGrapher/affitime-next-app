@@ -10,7 +10,7 @@ import { AppRoutes } from '../../../config/appRoutes';
 import { USER_IP_SESSION_STORAGE } from "../../../config/constants";
 import { UserRoles } from '../../../interface/auth.interface';
 import { IpSchema } from "../../../interface/zod.schema";
-import { checkTrial } from '../../../utils/checkTrial';
+import { checkUserStatus } from '../../../utils/checkUserStatus';
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
@@ -124,7 +124,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     }
 
 
-    const check = await checkTrial(session)
+    const check = await checkUserStatus(session)
     if (check.paymentRequired) return {
         redirect: {
             destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,

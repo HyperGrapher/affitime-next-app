@@ -20,6 +20,7 @@ import dynamic from 'next/dynamic'
 import Head from "next/head";
 import { prisma } from "../../../server/db/client";
 import Link from "next/link";
+import { numberWithCommas } from "../../../utils/helpers";
 
 const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -52,6 +53,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             perSaleType: true,
             perSale: true,
             title: true,
+            price: true,
             desc: true,
             cookieLife: true,
             vendor: {
@@ -220,7 +222,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                     <div className="flex space-x-4 mt-4 items-center">
                         {pd?.image ?
                             <img
-                                className="object-cover hover:shadow rounded object-center w-24 h-24 aspect-square"
+                                className="object-cover hover:shadow rounded object-center w-24 h-24 md:w-32 md:h-32 aspect-square"
                                 src={pd?.image}
                                 alt={pd?.title ?? ""} />
                             : <Image
@@ -249,6 +251,11 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                             <p className="text-xs md:text-sm">
                                 <b className='text-neutral-500'>Website:</b>
                                 <a title={pd?.vendor.website ?? ""} className='text-blue-500' href={pd?.vendor.website ?? "#"}> {pd?.vendor.website?.slice(0, 48)}</a>
+
+                            </p>
+                            <p className="text-xs md:text-sm">
+
+                                <b className='text-neutral-500'>Yaklaşık Ürün Fiyatı:</b> {numberWithCommas(pd?.price)} <Lira />
 
                             </p>
                         </div>
@@ -310,7 +317,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                         Ürün Açıklaması
                     </h3>
 
-                    <section className='flex items-center justify-between px-2'>
+                    <section className='flex items-center justify-between px-2 text-sm md:text-base'>
                         <Balancer>
                             {pd?.desc}
                         </Balancer>
@@ -380,7 +387,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                         desc="
                             Ürün için web üzerinde paylaşabileceğiniz 
                             bir link oluşturulacaktır. 
-                            Vendor onayindan sonra kullanılabilir hale gelecektir."
+                            Vendor onayından sonra kullanılabilir hale gelecektir."
                         dismissFn={() => setModal(false)}
                         confirmFn={handleLinkCreation}
                     />

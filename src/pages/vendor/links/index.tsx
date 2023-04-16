@@ -8,7 +8,7 @@ import { trpc } from '../../../utils/trpc';
 import LinkList from '../../../components/_vendor/links/LinkList';
 import { AppRoutes } from "../../../config/appRoutes";
 import Head from "next/head";
-import { checkTrial } from '../../../utils/checkTrial';
+import { checkUserStatus } from '../../../utils/checkUserStatus';
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    const check = await checkTrial(session)
+    const check = await checkUserStatus(session)
     if (check.paymentRequired) return {
         redirect: {
             destination: `${AppRoutes.PAYWALL}?reason=${check.type}`,
