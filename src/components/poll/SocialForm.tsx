@@ -55,7 +55,7 @@ const SocialForm: React.FC = () => {
         replace(AppRoutes.PARTNER_DASHBOARD)
       },
       onError(error) {
-        console.log(error)
+        console.error(error)
         notifyError('Hata. ilgi alanları düzenlenemedi!')
         replace(AppRoutes.PARTNER_DASHBOARD)
       },

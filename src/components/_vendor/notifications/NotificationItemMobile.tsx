@@ -81,11 +81,11 @@ const NotificationItemMobile: React.FC<ItemProps> = ({ link, confirmModal, cance
                     <div className="flex items-center space-x-1">
                         <b className="text-xs whitespace-nowrap text-slate-500  text-center
                         font-bold transition-colors">
-                            Kullanici:
+                            Kullanıcı:
                         </b>
 
 
-                        <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
+                        <b className="text-slate-600 text-sm font-medium whitespace-nowrap text-center">
                             {link.partner.username}
                         </b>
 

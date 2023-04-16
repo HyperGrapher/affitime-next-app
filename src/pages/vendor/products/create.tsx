@@ -151,8 +151,8 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     const onSubmit: SubmitHandler<IProductFormData> = async (data) => {
 
         setBusy(true)
-        data.perClickType = perClickType // fixes a bug where data is causing field null error
-        data.perSaleType = perSaleType // fixes a bug where data is causing field null error
+        data.perClickType = perClickType // ? Fix later
+        data.perSaleType = perSaleType // ? Fix later
 
         if (data.perClick < 0) {
             setError('perClick', { message: 'Negatif rakam girilemez' })
@@ -166,13 +166,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
             return
         }
 
-        if (data.perClick === 0) {
-            // data.perClickType = 'NONE'
-        }
-
-        if (data.perSale === 0) {
-            // data.perSaleType = 'NONE'
-        }
 
         if (selectedCat.id === 0) {
             setCatErr(true)
@@ -202,7 +195,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                     back()
                 },
                 onError(error) {
-                    console.log(error)
+                    console.error(error)
                     notifyError('Hata. Kampanya ürünü düzenlenemedi!')
                     setBusy(false)
                 },
@@ -216,7 +209,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                     back()
                 },
                 onError(error) {
-                    console.log(error)
+                    console.error(error)
                     setBusy(false)
                     notifyError('Hata. Kampanya ürünü eklenemedi!')
                 },
@@ -246,6 +239,8 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                 <div className='mb-0 ml-2 w-1/2 md:w-1/3'>
                     <p className="text-slate-400 text-sm font- leading-tight">
                         Mağaza entegrasyonu için API anahtarını yönetin.
+                        <br />
+                        Api anahtarinizi mağaza konsolundan eklemeniz gerekli.
                     </p>
                 </div>
 
@@ -267,7 +262,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                         refetch()
                                     },
                                     onError(error) {
-                                        console.log(error)
+                                        console.error(error)
                                         notifyError('Hata. Apikey yenilenemedi.')
                                     },
                                 })

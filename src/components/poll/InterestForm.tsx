@@ -83,7 +83,7 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
                 setBusy(false)
             },
             onError(error) {
-                console.log(error)
+                console.error(error)
                 setBusy(false)
                 notifyError('Hata. ilgi alanları düzenlenemedi!')
                 replace(AppRoutes.PARTNER_DASHBOARD)

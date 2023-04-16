@@ -42,7 +42,7 @@ const NotificationList: React.FC<Props> = ({ links, refetch }) => {
 
     update.mutate({ id: linkId, confirmed }, {
       onError(error) {
-        console.log(error);
+        console.error(error);
         notifyError("Bir hata olustu")
 
       },

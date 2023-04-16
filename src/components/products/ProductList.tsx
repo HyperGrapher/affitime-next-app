@@ -12,12 +12,10 @@ import VendorProductItemMobile from "./ProductItemMobile";
 
 const DynamicModalContainer = dynamic(() => import('../modals/ModalContainer'), {
   ssr: false,
-  // loading: () => <div></div>
 })
 
 const DynamicWarnDialog = dynamic(() => import('../modals/WarnDialog'), {
   ssr: false,
-  // loading: () => <div></div>
 })
 
 
@@ -78,8 +76,8 @@ const VendorProductList: React.FC<Props> = ({ prod, refetch }) => {
           title="Ürünü kaldırmak istiyor musunuz?"
           desc="
           Ürün pasif hale gelecek ve oluşturulan 
-          tüm Affiliate Linklerim geçersiz hale gelerek 
-          hata sayfasina yönlendirilecektir. 
+          tüm Affiliate Linkleri geçersiz hale gelerek 
+          hata sayfasına yönlendirilecektir. 
           "
           confirmBtnText="Kaldır"
           dismissFn={() => setModal(false)}

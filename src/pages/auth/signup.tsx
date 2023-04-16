@@ -105,7 +105,7 @@ const SignUp: NextPage = (): JSX.Element => {
                     })
 
                     console.log(variables)
-                    console.log((signinResult?.ok))
+                    console.log(signinResult?.ok)
 
                     if (signinResult?.ok) {
 

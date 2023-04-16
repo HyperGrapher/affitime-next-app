@@ -18,12 +18,12 @@ export const linkRouter = router({
       const { id } = input;
       const { role } = ctx.session;
 
-      // delete bots
+      // TODO delete bots with stored procedure
       await ctx.prisma.visit.deleteMany({
         where: {
-          ipapi: null
-        }
-      })
+          ipapi: null,
+        },
+      });
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
 
@@ -55,13 +55,12 @@ export const linkRouter = router({
         return total;
       }, 0);
 
-
       return {
-        link, 
+        link,
         totalDuePayment,
-        validClicks: validClicks.length, 
+        validClicks: validClicks.length,
         dubiousClicks: dubiousClicks.length,
-       };
+      };
     }),
 
   findLinkByProductIdForPartner: partnerProcedure
@@ -76,7 +75,7 @@ export const linkRouter = router({
         },
       });
     }),
-  // * partner/links
+
   getPartnerLinks: partnerProcedure.query(({ ctx }) => {
     const { partnerId } = ctx.session;
 
@@ -89,7 +88,6 @@ export const linkRouter = router({
     });
   }),
 
-  // * vendor/links
   getVendorLinks: vendorProcedure.query(({ ctx }) => {
     const { vendorId } = ctx.session;
 
@@ -179,7 +177,7 @@ export const linkRouter = router({
             url: randUrl,
             categoryId: product.categoryId,
             status: LinkStatus.AWAITING,
-            cookieLife: product.cookieLife, 
+            cookieLife: product.cookieLife,
             price: product.price,
             perClick: product.perClick,
             perSale: product.perSale,
@@ -196,7 +194,7 @@ export const linkRouter = router({
 
         return link;
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return new TRPCError({
           code: "BAD_REQUEST",
           message: "Cannot create link!",

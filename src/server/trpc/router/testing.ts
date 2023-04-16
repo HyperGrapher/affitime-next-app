@@ -1,7 +1,6 @@
 import { router, vendorProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import crypto from "node:crypto";
-import { Base64 } from "js-base64";
 import axios from "axios";
 import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
@@ -145,6 +144,7 @@ export const TestingRouter = router({
         await ctx.prisma.planPayment.create({
           data: {
             userId: vendor.userId,
+            vendorId,
             merchant_oid,
             user_basket,
             user_phone,
@@ -170,6 +170,13 @@ export const TestingRouter = router({
             validTill,
             pro: true,
             trial: false,
+          },
+        });
+
+        await ctx.prisma.product.updateMany({
+          where: {vendor_profile_id: vendor.id },
+          data: {
+            published: true,
           },
         });
       } catch (error) {

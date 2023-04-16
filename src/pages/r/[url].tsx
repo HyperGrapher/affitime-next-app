@@ -70,8 +70,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     });
 
     
-    if (!link?.vendor.user.trial && !link?.vendor.user.pro) {
+    if (link?.vendor.user.trial === false && link?.vendor.user.pro === false) {
 
+        // user plan ended
         if (link?.vendor.user.validTill) {
 
             if (link.product.product_url) {
@@ -83,7 +84,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             
             // send error "Kullanim suresi sona erdi"
         } else {
-            
+            //  user trial ended
             if (link?.product.product_url) {
                 
                 // TODO

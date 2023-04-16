@@ -127,15 +127,16 @@ model PlanPayment {
   merchant_oid      String       @unique()
   user              User         @relation(fields: [userId], references: [id])
   userId            String
+  vendorId          String
   user_basket       String
   user_phone        String
   user_name         String
   user_address      String
-  payment_type      String? 
+  payment_type      String?
   payment_amount    Float
   payed_amount      Float? // express
-  installment_count Int          @default(0) 
-  card_type         String? 
+  installment_count Int          @default(0)
+  card_type         String?
   packageType       PackageType? @default(PRO)
   validFrom         DateTime? // express
   validTill         DateTime? // express
@@ -194,7 +195,7 @@ model User {
   active        Boolean       @default(true)
   trial         Boolean       @default(true)
   trialTill     DateTime? // * new
-  pro           Boolean       @default(false) 
+  pro           Boolean       @default(false)
   packageType   PackageType?  @default(TRIAL)
   validFrom     DateTime? // if pro is true then plan is valid from // * new
   validTill     DateTime? // if pro is true then plan is valid until // * new kinda
@@ -322,7 +323,7 @@ model Visit {
 
 model ApiKey {
   id        String   @id @default(cuid())
-  apikey    String   @unique() 
+  apikey    String   @unique()
   installed Boolean  @default(false)
   vendor    Vendor?  @relation(fields: [vendorId], references: [id])
   vendorId  String   @unique

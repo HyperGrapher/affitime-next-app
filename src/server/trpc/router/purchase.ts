@@ -1,7 +1,6 @@
 import { router, vendorProcedure, protectedProcedure } from "../trpc";
 import { z } from "zod";
 import crypto from "node:crypto";
-import { Base64 } from "js-base64";
 import axios from "axios";
 import { PAYTR } from "../../../config/constants";
 import { TRPCError } from "@trpc/server";
@@ -111,7 +110,7 @@ export const purchaseRouter = router({
         ? PRICING_ANNUALY[plan as PlanType]
         : PRICING_MONTHLY[plan as PlanType];
       const payment_amount = total(annual, payment_amount_as_plan) + ".00";
-      console.log({ payment_amount });
+
       const vendor = await ctx.prisma.vendor.findUnique({
         where: { id: vendorId },
         include: { user: true },
@@ -120,7 +119,7 @@ export const purchaseRouter = router({
       if (!vendor)
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Session user ID not found",
+          message: "Session vendor not found",
         });
 
       const merchant_oid = "IN" + Date.now(); // En fazla 64 karakter, Alfa numerik
@@ -150,6 +149,7 @@ export const purchaseRouter = router({
         await ctx.prisma.planPayment.create({
           data: {
             userId: vendor.userId,
+            vendorId,
             merchant_oid,
             user_basket,
             user_phone,
@@ -231,7 +231,7 @@ export const purchaseRouter = router({
 
       return data.data as InstallmentType;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new TRPCError({
         code: "INTERNAL_SERVER_ERROR",
         message: "Taksit oranlari alinamadi",

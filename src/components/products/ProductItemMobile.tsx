@@ -24,7 +24,7 @@ const VendorProductItemMobile: React.FC<ItemProps> = ({ p, confirmModal, setDele
 
     const { push } = useRouter()
 
-    function del(id: string) {
+    function pasifyProduct(id: string) {
         setDeleteId(id);
         confirmModal()
     }
@@ -82,7 +82,7 @@ const VendorProductItemMobile: React.FC<ItemProps> = ({ p, confirmModal, setDele
                     <p className="text-stone-400 text-xs whitespace-nowrap space-x-1">
                         <b className="text-xs text-stone-500">Durum:</b>
                         <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
-                            {p.active ? "Aktif" : "Pasif"}
+                            {p.active ? "Aktif" : "Silindi"}
                         </b>
 
                     </p>
@@ -94,15 +94,16 @@ const VendorProductItemMobile: React.FC<ItemProps> = ({ p, confirmModal, setDele
 
                     <div className="flex flex-row">
                         <div className="mr-4 flex flex-nowrap gap-2 ml-auto h-full place-self-center">
-{/* 
+                            
                             <IconButton
                                 size="small"
-                                onClick={() => del(p.id)}
+                                onClick={() => pasifyProduct(p.id)}
                                 title="Sil"
                                 aria-label="Sil">
                                 <DeleteIcon className="text-red-400 w-4 h-4" />
-                            </IconButton> */}
+                            </IconButton>
                             <IconButton
+                                disabled={!p.active}
                                 size="small"
                                 title="Düzenle"
                                 onClick={() => push(`${AppRoutes.VENDOR_CREATE_PRODUCT}?edit=true&pid=${p.id}`)}

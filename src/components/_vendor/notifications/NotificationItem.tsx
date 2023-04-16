@@ -89,11 +89,11 @@ const NotificationItem: React.FC<ItemProps> = ({ link, confirmModal, cancelModal
                 <div className="flex flex-col items-center gap-1 min-w-[5ch] h-full">
                     <b className="text-xs whitespace-nowrap text-slate-500  text-center
                         font-bold transition-colors">
-                        Kullanici:
+                        Kullanıcı:
                     </b>
 
 
-                    <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
+                    <b className="text-slate-600 text-sm font-medium whitespace-nowrap text-center">
                         {link.partner.username}
                     </b>
 

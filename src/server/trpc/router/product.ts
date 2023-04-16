@@ -1,11 +1,15 @@
-import type { CommissionType} from "@prisma/client";
+import type { CommissionType } from "@prisma/client";
 import { LinkStatus } from "@prisma/client";
 import { TRPCError } from "@trpc/server";
-import { router, publicProcedure, protectedProcedure, vendorProcedure } from "../trpc";
+import {
+  router,
+  publicProcedure,
+  protectedProcedure,
+  vendorProcedure,
+} from "../trpc";
 import { z } from "zod";
 
 export const productRouter = router({
-
   getProductById: publicProcedure
     .input(z.object({ id: z.string() }))
     .query(({ ctx, input }) => {
@@ -40,13 +44,14 @@ export const productRouter = router({
       },
       select: {
         products: {
+          where: { active: true },
           orderBy: [{ active: "desc" }, { createdAt: "desc" }],
         },
       },
     });
   }),
-
-  getAllProductsForVendor: protectedProcedure.query(({ ctx }) => {
+  //just for partner
+  getAllProductsForPartner: protectedProcedure.query(({ ctx }) => {
     const { partnerId } = ctx.session;
 
     if (!partnerId)
@@ -58,6 +63,7 @@ export const productRouter = router({
     return ctx.prisma.product.findMany({
       where: {
         active: true,
+        published: true,
       },
       include: {
         vendor: {
@@ -128,17 +134,6 @@ export const productRouter = router({
             vendor_user_id: vendor.userId,
             vendor_profile_id: vendor.id,
             categoryId: input.category,
-            // tags: {
-            //   create: [
-            //     {
-            //       tag: {
-            //         create: {
-            //           name: "test-1",
-            //         },
-            //       },
-            //     },
-            //   ],
-            // },
           },
           include: { vendor: true },
         });
@@ -156,7 +151,6 @@ export const productRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-
       const { id } = input;
 
       if (!id)
@@ -178,7 +172,7 @@ export const productRouter = router({
           data: {
             active: false,
             partner_notified: false,
-            status: LinkStatus.PRODUCT_DELETED
+            status: LinkStatus.PRODUCT_DELETED,
           },
         });
 

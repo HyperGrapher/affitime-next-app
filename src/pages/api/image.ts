@@ -120,7 +120,7 @@ const handler = async (req: NextApiRequest, res: NextApiResponse) => {
     });
   } catch (error) {
     console.log("-----------> error");
-    console.log(error);
+    console.error(error);
     res
       .status(501)
       .json({ error: true, message: "failed during file operation" });

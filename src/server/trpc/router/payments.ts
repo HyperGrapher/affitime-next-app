@@ -173,9 +173,7 @@ export const PaymentsRouter = router({
           ) => ({
             ...get(head(group), "product"),
             partner_links: group.map((o) => omit(o, "product")),
-            // !REDUCE SUPHELI
-            // !REDUCE SUPHELI
-            // !REDUCE SUPHELI
+            // ! TODO: REDUCE SUPHELI
             calc: group
               .map((o) => omit(o, "product"))
               .reduce((acc, cur) => {
@@ -244,16 +242,6 @@ export const PaymentsRouter = router({
       }
       return res;
     }, 0);
-
-    console.log({
-      unpaidTotal,
-      paidTotal,
-      unpaid: unpaidLinks.length,
-      paid: paidLinks.length,
-      total: visits.length,
-      valid: valid.length,
-      invalid: invalid.length,
-    });
 
     return {
       unpaidTotal: String(unpaidTotal),

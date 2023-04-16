@@ -246,7 +246,7 @@ const PaymentCard = () => {
 
             },
             onError(error) {
-                console.log(error)
+                console.error(error)
                 notifyError('Ödeme sırasında bir hata oluştu!')
                 setBusy(false)
             },

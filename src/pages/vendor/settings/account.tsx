@@ -181,7 +181,7 @@ const VendorAccountInfo = () => {
                 notifySuccessBR("Bilgileriniz Güncellendi!")
             },
             onError(error) {
-                console.log(error)
+                console.error(error)
                 notifyError(error.message ?? 'Hata. Bilgileriniz Güncellenemedi!')
             },
             onSettled: () => {
@@ -491,7 +491,7 @@ const UpdatePassword = () => {
                 notifySuccessBR("Bilgileriniz Güncellendi!")
             },
             onError(error) {
-                console.log(error)
+                console.error(error)
                 notifyError(error.message ?? 'Hata. Bilgileriniz Güncellenemedi!')
             },
             onSettled: () => {
@@ -647,7 +647,7 @@ const TestButtonsSection = () => {
                 }, 3000);
             },
             onError(error) {
-                console.log(error)
+                console.error(error)
                 notifyError('Ödeme sırasında bir hata oluştu!')
 
             },
@@ -677,7 +677,7 @@ const TestButtonsSection = () => {
 
                             },
                             onError(error) {
-                                console.log(error)
+                                console.error(error)
                                 notifyError(error.message ?? 'Hata. Trial Güncellenemedi!')
                             },
 

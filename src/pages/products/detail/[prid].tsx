@@ -46,6 +46,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             createdAt: false,
             updatedAt: false,
             id: true,
+            active: true,
             product_url: true,
             image: true,
             perClick: true,
@@ -216,13 +217,21 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                 <hr className='' />
                 {/*Meta Data with Image */}
                 <section className="mb-4 mt-4">
-                    <h1 className='text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight'>
-                        {pd?.title}
+                    <h1 className={
+                        classNames(
+                            'text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight',
+                            `${pd.active ? "" : "text-red-600"}`
+                        )
+                    }>
+                        {pd?.title} - {pd.active ? "" : "(Silindi)"}
                     </h1>
                     <div className="flex space-x-4 mt-4 items-center">
                         {pd?.image ?
                             <img
-                                className="object-cover hover:shadow rounded object-center w-24 h-24 md:w-32 md:h-32 aspect-square"
+                                className={classNames(
+                                    "object-cover hover:shadow rounded object-center w-24 h-24 md:w-32 md:h-32 aspect-square",
+
+                                )}
                                 src={pd?.image}
                                 alt={pd?.title ?? ""} />
                             : <Image
@@ -275,8 +284,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                     <h3
                         className={classNames(
                             "font-medium text-base  pl-2 mb-4"
-                        )}
-                    >
+                        )}>
                         Komisyon Oranları
                     </h3>
 
@@ -351,7 +359,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                 </section>
 
                 {/* Submit */}
-                <button
+                {pd.active ? <button
                     disabled={busy || partnerHasLink}
                     onClick={() => {
                         if (!session) return push(AppRoutes.SIGNIN)
@@ -377,7 +385,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                         {(session && session.role === UserRoles.VENDOR) ? "Ürünü Düzenle" : "Affiliate Linki Oluştur"}
                     </span>
-                </button>
+                </button> : null}
 
                 <DynamicModalContainer state={modal} key={"adda"}>
                     <DynamicConfirmDialog

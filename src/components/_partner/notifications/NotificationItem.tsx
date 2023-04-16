@@ -30,7 +30,7 @@ const NotificationItem: React.FC<ItemProps> = ({ link, refetch }) => {
             id: link.id,
         }, {
             onError(error) {
-                console.log(error);
+                console.error(error);
 
             },
             onSettled: () => {

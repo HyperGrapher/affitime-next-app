@@ -96,7 +96,7 @@ export const userRouter = router({
 
         return { error: false, message: "ok" };
       } catch (error) {
-        console.log(error);
+        console.error(error);
 
         return { error: true, message: "IP upsert failed" };
       }
@@ -145,7 +145,7 @@ export const userRouter = router({
 
         return { error: false, message: "ok" };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return { error: true, message: "IP upsert failed" };
       }
     }),
@@ -190,7 +190,7 @@ export const userRouter = router({
 
         return { error: false, message: "ok" };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return { error: true, message: "IP upsert failed" };
       }
     }),

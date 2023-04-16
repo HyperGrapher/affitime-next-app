@@ -23,7 +23,7 @@ type ItemProps = {
 const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
     const { push } = useRouter()
 
-    function del(id: string) {
+    function pasifyProduct(id: string) {
         setDeleteId(id);
         confirmModal()
     }
@@ -143,7 +143,7 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
                 <div className="text-center min-w-[5ch] ">
 
                     <b className={`${p.active ? "text-green-500" : "text-red-400"} text-xs font-bold whitespace-nowrap`}>
-                        {p.active ? "Aktif" : "Pasif"}
+                        {p.active ? "Aktif" : "Silindi"}
                     </b>
 
                 </div>
@@ -176,7 +176,7 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
 
                             <IconButton
                                 size="small"
-                                onClick={() => del(p.id)}
+                                onClick={() => pasifyProduct(p.id)}
                                 title="Sil"
                                 aria-label="Sil">
                                 <DeleteIcon className="text-red-400 w-4 h-4" />

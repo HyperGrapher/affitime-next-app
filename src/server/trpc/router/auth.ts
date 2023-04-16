@@ -47,13 +47,13 @@ export const authRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { email, password, role, username, brand, website, phone } = input;
 
-      const isEmailExist = await ctx.prisma.user.findUnique({
+      const emailExists = await ctx.prisma.user.count({
         where: {
           email,
         },
       });
 
-      if (isEmailExist)
+      if (emailExists)
         throw new TRPCError({
           message: "Bu email zaten kayıtlı",
           code: "CONFLICT",
@@ -61,39 +61,54 @@ export const authRouter = router({
         });
 
       if (role === UserRoles.VENDOR) {
-        const isBrandExist = await ctx.prisma.vendor.findUnique({
+        const websiteExists = await ctx.prisma.vendor.count({
+          where: {
+            website,
+          },
+        });
+
+        if (websiteExists)
+          throw new TRPCError({
+            message: "Bu website zaten kayıtlı",
+            code: "CONFLICT",
+            cause: "Website Conflict",
+          });
+
+        const brandExists = await ctx.prisma.vendor.count({
           where: {
             brand,
           },
         });
 
-        if (isBrandExist)
+        if (brandExists)
           throw new TRPCError({
             message: "Bu firma zaten kayıtlı",
             code: "CONFLICT",
             cause: "Brand Conflict",
           });
 
-        const isWebsiteExist = await ctx.prisma.vendor.findUnique({
+        const phoneExists = await ctx.prisma.vendor.count({
           where: {
-            website,
+            phone: {
+              endsWith: phone.substring(phone.length - 10),
+            },
           },
         });
 
-        if (isWebsiteExist)
+        if (phoneExists)
           throw new TRPCError({
-            message: "Bu website zaten kayıtlı",
+            message: "Bu telefon zaten kayıtlı",
             code: "CONFLICT",
-            cause: "Website Conflict",
+            cause: "Phone Conflict",
           });
       } else if (role === UserRoles.PARTNER) {
-        const isUsernameExist = await ctx.prisma.partner.findUnique({
+        const usernameExists = await ctx.prisma.partner.count({
           where: {
             username,
           },
         });
 
-        if (isUsernameExist)
+        if (usernameExists)
           throw new TRPCError({
             message: "Bu kullanici ismi zaten kayıtlı",
             code: "CONFLICT",
@@ -103,24 +118,28 @@ export const authRouter = router({
 
       try {
         const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
+        const hashPass = await bcrypt.hash(password, salt);
 
         const user = await ctx.prisma.user.create({
           data: {
             email: email,
-            password: hashedPassword,
+            password: hashPass,
             role: role,
             packageType: role === "VENDOR" ? "TRIAL" : "PARTNER",
             pro: false,
+            trial: role === "VENDOR" ? true : false,
           },
         });
 
         if (role === UserRoles.VENDOR) {
           const nowDate = dayjs(new Date());
           const trialTill = nowDate.add(14, "day").toDate();
-          let apikey = crypto.randomBytes(32).toString("base64url").replace(/^a-zA-Z0-9 ]/g, "");
+          let apikey = crypto
+            .randomBytes(32)
+            .toString("base64url")
+            .replace(/^a-zA-Z0-9 ]/g, "");
           apikey = `affi-${apikey}`;
-          
+
           const vendor = await ctx.prisma.vendor.create({
             data: {
               userId: user.id,
@@ -168,7 +187,7 @@ export const authRouter = router({
           });
         }
 
-        const resultUser = await ctx.prisma.user.findFirst({
+        return await ctx.prisma.user.findFirst({
           where: {
             email,
           },
@@ -177,10 +196,8 @@ export const authRouter = router({
             partner: role === UserRoles.PARTNER,
           },
         });
-
-        return resultUser;
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }),
 
@@ -225,7 +242,6 @@ export const authRouter = router({
     }),
   deleteSession: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.id;
-    console.log({ userId });
 
     if (!userId) throw new Error("Kullanıcı sezonu sonlanmış");
 
@@ -279,7 +295,7 @@ export const authRouter = router({
 
         return { message: "ok", error: null };
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }),
 });

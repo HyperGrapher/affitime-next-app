@@ -139,7 +139,7 @@ const Dashboard: NextPage = () => {
 
 
             } catch (error) {
-                console.log(error);
+                console.error(error);
             }
         }
 

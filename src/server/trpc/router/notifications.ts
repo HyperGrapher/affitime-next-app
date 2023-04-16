@@ -64,7 +64,7 @@ export const notificationRouter = router({
 
         return { error: false, message: "ok" };
       } catch (error) {
-        console.log(error);
+        console.error(error);
         return { error: true, message: error };
       }
     }),

@@ -180,7 +180,7 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
         upsertTaxInfo.mutate(data, {
 
             onError(error) {
-                console.log(error)
+                console.error(error)
                 notifyError('Hata. Vergi bilgileri eklenmedi')
             },
             onSettled() {

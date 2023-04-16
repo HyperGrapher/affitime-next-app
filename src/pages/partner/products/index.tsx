@@ -43,7 +43,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 const Products: NextPage = () => {
 
-    const { data: products, status: sts, refetch: refetchProducts } = trpc.product.getAllProductsForVendor.useQuery()
+    const { data: products, status: sts, refetch: refetchProducts } = trpc.product.getAllProductsForPartner.useQuery()
 
     return (
         <main className="auth-container">
