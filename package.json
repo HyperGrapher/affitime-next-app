@@ -13,6 +13,7 @@
     "update": "npx npm-check-updates",
     "unused": "npx depcheck",
     "gen": "npx prisma generate",
+    "db:push": "npx prisma db push",
     "db:reset": "npx prisma migrate reset",
     "db:seed": "npx prisma db seed"
   },

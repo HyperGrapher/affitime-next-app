@@ -223,27 +223,7 @@ const Sidenav = () => {
 
                             </Link>
                         </li>
-                        <li id='nav-link'
-                            className={classNames(asPath === AppRoutes.VENDOR_STORE_API_KEYS 
-                                ? "bg-violet-600 hover:bg-violet-700 text-white"
-                                : "bg-slate-100 hover:bg-slate-200 text-zinc-700",
-                                "h-10 rounded-md pl-4 flex items-center",
-                                "cursor-pointer transition-colors"
-                            )}>
-                            <Link
-                                className='flex items-center space-x-6 bg-redo-100 w-full h-full'
-                                href={AppRoutes.VENDOR_STORE_API_KEYS} >
 
-                                <HiCog
-                                    id='toggle'
-                                    className='h-6 w-6 p-1
-                                             text-violet-50 bg-violet-600 rounded-full'
-                                    aria-hidden='true' />
-
-                                <span className="font-medium text-sm ">Mağaza API</span>
-
-                            </Link>
-                        </li>
                     </ul>
                 </div>
             </div>
