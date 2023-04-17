@@ -446,7 +446,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                 className={classNames(
                                     "font-medium text-sm pl-2 mb-4"
                                 )}
-                                htmlFor="title">
+                                htmlFor="cats">
                                 Kategori seçin
                             </label>
 

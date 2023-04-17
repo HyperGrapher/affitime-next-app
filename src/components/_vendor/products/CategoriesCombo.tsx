@@ -96,7 +96,7 @@ const CategoriesCombo: React.FC<Props> = ({ cats, setSelected, selected, err }) 
           </div>
         </Combobox>
 
-        <FormFieldError state={err} message="Bu alanı doldurunuz" />
+        <FormFieldError state={err} message="Bir kategori seçin" />
 
       </FormFieldWrapper>
 
