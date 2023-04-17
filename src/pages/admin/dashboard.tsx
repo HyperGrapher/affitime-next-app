@@ -28,12 +28,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
-    if (session.role !== UserRoles.ADMIN) return {
-        redirect: {
-            destination: `/${session.role.toLowerCase()}/dashboard`,
-            permanent: false
-        }
-    }
+    // if (session.role !== UserRoles.ADMIN) return {
+    //     redirect: {
+    //         destination: `/${session.role.toLowerCase()}/dashboard`,
+    //         permanent: false
+    //     }
+    // }
 
     return { props: {} }
 

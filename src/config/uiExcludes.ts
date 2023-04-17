@@ -1,6 +1,7 @@
 import { AppRoutes } from "./appRoutes";
 export const pathsToExludeSidenav = [
   "/r/",
+  '/admin',
   AppRoutes.BLOG,
   AppRoutes.PRICING,
   AppRoutes.CONTACT,
