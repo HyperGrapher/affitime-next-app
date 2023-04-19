@@ -446,7 +446,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                 className={classNames(
                                     "font-medium text-sm pl-2 mb-4"
                                 )}
-                                htmlFor="cats">
+                                htmlFor="title">
                                 Kategori seçin
                             </label>
 
@@ -691,17 +691,18 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
                                         <RadioGroup
                                             aria-labelledby="perSalex"
-                                            className='text-xs bg-red-0 scale-90 xsm:scale-100'
+                                            className='text-xs scale-90 xsm:scale-100'
                                             value={perSaleType}>
 
                                             <div className="flex">
                                                 <FormControlLabel
-                                                    className='text-xs bg-red-0'
+                                                    className='text-xs'
                                                     value={"CASH"}
                                                     onChange={() => setPerSaleType(CommissionType.CASH)}
                                                     control={<Radio size="small" />}
                                                     label="Nakit" />
                                                 <FormControlLabel
+                                                    className='text-xs'
                                                     value={"PERC"}
                                                     onChange={() => setPerSaleType(CommissionType.PERC)}
                                                     control={<Radio size="small" />}

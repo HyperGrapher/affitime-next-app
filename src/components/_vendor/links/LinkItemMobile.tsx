@@ -7,13 +7,12 @@ import { LinkStatus, type Link as LinkEntity, type Partner, type Product } from 
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React from "react";
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import productImg from '../../../assets/product.png';
 import { AppRoutes } from "../../../config/appRoutes";
 import classNames from "../../../utils/classnames";
 import { numberWithCommas } from "../../../utils/helpers";
-import Divider from "../../shared/Divider";
 import { Lira } from "../../shared/HtmlCodes";
 
 
@@ -34,15 +33,6 @@ const LinkItemMobile: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }
         confirmModal()
     }
 
-    const validTotalClicks = useMemo(() => {
-        return link.visits.reduce((acc, cur) => {
-            let x = 0
-            if (!cur.dubious) x = acc + 1
-
-            return x
-        }, 0)
-    }, [link])
-
     return (
         <li className={
             classNames(
@@ -55,7 +45,7 @@ const LinkItemMobile: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }
             {/* IMAGE */}
             <div className="flex gap-4 items-center">
                 <Link
-                    className="aspect-square  w-12 h-12 "
+                    className="aspect-square w-12 h-12"
                     href={`${AppRoutes.VENDOR_LINK_DETAIL}/${link.id}`}>
                     {link.product.image ?
                         <img
