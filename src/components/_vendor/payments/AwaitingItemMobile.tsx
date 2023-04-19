@@ -52,7 +52,7 @@ const AwaitingItemMobile: React.FC<Props> = ({ item }) => {
                         </section>
 
 
-
+{/* 
                         <div className="flex items-center gap-1">
                             <b className="text-xs whitespace-nowrap text-slate-500 text-center font-bold transition-colors">
                                 Linkler:
@@ -62,7 +62,7 @@ const AwaitingItemMobile: React.FC<Props> = ({ item }) => {
                                 {numberWithCommas(item.links)}
                             </b>
 
-                        </div>
+                        </div> */}
 
                     </div>
 

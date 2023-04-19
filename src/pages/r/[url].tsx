@@ -167,6 +167,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         link_id: link.id,
         vendor_id: link.vendor_id,
         partner_id: link.partner_id,
+        productId: link.product_id,
         price: link.price,
         perClickType: link.perClickType,
         perSaleType: link.perSaleType,

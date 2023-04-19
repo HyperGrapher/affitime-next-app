@@ -313,20 +313,6 @@ const Navbar: React.FC = () => {
                           )}
 
 
-
-                          <Menu.Item>
-                            {({ active }) => (
-                              <Link
-                                href={AppRoutes.LEGAL}
-                                className={classNames(
-                                  active ? 'bg-gray-100' : '',
-                                  'block w-full px-4 py-2 text-left text-sm text-gray-700'
-                                )}>
-                                Kullanıcı Sözleşmesi
-                              </Link>
-                            )}
-                          </Menu.Item>
-
                           <Menu.Item>
                             {({ active }) => (
                               <button

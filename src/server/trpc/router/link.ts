@@ -100,6 +100,72 @@ export const linkRouter = router({
     });
   }),
 
+  getLinksForProduct: vendorProcedure
+    .input(
+      z.object({
+        productId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { vendorId } = ctx.session;
+      const { productId } = input;
+
+      const res = await ctx.prisma.link.findMany({
+        where: {
+          AND: [
+            {
+              vendor_id: vendorId,
+            },
+            {
+              product_id: productId,
+            },
+          ],
+        },
+        include: { partner: true, visits: true },
+      });
+
+      console.log(res);
+      
+      const doubious = res.map(x => x.visits.map(y => y.dubious))
+
+
+      /*
+      const links = await ctx.prisma.link.findMany({
+        where: {
+          AND: [
+            {
+              vendor_id: vendorId,
+            },
+            {
+              product_id: productId,
+            },
+          ],
+        },
+        include: { partner: {
+          include: {visits: true}
+        }, visits: true },
+      });
+
+      const trans = {
+        ids: links.map(ln => ({
+          id: ln.id, 
+          username: ln.partner.username,
+          totalVis: ln.partner.visits.length,
+        })
+        )
+      }
+
+      
+
+      return links;
+
+      */
+
+      
+
+      return res;
+    }),
+
   createLink: partnerProcedure
     .input(
       z.object({

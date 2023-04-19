@@ -248,6 +248,41 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 
             </PageCard>
+            <PageCard>
+                <div className="flex items-center">
+
+                    <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
+                        Partner Detayları
+                    </h2>
+
+                </div>
+
+                <div className='mb-6 ml-2 w-1/2 sm:w-80'>
+
+
+                    <p className="text-slate-400 text-xs md:text-sm leading-tight">
+                        <Balancer>
+                            Partner linki detaylari
+                        </Balancer>
+                    </p>
+
+                </div>
+
+
+                <hr className='' />
+                {/*Meta Data with Image */}
+                <section className="mb-4 mt-4">
+
+
+                            <div className="flex gap-4">
+                                <p></p>
+                            </div>
+
+                </section>
+
+            </PageCard>
+
+
         </div>
     )
 }

@@ -286,6 +286,7 @@ model Visit {
   vendor_id    String
   partner      Partner        @relation(fields: [partner_id], references: [id])
   partner_id   String
+  productId    String // * new - added as index
   ipapi        String? // from client
   country      String         @default("-") // from client
   ipInfo       Json? // from client
@@ -317,7 +318,7 @@ model Visit {
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
 
-  @@index([id, link_id])
+  @@index([id, link_id, productId])
   @@map("visit")
 }
 

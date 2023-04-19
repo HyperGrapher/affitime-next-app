@@ -1,26 +1,29 @@
+import LinkIcon from '@mui/icons-material/Search';
 import type { Link as LinkEntity } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
+import dynamic from 'next/dynamic';
+import Head from "next/head";
 import Image from "next/image";
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { HiArrowLeft as BackIcon, HiBell, HiPlus } from 'react-icons/hi';
 import Balancer from 'react-wrap-balancer';
 import productImg from '../../../assets/product.png';
+import profileImg from '../../../assets/profile.webp';
 import IconButton from '../../../components/buttons/IconButton';
 import PageCard from "../../../components/card/Card";
 import { Lira, Space } from '../../../components/shared/HtmlCodes';
 import { AppRoutes } from '../../../config/appRoutes';
 import { UserRoles } from '../../../interface/auth.interface';
+import { prisma } from "../../../server/db/client";
 import classNames from '../../../utils/classnames';
+import { numberWithCommas } from "../../../utils/helpers";
 import { notifyError, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
-import dynamic from 'next/dynamic'
-import Head from "next/head";
-import { prisma } from "../../../server/db/client";
-import Link from "next/link";
-import { numberWithCommas } from "../../../utils/helpers";
+import MuiIconButton from '@mui/material/IconButton';
 
 const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -90,6 +93,11 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                 setPartnerLinkId(data.id)
             }
         }
+    })
+
+
+    const { data: vd } = trpc.link.getLinksForProduct.useQuery({ productId: pd.id }, {
+        enabled: session?.role === UserRoles.VENDOR,
     })
 
 
@@ -172,239 +180,384 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
             </Head>
 
-            <PageCard>
-                <div className="flex items-center">
+            <div className={`flex flex-col md:flex-row gap-2`}>
 
-                    <h2 className="font-bold text-lg md:text-xl text-slate-700 ml-2">
-                        Ürün Detayları
-                    </h2>
-                    <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
-                        <IconButton
-                            title={"Geri Git"}
-                            disabled={busy}
-                            icon={<BackIcon color="white" size="16px" />}
-                            twClasses="ml-auto w-38"
-                            fn={back} />
-                    </div>
+                <PageCard>
+                    <div className="flex items-center">
 
-                </div>
-
-                <div className='mb-6 ml-2 w-1/2 sm:w-80'>
-
-
-                    <p className="text-slate-400 text-xs md:text-sm leading-tight">
-                        <Balancer>
-                            Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz
-                            bir affiliate linki oluşturun.
-                        </Balancer>
-                    </p>
-
-                </div>
-
-
-                {partnerHasLink && (
-                    <div className="bg-yellow-50 px-2 py-2 rounded mb-2 flex items-center space-x-3">
-                        <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
-                        <b className="text-neutral-500 text-xs md:text-sm">
-                            Bu ürün için zaten bir link mevcut.  <Space />
-                            <Link className="text-blue-500 underline" href={`${AppRoutes.PARTNER_LINK_DETAIL}/${partnerLinkId}`}>Link Detay Sayfası</Link>
-                        </b>
-                    </div>
-                )
-
-                }
-
-                <hr className='' />
-                {/*Meta Data with Image */}
-                <section className="mb-4 mt-4">
-                    <h1 className={
-                        classNames(
-                            'text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight',
-                            `${pd.active ? "" : "text-red-600"}`
-                        )
-                    }>
-                        {pd?.title} - {pd.active ? "" : "(Silindi)"}
-                    </h1>
-                    <div className="flex space-x-4 mt-4 items-center">
-                        {pd?.image ?
-                            <img
-                                className={classNames(
-                                    "object-cover hover:shadow rounded object-center w-24 h-24 md:w-32 md:h-32 aspect-square",
-
-                                )}
-                                src={pd?.image}
-                                alt={pd?.title ?? ""} />
-                            : <Image
-                                className={classNames(
-                                    "object-cover rounded hover:shadow object-center",
-                                    "w-24 h-24 aspect-square",
-                                    "border border-1 border-stone-300"
-                                )}
-                                width={"85"}
-                                height={"85"}
-                                src={productImg}
-                                alt={"Generic Foto"} />
-                        }
-
-                        <div className='space-y-2'>
-                            <p className="text-xs md:text-sm">
-                                <b className='text-neutral-500'> Hedef Link: </b>
-                                <a title={pd?.product_url ?? ""} className='text-blue-500' href={pd?.product_url ?? "#"}>{pd?.product_url?.slice(0, 20)} ...</a>
-                            </p>
-                            <p className="text-xs md:text-sm">
-                                <b className='text-neutral-500'> ID:</b> {pd?.id}
-                            </p>
-                            <p className="text-xs md:text-sm">
-                                <b className='text-neutral-500'>Ürün Sahibi:</b> {pd?.vendor.brand}
-                            </p>
-                            <p className="text-xs md:text-sm">
-                                <b className='text-neutral-500'>Website:</b>
-                                <a title={pd?.vendor.website ?? ""} className='text-blue-500' href={pd?.vendor.website ?? "#"}> {pd?.vendor.website?.slice(0, 48)}</a>
-
-                            </p>
-                            <p className="text-xs md:text-sm">
-
-                                <b className='text-neutral-500'>Yaklaşık Ürün Fiyatı:</b> {numberWithCommas(pd?.price)} <Lira />
-
-                            </p>
+                        <h2 className="font-bold text-lg md:text-xl text-slate-700 ml-2">
+                            Ürün Detayları
+                        </h2>
+                        <div className="whitespace-nowrap ml-auto w-38 scale-75 md:scale-100">
+                            <IconButton
+                                title={"Geri Git"}
+                                disabled={busy}
+                                icon={<BackIcon color="white" size="16px" />}
+                                twClasses="ml-auto w-38"
+                                fn={back} />
                         </div>
+
                     </div>
-                </section>
-                <hr className='py-2' />
 
-                {/* Commissions */}
-                <section className={classNames(
-                    "bg-slate-100 hover:bg-slate-50",
-                    "w-full rounded-md  py-2 px-2   ",
-                    "shadow hover:shadow-md shadow-slate-300 transition-all",
-                    "border hover:border-black/5 space-y-2 pb-8 "
+                    <div className='mb-6 ml-2 w-1/2 sm:w-80'>
 
-                )}>
 
-                    <h3
-                        className={classNames(
-                            "font-medium text-base  pl-2 mb-4"
-                        )}>
-                        Komisyon Oranları
-                    </h3>
+                        <p className="text-slate-400 text-xs md:text-sm leading-tight">
+                            <Balancer>
+                                Aşağıda detayları verilen ürün için web üzerinde paylaşabileceğiniz
+                                bir affiliate linki oluşturun.
+                            </Balancer>
+                        </p>
 
-                    <section className='flex items-center justify-between px-2'>
-                        <div className=" flex-1">
-                            <p className='text-sm md:text-base'><b className='text-slate-500'>
-                                Tıklama:
-                            </b> {pd?.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}
-                            </p>
-                            <hr />
-                            <p className='text-sm md:text-base'><b className='text-slate-500'>Tıklama Bedeli: </b> {pd?.perClick} {pd?.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                    </div>
+
+
+                    {partnerHasLink && (
+                        <div className="bg-yellow-50 px-2 py-2 rounded mb-2 flex items-center space-x-3">
+                            <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
+                            <b className="text-neutral-500 text-xs md:text-sm">
+                                Bu ürün için zaten bir link mevcut.  <Space />
+                                <Link className="text-blue-500 underline" href={`${AppRoutes.PARTNER_LINK_DETAIL}/${partnerLinkId}`}>Link Detay Sayfası</Link>
+                            </b>
                         </div>
-                        <div className="flex-1">
-                            <p className='text-sm md:text-base'><b className='text-slate-500'>Satış: </b> {pd?.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
-                            <hr />
-                            <p className='text-sm md:text-base'><b className='text-slate-500'>Satış Bedeli: </b>{pd?.perSale} {pd?.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                    )
+
+                    }
+
+                    <hr className='' />
+                    {/*Meta Data with Image */}
+                    <section className="mb-4 mt-4">
+                        <h1 className={
+                            classNames(
+                                'text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight',
+                                `${pd.active ? "" : "text-red-600"}`
+                            )
+                        }>
+                            {pd?.title} - {pd.active ? "" : "(Silindi)"}
+                        </h1>
+                        <div className="flex space-x-4 mt-4 items-center">
+                            {pd?.image ?
+                                <img
+                                    className={classNames(
+                                        "object-cover hover:shadow rounded object-center w-24 h-24 md:w-32 md:h-32 aspect-square",
+
+                                    )}
+                                    src={pd?.image}
+                                    alt={pd?.title ?? ""} />
+                                : <Image
+                                    className={classNames(
+                                        "object-cover rounded hover:shadow object-center",
+                                        "w-24 h-24 aspect-square",
+                                        "border border-1 border-stone-300"
+                                    )}
+                                    width={"85"}
+                                    height={"85"}
+                                    src={productImg}
+                                    alt={"Generic Foto"} />
+                            }
+
+                            <div className='space-y-2'>
+                                <p className="text-xs md:text-sm">
+                                    <b className='text-neutral-500'> Hedef Link: </b>
+                                    <a title={pd?.product_url ?? ""} className='text-blue-500' href={pd?.product_url ?? "#"}>{pd?.product_url?.slice(0, 20)} ...</a>
+                                </p>
+                                <p className="text-xs md:text-sm">
+                                    <b className='text-neutral-500'> ID:</b> {pd?.id}
+                                </p>
+                                <p className="text-xs md:text-sm">
+                                    <b className='text-neutral-500'>Ürün Sahibi:</b> {pd?.vendor.brand}
+                                </p>
+                                <p className="text-xs md:text-sm">
+                                    <b className='text-neutral-500'>Website:</b>
+                                    <a title={pd?.vendor.website ?? ""} className='text-blue-500' href={pd?.vendor.website ?? "#"}> {pd?.vendor.website?.slice(0, 48)}</a>
+
+                                </p>
+                                <p className="text-xs md:text-sm">
+
+                                    <b className='text-neutral-500'>Yaklaşık Ürün Fiyatı:</b> {numberWithCommas(pd?.price)} <Lira />
+
+                                </p>
+                            </div>
                         </div>
                     </section>
+                    <hr className='py-2' />
 
-                </section>
+                    {/* Commissions */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-2 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 space-y-2 pb-8 "
 
+                    )}>
 
-                {/* Desc */}
-                <section className={classNames(
-                    "bg-slate-100 hover:bg-slate-50",
-                    "w-full rounded-md  py-2 px-2   ",
-                    "shadow hover:shadow-md shadow-slate-300 transition-all",
-                    "border hover:border-black/5 space-y-2 pb-8 ",
-                    'mt-2'
+                        <h3
+                            className={classNames(
+                                "font-medium text-base  pl-2 mb-4"
+                            )}>
+                            Komisyon Oranları
+                        </h3>
 
-                )}>
-
-                    <h3
-                        className={classNames(
-                            "font-medium text-base  pl-2 mb-4"
-                        )}
-                    >
-                        Ürün Açıklaması
-                    </h3>
-
-                    <section className='flex items-center justify-between px-2 text-sm md:text-base'>
-                        <Balancer>
-                            {pd?.desc}
-                        </Balancer>
+                        <section className='flex items-center justify-between px-2'>
+                            <div className=" flex-1">
+                                <p className='text-sm md:text-base'><b className='text-slate-500'>
+                                    Tıklama:
+                                </b> {pd?.perClickType === 'CASH' ? 'Nakit' : 'Yüzde'}
+                                </p>
+                                <hr />
+                                <p className='text-sm md:text-base'><b className='text-slate-500'>Tıklama Bedeli: </b> {pd?.perClick} {pd?.perClickType === 'CASH' ? <Lira /> : '%'} </p>
+                            </div>
+                            <div className="flex-1">
+                                <p className='text-sm md:text-base'><b className='text-slate-500'>Satış: </b> {pd?.perSaleType === 'CASH' ? 'Nakit' : 'Yüzde'}</p>
+                                <hr />
+                                <p className='text-sm md:text-base'><b className='text-slate-500'>Satış Bedeli: </b>{pd?.perSale} {pd?.perSaleType === 'CASH' ? <Lira /> : '%'} </p>
+                            </div>
+                        </section>
 
                     </section>
 
-                </section>
+
+                    {/* Desc */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-2 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 space-y-2 pb-8 ",
+                        'mt-2'
+
+                    )}>
+
+                        <h3
+                            className={classNames(
+                                "font-medium text-base  pl-2 mb-4"
+                            )}
+                        >
+                            Ürün Açıklaması
+                        </h3>
+
+                        <section className='flex items-center justify-between px-2 text-sm md:text-base'>
+                            <Balancer>
+                                {pd?.desc}
+                            </Balancer>
+
+                        </section>
+
+                    </section>
 
 
 
-                {/* Cookiee Life */}
-                <section className={classNames(
-                    "bg-slate-100 hover:bg-slate-50",
-                    "w-full rounded-md  py-0 px-2   ",
-                    "shadow hover:shadow-md shadow-slate-300 transition-all",
-                    "border hover:border-black/5 ",
-                    'mt-2'
+                    {/* Cookiee Life */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-0 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 ",
+                        'mt-2'
 
-                )}>
+                    )}>
 
-                    <h3
+                        <h3
+                            className={classNames(
+                                "font-medium text-base px-2 py-4"
+                            )}
+                        >
+                            Cookie Süresi:  <span> {pd?.cookieLife} Gün</span>
+
+
+                        </h3>
+
+                    </section>
+
+                    {/* Submit */}
+                    {pd.active ? <button
+                        disabled={busy || partnerHasLink}
+                        onClick={() => {
+                            if (!session) return push(AppRoutes.SIGNIN)
+                            if (session && session.role === UserRoles.VENDOR) {
+                                return push(`${AppRoutes.VENDOR_CREATE_PRODUCT}?edit=true&pid=${pd.id}`)
+                            }
+
+                            setModal(true)
+
+                        }}
+                        type='submit'
                         className={classNames(
-                            "font-medium text-base px-2 py-4"
-                        )}
-                    >
-                        Cookie Süresi:  <span> {pd?.cookieLife} Gün</span>
+                            "bg-violet-600 hover:bg-violet-700 transition-colors",
+                            "flex items-center justify-center flex-nowrap space-x-2",
+                            "shadow-sm hover:shadow-lg rounded-md ",
+                            "py-4 px-8 mt-6",
+                            "disabled:bg-violet-400 disabled:shadow-none"
+                        )} >
 
+                        <HiPlus color="white" size="18px" />
 
-                    </h3>
+                        <span className="text-slate-50 text-sm font-medium tracking-wide text-center">
 
-                </section>
+                            {(session && session.role === UserRoles.VENDOR) ? "Ürünü Düzenle" : "Affiliate Linki Oluştur"}
+                        </span>
+                    </button> : null}
 
-                {/* Submit */}
-                {pd.active ? <button
-                    disabled={busy || partnerHasLink}
-                    onClick={() => {
-                        if (!session) return push(AppRoutes.SIGNIN)
-                        if (session && session.role === UserRoles.VENDOR) {
-                            return push(`${AppRoutes.VENDOR_CREATE_PRODUCT}?edit=true&pid=${pd.id}`)
-                        }
-
-                        setModal(true)
-
-                    }}
-                    type='submit'
-                    className={classNames(
-                        "bg-violet-600 hover:bg-violet-700 transition-colors",
-                        "flex items-center justify-center flex-nowrap space-x-2",
-                        "shadow-sm hover:shadow-lg rounded-md ",
-                        "py-4 px-8 mt-6",
-                        "disabled:bg-violet-400 disabled:shadow-none"
-                    )} >
-
-                    <HiPlus color="white" size="18px" />
-
-                    <span className="text-slate-50 text-sm font-medium tracking-wide text-center">
-
-                        {(session && session.role === UserRoles.VENDOR) ? "Ürünü Düzenle" : "Affiliate Linki Oluştur"}
-                    </span>
-                </button> : null}
-
-                <DynamicModalContainer state={modal} key={"adda"}>
-                    <DynamicConfirmDialog
-                        title="Affiliate linki oluşturmak istiyor musunuz?"
-                        confirmBtnText='Oluştur'
-                        busy={busy}
-                        desc="
+                    <DynamicModalContainer state={modal} key={"adda"}>
+                        <DynamicConfirmDialog
+                            title="Affiliate linki oluşturmak istiyor musunuz?"
+                            confirmBtnText='Oluştur'
+                            busy={busy}
+                            desc="
                             Ürün için web üzerinde paylaşabileceğiniz 
                             bir link oluşturulacaktır. 
                             Vendor onayından sonra kullanılabilir hale gelecektir."
-                        dismissFn={() => setModal(false)}
-                        confirmFn={handleLinkCreation}
-                    />
-                </DynamicModalContainer>
+                            dismissFn={() => setModal(false)}
+                            confirmFn={handleLinkCreation}
+                        />
+                    </DynamicModalContainer>
 
 
 
 
-            </PageCard>
+                </PageCard>
+
+                {session?.id ?
+
+                    <section className="md:w-2/5 max-h-full md:mb-12 scroll-auto">
+
+
+
+                        <PageCard>
+                            <div className="flex items-center">
+
+                                <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
+                                    Affiliate linki olan partnerler
+                                </h2>
+
+                            </div>
+
+                            <div className='mb-6 ml-2 w-1/2 sm:w-80'>
+
+
+                                <p className="text-slate-400 text-xs md:text-sm leading-tight">
+                                    <Balancer>
+                                        Partner linki detaylari
+                                    </Balancer>
+                                </p>
+
+                            </div>
+
+
+                            <hr className='' />
+                            {/*Meta Data with Image */}
+                            <section className="mb-4 mt-4 space-y-2">
+
+
+                                {vd?.map(x => (
+
+
+                                    <div key={x.id} className={
+                                        classNames(
+                                            "border hover:border-black/5 w-full",
+                                            "py-0 px-2 bg-slate-100 hover:bg-slate-50 rounded-md",
+                                            "shadow hover:shadow-md transition-all shadow-slate-300",
+                                        )}>
+
+                                        <div className="flex justify-between items-center py-1  space-x-2">
+                                            <Link
+                                                className="aspect-square w-8 h-8"
+                                                href={`#`}>
+                                                {x.partner.image ?
+                                                    <img
+                                                        className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
+                                                        src={x.partner.image ?? ""}
+                                                        alt={x.id} />
+                                                    : <Image
+                                                        className={classNames(
+                                                            "object-cover rounded hover:shadow object-center",
+                                                            "w-8 h-8 aspect-square",
+                                                            "border border-1 border-stone-300",
+                                                            ""
+                                                        )}
+                                                        width={"64"}
+                                                        height={"64"}
+                                                        src={profileImg}
+                                                        alt="Generic profile foto" />
+                                                }
+                                            </Link>
+                                            <p className="">{x.partner.username}</p>
+
+                                            <div className="xflex space-x-1 ">
+                                                <p>visit: {x.visits.length}</p>
+                                            </div>
+
+
+                                            <MuiIconButton
+                                                size="small"
+                                                onClick={() => null}
+                                                title="Detay"
+                                                aria-label="Detay">
+                                                <LinkIcon className="text-indigo-600 w-4 h-4" />
+                                            </MuiIconButton>
+
+                                        </div>
+
+
+                                    </div>
+                                ))}
+
+                                {Array.from(new Array(50)).map((x, idx) => (
+                                    <div key={idx} className={
+                                        classNames(
+                                            "border hover:border-black/5 w-full",
+                                            "py-0 px-2 bg-slate-100 hover:bg-slate-50 rounded-md",
+                                            "shadow hover:shadow-md transition-all shadow-slate-300",
+                                        )}>
+
+                                        <div className="flex justify-between items-center py-1 space-x-2">
+                                            <Link
+                                                className="aspect-square w-8 h-8"
+                                                href={`#`}>
+                                                <Image
+                                                    className={classNames(
+                                                        "object-cover rounded hover:shadow object-center",
+                                                        "w-8 h-8 aspect-square",
+                                                        "border border-1 border-stone-300",
+                                                        ""
+                                                    )}
+                                                    width={"64"}
+                                                    height={"64"}
+                                                    src={profileImg}
+                                                    alt="Generic profile foto" />
+
+                                            </Link>
+                                            <p className="">burak</p>
+
+                                            <div className="xflex space-x-1 ">
+                                                <p>visit: 5</p>
+                                            </div>
+
+                                            
+                                            <MuiIconButton
+                                                size="small"
+                                                onClick={() => null}
+                                                title="Detay"
+                                                aria-label="Detay">
+                                                <LinkIcon className="text-indigo-600 w-4 h-4" />
+                                            </MuiIconButton>
+
+
+                                        </div>
+
+
+
+
+
+                                    </div>
+                                ))}
+
+                            </section>
+
+                        </PageCard>
+                    </section>
+                    : null}
+                {/*  */}
+            </div>
         </div>
     )
 }

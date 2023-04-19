@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { publicProcedure, router } from "../trpc";
+import { publicProcedure, router, vendorProcedure } from "../trpc";
 
 export const visitRouter = router({
   updateVisit: publicProcedure
@@ -39,5 +39,33 @@ export const visitRouter = router({
         console.error(error);
         return { success: false, error: error };
       }
+    }),
+
+  getVisits: vendorProcedure
+    .input(
+      z.object({
+        productId: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { vendorId } = ctx.session;
+      const { productId } = input;
+      console.log({ productId, vendorId });
+
+      const res = await ctx.prisma.link.findMany({
+        where: {
+          AND: [
+            {
+              vendor_id: vendorId,
+            },
+            {
+              product_id: productId,
+            },
+          ],
+        },
+        include: {partner: true}
+      });
+
+      return res;
     }),
 });
