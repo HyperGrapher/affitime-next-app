@@ -1,4 +1,5 @@
 import LinkIcon from '@mui/icons-material/Search';
+import MuiIconButton from '@mui/material/IconButton';
 import type { Link as LinkEntity } from "@prisma/client";
 import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { type NextPage } from "next";
@@ -23,7 +24,6 @@ import classNames from '../../../utils/classnames';
 import { numberWithCommas } from "../../../utils/helpers";
 import { notifyError, notifySuccessTC } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
-import MuiIconButton from '@mui/material/IconButton';
 
 const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -434,7 +434,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                                 <p className="text-slate-400 text-xs md:text-sm leading-tight">
                                     <Balancer>
-                                        Partner linki detaylari
+                                        Bu ürün için affiliate linki oluşturan partnerler.
                                     </Balancer>
                                 </p>
 
@@ -445,6 +445,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                             <section className="mb-4 mt-4 space-y-2">
 
+                                {vd?.length === 0 && <p>Henüz link oluşturan partner bulunmuyor.</p>}
 
                                 {vd?.map(x => (
 
@@ -460,7 +461,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                             <div className="flex space-x-2 items-center">
                                                 <Link
                                                     className="aspect-square w-8 h-8"
-                                                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}?tab=1`}>
+                                                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}`}>
                                                     {x.partner.image ?
                                                         <img
                                                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
@@ -479,22 +480,22 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                                             alt="Generic profile foto" />
                                                     }
                                                 </Link>
-                                                {/* TODO AFFI LINK */}
+
                                                 <Link
-                                                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}?tab=1`}
+                                                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}`}
                                                     className="text-xs font-semibold text-violet-600 min-w-[16ch]">
                                                     {x.partner.username}
                                                 </Link>
 
                                             </div>
                                             <div className="xflex space-x-1 text-xs text-slate-400">
-                                                <b>Tıklamalar: </b>  <span >{x.visits.length}784</span>
+                                                <b>Tıklama: </b>  <span >{x.visits.length}</span>
                                             </div>
 
 
                                             <MuiIconButton
                                                 size="small"
-                                                onClick={() => null}
+                                                onClick={() => push(`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}`)}
                                                 title="Detay"
                                                 aria-label="Detay">
                                                 <LinkIcon className="text-indigo-600 w-4 h-4" />
@@ -506,63 +507,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                     </div>
                                 ))}
 
-                                {Array.from(new Array(10)).map((x, idx) => (
-                                    <div key={idx} className={
-                                        classNames(
-                                            "border hover:border-black/5 w-full",
-                                            "py-0 px-2 bg-slate-100 hover:bg-slate-50 rounded-md",
-                                            "shadow hover:shadow-md transition-all shadow-slate-300",
-                                        )}>
 
-                                        <div className="flex justify-between items-center py-1 space-x-2">
-                                            <div className="flex space-x-2 items-center">
-                                                <Link
-                                                    className="aspect-square w-8 h-8"
-                                                    href={`#`}>
-                                                    {false ?
-                                                        <img
-                                                            className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
-                                                            src={""}
-                                                            alt={'xid'} />
-                                                        : <Image
-                                                            className={classNames(
-                                                                "object-cover rounded hover:shadow object-center",
-                                                                "w-8 h-8 aspect-square",
-                                                                "border border-1 border-stone-300",
-                                                                ""
-                                                            )}
-                                                            width={"64"}
-                                                            height={"64"}
-                                                            src={profileImg}
-                                                            alt="Generic profile foto" />
-                                                    }
-                                                </Link>
-                                                <Link href={`#`} className="text-xs text-violet-600 font-semibold min-w-[16ch]">useradidin {idx}</Link>
-
-                                            </div>
-
-                                            <div className="xflex space-x-1 text-xs text-slate-400">
-                                                <b>Tıklamalar: </b>  <span >{idx}784</span>
-                                            </div>
-
-
-                                            <MuiIconButton
-                                                size="small"
-                                                onClick={() => null}
-                                                title="Detay"
-                                                aria-label="Detay">
-                                                <LinkIcon className="text-indigo-600 w-4 h-4" />
-                                            </MuiIconButton>
-
-
-                                        </div>
-
-
-
-
-
-                                    </div>
-                                ))}
 
                             </section>
 

@@ -18,6 +18,7 @@ import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
 import Head from "next/head";
+import VisitTable from "../../../../components/visit-table/VisitTable";
 
 
 const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
@@ -33,11 +34,13 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     const [busy] = useState(false)
     const [modal, setModal] = useState(false)
+    const [hidePaid, setHidePaid] = useState(false)
 
     const { back, query } = useRouter()
     const created = query.created === "true"
 
     const { data: link, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
+    const { data: vd, status: vStatus } = trpc.visit.getVisitsForLinkDetail.useQuery({ linkId: id })
 
     return (
         <div className={"auth-container"}>
@@ -276,6 +279,43 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 
 
+
+            </PageCard>
+
+            <PageCard>
+                <div className="flex items-center">
+
+                    <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
+                        Link Ziyaretleri
+                    </h2>
+
+                </div>
+
+                <div className='mb-6 ml-2 w-1/2 sm:w-80'>
+
+
+                    <p className="text-slate-400 text-xs md:text-sm leading-tight">
+                        <Balancer>
+                            Link üzerinden gerçekleşen ziyaret detayları
+                        </Balancer>
+                    </p>
+
+                </div>
+
+
+                <hr className='' />
+
+                <section className="mb-4 mt-4">
+                    <div className="hidden p-2 w-full">
+                        <label>
+                            <input checked={hidePaid} type="checkbox" name={"onoff"} onChange={(e) => (console.log(e.currentTarget.checked), setHidePaid(x => !x))} />
+                            <span className="pl-2">Ödemesi yapılanları gizle</span>
+                        </label>
+                    </div>
+
+                    <VisitTable vd={vd} />
+
+                </section>
 
             </PageCard>
         </div>

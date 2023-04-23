@@ -2,6 +2,7 @@ import type { GetServerSideProps, InferGetServerSidePropsType } from "next";
 import { type NextPage } from "next";
 import { getSession } from "next-auth/react";
 import dynamic from 'next/dynamic';
+import Head from "next/head";
 import Image from "next/image";
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -13,13 +14,11 @@ import productImg from '../../../../assets/product.png';
 import IconButton from '../../../../components/buttons/IconButton';
 import PageCard from "../../../../components/card/Card";
 import { Lira } from '../../../../components/shared/HtmlCodes';
+import VisitTable from "../../../../components/visit-table/VisitTable";
 import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
-import Head from "next/head";
-import { formatDateTR } from "../../../../utils/helpers";
-
 
 const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
     ssr: false,
@@ -35,6 +34,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
     const { back } = useRouter()
 
     const [modal, setModal] = useState(false)
+    const [hidePaid, setHidePaid] = useState(false)
 
     const { data: pd, status: lStatus } = trpc.link.getLinkDetails.useQuery({ id })
     const { data: vd, status: vStatus } = trpc.visit.getVisitsForLinkDetail.useQuery({ linkId: id })
@@ -250,11 +250,13 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 
             </PageCard>
+
+
             <PageCard>
                 <div className="flex items-center">
 
                     <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
-                        Partner Detayları
+                        Link Ziyaretleri
                     </h2>
 
                 </div>
@@ -264,7 +266,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <p className="text-slate-400 text-xs md:text-sm leading-tight">
                         <Balancer>
-                            Partner linki detayları
+                            Link üzerinden gerçekleşen ziyaret detayları
                         </Balancer>
                     </p>
 
@@ -274,17 +276,15 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 <hr className='' />
 
                 <section className="mb-4 mt-4">
+                    <div className="hidden p-2 w-full">
+                        <label>
+                            <input checked={hidePaid} type="checkbox" name={"onoff"} onChange={(e) => (console.log(e.currentTarget.checked), setHidePaid(x => !x))} />
+                            <span className="pl-2">Ödemesi yapılanları gizle</span>
+                        </label>
+                    </div>
 
+                    <VisitTable vd={vd} />
 
-                    {
-                        vd?.map(x => (
-                            <div key={x.id} className="flex gap-4">
-                                <p>{formatDateTR(x.createdAt)}</p>
-                                <p>{x.paid ? "Odendi" : 'Odenmedi'}</p>
-                                <p>{x.dubious ? x.cause : 'Gecerli'}</p>
-                            </div>
-                        ))
-                    }
                 </section>
 
             </PageCard>
@@ -295,6 +295,8 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 }
 
 export default LinkDetail
+
+
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -324,3 +326,41 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: { id } }
 
 }
+
+
+/*
+ <table className="table-auto w-full text-left whitespace-no-wrap text-xs sm:text-sm">
+                <thead>
+                    <tr>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Tarih</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Ulke</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Ödeme</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Geçerlilik</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Sebep</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Satın <br /> alma</th>
+                        <th className="hidden sm:table-cell px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100 rounded-tl rounded-bl">Cihaz</th>
+                        <th className="hidden sm:table-cell px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100 rounded-tl rounded-bl">Browser</th>
+                    </tr>
+                </thead>
+                <tbody>
+
+                    {
+                        vd?.map(x => (
+                            <tr key={x.id}>
+                                <td className="px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap ">{formatDateTR(x.createdAt)}</td>
+                                <td className="px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-900 ">{x.country}</td>
+                                <td className={`px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap ${x.paid ? "text-green-500" : "text-red-400"} `}>{x.paid ? <HiCheckCircle size={"1.25rem"} color="text-green-500" /> : <HiXCircle size={"1.25rem"} color="text-red-400" />}</td>
+                                <td className={`px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-900 ${x.dubious ? "text-red-400" : "text-green-500"} `}>{x.dubious ? <HiXCircle size={"1.25rem"} color="text-red-400" /> : <HiCheckCircle size={"1.25rem"} color="text-green-500" />}</td>
+                                <td className="px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-900 ">{capitalize(x.cause)}</td>
+                                <td className="px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap text-gray-900 ">{x.sold ? "Evet" : "-"}</td>
+                                <td className={`hidden sm:table-cell px-2 py-2 sm:px-4 sm:py-2 `}> {x.os?.startsWith('Windows') ? "Win" : x.os}  </td>
+                                <td className={`hidden sm:table-cell px-2 py-2 sm:px-4 sm:py-2 whitespace-nowrap `}> {x.uaFamily}  </td>
+                            </tr>
+                        ))
+                    }
+
+                </tbody>
+            </table>
+
+
+*/           

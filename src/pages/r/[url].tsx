@@ -97,25 +97,25 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         return { 
             redirect: { 
-    destination: `/r/not-found/${url}?trial=${link?.vendor.user.trial}&pro=${link?.vendor.user.pro}&line=100`, permanent: false } }
+    destination: `/r/not-found/${url}?trial=${link?.vendor.user.trial.valueOf()}&pro=${link?.vendor.user.pro.valueOf()}&err=100`, permanent: false } }
 
 
     }
 
-    if (!link) return { redirect: { destination: `/r/not-found/${url}?line=105-no-link`, permanent: false } }
+    if (!link) return { redirect: { destination: `/r/not-found/${url}?err=105-no-link`, permanent: false } }
 
     if (!link.vendor.apiKey?.installed) {
         
 
         // send get request to store link url with error qs
 
-        return { redirect: { destination: `/r/not-found/${url}&line=112-no-install`, permanent: false } }
+        return { redirect: { destination: `/r/not-found/${url}&err=112-no-install`, permanent: false } }
     }
     if (!link.active) {
 
         // send get request to store with error
 
-        return { redirect: { destination: `/r/not-found/${url}?line=118-no-active`, permanent: false } }
+        return { redirect: { destination: `/r/not-found/${url}?err=118-not-active`, permanent: false } }
 
     }
 
