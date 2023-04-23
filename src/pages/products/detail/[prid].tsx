@@ -416,7 +416,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                 </PageCard>
 
-                {session?.id ?
+                {session?.role === UserRoles.VENDOR ?
 
                     <section className="md:w-2/5 max-h-full md:mb-12 scroll-auto">
 

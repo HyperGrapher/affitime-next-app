@@ -78,7 +78,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             if (link.product.product_url) {
 
                 // TODO
-                await axios.post(`${link.product.product_url}?err=true&msg=eop`)
+                // await axios.post(`${link.product.product_url}?err=true&msg=eop`)
             }
             
             
@@ -88,32 +88,34 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             if (link?.product.product_url) {
                 
                 // TODO
-                await axios.post(`${link.product.product_url}?err=true&msg=eot`)
+                // await axios.post(`${link.product.product_url}?err=true&msg=eot`)
             }
 
             // send error "Deneme suresi sona erdi"
 
         }
 
-        return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+        return { 
+            redirect: { 
+    destination: `/r/not-found/${url}?trial=${link?.vendor.user.trial}&pro=${link?.vendor.user.pro}&line=100`, permanent: false } }
 
 
     }
 
-    if (!link) return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+    if (!link) return { redirect: { destination: `/r/not-found/${url}?line=105-no-link`, permanent: false } }
 
     if (!link.vendor.apiKey?.installed) {
         
 
         // send get request to store link url with error qs
 
-        return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+        return { redirect: { destination: `/r/not-found/${url}&line=112-no-install`, permanent: false } }
     }
     if (!link.active) {
 
         // send get request to store with error
 
-        return { redirect: { destination: `/r/not-found/${url}`, permanent: false } }
+        return { redirect: { destination: `/r/not-found/${url}?line=118-no-active`, permanent: false } }
 
     }
 
