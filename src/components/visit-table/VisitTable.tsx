@@ -23,7 +23,7 @@ const VisitTable: React.FC<TableProps> = ({ vd }) => {
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Ülke</th>
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Ödeme</th>
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Geçerli</th>
-                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Sebep</th>
+                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Geçersizlik <br/> Sebebi</th>
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Satın <br /> alma</th>
                         <th className="hidden sm:table-cell px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100 rounded-tl rounded-bl">OS</th>
                         <th className="hidden sm:table-cell px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100 rounded-tl rounded-bl">Browser</th>
