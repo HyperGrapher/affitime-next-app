@@ -266,7 +266,9 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <p className="text-slate-400 text-xs md:text-sm leading-tight">
                         <Balancer>
-                            Link üzerinden gerçekleşen ziyaret detayları
+                            Link üzerinden gerçekleşen ziyaret detayları burada listelenir
+                            <br />
+                            sadece geçerli tıklamalar hesaplanır
                         </Balancer>
                     </p>
 
