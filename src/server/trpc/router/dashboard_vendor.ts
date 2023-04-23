@@ -67,7 +67,7 @@ export const VendorDashboardRouter = router({
           { status: { not: LinkStatus.AWAITING } },
         ],
       },
-      include: { partner: true },
+      include: { partner: true, product: true },
     });
 
     //  DB |-> Links[] + {partner} => partner[] + Links[]

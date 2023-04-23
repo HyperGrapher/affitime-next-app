@@ -1,4 +1,4 @@
-import type { Link, Visit } from "@prisma/client";
+import type { Link, Product, Visit } from "@prisma/client";
 
 export interface IDashboardData {
   all: string;
@@ -23,9 +23,13 @@ export type IPartnerAndLinks = {
   id: string;
   userId: string;
   username: string;
+  image: string;
   createdAt: Date;
   updatedAt: Date;
-  partner_links: Link[];
+  partner_links: (Link  & {
+    product: Product
+})[]
+ 
 };
 
 export type IUnpaidItemForVendor = {
