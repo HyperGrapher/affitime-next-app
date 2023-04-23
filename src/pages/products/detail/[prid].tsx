@@ -459,31 +459,34 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                         )}>
 
                                         <div className="flex justify-between items-center py-1  space-x-2">
-                                            <Link
-                                                className="aspect-square w-8 h-8"
-                                                href={`#`}>
-                                                {x.partner.image ?
-                                                    <img
-                                                        className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
-                                                        src={x.partner.image ?? ""}
-                                                        alt={x.id} />
-                                                    : <Image
-                                                        className={classNames(
-                                                            "object-cover rounded hover:shadow object-center",
-                                                            "w-8 h-8 aspect-square",
-                                                            "border border-1 border-stone-300",
-                                                            ""
-                                                        )}
-                                                        width={"64"}
-                                                        height={"64"}
-                                                        src={profileImg}
-                                                        alt="Generic profile foto" />
-                                                }
-                                            </Link>
-                                            <p className="">{x.partner.username}</p>
+                                            <div className="flex space-x-2 items-center">
+                                                <Link
+                                                    className="aspect-square w-8 h-8"
+                                                    href={`#`}>
+                                                    {x.partner.image ?
+                                                        <img
+                                                            className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
+                                                            src={x.partner.image ?? ""}
+                                                            alt={x.id} />
+                                                        : <Image
+                                                            className={classNames(
+                                                                "object-cover rounded hover:shadow object-center",
+                                                                "w-8 h-8 aspect-square",
+                                                                "border border-1 border-stone-300",
+                                                                ""
+                                                            )}
+                                                            width={"64"}
+                                                            height={"64"}
+                                                            src={profileImg}
+                                                            alt="Generic profile foto" />
+                                                    }
+                                                </Link>
+                                                <Link href={`#`} className="text-xs font-semibold text-violet-600 min-w-[16ch]">{x.partner.username}</Link>
 
-                                            <div className="xflex space-x-1 ">
-                                                <p>visit: {x.visits.length}</p>
+                                            </div>
+
+                                            <div className="xflex space-x-1 text-xs text-slate-400">
+                                                <b>Tıklamalar: </b>  <span >{x.visits.length}784</span>
                                             </div>
 
 
@@ -501,7 +504,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                     </div>
                                 ))}
 
-                                {Array.from(new Array(50)).map((x, idx) => (
+                                {Array.from(new Array(10)).map((x, idx) => (
                                     <div key={idx} className={
                                         classNames(
                                             "border hover:border-black/5 w-full",
@@ -510,29 +513,37 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                         )}>
 
                                         <div className="flex justify-between items-center py-1 space-x-2">
-                                            <Link
-                                                className="aspect-square w-8 h-8"
-                                                href={`#`}>
-                                                <Image
-                                                    className={classNames(
-                                                        "object-cover rounded hover:shadow object-center",
-                                                        "w-8 h-8 aspect-square",
-                                                        "border border-1 border-stone-300",
-                                                        ""
-                                                    )}
-                                                    width={"64"}
-                                                    height={"64"}
-                                                    src={profileImg}
-                                                    alt="Generic profile foto" />
+                                        <div className="flex space-x-2 items-center">
+                                                <Link
+                                                    className="aspect-square w-8 h-8"
+                                                    href={`#`}>
+                                                    {false ?
+                                                        <img
+                                                            className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
+                                                            src={""}
+                                                            alt={'xid'} />
+                                                        : <Image
+                                                            className={classNames(
+                                                                "object-cover rounded hover:shadow object-center",
+                                                                "w-8 h-8 aspect-square",
+                                                                "border border-1 border-stone-300",
+                                                                ""
+                                                            )}
+                                                            width={"64"}
+                                                            height={"64"}
+                                                            src={profileImg}
+                                                            alt="Generic profile foto" />
+                                                    }
+                                                </Link>
+                                                <Link href={`#`} className="text-xs text-violet-600 font-semibold min-w-[16ch]">useradidin {idx}</Link>
 
-                                            </Link>
-                                            <p className="">burak</p>
-
-                                            <div className="xflex space-x-1 ">
-                                                <p>visit: 5</p>
                                             </div>
 
-                                            
+                                            <div className="xflex space-x-1 text-xs text-slate-400">
+                                                <b>Tıklamalar: </b>  <span >{idx}784</span>
+                                            </div>
+
+
                                             <MuiIconButton
                                                 size="small"
                                                 onClick={() => null}
