@@ -420,8 +420,6 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
                     <section className="md:w-2/5 max-h-full md:mb-12 scroll-auto">
 
-
-
                         <PageCard>
                             <div className="flex items-center">
 
@@ -444,7 +442,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
 
                             <hr className='' />
-                            {/*Meta Data with Image */}
+
                             <section className="mb-4 mt-4 space-y-2">
 
 
@@ -462,7 +460,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                             <div className="flex space-x-2 items-center">
                                                 <Link
                                                     className="aspect-square w-8 h-8"
-                                                    href={`#`}>
+                                                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}?tab=1`}>
                                                     {x.partner.image ?
                                                         <img
                                                             className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
@@ -481,10 +479,14 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                                             alt="Generic profile foto" />
                                                     }
                                                 </Link>
-                                                <Link href={`#`} className="text-xs font-semibold text-violet-600 min-w-[16ch]">{x.partner.username}</Link>
+                                                {/* TODO AFFI LINK */}
+                                                <Link
+                                                    href={`${AppRoutes.VENDOR_LINK_DETAIL}/${x.id}?tab=1`}
+                                                    className="text-xs font-semibold text-violet-600 min-w-[16ch]">
+                                                    {x.partner.username}
+                                                </Link>
 
                                             </div>
-
                                             <div className="xflex space-x-1 text-xs text-slate-400">
                                                 <b>Tıklamalar: </b>  <span >{x.visits.length}784</span>
                                             </div>
@@ -513,7 +515,7 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                         )}>
 
                                         <div className="flex justify-between items-center py-1 space-x-2">
-                                        <div className="flex space-x-2 items-center">
+                                            <div className="flex space-x-2 items-center">
                                                 <Link
                                                     className="aspect-square w-8 h-8"
                                                     href={`#`}>

@@ -62,6 +62,11 @@ export const linkRouter = router({
         dubiousClicks: dubiousClicks.length,
       };
     }),
+  getPartnerDetailsForLinkDetail: vendorProcedure.query(({ ctx }) => {
+    const  vendorId = ctx.session.vendorId;
+    const userId = ctx.session.id;
+    console.log("");
+  }),
 
   findLinkByProductIdForPartner: partnerProcedure
     .input(z.object({ pid: z.string() }))
@@ -125,9 +130,8 @@ export const linkRouter = router({
       });
 
       console.log(res);
-      
-      const doubious = res.map(x => x.visits.map(y => y.dubious))
 
+      const doubious = res.map((x) => x.visits.map((y) => y.dubious));
 
       /*
       const links = await ctx.prisma.link.findMany({
@@ -160,8 +164,6 @@ export const linkRouter = router({
       return links;
 
       */
-
-      
 
       return res;
     }),

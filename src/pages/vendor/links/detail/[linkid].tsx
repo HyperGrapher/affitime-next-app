@@ -18,6 +18,7 @@ import { UserRoles } from '../../../../interface/auth.interface';
 import classNames from '../../../../utils/classnames';
 import { trpc } from '../../../../utils/trpc';
 import Head from "next/head";
+import { formatDateTR } from "../../../../utils/helpers";
 
 
 const DynamicModalContainer = dynamic(() => import('../../../../components/modals/ModalContainer'), {
@@ -35,11 +36,12 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
     const [modal, setModal] = useState(false)
 
-    const { data: pd, status: sts } = trpc.link.getLinkDetails.useQuery({ id })
+    const { data: pd, status: lStatus } = trpc.link.getLinkDetails.useQuery({ id })
+    const { data: vd, status: vStatus } = trpc.visit.getVisitsForLinkDetail.useQuery({ linkId: id })
 
     return (
         <div className={"auth-container"}>
-            {sts === 'loading' && <TopBarProgress />}
+            {lStatus === 'loading' && <TopBarProgress />}
 
 
             <Head>
@@ -262,7 +264,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                     <p className="text-slate-400 text-xs md:text-sm leading-tight">
                         <Balancer>
-                            Partner linki detaylari
+                            Partner linki detayları
                         </Balancer>
                     </p>
 
@@ -270,14 +272,19 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
 
                 <hr className='' />
-                {/*Meta Data with Image */}
+
                 <section className="mb-4 mt-4">
 
 
-                            <div className="flex gap-4">
-                                <p></p>
+                    {
+                        vd?.map(x => (
+                            <div key={x.id} className="flex gap-4">
+                                <p>{formatDateTR(x.createdAt)}</p>
+                                <p>{x.paid ? "Odendi" : 'Odenmedi'}</p>
+                                <p>{x.dubious ? x.cause : 'Gecerli'}</p>
                             </div>
-
+                        ))
+                    }
                 </section>
 
             </PageCard>
