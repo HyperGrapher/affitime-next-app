@@ -15,7 +15,7 @@ const Welcome: NextPage = () => {
   return (
     <main className='mt-24'>
 
-      <h1 className='text-4xl text-center'>Hoşgeldin</h1>
+      <h1 className='text-4xl font-bold text-violet-700 text-center'>Hoşgeldin</h1>
 
       <div className="flex flex-col items-center gap-2 container mx-auto px-2 md:px-24">
 
@@ -35,20 +35,20 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   const session = await getSession(context)
 
-  if (!session) return {
-    redirect: {
-      destination: AppRoutes.SIGNIN,
-      permanent: false
-    }
-  }
+  // if (!session) return {
+  //   redirect: {
+  //     destination: AppRoutes.SIGNIN,
+  //     permanent: false
+  //   }
+  // }
 
 
-  if (session.role !== UserRoles.PARTNER) return {
-    redirect: {
-      destination: `/${session.role.toLowerCase()}/dashboard`,
-      permanent: false
-    }
-  }
+  // if (session.role !== UserRoles.PARTNER) return {
+  //   redirect: {
+  //     destination: `/${session.role.toLowerCase()}/dashboard`,
+  //     permanent: false
+  //   }
+  // }
 
   return { props: {} }
 

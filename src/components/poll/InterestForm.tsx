@@ -98,7 +98,7 @@ const InterestForm: React.FC<Props> = ({ setStep }) => {
             <h1 className='text-xl text-center font-medium text-slate-600'>
                 Takipçilerin hangi kategorilerdeki ürünlerle ilgileniyor?
                 <br />
-                (Birden fazla seçim yapabilirsin.)
+                <span className="text-sm text-slate-500">Birden fazla seçim yapabilirsin.</span>
             </h1>
 
             <section className="my-8">

@@ -33,6 +33,7 @@ const Navbar: React.FC = () => {
   const { pathname } = useRouter()
   const deleteUserSession = trpc.auth.deleteSession.useMutation()
   const update = useNavbarStore(store => store.update)
+  // TODO: test it, needs link or console error
   const { data, refetch } = trpc.user.getAccountImage.useQuery()
 
   useEffect(() => {

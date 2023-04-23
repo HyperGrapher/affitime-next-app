@@ -32,6 +32,15 @@ export const categories = [
   {
     name: "Takı, Mücevher & Altın"
   },
+  {
+    name: "Kadın Giyim & Aksesuar"
+  },
+  {
+    name: "Erkek Giyim & Aksesuar"
+  },
+  {
+    name: "Genel Giyim"
+  },
 ]
 
 

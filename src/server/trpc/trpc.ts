@@ -3,6 +3,20 @@ import superjson from "superjson";
 import { type Context } from "./context";
 import { UserRoles } from "../../interface/auth.interface";
 
+// import sendpulse from "sendpulse-api";
+
+// const API_USER_ID = "227943d8a153c1713d3fd8c7d97b1e63";
+// const API_SECRET = "cd11fe04653031b9f60787f61170ecf6";
+// const TOKEN_STORAGE = "/tmp/";
+
+// // eslint-disable-next-line @typescript-eslint/no-explicit-any
+// sendpulse.init(API_USER_ID,API_SECRET,TOKEN_STORAGE,function(e: any) {
+//   console.log('<<<<<<<<<   Sendpulse init OK   >>>>>>>>>>');
+  
+  
+// });
+
+
 const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape }) {

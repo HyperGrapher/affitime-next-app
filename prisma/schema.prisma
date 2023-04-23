@@ -409,3 +409,11 @@ model Faq {
   @@index([id])
   @@map("faq")
 }
+
+// !! for testing
+model Temp {
+  id     Int     @unique @default(1)
+  isTemp Boolean @default(true)
+
+  @@map("temp")
+}

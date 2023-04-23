@@ -8,6 +8,15 @@ import {
 import { z } from "zod";
 import crypto from "crypto";
 import { CommissionType, LinkStatus } from "@prisma/client";
+import sendpulse from "sendpulse-api";
+
+const API_USER_ID = "227943d8a153c1713d3fd8c7d97b1e63";
+const API_SECRET = "cd11fe04653031b9f60787f61170ecf6";
+const TOKEN_STORAGE = "/tmp/";
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
+// * sendpulse initialised in server/trpc/trpc.ts
 
 export const linkRouter = router({
   // for both vendor and partner
@@ -26,6 +35,7 @@ export const linkRouter = router({
       });
 
       if (!id) throw new TRPCError({ code: "NOT_FOUND" });
+      sendpulse.listAddressBooks(() => null, 10, 0);
 
       const link = await ctx.prisma.link.findUnique({
         where: {
@@ -63,7 +73,7 @@ export const linkRouter = router({
       };
     }),
   getPartnerDetailsForLinkDetail: vendorProcedure.query(({ ctx }) => {
-    const  vendorId = ctx.session.vendorId;
+    const vendorId = ctx.session.vendorId;
     const userId = ctx.session.id;
     console.log("");
   }),
@@ -259,6 +269,8 @@ export const linkRouter = router({
             code: "BAD_REQUEST",
             message: "Link cannot be created",
           });
+
+        console.log(" >>>>>>>   SENDING EMAIL NOT  >>>>>>>");
 
         return link;
       } catch (error) {

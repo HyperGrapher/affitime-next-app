@@ -239,7 +239,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
             </td>
 
             <DynamicModalContainer setModal={() => setModal(false)} state={modal} key={"dynamicLinksModal"}>
-                <DynamicLinksModal username={pl.username} links={pl.partner_links} setModal={() => setModal(false)} />
+                <DynamicLinksModal username={pl.username} links={pl.partner_links} closeModal={() => setModal(false)} />
             </DynamicModalContainer>
 
         </tr>
