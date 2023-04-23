@@ -43,7 +43,7 @@ const VisitTable: React.FC<TableProps> = ({ vd }) => {
                                     {x.sold ? "Evet" : "-"}
                                 </td>
                                 <td className={`hidden sm:table-cell px-2 py-2 md:px-4 md:py-2 `}>
-                                    {x.os?.toLowerCase().startsWith('win') ? "Windos" : x.os}
+                                    {x.os?.toLowerCase().startsWith('win') ? "Windows" : x.os}
                                 </td>
                                 <td className={`hidden sm:table-cell px-2 py-2 md:px-4 md:py-2 whitespace-nowrap `}> {x.uaFamily}  </td>
                             </tr>
