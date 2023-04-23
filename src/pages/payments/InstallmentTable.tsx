@@ -24,11 +24,11 @@ const InstallmentTable: React.FC<Props> = ({ price, table, setInstallmentAmount 
                     <table className="table-auto w-full text-left whitespace-no-wrap text-xs sm:text-sm">
                         <thead>
                             <tr>
-                                <th className="hidden sm:block px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100 rounded-tl rounded-bl">Tutar</th>
-                                <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Taksit Adedi</th>
-                                <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Taksit Tutarı</th>
-                                <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Toplam</th>
-                                <th className="w-6 sm:w-10 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100 rounded-tr rounded-br pr-4">Seçim</th>
+                                <th className="hidden sm:block px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100 rounded-tl rounded-bl">Tutar</th>
+                                <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Taksit Adedi</th>
+                                <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Taksit Tutarı</th>
+                                <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Toplam</th>
+                                <th className="w-6 sm:w-10 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100 rounded-tr rounded-br pr-4">Seçim</th>
                             </tr>
                         </thead>
                         <tbody>

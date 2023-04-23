@@ -147,11 +147,11 @@ const VisitTable: React.FC<TableProps> = ({ vd }) => {
             <table className="table-auto w-full text-left whitespace-no-wrap text-xs sm:text-sm">
                 <thead>
                     <tr>
-                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-gray-100">Kullanıcı</th>
-                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-gray-100">Toplam Link</th>
-                        {/* <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-gray-100">Ürünler</th> */}
-                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-gray-100">Aktif Link</th>
-                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-gray-100">Detay</th>
+                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Kullanıcı</th>
+                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Toplam Link</th>
+                        {/* <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Ürünler</th> */}
+                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Aktif Link</th>
+                        <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Detay</th>
                     </tr>
                 </thead>
                 <tbody>

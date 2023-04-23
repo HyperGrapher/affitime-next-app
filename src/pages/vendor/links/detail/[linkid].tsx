@@ -332,12 +332,12 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
  <table className="table-auto w-full text-left whitespace-no-wrap text-xs sm:text-sm">
                 <thead>
                     <tr>
-                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Tarih</th>
-                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Ulke</th>
-                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Ödeme</th>
-                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Geçerlilik</th>
-                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Sebep</th>
-                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100">Satın <br /> alma</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Tarih</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Ulke</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Ödeme</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Geçerlilik</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Sebep</th>
+                        <th className="px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-slate-100">Satın <br /> alma</th>
                         <th className="hidden sm:table-cell px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100 rounded-tl rounded-bl">Cihaz</th>
                         <th className="hidden sm:table-cell px-2 py-2 sm:px-4 sm:py-2 title-font tracking-wider font-medium text-gray-900 text-xs sm:text-sm bg-gray-100 rounded-tl rounded-bl">Browser</th>
                     </tr>
