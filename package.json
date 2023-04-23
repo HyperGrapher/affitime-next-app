@@ -64,6 +64,7 @@
     "react-topbar-progress-indicator": "^4.1.1",
     "react-wrap-balancer": "^0.3.0",
     "request-ip": "^3.3.0",
+    "sendpulse-api": "^1.1.6",
     "superjson": "1.12.1",
     "timeago-react": "^3.0.5",
     "timeago.js": "^4.0.2",

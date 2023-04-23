@@ -13,24 +13,25 @@ type Props = {
         product: Product
     })[],
     setModal: () => void,
+    username: string,
 }
 
-const PartnerLinksModal: React.FC<Props> = ({ links, setModal }) => {
+const PartnerLinksModal: React.FC<Props> = ({ links, setModal, username }) => {
     return (
         <section
             className={classNames(
                 "bg-white shadow-2xl rounded-xl",
                 "flex flex-col items-center ",
                 "px-12 py-8 w-full sm:w-3/5",
-                "min-w-full overflow-y-scroll"
+                "min-w-full"
             )}>
 
 
-            <h4 className="text-xl font-semibold mb-5 text-center whitespace-nowrap">
-                Partner Linkleri
+            <h4 className="text-xl font-semibold mb-5 text-center ">
+                {username} Kullanıcısının Linkleri
             </h4>
 
-            <div className="space-y-2">
+            <div className="space-y-2 overflow-y-scroll">
                 {links.map(link => (
                     <main
                         key={link.id}

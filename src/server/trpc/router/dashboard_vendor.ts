@@ -64,7 +64,7 @@ export const VendorDashboardRouter = router({
       where: {
         AND: [
           { vendor_id: vendorId },
-          { status: { not: LinkStatus.AWAITING } },
+          // { status: { not: LinkStatus.AWAITING } },
         ],
       },
       include: { partner: true, product: true },

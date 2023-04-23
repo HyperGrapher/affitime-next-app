@@ -120,7 +120,6 @@ const Main = () => {
                 <section className="mt-4 flex flex-col gap-4">
 
 
-                    {/*  partnerLinks?.map(x => <PartnerItem key={x.id} pl={x} />) */}
                     <VisitTable vd={partnerLinks} />
 
 
@@ -149,7 +148,6 @@ const VisitTable: React.FC<TableProps> = ({ vd }) => {
                     <tr>
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Kullanıcı</th>
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Toplam Link</th>
-                        {/* <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Ürünler</th> */}
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Aktif Link</th>
                         <th className="px-2 py-2 md:px-4 md:py-2 title-font tracking-wider font-medium text-gray-900 text-xs md:text-sm bg-slate-100">Detay</th>
                     </tr>
@@ -185,8 +183,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
     const pc = useMemo(() => {
         const p = pl.partner_links.map(x => x)
         const act = pl.partner_links.filter(x => x.active)
-        // const unique = [...new Set(p.map(x => x.product_id))]
-        return { /* products: unique.length,  */active: act.length, links: p.length }
+        return { active: act.length, links: p.length }
 
     }, [pl])
     return (
@@ -196,7 +193,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
                 <div className="flex space-x-2 items-center">
                     <button
                         className="aspect-square w-8 h-8"
-                        onClick={() => null}
+                        onClick={() => setModal(true)}
                     >
                         {pl.image ?
                             <img
@@ -218,7 +215,7 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
                     </button>
 
                     <button
-
+                        onClick={() => setModal(true)}
                         className="text-sm font-bold text-slate-500">
                         {pl.username}
                     </button>
@@ -227,7 +224,6 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
 
             </td>
             <td className="px-2 py-2 md:px-4 md:py-2 whitespace-nowrap text-gray-900 ">{String(pc.links)}</td>
-            {/* <td className={`px-2 py-2 md:px-4 md:py-2 whitespace-nowrap`}>{String(pc.products)}</td> */}
             <td className={`px-2 py-2 md:px-4 md:py-2 whitespace-nowrap text-gray-900  `}>{String(pc.active)}</td>
             <td className={`px-2 py-2 md:px-4 md:py-2 whitespace-nowrap text-gray-900  `}>
 
@@ -242,8 +238,8 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
 
             </td>
 
-            <DynamicModalContainer setModal={()=> setModal(false)} state={modal} key={"dynamicLinksModal"}>
-                <DynamicLinksModal links={pl.partner_links} setModal={() => setModal(false)} />
+            <DynamicModalContainer setModal={() => setModal(false)} state={modal} key={"dynamicLinksModal"}>
+                <DynamicLinksModal username={pl.username} links={pl.partner_links} setModal={() => setModal(false)} />
             </DynamicModalContainer>
 
         </tr>
