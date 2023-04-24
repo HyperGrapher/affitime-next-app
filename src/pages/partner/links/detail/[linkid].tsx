@@ -84,7 +84,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                         <span className="bg-yellow-100 border border-yellow-200 rounded-full p-2"><HiBell className="text-yellow-500 w-5 h-5" /></span>
                         <b className="text-neutral-500 text-sm">
                             Affiliate link isteğiniz mağazaya iletildi. Mağaza onayından sonra <Space />
-                            <Link className="text-blue-500 underline" href={"/"}>Affiliate Linklerim</Link> sayfasında listelenecektir.
+                            <Link className="text-blue-500 underline" href={AppRoutes.PARTNER_LINKS}>Affiliate Linklerim</Link> sayfasında listelenecektir.
                         </b>
                     </div>
                 )

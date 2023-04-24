@@ -44,9 +44,10 @@ const SocialForm: React.FC = () => {
       },
     ]
 
-    const truthySocials = data.map(x => x.handle.trim() ? x : undefined).filter(x => x !== undefined)
+    const truthySocials = data.map(x => x.handle.trim() ? x : undefined).filter(Boolean)
+    // const truthySocials = data.map(x => x.handle.trim() ? x : undefined).filter(x => x !== undefined)
 
-    if (truthySocials.length === 0) return notifyError("En az bir sosyal platform ismi girin!")
+    if (truthySocials.length === 0) return notifyError("En az bir adet sosyal medya profil linkinizi girin!")
 
     setBusy(true)
 
