@@ -187,14 +187,13 @@ const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
 
     }, [pl])
     return (
-        <tr>
+        <tr className="odd:bg-white even:bg-slate-100">
             <td className="px-0 py-2 md:px-0 md:py-2 whitespace-nowrap">
 
                 <div className="flex space-x-2 items-center">
                     <button
                         className="aspect-square w-8 h-8"
-                        onClick={() => setModal(true)}
-                    >
+                        onClick={() => setModal(true)}>
                         {pl.image ?
                             <img
                                 className="object-cover hover:shadow rounded object-center w-12 h-12 aspect-square"
