@@ -10,6 +10,12 @@ export const PAYTR = {
   merchant_salt: "7AuBqZA6iNQSabnJ",
 };
 
+export const PAYTR_MARKETPLACE = {
+  merchant_id: 339896,
+  merchant_key: "bfqaRWT9ZGMw3HC4",
+  merchant_salt: "ejRTNLhidiGwJn53",
+};
+
 export const POLL_CATEGORIES = {
   cat1: "Elektronik",
   cat2: "Giyim & Aksesuar",

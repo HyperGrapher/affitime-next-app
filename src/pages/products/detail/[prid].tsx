@@ -101,6 +101,11 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
     })
 
 
+    const { data: iban } = trpc.payments.getIban.useQuery(undefined, {
+        enabled: session?.role === UserRoles.PARTNER,
+    })
+
+
     function handleLinkCreation(): void {
 
         setBusy(true)
@@ -112,6 +117,12 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
 
         if (session.role !== UserRoles.PARTNER) {
             notifyError('Vendor hesabı ile link oluşturulamaz.')
+            setBusy(false)
+            return
+        }
+
+        if (!iban) {
+            notifyError('Link Oluşturmak için IBAN ekleyin.')
             setBusy(false)
             return
         }
@@ -367,6 +378,23 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                         </h3>
 
                     </section>
+
+                    {
+                        ((session && session.role === UserRoles.PARTNER) && !iban) && (
+                            <section className='text-center py-4 px-2 bg-yellow-100 mt-8'>
+
+                                <b className="text-slate-500 py-4 text-sm md:text-base">
+                                    Link Oluşturmak için önce
+                                    <Space />
+                                    <Link className="text-blue-500 py-4" href={`${AppRoutes.PARTNER_ACCOUNT_SETTINGS}?tab=2`}>Hesap Ayarları</Link>
+                                    <Space />
+                                    sayfasından IBAN ekleyin.
+                                </b>
+
+                            </section>
+
+                        )
+                    }
 
                     {/* Submit */}
                     {pd.active ? <button

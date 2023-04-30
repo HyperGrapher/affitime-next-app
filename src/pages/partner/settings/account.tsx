@@ -56,7 +56,7 @@ const Account = () => {
                     )}>
                         <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
-                        <TabItem id="2" title="Ödeme Yöntemi" selected={selectedIndex} query="2" />
+                        <TabItem id="2" title="IBAN Bilgisi" selected={selectedIndex} query="2" />
 
                     </Tab.List>
                     <Tab.Panels>
