@@ -153,6 +153,36 @@ model PlanPayment {
   @@map("plan_payment")
 }
 
+model MarketPayment {
+  id                String       @id @default(cuid())
+  vendorUserId            String
+  merchant_oid      String       @unique()
+  // vendor              Vendor         @relation(fields: [vendorId], references: [id])
+  vendorId          String
+  user_basket       String
+  user_phone        String
+  user_name         String
+  user_address      String
+  payment_type      String?
+  payment_amount    Float
+  payed_amount      Float? // express
+  installment_count Int          @default(0)
+  card_type         String?
+  validFrom         DateTime? // express
+  validTill         DateTime? // express
+  success           Boolean?
+  seen              Boolean?     @default(false)
+  errorCode         String?
+  errorReason       String?
+  test_mode         Boolean? // express
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  @@index([id])
+  @@map("market_payment")
+}
+
+
 model Taxinfo {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [user_id], references: [id])

@@ -29,8 +29,8 @@ export const ApikeyRouter = router({
     const { vendorId, id } = ctx.session;
 
     let apikey = crypto
-      .randomBytes(32)
-      .toString("base64url")
+      .randomBytes(24)
+      .toString("hex")
       .replace(/^a-zA-Z0-9 ]/g, "");
 
     apikey = `affi-${apikey}`;

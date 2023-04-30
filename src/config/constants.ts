@@ -2,6 +2,7 @@ export const DRAWER_WIDTH = 240 as const;
 export const COOKIE_SIGN_KEY = "affi:cookie:signatureKey:keygrip" as const;
 export const USER_IP_SESSION_STORAGE = "atuiss" as const;
 export const PAYTR_PLAN_PAYMENT_URL = "https://www.paytr.com/odeme" as const;
+export const PAYTR_MARKETPLACE_URL = "https://www.paytr.com/odeme/platform/transfer" as const;
 export const AVATAR_URL = "https://affiti.me/img/avatar" as const;
 
 export const PAYTR = {

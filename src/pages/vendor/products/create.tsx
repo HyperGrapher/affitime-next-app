@@ -118,6 +118,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
         mode: 'onBlur',
     });
 
+    const mp = trpc.marketplace.createCampaign.useMutation()
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     const updateKey = trpc.apikey.upsertApikey.useMutation()
@@ -232,6 +233,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
                     <h2 className="font-bold text-base md:text-xl text-slate-700 ml-2">
                         API Anahtarı
+
                     </h2>
 
                 </div>
@@ -785,6 +787,23 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                         </button>
 
                     </form>
+
+                    
+                    <button
+                            onClick={() => {
+                                mp.mutate({ pid: "1" }, {
+
+                                    onSuccess() {
+                                        console.log('helllo');
+
+                                    }
+                                }
+
+                                )
+                            }}
+                            className="bg-slate-100 p-1 text-white">
+                            MP
+                        </button>
 
 
                 </main>

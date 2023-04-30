@@ -13,6 +13,7 @@ import { partnerRouter } from "./partner";
 import { purchaseRouter } from "./purchase";
 import { TestingRouter } from "./testing";
 import { ApikeyRouter } from "./apikey";
+import { marketPlaceRouter } from "./marketplace";
 
 export const appRouter = router({
   auth: authRouter,
@@ -29,6 +30,7 @@ export const appRouter = router({
   purchase: purchaseRouter,
   testing: TestingRouter,
   apikey: ApikeyRouter,
+  marketplace: marketPlaceRouter,
 });
 
 // export type definition of API
