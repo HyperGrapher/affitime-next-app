@@ -102,7 +102,7 @@ const PartnerPaymentInfo = () => {
     const saveIban = trpc.payments.updateOrSavePartnerIban.useMutation()
 
     trpc.payments.getIban.useQuery(undefined, {
-        onSettled(data, error) {
+        onSuccess(data) {
 
             if (data) {
                 setValue('fname', data.fname)
