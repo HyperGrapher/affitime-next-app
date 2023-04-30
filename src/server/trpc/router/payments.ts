@@ -293,8 +293,6 @@ export const PaymentsRouter = router({
         iban: formatted,
       };
 
-      console.log({ iban, input });
-
       try {
         await ctx.prisma.partner.update({
           where: { id: partnerId },

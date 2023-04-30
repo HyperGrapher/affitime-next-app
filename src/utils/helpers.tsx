@@ -47,9 +47,14 @@ export const range = (end: number, start = 0, step = 1) => {
     };
 };
 
+/**
+ * 
+ * @param ibanNo "xxxxxxxxxxxxxxxx..."
+ * @returns "TR xxxx xxxx xxxx xxxx xxxx xxxx"
+ */
 export const formatIban = (ibanNo: string | null) => {
 
-    if (!ibanNo) return null
+    if (!ibanNo) return ""
 
     return ibanNo.replace(/(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})/, "TR $1 $2 $3 $4 $5 $6");
 
