@@ -45,7 +45,7 @@ export const marketPlaceRouter = router({
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-      const merchant_oid = "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const merchant_oid = "MP-100"// "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
       const trans_id = "TID" + Date.now(); // En fazla 60 karakter, Alfa numerik
       const submerchant_amount = 7000; // 70tl -> 7000
       const total_amount = 10000; // 100tl -> 10000
