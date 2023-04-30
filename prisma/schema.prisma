@@ -239,6 +239,7 @@ model Partner {
   links         Link[]
   notifications Notification[]
   visits        Visit[]
+  iban          Json? // {iban, fullname, banka}
   interests     Json?
   socials       Json?
   createdAt     DateTime       @default(now())

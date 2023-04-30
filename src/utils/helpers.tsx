@@ -1,6 +1,6 @@
 export const capitalize = (str: string | null): string => {
 
-    if(!str) return "-"
+    if (!str) return "-"
     const lower = str.toLowerCase();
     return str.charAt(0).toUpperCase() + lower.slice(1);
 };
@@ -45,4 +45,12 @@ export const range = (end: number, start = 0, step = 1) => {
     return {
         [Symbol.iterator]: generateRange,
     };
+};
+
+export const formatIban = (ibanNo: string | null) => {
+
+    if (!ibanNo) return null
+
+    return ibanNo.replace(/(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})(\d{4})/, "TR $1 $2 $3 $4 $5 $6");
+
 };

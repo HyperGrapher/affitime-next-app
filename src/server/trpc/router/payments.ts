@@ -4,8 +4,14 @@ import type { Link, Partner, Product, Vendor, Visit } from "@prisma/client";
 import { CommissionType, LinkStatus } from "@prisma/client";
 import { flow, get, groupBy, head, map, omit, partialRight } from "lodash";
 import { z } from "zod";
-import type { IUnpaidItemForVendor, IUnpaidItemForPartner } from "../../../interface/dashboard.interface";
+import type {
+  IUnpaidItemForVendor,
+  IUnpaidItemForPartner,
+} from "../../../interface/dashboard.interface";
 import { partnerProcedure, router, vendorProcedure } from "../trpc";
+import { TRPCError } from "@trpc/server";
+import { formatIban } from "../../../utils/helpers";
+import { log } from "console";
 
 export const PaymentsRouter = router({
   getLinkStats: vendorProcedure.query(async ({ ctx }) => {
@@ -50,7 +56,7 @@ export const PaymentsRouter = router({
         link: true,
         vendor: true,
       },
-    });  
+    });
 
     const func = flow(
       partialRight(groupBy, "vendor.brand"),
@@ -64,25 +70,25 @@ export const PaymentsRouter = router({
         ) => ({
           ...get(head(group), "vendor"),
           visits: group.map((o) => omit(o, "vendor")),
-          calc: group
-            .reduce((acc, cur) => {
-              let total = 0;
-              if (cur.link.perClickType === CommissionType.CASH) {
-                total = (cur.link.perClick ?? 0) + acc;
-              } else if (cur.link.perClickType === CommissionType.PERC) {
-                total = ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
-              }
+          calc: group.reduce((acc, cur) => {
+            let total = 0;
+            if (cur.link.perClickType === CommissionType.CASH) {
+              total = (cur.link.perClick ?? 0) + acc;
+            } else if (cur.link.perClickType === CommissionType.PERC) {
+              total =
+                ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
+            }
 
-              return total;
-            }, 0),
+            return total;
+          }, 0),
           links: new Set(group.map((x) => x.link_id)).size,
         })
       )
     );
 
     const funcRes = func(visits) as IUnpaidItemForPartner[];
-    
-    return funcRes.filter(x => x.calc !== 0);
+
+    return funcRes.filter((x) => x.calc !== 0);
   }),
 
   // * vendor/payments-awaitingPayments [DONE]
@@ -99,8 +105,7 @@ export const PaymentsRouter = router({
         link: true,
         partner: true,
       },
-    });    
-
+    });
 
     const func = flow(
       partialRight(groupBy, "partner.id"),
@@ -114,17 +119,17 @@ export const PaymentsRouter = router({
         ) => ({
           ...get(head(group), "partner"),
           visits: group.map((o) => omit(o, "partner")),
-          calc: group
-            .reduce((acc, cur) => {
-              let total = 0;
-              if (cur.link.perClickType === CommissionType.CASH) {
-                total = (cur.link.perClick ?? 0) + acc;
-              } else if (cur.link.perClickType === CommissionType.PERC) {
-                total = ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
-              }
+          calc: group.reduce((acc, cur) => {
+            let total = 0;
+            if (cur.link.perClickType === CommissionType.CASH) {
+              total = (cur.link.perClick ?? 0) + acc;
+            } else if (cur.link.perClickType === CommissionType.PERC) {
+              total =
+                ((cur.link.price ?? 0) / 100) * (cur.link.perClick ?? 0) + acc;
+            }
 
-              return total;
-            }, 0),
+            return total;
+          }, 0),
           links: new Set(group.map((x) => x.link_id)).size,
         })
       )
@@ -132,8 +137,7 @@ export const PaymentsRouter = router({
 
     const funcRes = func(visits) as IUnpaidItemForVendor[];
 
-
-    return funcRes.filter(x => x.calc !== 0);
+    return funcRes.filter((x) => x.calc !== 0);
   }),
 
   // * Payment Detail Page - Not implemented as page
@@ -252,5 +256,80 @@ export const PaymentsRouter = router({
       valid: String(valid.length),
       invalid: String(invalid.length),
     };
+  }),
+
+  updateOrSavePartnerIban: partnerProcedure
+    .input(
+      z.object({
+        fname: z.string(),
+        lname: z.string(),
+        iban: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { partnerId } = ctx.session;
+
+      if (!partnerId)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Partner ID not found",
+        });
+
+      const partner = await ctx.prisma.partner.findUnique({
+        where: { id: partnerId },
+      });
+
+      if (!partner)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Partner not found",
+        });
+
+      const formatted = formatIban(input.iban);
+
+      const iban = {
+        fname: input.fname,
+        lname: input.lname,
+        iban: formatted,
+      };
+
+      console.log({ iban, input });
+
+      try {
+        await ctx.prisma.partner.update({
+          where: { id: partnerId },
+          data: {
+            iban: { ...iban },
+          },
+        });
+
+        return { error: false, message: "ok" };
+      } catch (error) {
+        return { error: true, message: "error" };
+      }
+    }),
+
+  getIban: partnerProcedure.query(async ({ ctx }) => {
+    const { partnerId } = ctx.session;
+
+    if (!partnerId)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Partner ID not found",
+      });
+
+    const partner = await ctx.prisma.partner.findUnique({
+      where: {
+        id: partnerId,
+      },
+    });
+
+    if (!partner)
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Partner not found",
+      });
+
+    return partner.iban as {iban: string, fname: string, lname: string};
   }),
 });

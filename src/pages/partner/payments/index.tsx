@@ -13,6 +13,7 @@ import { UserRoles } from '../../../interface/auth.interface';
 import classNames from "../../../utils/classnames";
 import { trpc } from "../../../utils/trpc";
 import Head from "next/head";
+import { Space } from '../../../components/shared/HtmlCodes';
 
 
 const Payments = () => {
@@ -36,8 +37,12 @@ const Payments = () => {
                         Ödemelerim
                     </h1>
                     <small className="text-slate-400 text-sm">
-                    Ödeme detaylarını bu sayfada görüntüleyebilirsin.
-                        <Link href={AppRoutes.VENDOR_LINKS}> </Link>
+                        Ödeme detaylarını bu sayfada görüntüleyebilirsin.
+                        <br />
+                        Ödeme bilgilerinizi <Space />
+                        <Link className='text-blue-500' href={AppRoutes.PARTNER_ACCOUNT_SETTINGS}>Hesap Ayarlari</Link>
+                        <Space />
+                        sayfasından güncelleyebilirsiniz.
                     </small>
                 </div>
 

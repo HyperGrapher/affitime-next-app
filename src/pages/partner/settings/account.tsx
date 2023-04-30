@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Tab } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useSession } from 'next-auth/react';
@@ -55,13 +56,13 @@ const Account = () => {
                     )}>
                         <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
-                        {/* <TabItem id="2" title="Third" selected={selectedIndex} query="2" /> */}
+                        <TabItem id="2" title="Ödeme Yöntemi" selected={selectedIndex} query="2" />
 
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>{selectedIndex === 0 && <PartnerAccountInfo />}</Tab.Panel>
                         <Tab.Panel>{selectedIndex === 1 && <UpdatePassword />}</Tab.Panel>
-                        {/* <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel> */}
+                        <Tab.Panel>{selectedIndex === 2 && <PartnerPaymentInfo />}</Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>
 
@@ -76,6 +77,175 @@ const Account = () => {
 export default Account
 
 
+interface IBankFormData {
+    fname: string;
+    lname: string;
+    iban: string;
+}
+
+const IbanValidationSchema = z.object({
+    fname: z.string().trim().min(3, "En az 3 karakter olmalı!"),
+    lname: z.string().trim().min(2, "En az 2 karakter olmalı!"),
+    iban: z.string().trim().min(26, "En az 24 haneli numaranızı giriniz").trim(),
+}).required();
+
+const PartnerPaymentInfo = () => {
+
+    const [busy, setBusy] = useState(false)
+
+    const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IBankFormData>({
+        resolver: zodResolver(IbanValidationSchema),
+        reValidateMode: 'onBlur',
+        mode: 'onBlur',
+    });
+
+    const saveIban = trpc.payments.updateOrSavePartnerIban.useMutation()
+
+    trpc.payments.getIban.useQuery(undefined, {
+        onSettled(data, error) {
+
+            if (data) {
+                setValue('fname', data.fname)
+                setValue('lname', data.lname)
+                setValue('iban', data.iban)
+
+            }
+
+
+        },
+    })
+
+    const onSubmit: SubmitHandler<IBankFormData> = async (data) => {
+
+        const value = data.iban.replace(/\s|[^0-9]+/g, "")
+
+        if (value.length !== 24) {
+            setError('iban', { message: 'Iban numarası 24 rakamdan oluşmalı!' })
+            return
+        }
+        data.iban = value
+
+        setBusy(true)
+        saveIban.mutate(data, {
+            onSuccess: () => {
+                notifySuccessBR("Bilgileriniz Güncellendi!")
+            },
+            onError() {
+                notifyError('Hata. Bilgileriniz Güncellenemedi!')
+            },
+            onSettled: () => {
+                setBusy(false)
+            }
+        })
+
+    }
+
+
+    return (
+        <div className="div">
+
+            <PageCard>
+
+                {busy && <TopBarProgress />}
+
+                <h2 className="text-center text-lg font-bold text-slate-500">Ödeme Bilgilerinizi Güncelleyin</h2>
+
+                <div className="w-64 flex flex-col gap-4 mx-auto">
+
+                    <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
+                        <FormFieldWrapper>
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 "
+                                )}
+                                htmlFor="fname">
+                                Adınız
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'disabled:bg-slate-200 block w-full',
+                                    'rounded-md border-gray-300 shadow-sm ',
+                                    'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                )}
+                                disabled={busy}
+                                type="text"
+                                placeholder='Adınız'
+                                {...register("fname", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.fname} message={errors.fname?.message} />
+
+                        </FormFieldWrapper>
+
+                        <FormFieldWrapper>
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 "
+                                )}
+                                htmlFor="lname">
+                                Soyadınız
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'disabled:bg-slate-200 block w-full',
+                                    'rounded-md border-gray-300 shadow-sm ',
+                                    'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                )}
+                                disabled={busy}
+                                type="text"
+                                placeholder='Soyadınız'
+                                {...register("lname", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.lname} message={errors.lname?.message} />
+
+                        </FormFieldWrapper>
+
+                        <FormFieldWrapper>
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 "
+                                )}
+                                htmlFor="lname">
+                                IBAN No
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'disabled:bg-slate-200 block w-full',
+                                    'rounded-md border-gray-300 shadow-sm text-sm',
+                                    'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                                )}
+                                disabled={busy}
+                                type="text"
+                                placeholder='IBAN'
+                                {...register("iban", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.iban} message={errors.iban?.message} />
+
+                        </FormFieldWrapper>
+
+                        <IconButton
+                            icon={<HiPencil color="white" size={"16px"} />}
+                            title="Güncelle"
+                            disabled={busy}
+                            fn={() => null} />
+                    </form>
+                </div>
+
+            </PageCard>
+        </div>
+    )
+
+}
+
+
 interface IPartnerAccountInfoFormData {
     email: string;
     fname: string;
@@ -83,8 +253,6 @@ interface IPartnerAccountInfoFormData {
     phone: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     // image: any;
-
-
 }
 const MAX_FILE_SIZE = 100000;
 const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
@@ -450,7 +618,7 @@ const UpdatePassword = () => {
             onSuccess: () => {
                 notifySuccessBR("Bilgileriniz Güncellendi!")
             },
-            onError(error) {
+            onError(error: { message: any; }) {
                 console.error(error)
                 notifyError(error.message ?? 'Hata. Bilgileriniz Güncellenemedi!')
             },
