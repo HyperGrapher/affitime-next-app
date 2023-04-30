@@ -14,21 +14,29 @@ import { checkUserStatus } from '../../../utils/checkUserStatus';
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
-// import dynamic from 'next/dynamic'
-
-// const DynamicModalContainer = dynamic(() => import('../../../components/modals/ModalContainer'), {
-//     ssr: false,
-//   })
-
-//   const DynamicRemaingTrialModal = dynamic(() => import('../../../components/modals/TrialRemaining'), {
-//     ssr: false,
-//   })
 
 
 const DashboardVendor = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
     const { data: session } = useSession()
+
+    // if (session) {
+
+    //     const userRegId = JSON.parse(localStorage.getItem('affiu') ?? '{ \"id\": \"0\" }') as { id: string }
+
+    //     if(userRegId.id === '0') {
+    //         console.log('<<<<<<<<< SIGNOUT 0 >>>>>>>>>>>>>>>>');
+    //         localStorage.setItem('affui', `${session.id}`)
+            
+    //     }
+    //     if(userRegId.id === session.id) {
+    //         console.log('<<<<<<<<< SIGNOUT ID  Mismatch b >>>>>>>>>>>>>>>>');
+            
+    //     }
+    //     console.log({ userRegId });
+
+    // }
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()

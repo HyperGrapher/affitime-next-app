@@ -7,7 +7,7 @@ import { LinkStatus, type Link as LinkEntity, type Partner, type Product } from 
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useMemo } from "react";
+import React from "react";
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
 import productImg from '../../../assets/product.png';
 import { AppRoutes } from "../../../config/appRoutes";
@@ -32,14 +32,7 @@ const VendorLinkItem: React.FC<ItemProps> = ({ link, confirmModal, setDeleteId }
         confirmModal()
     }
 
-    const validTotalClicks = useMemo(() => {
-        return link.visits.reduce((acc, cur) => {
-            let x = 0
-            if (!cur.dubious) x = acc + 1
-
-            return x
-        }, 0)
-    }, [link])
+    const validTotalClicks = link.visits.reduce((acc, cur) => !cur.dubious ? acc + 1 : 0, 0);
 
     return (
         <li className={
