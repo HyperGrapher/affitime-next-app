@@ -225,7 +225,7 @@ const PaymentCardMarket = () => {
                     cvv: cardData.cvvNumber,
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
-                    installment_count: isTaksit ? installmentAmount : "0",
+                    installment_count: "0", // isTaksit ? installmentAmount : "0",
                     card_type: selectedCard.value,
                 }
 

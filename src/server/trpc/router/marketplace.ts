@@ -185,7 +185,8 @@ export const marketPlaceRouter = router({
       ]);
 
       const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
-      const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
+      // const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
+      const user_name = `PAYTR TEST`;
       const user_phone = vendor.phone?.startsWith("0")
         ? vendor.phone
         : `0${vendor.phone}`;
