@@ -32,8 +32,6 @@ const DynamicPaymentCardMarket = dynamic(() => import('../../components/purchase
 // "@types/payment": "^2.1.3",
 // https://www.npmjs.com/package/payment
 
-type PlanType = "BASIC" | "PRO" | "ULTIMATE"
-
 const Purchase = () => {
 
     const { back, query } = useRouter()

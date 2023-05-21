@@ -14,7 +14,30 @@ import type {
   InstallmentType,
 } from "../../../interface/payments.interface";
 
+
+      /*
+      ex test card 1: 4355 0843 5508 4358
+      ex test card 2: 4355 0843 5508 4358
+      
+        test cards for paytr magaza
+
+        9792 0303 9444 0796
+        4355 0843 5508 4358
+        5406 6754 0667 5403
+
+        Kart Ad Soyadı	PAYTR TEST
+        Son Kullanma	12 / 30
+        CVV	000
+
+
+        taxinfo -> {"vkn":"1234567891","tckn":"29458195655","title":"dr","fname":"ragıp","lname":"adıgüzel","taxOffice":"adana v.d.","address":"some address that is valid"}
+      */
+
+
 export const marketPlaceRouter = router({
+
+
+  // Ilk adim kampanya icin vendor'den odeme al
   createCampaign: vendorProcedure
     .input(
       z.object({
@@ -45,8 +68,8 @@ export const marketPlaceRouter = router({
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-      const merchant_oid = "MP-100"// "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
-      const trans_id = "TID" + Date.now(); // En fazla 60 karakter, Alfa numerik
+      const merchant_oid = "MP-" + Date.now(); // "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const trans_id = "TID-" + Date.now(); // En fazla 60 karakter, Alfa numerik
       const submerchant_amount = 7000; // 70tl -> 7000
       const total_amount = 10000; // 100tl -> 10000
       const transfer_name = "ragip adiguzel"; // 100tl -> 10000
@@ -142,7 +165,7 @@ export const marketPlaceRouter = router({
       const test_mode = "1";
       const non3d_test_failed = "0";
       const non_3d = "0"; //3d'siz işlem
-      const payment_amount = "100.00";
+      const payment_amount = "1000.00";
 
       const vendor = await ctx.prisma.vendor.findUnique({
         where: { id: vendorId },
@@ -155,7 +178,7 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
-      const merchant_oid = "MP-100"; // + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const merchant_oid = "MP-"+Date.now(); // + Date.now(); // En fazla 64 karakter, Alfa numerik
 
       const user_basket = JSON.stringify([
         [`vendor-marketplace`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
@@ -170,7 +193,9 @@ export const marketPlaceRouter = router({
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-      const hashSTR = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
+
+      const hashSTRI = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
+      const hashSTR  = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
       const paytr_token = hashSTR + merchant_salt;
 
       const token = crypto
@@ -179,9 +204,9 @@ export const marketPlaceRouter = router({
         .digest("base64");
 
       try {
-        await ctx.prisma.planPayment.create({
+        await ctx.prisma.marketPayment.create({
           data: {
-            userId: vendor.userId,
+            vendorUserId: vendor.userId,
             vendorId,
             merchant_oid,
             user_basket,

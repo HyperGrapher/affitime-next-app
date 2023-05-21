@@ -25,6 +25,7 @@ import profileImg from '../../../assets/profile.webp'
 import axios from 'axios';
 import useNavbarStore from '../../../store/navbar.store';
 import { AVATAR_URL } from '../../../config/constants';
+import Link from 'next/link';
 
 
 const Account = () => {
@@ -693,6 +694,10 @@ const TestButtonsSection = () => {
                     className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500">
                     Basic plan satin al
                 </button>
+
+
+
+                <Link href="/payments/purchase-market">Market Odeme</Link>
 
 
             </div>

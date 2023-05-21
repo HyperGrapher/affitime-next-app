@@ -62,7 +62,6 @@ const TaksitRadio: React.FC<InstProps> = ({ setIsTaksit }) => {
         </FormFieldWrapper>)
 }
 
-type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
 interface ICardFormData {
     card_number: string;
@@ -135,7 +134,10 @@ const validationSchema = z.object({
     });
 
 
-const calcTotalFromPlan = (annual: boolean, price: string) => annual ? parseInt(price) * 12 : parseInt(price);
+    /*
+        ONCE direct api ile odeme alini
+        Sonra partner'e odeme yapilacagi zaman transfer_iban vb ile istek gonderilir
+    */
 
 const PaymentCardMarket = () => {
     const { query } = useRouter()
@@ -188,7 +190,7 @@ const PaymentCardMarket = () => {
 
 
         if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
-        setBusy(true)
+        // setBusy(true)
 
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
@@ -202,6 +204,9 @@ const PaymentCardMarket = () => {
             installment_count: isTaksit ? installmentAmount : "0",
             card_type: selectedCard.value
         }
+
+        // return console.log({purchaseData, cardData});
+        
 
 
         puchase.mutate(purchaseData, {
@@ -270,7 +275,7 @@ const PaymentCardMarket = () => {
             <input type="hidden" name="email" value={payData?.email} />
             <input type="hidden" name="payment_type" value={payData?.payment_type} />
             <input type="hidden" name="payment_amount" value={payData?.payment_amount} />
-            <input type="hidden" name="currency" value={payData?.currency} />
+            {/* <input type="hidden" name="currency" value={payData?.currency} /> */}
             <input type="hidden" name="test_mode" value={payData?.test_mode} />
             <input type="hidden" name="non_3d" value={payData?.non_3d} />
             <input type="hidden" name="merchant_ok_url" value={payData?.merchant_ok_url} />
@@ -284,7 +289,7 @@ const PaymentCardMarket = () => {
             <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
             <input type="hidden" name="installment_count" value={payData?.installment_count} />
-            <input type="hidden" name="card_type" value={payData?.card_type} />
+            {/* <input type="hidden" name="card_type" value={payData?.card_type} /> */}
 
             <button id="post" ref={buttonRef}>c</button>
         </form>

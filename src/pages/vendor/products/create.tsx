@@ -802,7 +802,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                                 )
                             }}
                             className="bg-slate-100 p-1 text-white">
-                            MP
+                            MarketPlace
                         </button>
 
 
