@@ -66,4 +66,35 @@ export const visitRouter = router({
 
       return res;
     }),
+
+  validateApiKey: publicProcedure
+    .input(
+      z.object({
+        apikey: z.string(),
+      })
+    )
+    .query(async ({ ctx, input }) => {
+      const { apikey } = input;
+
+      const key = await ctx.prisma.apiKey.findUnique({
+        where: {
+          apikey,
+        },
+      });
+
+      if (!key) return { error: true, message: "Token not found!" };
+      
+      try {
+        await ctx.prisma.apiKey.update({
+          where: {
+            apikey,
+          },
+          data: { installed: true },
+        });
+
+        return { error: false, message: "success" };
+      } catch (error) {
+        return { error: true, message: "Token not activated!" };
+      }
+    }),
 });
