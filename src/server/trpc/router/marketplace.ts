@@ -178,7 +178,7 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
-      const merchant_oid = "MP-"+Date.now(); // + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const merchant_oid = "MP"+Date.now(); // + Date.now(); // En fazla 64 karakter, Alfa numerik
 
       const user_basket = JSON.stringify([
         [`vendor-marketplace`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
