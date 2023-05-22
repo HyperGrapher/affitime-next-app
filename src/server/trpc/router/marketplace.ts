@@ -14,8 +14,7 @@ import type {
   InstallmentType,
 } from "../../../interface/payments.interface";
 
-
-      /*
+/*
       ex test card 1: 4355 0843 5508 4358
       ex test card 2: 4355 0843 5508 4358
       
@@ -31,14 +30,14 @@ import type {
 
 
         taxinfo -> {"vkn":"1234567891","tckn":"29458195655","title":"dr","fname":"ragıp","lname":"adıgüzel","taxOffice":"adana v.d.","address":"some address that is valid"}
-      */
+      
+      select vendorId, merchant_oid, success, user_basket, payment_amount, payed_amount, errorReason, createdAt from market_payment;
 
+*/
 
 export const marketPlaceRouter = router({
-
-
   // Ilk adim kampanya icin vendor'den odeme al
-  createCampaign: vendorProcedure
+  transferRequest: vendorProcedure
     .input(
       z.object({
         pid: z.string(),
@@ -59,17 +58,22 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
-      const randomHex = crypto
-        .randomBytes(12)
-        .toString("hex")
-        .replace(/^a-zA-Z0-9 ]/g, "");
+      // const marketPayment = await ctx.prisma.marketPayment.findUnique({
+      //   where: { merchant_oid : vendorId },
+      // });
+
+      // if (!marketPayment)
+      //   throw new TRPCError({
+      //     code: "NOT_FOUND",
+      //     message: "Session vendor not found",
+      //   });
 
       const merchant_id = PAYTR_MARKETPLACE.merchant_id;
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-      const merchant_oid = "MP-" + Date.now(); // "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
-      const trans_id = "TID-" + Date.now(); // En fazla 60 karakter, Alfa numerik
+      const merchant_oid = "get from db"; // "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const trans_id = "TRANS" + Date.now(); // En fazla 60 karakter, Alfa numerik
       const submerchant_amount = 7000; // 70tl -> 7000
       const total_amount = 10000; // 100tl -> 10000
       const transfer_name = "ragip adiguzel"; // 100tl -> 10000
@@ -142,7 +146,7 @@ export const marketPlaceRouter = router({
       return {};
     }),
 
-  purchasePack: vendorProcedure
+  createCampaignPayment: vendorProcedure
     .input(
       z.object({
         user_ip: z.string(),
@@ -153,7 +157,7 @@ export const marketPlaceRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { vendorId } = ctx.session;
+      const { vendorId, id } = ctx.session;
       const { user_ip, currency, user_address, installment_count, card_type } =
         input;
       const payment_type = "card";
@@ -178,15 +182,25 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
-      const merchant_oid = "MP"+Date.now(); // + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const taxinfo = await ctx.prisma.taxinfo.findUnique({
+        where: { user_id: id },
+      });
+
+      if (!taxinfo)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Session vendor not found",
+        });
+
+      const merchant_oid = "MP" + Date.now(); // + Date.now(); // En fazla 64 karakter, Alfa numerik
 
       const user_basket = JSON.stringify([
         [`vendor-marketplace`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
       ]);
 
       const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
-      // const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
-      const user_name = `PAYTR TEST`;
+      const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
+      // const user_name = `PAYTR TEST`;
       const user_phone = vendor.phone?.startsWith("0")
         ? vendor.phone
         : `0${vendor.phone}`;
@@ -194,9 +208,8 @@ export const marketPlaceRouter = router({
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-
       const hashSTRI = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
-      const hashSTR  = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
+      const hashSTR = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
       const paytr_token = hashSTR + merchant_salt;
 
       const token = crypto

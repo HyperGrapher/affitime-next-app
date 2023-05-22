@@ -90,7 +90,6 @@ const validationSchema = z.object({
     perSaleType: z.string().optional().nullable(),
 }).required();
 
-
 const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSideProps>) => {
 
     const [perClickType, setPerClickType] = useState<CommissionType>(CommissionType.CASH)
@@ -118,7 +117,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
         mode: 'onBlur',
     });
 
-    const mp = trpc.marketplace.createCampaign.useMutation()
+    const mp = trpc.marketplace.transferRequest.useMutation()
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     const updateKey = trpc.apikey.upsertApikey.useMutation()

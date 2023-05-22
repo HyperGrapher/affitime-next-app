@@ -13,7 +13,6 @@ import { trpc } from '../../utils/trpc'
 import TopBarProgress from "react-topbar-progress-indicator";
 import { HiOutlineMenu as IcMenu } from 'react-icons/hi'
 import useNavbarStore from '../../store/navbar.store'
-import { AVATAR_URL } from '../../config/constants'
 
 
 const pathsToExlude = [
@@ -23,18 +22,19 @@ const pathsToExlude = [
   '/pricing',
   '/blog',
   '/contact-us',
-
 ]
 
 const Navbar: React.FC = () => {
 
   const [busy, setBusy] = useState(false)
-  const { data: sessionData } = useSession()
+  const { data: session } = useSession()
   const { pathname } = useRouter()
   const deleteUserSession = trpc.auth.deleteSession.useMutation()
   const update = useNavbarStore(store => store.update)
-  // TODO: test it, needs link or console error
-  const { data, refetch } = trpc.user.getAccountImage.useQuery()
+
+  const { data, refetch } = trpc.user.getAccountImage.useQuery(undefined, {
+    enabled: !!session
+  })
 
   useEffect(() => {
     refetch()
@@ -97,7 +97,7 @@ const Navbar: React.FC = () => {
               </div>
               <div className='absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0'>
                 {/* dashboard dropdown */}
-                <p className='text-slate-500 text-xs font-medium hidden md:inline'>{sessionData?.email}</p>
+                <p className='text-slate-500 text-xs font-medium hidden md:inline'>{session?.email}</p>
                 <Menu as='div' className='relative ml-3'>
                   <div>
                     <Menu.Button className='flex rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 '>
@@ -118,7 +118,7 @@ const Navbar: React.FC = () => {
                     <Menu.Items className='absolute right-0 z-10 mt-5 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none'>
 
 
-                      {!sessionData ? <Fragment>
+                      {!session ? <Fragment>
 
                         <Menu.Item>
                           {({ active }) => (
@@ -167,7 +167,7 @@ const Navbar: React.FC = () => {
                           <Menu.Item>
                             {({ active }) => (
                               <Link
-                                href={`${sessionData.role === UserRoles.PARTNER ? AppRoutes.PARTNER_DASHBOARD : AppRoutes.VENDOR_DASHBOARD}`}
+                                href={`${session.role === UserRoles.PARTNER ? AppRoutes.PARTNER_DASHBOARD : AppRoutes.VENDOR_DASHBOARD}`}
                                 className={classNames(
                                   active ? 'bg-gray-100' : '',
                                   'block px-4 py-2 text-sm text-gray-700'
@@ -177,7 +177,7 @@ const Navbar: React.FC = () => {
                             )}
                           </Menu.Item>
 
-                          {sessionData.role === UserRoles.VENDOR ? <><Menu.Item>
+                          {session.role === UserRoles.VENDOR ? <><Menu.Item>
                             {({ active }) => (
                               <Link
                                 href={AppRoutes.VENDOR_PRODUCTS}

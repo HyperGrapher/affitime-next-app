@@ -182,7 +182,7 @@ const PaymentCardMarket = () => {
         return JSON.parse(tax)
     }, [])
 
-    const puchase = trpc.marketplace.purchasePack.useMutation()
+    const puchase = trpc.marketplace.createCampaignPayment.useMutation()
     // const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
 
     const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
