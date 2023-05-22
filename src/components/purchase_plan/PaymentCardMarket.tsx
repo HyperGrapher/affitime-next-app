@@ -275,7 +275,7 @@ const PaymentCardMarket = () => {
             <input type="hidden" name="email" value={payData?.email} />
             <input type="hidden" name="payment_type" value={payData?.payment_type} />
             <input type="hidden" name="payment_amount" value={payData?.payment_amount} />
-            {/* <input type="hidden" name="currency" value={payData?.currency} /> */}
+            <input type="hidden" name="currency" value={payData?.currency} />
             <input type="hidden" name="test_mode" value={payData?.test_mode} />
             <input type="hidden" name="non_3d" value={payData?.non_3d} />
             <input type="hidden" name="merchant_ok_url" value={payData?.merchant_ok_url} />
