@@ -210,27 +210,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                     </section>
 
                 </section>
-                {/* Submit */}
-                {/* <button
-                    disabled={busy}
-                    onClick={() => setModal(true)}
-                    type='submit'
-                    className={classNames(
-                        "bg-red-600 hover:bg-red-700 transition-colors",
-                        "flex items-center justify-center flex-nowrap space-x-2",
-                        "shadow-sm hover:shadow-lg rounded-md ",
-                        "py-4 px-8 mt-6",
-                        "disabled:bg-red-400 disabled:shadow-none"
-                    )} >
-
-                    <HiPlus color="white" size="18px" />
-
-                    <span className="text-slate-50 text-sm font-medium tracking-wide text-center">
-                        Affiliate Linkini Askiya Al
-                    </span>
-                </button> */}
-
-
+            
 
                 <DynamicModalContainer state={modal} key={"adda"}>
                     <DynamicConfirmDialog

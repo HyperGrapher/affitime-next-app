@@ -11,32 +11,11 @@ import dayjs from "dayjs";
 
 import type {
   IPlanPaymentData,
-  InstallmentType,
 } from "../../../interface/payments.interface";
 
-/*
-      ex test card 1: 4355 0843 5508 4358
-      ex test card 2: 4355 0843 5508 4358
-      
-        test cards for paytr magaza
-
-        9792 0303 9444 0796
-        4355 0843 5508 4358
-        5406 6754 0667 5403
-
-        Kart Ad Soyadı	PAYTR TEST
-        Son Kullanma	12 / 30
-        CVV	000
-
-
-        taxinfo -> {"vkn":"1234567891","tckn":"29458195655","title":"dr","fname":"ragıp","lname":"adıgüzel","taxOffice":"adana v.d.","address":"some address that is valid"}
-      
-      select vendorId, merchant_oid, success, user_basket, payment_amount, payed_amount, errorReason, createdAt from market_payment;
-
-*/
 
 export const marketPlaceRouter = router({
-  // Ilk adim kampanya icin vendor'den odeme al
+  
   transferRequest: vendorProcedure
     .input(
       z.object({
@@ -58,25 +37,15 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
-      // const marketPayment = await ctx.prisma.marketPayment.findUnique({
-      //   where: { merchant_oid : vendorId },
-      // });
-
-      // if (!marketPayment)
-      //   throw new TRPCError({
-      //     code: "NOT_FOUND",
-      //     message: "Session vendor not found",
-      //   });
-
       const merchant_id = PAYTR_MARKETPLACE.merchant_id;
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-      const merchant_oid = "get from db"; // "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
-      const trans_id = "TRANS" + Date.now(); // En fazla 60 karakter, Alfa numerik
-      const submerchant_amount = 7000; // 70tl -> 7000
-      const total_amount = 10000; // 100tl -> 10000
-      const transfer_name = "ragip adiguzel"; // 100tl -> 10000
+      const merchant_oid = "get from db"; 
+      const trans_id = "TRANS" + Date.now();
+      const submerchant_amount = 7000;
+      const total_amount = 10000; 
+      const transfer_name = "ragip adiguzel";
       const transfer_iban = "TR 80 0011 1000 0000 0056 7128 34".replace(
         /\s+/g,
         ""
@@ -106,7 +75,6 @@ export const marketPlaceRouter = router({
         .digest("base64");
 
       console.log({ paytr_token, transfer_iban, lng: transfer_iban.length });
-      // Transfer Talimatının Verilmesi
 
       const data = await axios.request({
         url: PAYTR_MARKETPLACE_URL,
@@ -123,16 +91,15 @@ export const marketPlaceRouter = router({
           paytr_token: paytr_token,
         },
       });
-      // merchant_oid ile basarili odeme bulunamadi (MP1682864464175) err_no: 006
+     
       if (data) {
-        console.log(data.status); // hata olsa da 200
+        console.log(data.status); 
         console.log(data.data);
 
         if (data.data.status === "error") {
           console.log(data.data.err_msg, data.data.err_no);
 
           if (data.data.err_no === "091") {
-            // iban hatali
             console.log("iban hatali");
           }
         }
@@ -192,15 +159,14 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
-      const merchant_oid = "MP" + Date.now(); // + Date.now(); // En fazla 64 karakter, Alfa numerik
+      const merchant_oid = "MP" + Date.now(); 
 
       const user_basket = JSON.stringify([
-        [`vendor-marketplace`, payment_amount, 1], // 1. ürün (Ürün Ad - Birim Fiyat - Adet)
+        [`vendor-marketplace`, payment_amount, 1], 
       ]);
 
-      const email = vendor.user.email; // Müşterinizin sitenizde kayıtlı veya form vasıtasıyla aldığınız eposta adresi.
+      const email = vendor.user.email; 
       const user_name = `${vendor.user.fname} ${vendor.user.lname}`;
-      // const user_name = `PAYTR TEST`;
       const user_phone = vendor.phone?.startsWith("0")
         ? vendor.phone
         : `0${vendor.phone}`;
@@ -259,7 +225,7 @@ export const marketPlaceRouter = router({
         user_address,
         user_phone,
         user_basket,
-        debug_on, // 0,1
+        debug_on, 
       };
 
       return response;

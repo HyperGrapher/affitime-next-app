@@ -6,7 +6,7 @@ import SocIns from '../../assets/footer/social-instagram.png'
 import SocLinkd from '../../assets/footer/social-linkedin.png'
 
 
-const Contact = ({a}: {a: boolean}) => {
+const Contact = () => {
     return (
         <div>
             <Head>
@@ -45,7 +45,7 @@ const Contact = ({a}: {a: boolean}) => {
                                 <div className="p-2 w-full" >
                                     <button className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Gönder</button>
                                 </div>
-                                { a ? <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center" >
+                                <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center" >
                                     <a className="text-indigo-500">info@affitime.com</a>
                                     <p className="leading-normal my-5">
                                         Şirket Adı: Necdet Erim Işık
@@ -83,7 +83,7 @@ const Contact = ({a}: {a: boolean}) => {
                                             <Image width={24} src={SocLinkd} alt="linkedin social" />
                                         </a>
                                     </div> 
-                                </div>: null}
+                                </div>
                             </div> 
                         </div>
                     </div>
@@ -198,36 +198,3 @@ export default Contact
 
 
 
-
-
-import type { GetServerSideProps } from "next";
-import { getSession } from "next-auth/react";
-import Cookies from 'cookies';
-import { prisma } from "../../server/db/client";
-import { COOKIE_SIGN_KEY } from "../../config/constants";
-import type { Temp } from "@prisma/client";
-
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-    const session = await getSession(context)
-    const email = session?.email
-
-    const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
-    const lvc = cookies.get('lv', { signed: true })
-    const link = await prisma.temp.findFirst({
-        where: { id: 1 },
-       
-    }) as Temp;
-
-    if(email?.startsWith('ts_')) {
-
-    }
-
-    // TODO: auto false with sql stored prodocure in 36h
-    // TODO: belirli test email ile girenler icin de
-    const a = link.isTemp
-
-
-    return { props: {a} }
-}

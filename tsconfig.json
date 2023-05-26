@@ -17,7 +17,6 @@
     "noUncheckedIndexedAccess": true
   },
   "ts-node": {
-    // ? Required to run prisma.seed file ? //
     "compilerOptions": {
       "module": "commonjs"
     }

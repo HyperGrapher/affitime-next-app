@@ -45,7 +45,7 @@ export const ApikeyRouter = router({
           where: { vendorId },
           data: {
             apikey,
-            installed: true // ! TODO -  FOR DEV - Remove on prod
+            installed: true 
           },
         });
       } else {

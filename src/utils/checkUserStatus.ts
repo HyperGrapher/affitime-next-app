@@ -63,7 +63,7 @@ async function checkTrialPrev(session: Session) {
     },
   });
 
-  const trialTill = dayjs(user?.trialTill); // can be different for every user, so its much better
+  const trialTill = dayjs(user?.trialTill); 
   const nowDate = dayjs(new Date());
 
   const trialDiff = trialTill.diff(nowDate, "second");

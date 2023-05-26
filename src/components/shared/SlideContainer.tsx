@@ -16,7 +16,7 @@ const MainSlideContainer = styled(Paper, {
     shouldForwardProp: (prop) => prop !== 'open',
 })<PaperProps>(({ theme, open }) => ({
     zIndex: theme.zIndex.drawer + 1,
-    backgroundColor: "transparent", // "rgb(241 245 249 / var(--tw-bg-opacity))", // theme.palette.primary.dark,
+    backgroundColor: "transparent", 
     transition: theme.transitions.create(['width', 'margin'], {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,

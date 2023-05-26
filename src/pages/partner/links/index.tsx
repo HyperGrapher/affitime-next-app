@@ -36,7 +36,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     return { props: {} }
 
 }
-// https://mantine.dev/hooks/use-pagination/
+
 const PartnerLinks: NextPage = () => {
     const { data: links, status: sts, refetch: refetchlinks } = trpc.link.getPartnerLinks.useQuery()
 

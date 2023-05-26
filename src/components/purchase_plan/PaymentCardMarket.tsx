@@ -134,11 +134,6 @@ const validationSchema = z.object({
     });
 
 
-    /*
-        ONCE direct api ile odeme alini
-        Sonra partner'e odeme yapilacagi zaman transfer_iban vb ile istek gonderilir
-    */
-
 const PaymentCardMarket = () => {
     const { query } = useRouter()
     const [isTaksit, setIsTaksit] = useState(false)
@@ -183,14 +178,12 @@ const PaymentCardMarket = () => {
     }, [])
 
     const puchase = trpc.marketplace.createCampaignPayment.useMutation()
-    // const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
 
     const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
         console.log({ cardData });
 
 
         if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
-        // setBusy(true)
 
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
@@ -205,15 +198,13 @@ const PaymentCardMarket = () => {
             card_type: selectedCard.value
         }
 
-        // return console.log({purchaseData, cardData});
         
 
 
         puchase.mutate(purchaseData, {
             onSuccess: (data) => {
 
-                // test card 1: 4355 0843 5508 4358	
-                // test card 2: 4355 0843 5508 4358
+     
                 const [month, year] = cardData.expiryDate.split('/')
 
                 const aa: IPlanPaymentData = {
@@ -225,7 +216,7 @@ const PaymentCardMarket = () => {
                     cvv: cardData.cvvNumber,
                     merchant_ok_url: "https://affitime.com/payments/success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
-                    installment_count: "0", // isTaksit ? installmentAmount : "0",
+                    installment_count: "0",
                     card_type: selectedCard.value,
                 }
 

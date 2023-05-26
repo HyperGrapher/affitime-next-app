@@ -1,13 +1,4 @@
-// COMMANDS
-// npx prisma migrate dev --name init
-// npx prisma format
-// npx prisma db push  (If you are prototyping)
-// npx prisma generate
-// npx prisma studio
-// npx prisma migrate reset (Reset DB)
-
-// prisma db pull //make sure that your Prisma schema is up-to-date
-// https://www.prisma.io/docs/guides/database/developing-with-prisma-migrate/add-prisma-migrate-to-a-project
+// npx prisma db push 
 
 generator client {
   provider = "prisma-client-js"
@@ -16,10 +7,8 @@ generator client {
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-  // url      = "mysql://burak:Bm123456!@localhost:3306/affprisma?connection_limit=20&socket_timeout=3"
 }
 
-// Necessary for Next auth
 model Account {
   id                String  @id @default(cuid())
   userId            String
@@ -55,7 +44,7 @@ enum PackageType {
   TRIAL
   FREE
   OTHER
-  PARTNER // * new
+  PARTNER
 }
 
 model Session {
@@ -134,18 +123,18 @@ model PlanPayment {
   user_address      String
   payment_type      String?
   payment_amount    Float
-  payed_amount      Float? // express
+  payed_amount      Float?
   installment_count Int          @default(0)
   card_type         String?
   packageType       PackageType? @default(PRO)
-  validFrom         DateTime? // express
-  validTill         DateTime? // express
+  validFrom         DateTime?
+  validTill         DateTime?
   annual            Boolean      @default(false)
   success           Boolean?
   seen              Boolean?     @default(false)
   errorCode         String?
   errorReason       String?
-  test_mode         Boolean? // express
+  test_mode         Boolean?
   createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 
@@ -154,10 +143,9 @@ model PlanPayment {
 }
 
 model MarketPayment {
-  id                String       @id @default(cuid())
-  vendorUserId            String
-  merchant_oid      String       @unique()
-  // vendor              Vendor         @relation(fields: [vendorId], references: [id])
+  id                String    @id @default(cuid())
+  vendorUserId      String
+  merchant_oid      String    @unique()
   vendorId          String
   user_basket       String
   user_phone        String
@@ -165,29 +153,28 @@ model MarketPayment {
   user_address      String
   payment_type      String?
   payment_amount    Float
-  payed_amount      Float? // express
-  installment_count Int          @default(0)
+  payed_amount      Float? 
+  installment_count Int       @default(0)
   card_type         String?
-  validFrom         DateTime? // express
-  validTill         DateTime? // express
+  validFrom         DateTime? 
+  validTill         DateTime? 
   success           Boolean?
-  seen              Boolean?     @default(false)
+  seen              Boolean?  @default(false)
   errorCode         String?
   errorReason       String?
-  test_mode         Boolean? // express
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
+  test_mode         Boolean? 
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
 
   @@index([id])
   @@map("market_payment")
 }
 
-
 model Taxinfo {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [user_id], references: [id])
   user_id   String   @unique
-  title     String? // unvan
+  title     String?
   fname     String?
   lname     String?
   tckn      String?
@@ -215,7 +202,7 @@ model User {
   partner_id    String?
   emailVerified DateTime?
   image         String?       @db.Text
-  notes         String?       @db.Text // * new
+  notes         String?       @db.Text 
   accounts      Account[]
   sessions      Session[]
   plan_payments PlanPayment[]
@@ -224,11 +211,11 @@ model User {
   partner       Partner?
   active        Boolean       @default(true)
   trial         Boolean       @default(true)
-  trialTill     DateTime? // * new
+  trialTill     DateTime? 
   pro           Boolean       @default(false)
   packageType   PackageType?  @default(TRIAL)
-  validFrom     DateTime? // if pro is true then plan is valid from // * new
-  validTill     DateTime? // if pro is true then plan is valid until // * new kinda
+  validFrom     DateTime? 
+  validTill     DateTime? 
   proDetails    Json?
   ipdata        Json?
   createdAt     DateTime      @default(now())
@@ -251,7 +238,7 @@ model Vendor {
   notifications Notification[]
   visits        Visit[]
   apiKey        ApiKey?
-  apiKeyId      String? // id of table (only one)
+  apiKeyId      String? 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
@@ -269,7 +256,7 @@ model Partner {
   links         Link[]
   notifications Notification[]
   visits        Visit[]
-  iban          Json? // {iban, fullname, banka}
+  iban          Json? 
   interests     Json?
   socials       Json?
   createdAt     DateTime       @default(now())
@@ -317,18 +304,18 @@ model Visit {
   vendor_id    String
   partner      Partner        @relation(fields: [partner_id], references: [id])
   partner_id   String
-  productId    String // * new - added as index
-  ipapi        String? // from client
-  country      String         @default("-") // from client
-  ipInfo       Json? // from client
-  ipware       String? // from server
+  productId    String 
+  ipapi        String? 
+  country      String         @default("-") 
+  ipInfo       Json? 
+  ipware       String? 
   hasCookie    Boolean
   cookie       Json?
   prevIp       String?
   sold         Boolean        @default(false)
   vpn          Boolean        @default(false)
   unique       Boolean        @default(true)
-  params       String? // query extras
+  params       String? 
   dubious      Boolean?
   cause        String?
   isPartner    Boolean?
@@ -340,7 +327,7 @@ model Visit {
   uaFamily     String?
   referer      String?
   uaMajor      String?
-  storePrice   Float? // * New for express api
+  storePrice   Float? 
   price        Float?
   perClick     Float?
   perClickType CommissionType @default(CASH)
@@ -382,7 +369,7 @@ model Link {
   platform         String?
   visits           Visit[]        @relation("LinkVisits")
   status           LinkStatus
-  active           Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
+  active           Boolean? 
   vendor_notified  Boolean        @default(false)
   partner_notified Boolean        @default(false)
   cookieLife       Int            @default(60)
@@ -414,7 +401,7 @@ model UserIps {
 model Notification {
   id         Int      @id @default(autoincrement())
   message    String   @db.Text
-  type       String? // * make enum after types are clarified
+  type       String? 
   action     String?
   for        Role     @default(PARTNER)
   read       Boolean  @default(false)
@@ -439,12 +426,4 @@ model Faq {
 
   @@index([id])
   @@map("faq")
-}
-
-// !! for testing
-model Temp {
-  id     Int     @unique @default(1)
-  isTemp Boolean @default(true)
-
-  @@map("temp")
 }

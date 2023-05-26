@@ -535,8 +535,6 @@ const ProducDetailPublic: NextPage = ({ pd }: InferGetServerSidePropsType<typeof
                                     </div>
                                 ))}
 
-
-
                             </section>
 
                         </PageCard>

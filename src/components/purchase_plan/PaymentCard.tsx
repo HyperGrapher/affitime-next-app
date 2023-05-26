@@ -219,8 +219,7 @@ const PaymentCard = () => {
         puchase.mutate(purchaseData, {
             onSuccess: (data) => {
 
-                // test card 1: 4355 0843 5508 4358	
-                // test card 2: 4355 0843 5508 4358
+
                 const [month, year] = cardData.expiryDate.split('/')
 
                 const aa: IPlanPaymentData = {
@@ -443,7 +442,6 @@ const PaymentCard = () => {
                                             onChange={handleExpiryDateChange}
                                             placeholder='Örn: 06/26'
                                             mask="_"
-                                        // valueIsNumericString
                                         />
 
                                         <FormFieldError state={!!errors.expiryDate} message={errors.expiryDate?.message} />

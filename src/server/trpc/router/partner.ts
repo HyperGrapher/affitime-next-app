@@ -1,6 +1,6 @@
 import { router, partnerProcedure } from "../trpc";
 import { z } from "zod";
-// 137874
+
 export const partnerRouter = router({
   updateInterests: partnerProcedure
     .input(

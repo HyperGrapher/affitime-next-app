@@ -5,13 +5,11 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { HiCheckCircle, HiXCircle } from 'react-icons/hi';
-import TimeAgo from "timeago-react";
 import productImg from '../../../assets/product.png';
 import { AppRoutes } from "../../../config/appRoutes";
 import classNames from "../../../utils/classnames";
-import { formatDateTR, numberWithCommas } from "../../../utils/helpers";
+import { numberWithCommas } from "../../../utils/helpers";
 import { trpc } from "../../../utils/trpc";
-import Divider from "../../shared/Divider";
 import { Lira } from "../../shared/HtmlCodes";
 
 type ItemProps = {

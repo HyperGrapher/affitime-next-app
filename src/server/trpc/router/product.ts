@@ -50,7 +50,7 @@ export const productRouter = router({
       },
     });
   }),
-  //just for partner
+
   getAllProductsForPartner: protectedProcedure.query(({ ctx }) => {
     const { partnerId } = ctx.session;
 
@@ -102,7 +102,6 @@ export const productRouter = router({
     .mutation(async ({ ctx, input }) => {
       const { vendorId } = ctx.session;
 
-      console.log({ vendorIdFromSession: vendorId });
 
       if (!vendorId)
         throw new TRPCError({

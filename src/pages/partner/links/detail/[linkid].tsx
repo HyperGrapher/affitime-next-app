@@ -92,7 +92,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 }
 
                 <hr className='' />
-                {/*Meta Data with Image */}
+
                 <section className="mb-4 mt-4">
                     <Link className='' href={`${AppRoutes.PUBLIC_PRODUCT_DETAIL}/${link?.link.product_id}`}>
                         <h1 className='text-slate-600 text-lg md:text-2xl  mb-2 font-medium leading-tight'>
@@ -161,7 +161,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                 </section>
                 <hr className='py-2' />
 
-                {/* Commissions */}
+
                 <section className={classNames(
                     "bg-slate-100 hover:bg-slate-50",
                     "w-full rounded-md  py-2 px-2   ",
@@ -193,7 +193,7 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
 
                 </section>
 
-                {/* Cookiee Life */}
+
                 <section className={classNames(
                     "bg-slate-100 hover:bg-slate-50",
                     "w-full rounded-md  py-0 px-2   ",
@@ -241,28 +241,8 @@ const LinkDetail: NextPage = ({ id }: InferGetServerSidePropsType<typeof getServ
                     </section>
 
                 </section>
-                {/* Submit */}
-                {/* <button
-                    disabled={busy}
-                    onClick={() => setModal(true)}
-                    type='submit'
-                    className={classNames(
-                        "bg-red-600 hover:bg-red-700 transition-colors",
-                        "flex items-center justify-center flex-nowrap space-x-2",
-                        "shadow-sm hover:shadow-lg rounded-md ",
-                        "py-4 px-8 mt-6",
-                        "disabled:bg-red-400 disabled:shadow-none"
-                    )} >
-
-                    <HiPlus color="white" size="18px" />
-
-                    <span className="text-slate-50 text-sm font-medium tracking-wide text-center">
-                        Affiliate Linkini Askiya Al
-                    </span>
-                </button> */}
-
-
-
+              
+    
                 <DynamicModalContainer state={modal} key={"adda"}>
                     <DynamicConfirmDialog
                         title="Affiliate linki oluşturmak istiyor musunuz?"
@@ -333,14 +313,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const id = context.params?.linkid
 
-
-    // This value is considered fresh for ten seconds (s-maxage=10).
-    // If a request is repeated within the next 10 seconds, the previously
-    // cached value will still be fresh. If the request is repeated before 59 seconds,
-    // the cached value will be stale but still render (stale-while-revalidate=59).
-    //
-    // In the background, a revalidation request will be made to populate the cache
-    // with a fresh value. If you refresh the page, you will see the new value.
     context.res.setHeader(
         'Cache-Control',
         'public, s-maxage=10, stale-while-revalidate=59'

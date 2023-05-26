@@ -28,13 +28,11 @@ const MyApp: AppType<{ session: Session | null }> = ({
   });
 
 
-  // The hex code for Very Peri #6667AB
   return (
     <SessionProvider session={session}>
       <Sidenav />
       <NonAuthNavbar />
       <Navbar />
-      {/* Session cannot be retrived here */}
       <div className={"min-h-screen debug-screens"}>
         <Component {...pageProps} />
         <Toaster containerStyle={{

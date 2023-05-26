@@ -18,20 +18,6 @@ import getClientIp from "../../utils/getClientIp";
 import { trpc } from '../../utils/trpc';
 import axios from 'axios';
 
-/*
-import { Base64 } from 'js-base64';
-Base64.toBase64('')
-Base64.formBase64('')
-*/
-// import { BlockList } from "net"
-// https://www.npmjs.com/package/user-agents
-// https://www.npmjs.com/package/keygrip for checking .sig cookie value
-/*
-me: '176.33.101.203'
-twitter: '199.16.157.183' -> bot: true
-twitter: '34.82.121.157' -> bot: false postladiktan sonra
-twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor bot false
-*/
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
     const session = await getSession(context)
@@ -72,26 +58,19 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     
     if (link?.vendor.user.trial === false && link?.vendor.user.pro === false) {
 
-        // user plan ended
         if (link?.vendor.user.validTill) {
 
             if (link.product.product_url) {
 
-                // TODO
-                // await axios.post(`${link.product.product_url}?err=true&msg=eop`)
+                await axios.get(`${link.product.product_url}?err=true&msg=eop`)
             }
             
             
-            // send error "Kullanim suresi sona erdi"
         } else {
-            //  user trial ended
             if (link?.product.product_url) {
                 
-                // TODO
-                // await axios.post(`${link.product.product_url}?err=true&msg=eot`)
+                await axios.get(`${link.product.product_url}?err=true&msg=eot`)
             }
-
-            // send error "Deneme suresi sona erdi"
 
         }
 
@@ -108,13 +87,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         
 
         // send get request to store link url with error qs
-
         return { redirect: { destination: `/r/not-found/${url}&err=112-no-install`, permanent: false } }
     }
     if (!link.active) {
 
         // send get request to store with error
-
         return { redirect: { destination: `/r/not-found/${url}?err=118-not-active`, permanent: false } }
 
     }

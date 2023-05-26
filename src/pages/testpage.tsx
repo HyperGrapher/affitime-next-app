@@ -4,7 +4,6 @@ import { type NextPage } from "next";
 import { getSession, signOut, } from "next-auth/react";
 import { AppRoutes } from '../config/appRoutes';
 
-// ? TEST EXIST
 const TestPage: NextPage = () => {
 
 

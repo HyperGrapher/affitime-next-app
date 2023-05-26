@@ -19,7 +19,6 @@ type ItemProps = {
     setDeleteId: (id: string) => void;
 }
 
-// 812px ve asgisi icin layout degis
 const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }) => {
     const { push } = useRouter()
 
@@ -151,20 +150,6 @@ const VendorProductItem: React.FC<ItemProps> = ({ p, confirmModal, setDeleteId }
 
                 {/* DIVIDER */}
                 <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " />
-
-
-
-                {/* LINK COUNT */}
-
-                {/* 
-                <div className=" text-center min-w-[3ch]">
-
-                    <b className={`text-stone-600 text-xs font-bold whitespace-nowrap`}>
-                        99457
-                    </b>
-
-                </div>
-                */}
 
 
                 {/* EDIT BUTTONS */}

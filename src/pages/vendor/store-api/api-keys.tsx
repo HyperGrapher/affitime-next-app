@@ -1,7 +1,6 @@
 import Head from "next/head";
 import PageCard from "../../../components/card/Card";
 
-// https://discord.com/developers/applications/1094909344526643240/information
 const ApiKeys = () => {
     return (
         <div className='auth-container'>
@@ -30,7 +29,7 @@ const ApiKeys = () => {
                             <p className="font-medium leading-relaxed text-sm md:text-base">CLIENT SECRET</p>
                         </div>
                         <div className="flex w-full mb-4">
-                            <p className="lg:w-2/3 leading-relaxed text-sm md:text-base">asfasfasfgfgh45345523123</p>
+                            <p className="lg:w-2/3 leading-relaxed text-sm md:text-base"></p>
                             <button className="bg-red-600 text-white text-sm md:text-base px-3 py-1 rounded">Yenile</button>
                         </div>
                     </div>

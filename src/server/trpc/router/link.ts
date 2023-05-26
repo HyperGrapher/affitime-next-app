@@ -10,24 +10,16 @@ import crypto from "crypto";
 import { CommissionType, LinkStatus } from "@prisma/client";
 import sendpulse from "sendpulse-api";
 
-const API_USER_ID = "227943d8a153c1713d3fd8c7d97b1e63";
-const API_SECRET = "cd11fe04653031b9f60787f61170ecf6";
-const TOKEN_STORAGE = "/tmp/";
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-
-// * sendpulse initialised in server/trpc/trpc.ts
 
 export const linkRouter = router({
-  // for both vendor and partner
-  // * ../links/detail/[id]
+
   getLinkDetails: protectedProcedure
     .input(z.object({ id: z.string() }))
     .query(async ({ ctx, input }) => {
       const { id } = input;
       const { role } = ctx.session;
 
-      // TODO delete bots with stored procedure
+     
       await ctx.prisma.visit.deleteMany({
         where: {
           ipapi: null,
@@ -72,12 +64,6 @@ export const linkRouter = router({
         dubiousClicks: dubiousClicks.length,
       };
     }),
-  getPartnerDetailsForLinkDetail: vendorProcedure.query(({ ctx }) => {
-    const vendorId = ctx.session.vendorId;
-    const userId = ctx.session.id;
-    console.log("");
-  }),
-
   findLinkByProductIdForPartner: partnerProcedure
     .input(z.object({ pid: z.string() }))
     .query(({ ctx, input }) => {
@@ -139,41 +125,7 @@ export const linkRouter = router({
         include: { partner: true, visits: true },
       });
 
-      console.log(res);
-
       const doubious = res.map((x) => x.visits.map((y) => y.dubious));
-
-      /*
-      const links = await ctx.prisma.link.findMany({
-        where: {
-          AND: [
-            {
-              vendor_id: vendorId,
-            },
-            {
-              product_id: productId,
-            },
-          ],
-        },
-        include: { partner: {
-          include: {visits: true}
-        }, visits: true },
-      });
-
-      const trans = {
-        ids: links.map(ln => ({
-          id: ln.id, 
-          username: ln.partner.username,
-          totalVis: ln.partner.visits.length,
-        })
-        )
-      }
-
-      
-
-      return links;
-
-      */
 
       return res;
     }),
@@ -294,7 +246,7 @@ export const linkRouter = router({
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
-      // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update-a-number-field
+
       try {
         await ctx.prisma.link.update({
           where: { id },
@@ -314,7 +266,6 @@ export const linkRouter = router({
       }
     }),
 
-  // ! Not used yet
   updateLinkStatusByPartner: partnerProcedure
     .input(
       z.object({

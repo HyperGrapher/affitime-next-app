@@ -17,27 +17,25 @@ const NotificationList: React.FC<Props> = ({ prod, refetch }) => {
 
   return (<>
 
-    {prod?.length === 0 ? <p className='text-center'>Bildiriminiz bulunmuyor</p> : (<>
+    {prod?.length === 0 ? <p className='text-center'>Bildiriminiz bulunmuyor</p> : (
+      <>
+        <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
+          {prod?.map(p => (
+            <React.Fragment key={p.id}>
+              {isMobile ? <NotificationItemMobile
+                key={p.id}
+                link={p}
+                refetch={refetch}
+              /> : <NotificationItem
+                key={p.id}
+                link={p}
+                refetch={refetch}
+              />}
 
-      {/* <LinkListHeader /> */}
-      <ul className='flex gap-2 flex-col items-center min-h-full maxos-w-[700px]  mx-auto'>
-        {prod?.map(p => (
-          <React.Fragment key={p.id}>
-            {isMobile ? <NotificationItemMobile
-              key={p.id}
-              link={p}
-              refetch={refetch}
-            /> : <NotificationItem
-              key={p.id}
-              link={p}
-              refetch={refetch}
-            />}
+            </React.Fragment>))}
+        </ul>
 
-          </React.Fragment>))}
-      </ul>
-
-
-    </>
+      </>
     )}
 
   </>);

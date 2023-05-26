@@ -14,7 +14,6 @@ const Main = () => {
 
     const { data: calculated, isLoading: ld1 } = trpc.dashboardPartner.calculateLinksAndPayments.useQuery()
     const { data: linkStats, isLoading: ld2 } = trpc.dashboardPartner.getLinkStats.useQuery()
-    // const { data: partnerLinks, isLoading: ld3 } = trpc.dashboardPartner.getPartnerAndLinks.useQuery()
 
     return (
         <div className="">
@@ -115,10 +114,6 @@ type PartnerItemProps = {
 
 
 const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
-
-    // useEffect(() => {
-
-    // }, [pl])
 
     const pc = useMemo(() => {
         const p = pl.partner_links.map(x => x)

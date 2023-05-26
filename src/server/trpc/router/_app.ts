@@ -11,7 +11,6 @@ import { PaymentsRouter } from "./payments";
 import { PartnerDashboardRouter } from "./dashboard_partner";
 import { partnerRouter } from "./partner";
 import { purchaseRouter } from "./purchase";
-import { TestingRouter } from "./testing";
 import { ApikeyRouter } from "./apikey";
 import { marketPlaceRouter } from "./marketplace";
 
@@ -28,10 +27,8 @@ export const appRouter = router({
   visit: visitRouter,
   payments: PaymentsRouter,
   purchase: purchaseRouter,
-  testing: TestingRouter,
   apikey: ApikeyRouter,
   marketplace: marketPlaceRouter,
 });
 
-// export type definition of API
 export type AppRouter = typeof appRouter;

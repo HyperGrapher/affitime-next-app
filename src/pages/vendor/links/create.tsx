@@ -36,7 +36,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 }
 
-// !! NOT USED
 const LinkCreate: NextPage = () => {
 
     const { back, query } = useRouter()

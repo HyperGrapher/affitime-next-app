@@ -10,7 +10,6 @@ import { AppRoutes } from "../../../config/appRoutes";
 import classNames from "../../../utils/classnames";
 import { numberWithCommas } from "../../../utils/helpers";
 import { Lira } from "../../shared/HtmlCodes";
-import Divider from '../../shared/Divider';
 
 
 

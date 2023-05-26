@@ -28,9 +28,6 @@ const DynamicPaymentCard = dynamic(() => import('../../components/purchase_plan/
     ssr: false,
 })
 
-// "payment": "^2.4.6",
-// "@types/payment": "^2.1.3",
-// https://www.npmjs.com/package/payment
 
 type PlanType = "BASIC" | "PRO" | "ULTIMATE"
 
@@ -466,11 +463,6 @@ const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
                     {/* Submit */}
                     <button
                         disabled={busy}
-                        onClick={() => {
-                            // console.log(selectedCat);
-
-
-                        }}
                         type='submit'
                         className={classNames(
                             "bg-violet-600 hover:bg-violet-700 transition-colors",

@@ -48,10 +48,6 @@ const AwaitingPayments: React.FC<Props> = ({ partners }) => {
           </React.Fragment>)}
 
 
-
-
-
-
         </section>
 
       </PageCard>

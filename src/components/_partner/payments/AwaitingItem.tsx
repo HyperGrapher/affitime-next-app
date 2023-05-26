@@ -81,13 +81,6 @@ const AwaitingItem: React.FC<Props> = ({ item }) => {
 
 
                 <Divider />
-{/* 
-                <div className="min-w-[15ch] text-center">
-                    <b className="text-xs whitespace-nowrap text-blue-500  
-                        font-bold transition-colors">
-                        <Link href={`#`}>Ödeme Talep Et</Link>
-                    </b>
-                </div> */}
 
 
             </div>

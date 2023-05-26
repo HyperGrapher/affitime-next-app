@@ -1,31 +1,19 @@
 import { Tab } from '@headlessui/react';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useSession } from 'next-auth/react';
 import Head from "next/head";
-import { useRouter } from "next/router";
 import { useState } from "react";
 import type { SubmitHandler } from "react-hook-form";
 import { useForm } from "react-hook-form";
-import { HiPencil, HiUpload as IcUpload } from 'react-icons/hi';
+import { HiPencil } from 'react-icons/hi';
 import TopBarProgress from "react-topbar-progress-indicator";
 import { z } from 'zod';
 import IconButton from "../../../components/buttons/IconButton";
 import PageCard from "../../../components/card/Card";
 import { FormFieldError, FormFieldWrapper } from '../../../components/error-messages/FormError';
 import TabItem from "../../../components/tab-item/TabItem";
-import { AppRoutes } from "../../../config/appRoutes";
-import { UserRoles } from "../../../interface/auth.interface";
-import { IpSchema } from "../../../interface/zod.schema";
 import classNames from '../../../utils/classnames';
-import getClientIp from "../../../utils/getClientIp";
 import { notifyError, notifySuccessBR } from '../../../utils/notifications';
 import { trpc } from '../../../utils/trpc';
-import Image from 'next/image';
-import profileImg from '../../../assets/profile.webp'
-import axios from 'axios';
-import useNavbarStore from '../../../store/navbar.store';
-import { AVATAR_URL } from '../../../config/constants';
-import Link from 'next/link';
 
 
 const Account = () => {
@@ -58,19 +46,16 @@ const Account = () => {
                     )}>
                         <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
-                        {/* <TabItem id="2" title="Third" selected={selectedIndex} query="2" /> */}
 
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>{selectedIndex === 0 && <VendorAccountInfo />}</Tab.Panel>
                         <Tab.Panel>{selectedIndex === 1 && <UpdatePassword />}</Tab.Panel>
-                        {/* <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel> */}
                     </Tab.Panels>
                 </Tab.Group>
 
             </main>
 
-            <TestButtonsSection />
 
         </div>
     )
@@ -86,16 +71,9 @@ interface IVendorAccountInfoFormData {
     brand: string;
     website: string;
     phone: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // image: any;
-
 
 }
-const MAX_FILE_SIZE = 100000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
 
-// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
-// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
 
 const vendorAccountValidationSchema = z.object({
     email: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
@@ -104,30 +82,15 @@ const vendorAccountValidationSchema = z.object({
     brand: z.string().trim().min(5, "En az 5 karakter olmalı!"),
     website: z.string().trim().url("Geçerli bir adres giriniz!"),
     phone: z.string().trim().min(10, "En az 10 haneli numaranızı giriniz"),
-    // image: z.string().optional()
 }).required();
 
 
-
-
-interface ImageUploadData {
-    name: string;
-    data: string;
-}
-
-const imageUploadSchema = z.object({
-    name: z.string(),
-    data: z.string(),
-});
 
 const VendorAccountInfo = () => {
 
     const [busy, setBusy] = useState(false)
     const [uploading, setUploading] = useState(false)
-    // const [imgErr, setImgErr] = useState('')
-    const [selectedImg, setSelectedImg] = useState("")
-    const [selectedFile, setSelectedFile] = useState<File>()
-    const setupdate = useNavbarStore(store => store.setupdate)
+
 
     const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
         resolver: zodResolver(vendorAccountValidationSchema),
@@ -141,7 +104,6 @@ const VendorAccountInfo = () => {
             setValue("email", data?.email ?? "")
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
-            setSelectedImg(data?.image ? `${AVATAR_URL}/${data?.image}`  : "")
             setValue("phone", data?.vendor?.phone ?? "")
             setValue("brand", data?.vendor?.brand ?? "")
             setValue("website", data?.vendor?.website ?? "")
@@ -149,32 +111,8 @@ const VendorAccountInfo = () => {
     })
 
 
-    const handleImageUpload = async () => {
-        if (!selectedFile) return notifyError('Foto seçiniz')
-
-        setUploading(true)
-
-        try {
-            const fd = new FormData()
-            fd.append('image', selectedFile)
-            const { data } = await axios.post('/api/image', fd)
-            localStorage.setItem("image", JSON.stringify(data.path))
-            setupdate(data.path)
-            notifySuccessBR('Başarıyla yüklendi')
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.log(error.response?.data);
-
-        }
-
-        setUploading(false)
-    }
-
-
     const onSubmit: SubmitHandler<IVendorAccountInfoFormData> = async (data) => {
 
-        // console.log(data.image);
 
         setBusy(true)
         updateVendorAccount.mutate(data, {
@@ -194,40 +132,6 @@ const VendorAccountInfo = () => {
     }
 
 
-    const convertToBase64 = async (file: File) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            return new Promise<ImageUploadData>((resolve, reject) => {
-                reader.onload = () => {
-                    const base64String = reader.result?.toString()?.split(',')[1]?.replace(/\s/g, '');
-                    console.log({ name: file.name });
-
-                    const imageData = {
-                        name: file.name,
-                        data: base64String || '',
-                    };
-                    try {
-                        imageUploadSchema.parse(imageData);
-                        resolve(imageData);
-                    } catch (err) {
-                        console.error(err);
-                        reject(err);
-                    }
-                };
-
-                reader.onerror = () => {
-                    reject(reader.error);
-                };
-            });
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    }
-
-
     return (
         <PageCard>
             {(busy || uploading) && <TopBarProgress />}
@@ -236,53 +140,6 @@ const VendorAccountInfo = () => {
             <div className="w-64 flex flex-col gap-4 mx-auto">
 
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
-
-
-                   {/*  <FormFieldWrapper>
-
-                        <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
-                        
-
-                        <label
-                            className={classNames(
-                                "font-medium text-sm w-full bg-violet-100/50",
-                                'w-full h-16 flex flex-col items-center justify-center',
-                                'cursor-pointer border-2 border-dashed'
-                            )}
-                        >
-                            <IcUpload className='w-16 h-16 text-slate-500' height={42} width={42} />
-                            <div>Foto Seçin</div>
-                            <input
-                                type='file'
-                                hidden
-                                onChange={({ target }) => {
-                                    if (target.files) {
-                                        const file = target.files[0]
-                                        setSelectedFile(file)
-                                        if (file) setSelectedImg(URL.createObjectURL(file))
-                                        else notifyError('Foto yüklenemedi')
-                                    }
-
-
-                                }}
-
-                            />
-                        </label>
-
-                        <div className={classNames(
-                            "bg-violet-600 text-white ",
-                            'px-4 py-1 rounded-md',
-                            'flex justify-center',
-                            'mt-2 cursor-pointer',
-                            `${selectedFile ? "" : 'bg-violet-400'}`,
-                            `${uploading ? "bg-violet-400" : 'bg-violet-600'}`
-
-                        )}
-                            onClick={handleImageUpload}
-                        >Yükle</div>
-
-
-                    </FormFieldWrapper> */}
 
 
                     <FormFieldWrapper>
@@ -605,103 +462,6 @@ const UpdatePassword = () => {
 
             </div>
         </PageCard>
-    )
-}
-
-
-
-const TestButtonsSection = () => {
-
-    const endTrialForTest = trpc.testing.endTrialForTest.useMutation()
-    const puchaseForTest = trpc.testing.purchasePackForTest.useMutation()
-    const { data: session } = useSession()
-    const { replace } = useRouter()
-
-
-    const payForTest = async () => {
-        const ipData = await getClientIp()
-        const userIp = IpSchema.parse(ipData)
-
-        const tax = localStorage.getItem("taxinfo")
-
-        if (!tax) return notifyError('Vergi bilgileri eksik')
-        const taxInfo = JSON.parse(tax)
-        type PlanType = "BASIC" | "PRO" | "ULTIMATE"
-        const plan = "BASIC" as PlanType
-        const annual = false
-
-        const datam = {
-            user_ip: userIp.ip,
-            currency: 'TL',
-            user_address: taxInfo.address,
-            plan,
-            annual
-        }
-
-        puchaseForTest.mutate(datam, {
-            onSuccess: (data) => {
-                console.log("ok", data.payment_amount);
-                notifySuccessBR('Test payment OK')
-
-                setTimeout(() => {
-                    replace(AppRoutes.PAYMENT_SUCCESS)
-                }, 3000);
-            },
-            onError(error) {
-                console.error(error)
-                notifyError('Ödeme sırasında bir hata oluştu!')
-
-            },
-
-        })
-    }
-
-
-    return (
-        (session?.role === UserRoles.VENDOR
-            && (session.email === 'wendy@email.com' || session.email === 'veronica@email.com'))
-            ? <div id="testing" className="text-center flex flex-col gap-2 px-8">
-                <h3 className="text-center text-red-500">Bu alan sadece wendy@email.com icin goruntulenir</h3>
-                {/* <h3 className="text-center">{session.pro ? "Plan satin almis" : "Plan satin alinmamis"}</h3> */}
-                {/* <h3 className="text-center">{session.trial ? "Trial surecinde veya sonlanmis" : "Plan Satin Alinmis"}</h3> */}
-                <button className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500"
-                    onClick={() => {
-
-                        endTrialForTest.mutate(undefined, {
-                            onSuccess: () => {
-                                notifySuccessBR("Trial Sonlandi!")
-
-                                setTimeout(() => {
-
-                                    replace(AppRoutes.VENDOR_DASHBOARD)
-                                }, 1500);
-
-                            },
-                            onError(error) {
-                                console.error(error)
-                                notifyError(error.message ?? 'Hata. Trial Güncellenemedi!')
-                            },
-
-                        })
-
-                    }}>
-                    Trial suresini veya Plani sonlandir
-                </button>
-
-
-                <button
-                    onClick={payForTest}
-                    className="text-slate-100 mt-4 py-2 px-3 rounded-md bg-slate-700 hover:bg-slate-500 transition-all duration-500">
-                    Basic plan satin al
-                </button>
-
-
-
-                <Link href="/payments/purchase-market">Market Odeme</Link>
-
-
-            </div>
-            : null
     )
 }
 

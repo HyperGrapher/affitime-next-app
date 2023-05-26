@@ -190,15 +190,7 @@ export default styled.div`
       margin: 8px 0 0 7px;
     }
   }
-  /* button {
-    margin: 0 10px;
-    &[type='submit'] {
-     
-    }
-    &[type='button'] {
-     
-    }
-  } */
+
   .downshift-options {
     border: 1px solid #ddd;
     box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.3);

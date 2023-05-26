@@ -5,7 +5,7 @@ import { AppRoutes } from '../../../../config/appRoutes';
 import { UserRoles } from '../../../../interface/auth.interface';
 import { trpc } from '../../../../utils/trpc';
 
-// ! CANCELED FOR LATER
+// ! CANCELED 
 const PaymentDetail = ({ partnerId }: { partnerId: string }) => {
 
 

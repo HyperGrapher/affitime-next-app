@@ -3,7 +3,6 @@ import {
   protectedProcedure,
   publicProcedure,
   router,
-  vendorProcedure,
 } from "../trpc";
 
 export const visitRouter = router({
@@ -45,7 +44,7 @@ export const visitRouter = router({
         return { success: false, error: error };
       }
     }),
-  // can be used for both vendor and partner
+
   getVisitsForLinkDetail: protectedProcedure
     .input(
       z.object({
@@ -53,10 +52,8 @@ export const visitRouter = router({
       })
     )
     .query(async ({ ctx, input }) => {
-      // const vendorId = ctx.session.vendorId;
-      // const vendorUserId = ctx.session.id;
       const { linkId } = input;
-      // TODO only query non paid visits
+
       const res = await ctx.prisma.visit.findMany({
         where: {
           link_id: linkId,
@@ -83,7 +80,7 @@ export const visitRouter = router({
       });
 
       if (!key) return { error: true, message: "Token not found!" };
-      
+
       try {
         await ctx.prisma.apiKey.update({
           where: {

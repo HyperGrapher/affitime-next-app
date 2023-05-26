@@ -51,19 +51,6 @@ const AwaitingItemMobile: React.FC<Props> = ({ item }) => {
 
                         </section>
 
-
-{/* 
-                        <div className="flex items-center gap-1">
-                            <b className="text-xs whitespace-nowrap text-slate-500 text-center font-bold transition-colors">
-                                Linkler:
-                            </b>
-
-                            <b className="text-violet-600 text-sm font-medium whitespace-nowrap text-center">
-                                {numberWithCommas(item.links)}
-                            </b>
-
-                        </div> */}
-
                     </div>
 
 
@@ -82,7 +69,6 @@ const AwaitingItemMobile: React.FC<Props> = ({ item }) => {
 
                 </div>
 
-                {/* TODO Odeme fonsiyonu */}
                 <div className="text-center mr-4">
                     <b className="text-xs whitespace-nowrap text-blue-500  
                         font-bold transition-colors">

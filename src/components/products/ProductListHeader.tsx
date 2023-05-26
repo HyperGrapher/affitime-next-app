@@ -11,11 +11,6 @@ const ProductListHeader: React.FC = () => {
             <div className=" ml-20 flex gap-4 items-center justify-between">
 
 
-                {/* <b className="text-xs w-12 min-w-[32px]" >
-                    Foto
-                </b> */}
-
-
 
                 {/* TITLE */}
                 <div className="min-w-[20ch] h-full">
@@ -28,13 +23,6 @@ const ProductListHeader: React.FC = () => {
                 </div>
 
 
-
-
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
-
-
                 {/* COMMISSON */}
                 <div className="bg-purplex-200 xmin-w-[18ch]">
 
@@ -43,12 +31,6 @@ const ProductListHeader: React.FC = () => {
                     </b>
 
                 </div>
-
-
-
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
 
 
                 {/* PRODUCT LINK */}
@@ -60,11 +42,6 @@ const ProductListHeader: React.FC = () => {
                 </div>
 
 
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
-
-
                 {/* STATUS */}
                 <div className="text-center min-w-[5ch]">
 
@@ -74,29 +51,6 @@ const ProductListHeader: React.FC = () => {
                     </b>
 
                 </div>
-
-
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
-
-
-                {/* LINK COUNT */}
-                {/* 
-                <div className=" text-center xmin-w-[3ch]">
-
-
-                    <b className="text-xs whitespace-nowrap text-center" >
-                        Link
-                    </b>
-
-                </div> */}
-
-
-
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
 
 
                 {/* EDIT BUTTONS */}

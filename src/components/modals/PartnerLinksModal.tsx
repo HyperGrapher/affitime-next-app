@@ -126,24 +126,3 @@ const PartnerLinksModal: React.FC<Props> = ({ links, closeModal, username }) => 
 
 export default PartnerLinksModal
 
-const xx = [{
-    "id": "clgji9oom0007cqd0q6142gm2",
-    "product_id": "clgjethms001dcqk4e3d166a1",
-    "partner_id": "clgjeth120002cqk43nx98vmy",
-    "partner_user_id": "clgjeth0s0000cqk4gm0kzypn",
-    "vendor_id": "clgjethgw000lcqk41x4kj8xl",
-    "vendor_user_id": "clgjethg6000icqk4kp0nntks",
-    "categoryId": 3,
-    "url": "mpCs-YMQ",
-    "platform": null,
-    "status": "CONFIRMED",
-    "active": true,
-    "vendor_notified": true,
-    "partner_notified": false,
-    "cookieLife": 60,
-    "price": 1000,
-    "perClick": 1,
-    "perClickType": "CASH",
-    "perSale": 8, "perSaleType": "PERC", "createdAt": "2023-04-16T14:31:45.719Z", "updatedAt": "2023-04-16T14:36:15.057Z",
-    "product": { "id": "clgjethms001dcqk4e3d166a1", "title": "1974 Fender Stratocaster, Sunburst", "desc": "Wonderful 1974 Fender Stratocaster in three-tone Sunburst, with Rosewood fingerboard, large headstock, bullet trussrod, staggered pole pickups all in excellent condition complete with bridge cover and tremolo arm at a good price thanks to a replacement neck pickup.", "fullDesc": null, "price": 1000, "cookieLife": 60, "perClick": 1, "perClickType": "CASH", "perSale": 8, "perSaleType": "PERC", "vendor_profile_id": "clgjethgw000lcqk41x4kj8xl", "vendor_user_id": "clgjethg6000icqk4kp0nntks", "product_url": "https://www.vintageandrareguitars.com/products/1974-fender-stratocaster-sunburst", "image": "https://guitarpoint.de/app/uploads/products/1974-fender-stratocaster-3t-sunburst-mapleneck-3/Fender74Strat3tSBMN574421_18.jpg", "categoryId": 3, "published": true, "active": true, "extra_info": null, "createdAt": "2023-04-16T12:55:11.237Z", "updatedAt": "2023-04-16T12:55:11.237Z" }
-}]

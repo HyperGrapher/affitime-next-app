@@ -5,7 +5,6 @@ export const capitalize = (str: string | null): string => {
     return str.charAt(0).toUpperCase() + lower.slice(1);
 };
 
-/**  MySQL Database'den gelen created/updated gibi date'leri <1 Ocak 2022 12:00> formatina cevirir */
 export const formatDateTR = (date: Date | null | undefined): string => {
     if (!date) return "";
 
@@ -21,7 +20,6 @@ export const formatDateTR = (date: Date | null | undefined): string => {
 
 export const numberWithCommas = (num: string | number | undefined | null) => {
     if (!num) return num = 0;
-    // const num = new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(Number(x));
     return new Intl.NumberFormat('tr-TR').format(Number(num));
 
 };

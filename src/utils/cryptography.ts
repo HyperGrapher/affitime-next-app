@@ -5,17 +5,13 @@ const ENCODING = "utf8";
 const DEFAULT_INITIALIZATION_VECTOR = "0";
 const DEFAULT_SYMMETRIC_KEY = "d6F3Efeq";
 
-/* 
-used for encrypting confidential data 
-*/
-
 export function encrypt(
   value: string,
   key = DEFAULT_SYMMETRIC_KEY,
   iv = DEFAULT_INITIALIZATION_VECTOR
 ) {
   const cipher = createCipheriv(ALGORITHM, key, iv);
-  let crypted = "" // cipher.update(value, ENCODING, "base64");
+  let crypted = "" 
   crypted += cipher.final("base64");
   return crypted;
 }
@@ -26,7 +22,7 @@ export function decrypt(
   iv = DEFAULT_INITIALIZATION_VECTOR
 ) {
   const decipher = createDecipheriv(ALGORITHM, key, iv);
-  let dec = "" // decipher.update(value, "base64", ENCODING);
+  let dec = "" 
   dec += decipher.final(ENCODING);
   return dec;
 }
