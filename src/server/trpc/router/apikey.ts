@@ -51,6 +51,7 @@ export const ApikeyRouter = router({
     });
 
     console.log("----> SENT EMAIL");
+    return { error: false, message: "Email success" };
   }),
 
   upsertApikey: vendorProcedure.mutation(async ({ ctx }) => {
