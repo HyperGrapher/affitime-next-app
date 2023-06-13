@@ -38,10 +38,11 @@ export const ApikeyRouter = router({
 
     transporter.verify(function (error, success) {
       if (error) {
+        console.log("Cannot verify transporter");
         console.log(error);
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Product ID not found",
+          message: "Email error!!",
           cause: error,
         });
       } else {
@@ -50,8 +51,31 @@ export const ApikeyRouter = router({
       }
     });
 
-    console.log("----> SENT EMAIL");
-    return { error: false, message: "Email success" };
+    const message = {
+      from: "noreply@affitime.com",
+      to: "qwaveapp@gmail.com",
+      subject: "Message title",
+      text: "Plaintext version of the message",
+      html: "<p>HTML version of the message</p>",
+      envelope: {
+        from: "Affitime <noreply@affitime.com>", // used as MAIL FROM: address for SMTP
+        to: "qwaveapp@gmail.com", // used as RCPT TO: address for SMTP
+      },
+    };
+
+    transporter.sendMail(message, function (err) {
+      if (err) {
+        console.log("----> ERROR SENDING EMAIL");
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product ID not found",
+          cause: err,
+        });
+      } else {
+        console.log("----> SUCCESS SENDING EMAIL");
+        return { error: false, message: "Email success" };
+      }
+    });
   }),
 
   upsertApikey: vendorProcedure.mutation(async ({ ctx }) => {
