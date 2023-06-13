@@ -152,7 +152,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     const onSendEmail = () => {
         send.mutate(undefined, {
             onSuccess: (data) => {
-                notifySuccessTC("Email Conn başarılı!: " + data.message, true)
+                notifySuccessTC("Email Conn başarılı!: ", true)
             },
             onError(error) {
                 console.error(error)
