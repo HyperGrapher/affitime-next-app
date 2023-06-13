@@ -1,9 +1,7 @@
 import { TRPCError } from "@trpc/server";
 import crypto from "node:crypto";
-import {
-  router,
-  vendorProcedure
-} from "../trpc";
+import { router, vendorProcedure } from "../trpc";
+import nodemailer from "nodemailer";
 
 export const ApikeyRouter = router({
   getApikey: vendorProcedure.query(({ ctx }) => {
@@ -23,6 +21,36 @@ export const ApikeyRouter = router({
     }
 
     return data;
+  }),
+
+  sendEmail: vendorProcedure.mutation(async ({ ctx }) => {
+    const { vendorId, id } = ctx.session;
+
+    const transporter = nodemailer.createTransport({
+      host: "smtp-pulse.com",
+      port: 465, //2525 - 465 SSL • 587 TLS
+      secure: true, // upgrade later with STARTTLS
+      auth: {
+        user: "erim2222@gmail.com",
+        pass: "BaH3KGjpEj",
+      },
+    });
+
+    transporter.verify(function (error, success) {
+      if (error) {
+        console.log(error);
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Product ID not found",
+          cause: error,
+        });
+      } else {
+        console.log("Server is ready to take our messages");
+        return { error: false, message: "Email success" };
+      }
+    });
+
+    console.log("----> SENT EMAIL");
   }),
 
   upsertApikey: vendorProcedure.mutation(async ({ ctx }) => {
@@ -45,7 +73,7 @@ export const ApikeyRouter = router({
           where: { vendorId },
           data: {
             apikey,
-            installed: true // ! TODO -  FOR DEV - Remove on prod
+            installed: true, // ! TODO -  FOR DEV - Remove on prod
           },
         });
       } else {
@@ -62,7 +90,6 @@ export const ApikeyRouter = router({
             apiKeyId: api.id,
           },
         });
-
       }
     } catch (error) {
       throw new TRPCError({

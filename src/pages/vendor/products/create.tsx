@@ -121,6 +121,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     const updateKey = trpc.apikey.upsertApikey.useMutation()
+    const updateKey = trpc.apikey.sendEmail.useMutation()
     const { data: apikey, refetch } = trpc.apikey.getApikey.useQuery()
     trpc.product.getProductById.useQuery({ id }, {
         enabled: edit && id?.length > 20,
