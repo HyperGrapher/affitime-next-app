@@ -113,8 +113,8 @@ export const ApikeyRouter = router({
         },
         to: [
           {
-            email: "qwaveapp@gmail.com",
-            name: "qwaveapp",
+            email: "erim2222@gmail.com",
+            name: "erim",
           },
         ],
       },
