@@ -8,6 +8,7 @@ import classNames from '../../../utils/classnames';
 import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from "../../../utils/trpc";
 import { prisma } from "../../../server/db/client";
+import { sendEmail } from '../../../utils/send-email';
 
 
 const VerifyingEmail = () => {
@@ -37,6 +38,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         select: { emailVerified: true, email: true, createdAt: true }
     });
 
+    if (!user) return {
+        redirect: {
+            destination: AppRoutes.SIGNIN,
+            permanent: false
+        }
+    }
+
     if (!user?.emailVerified) {
         await prisma.user.update({
             where: { id },
@@ -44,6 +52,30 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 emailVerified: new Date(),
             }
         });
+
+        const emailVerifyTemplate = {
+            email: {
+                subject: "Hesabın Artık Aktif!",
+                template: {
+                    id: 13526,
+                    variables: {
+                        current_year: new Date().getUTCFullYear(),
+                    },
+                },
+                from: {
+                    name: "Affitime",
+                    email: "noreply@affitime.com",
+                },
+                to: [
+                    {
+                        email: user?.email,
+                        name: '',
+                    },
+                ],
+            },
+        };
+
+        await sendEmail(emailVerifyTemplate);
 
         return {
             redirect: {
