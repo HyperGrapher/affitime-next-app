@@ -35,7 +35,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const user = await prisma.user.findUnique({
         where: { id },
-        select: { emailVerified: true, email: true, createdAt: true }
+        select: { emailVerified: true, email: true, role: true, }
     });
 
     if (!user) return {
@@ -57,7 +57,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             email: {
                 subject: "Hesabın Artık Aktif!",
                 template: {
-                    id: 13526,
+                    id: user.role === 'PARTNER' ? 13526 : 13530,
                     variables: {
                         current_year: new Date().getUTCFullYear(),
                     },
