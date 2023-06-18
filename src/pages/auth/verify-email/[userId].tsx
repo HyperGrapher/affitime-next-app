@@ -41,7 +41,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         await prisma.user.update({
             where: { id },
             data: {
-                emailVerified: user?.createdAt,
+                emailVerified: new Date(),
             }
         });
 

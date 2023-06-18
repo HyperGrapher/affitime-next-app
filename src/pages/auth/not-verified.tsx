@@ -56,5 +56,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     }
 
+    const user = await prisma.user.findUnique({
+        where: { id: session.id },
+        select: { emailVerified: true, email: true, createdAt: true }
+    });
+
+    if (user?.emailVerified) {
+
+        return {
+            redirect: {
+                destination: `/${session.role.toLowerCase()}/dashboard`,
+                permanent: false
+            }
+        }
+
+    }
+
     return { props: {} }
 }
