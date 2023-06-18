@@ -9,6 +9,7 @@ import { z } from "zod";
 import crypto from "crypto";
 import { CommissionType, LinkStatus } from "@prisma/client";
 import sendpulse from "sendpulse-api";
+import { sendEmail } from "../../../utils/send-email";
 
 const API_USER_ID = "227943d8a153c1713d3fd8c7d97b1e63";
 const API_SECRET = "cd11fe04653031b9f60787f61170ecf6";
@@ -216,6 +217,7 @@ export const linkRouter = router({
 
         const vendor = await ctx.prisma.vendor.findFirst({
           where: { id: product?.vendor_profile_id },
+          include: { user: true },
         });
 
         if (!vendor)
@@ -270,7 +272,31 @@ export const linkRouter = router({
             message: "Link cannot be created",
           });
 
-        console.log(" >>>>>>>   SENDING EMAIL NOT  >>>>>>>");
+        const template = {
+          email: {
+            subject: "Yeni kampanya başvurusu!",
+            template: {
+              id: 13517,
+              variables: {
+                firmaname: vendor.brand,
+                name: partner.username,
+                current_year: new Date().getUTCFullYear(),
+              },
+            },
+            from: {
+              name: "Affitime",
+              email: "noreply@affitime.com",
+            },
+            to: [
+              {
+                email: vendor?.user.email,
+                name: vendor.brand,
+              },
+            ],
+          },
+        };
+        // Sending mail to the vendor with partner username {{name}}
+        await sendEmail(template);
 
         return link;
       } catch (error) {
