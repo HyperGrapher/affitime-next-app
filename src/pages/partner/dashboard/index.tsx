@@ -13,6 +13,7 @@ import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
 import Head from "next/head";
+import { prisma } from "../../../server/db/client";
 
 
 const DashboardVendor = () => {
@@ -116,6 +117,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
+
+    const user = await prisma.user.findUnique({
+        where: { id: session.id },
+        select: { emailVerified: true }
+    });
+
+    if (!user?.emailVerified) {
+        return {
+            redirect: {
+                destination: `/auth/not-verified`,
+                permanent: false
+            }
+        }
+
+    }
+
 
     return { props: {} }
 }

@@ -119,7 +119,7 @@ export const authRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { email, password, role, username, brand, website, phone } = input;
-
+      let emailName = "";
       const emailExists = await ctx.prisma.user.count({
         where: {
           email,
@@ -222,6 +222,8 @@ export const authRouter = router({
             },
           });
 
+          emailName = vendor.brand;
+
           const api = await ctx.prisma.apiKey.create({
             data: {
               vendorId: vendor.id,
@@ -252,6 +254,8 @@ export const authRouter = router({
             },
           });
 
+          emailName = partner.username;
+
           await ctx.prisma.user.update({
             where: { id: user.id },
             data: {
@@ -270,14 +274,15 @@ export const authRouter = router({
           },
         });
 
-        const emailTemplate = {
+        const emailVerifyTemplate = {
           email: {
-            subject: "Email onayi",
+            subject: "E-posta adresinizi doğrulayın",
             template: {
-              id: 13542,
+              id: 12376,
               variables: {
-                name: "burak",
-                current_year: "2023",
+                name: emailName,
+                current_year: new Date().getUTCFullYear(),
+                verify_url: `/auth/verify-email/${user.id}`,
               },
             },
             from: {
@@ -286,14 +291,14 @@ export const authRouter = router({
             },
             to: [
               {
-                email: email,
-                name: email,
+                email: user.email,
+                name: emailName,
               },
             ],
           },
         };
 
-        await sendEmail(emailTemplate)
+        await sendEmail(emailVerifyTemplate);
 
         return await ctx.prisma.user.findFirst({
           where: {
@@ -304,7 +309,6 @@ export const authRouter = router({
             partner: role === UserRoles.PARTNER,
           },
         });
-
       } catch (error) {
         console.error(error);
       }

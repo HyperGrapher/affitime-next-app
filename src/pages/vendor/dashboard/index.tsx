@@ -14,7 +14,7 @@ import { checkUserStatus } from '../../../utils/checkUserStatus';
 import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
-
+import { prisma } from "../../../server/db/client";
 
 const DashboardVendor = () => {
 
@@ -28,11 +28,11 @@ const DashboardVendor = () => {
     //     if(userRegId.id === '0') {
     //         console.log('<<<<<<<<< SIGNOUT 0 >>>>>>>>>>>>>>>>');
     //         localStorage.setItem('affui', `${session.id}`)
-            
+
     //     }
     //     if(userRegId.id === session.id) {
     //         console.log('<<<<<<<<< SIGNOUT ID  Mismatch b >>>>>>>>>>>>>>>>');
-            
+
     //     }
     //     console.log({ userRegId });
 
@@ -129,6 +129,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             destination: `/${session.role.toLowerCase()}/dashboard`,
             permanent: false
         }
+    }
+
+    const user = await prisma.user.findUnique({
+        where: { id: session.id },
+        select: { emailVerified: true }
+    });
+
+    if (!user?.emailVerified) {
+        return {
+            redirect: {
+                destination: `/auth/not-verified`,
+                permanent: false
+            }
+        }
+
     }
 
 

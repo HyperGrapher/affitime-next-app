@@ -8,6 +8,7 @@ import { UserRoles } from '../../../interface/auth.interface';
 import { trpc } from '../../../utils/trpc';
 import { AppRoutes } from "../../../config/appRoutes";
 import Head from "next/head";
+import { prisma } from "../../../server/db/client";
 
 
 
@@ -34,6 +35,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             permanent: false
         }
     }
+
+    const user = await prisma.user.findUnique({
+        where: { id: session.id },
+        select: { emailVerified: true }
+    });
+
+    if (!user?.emailVerified) {
+        return {
+            redirect: {
+                destination: `/auth/not-verified`,
+                permanent: false
+            }
+        }
+
+    }
+
 
 
     return { props: {} }

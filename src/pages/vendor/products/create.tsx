@@ -47,6 +47,22 @@ export const getServerSideProps: GetServerSideProps<IServerSideProps> = async (c
         }
     }
 
+    const user = await prisma.user.findUnique({
+        where: { id: session.id },
+        select: { emailVerified: true }
+    });
+
+    if (!user?.emailVerified) {
+        return {
+            redirect: {
+                destination: `/auth/not-verified`,
+                permanent: false
+            }
+        }
+
+    }
+
+
     const check = await checkUserStatus(session)
     if (check.paymentRequired) return {
         redirect: {

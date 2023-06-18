@@ -2,6 +2,7 @@ import { AppRoutes } from "./appRoutes";
 export const pathsToExludeSidenav = [
   "/r/",
   '/admin',
+  '/auth/not-verified',
   AppRoutes.BLOG,
   AppRoutes.PRICING,
   AppRoutes.CONTACT,
