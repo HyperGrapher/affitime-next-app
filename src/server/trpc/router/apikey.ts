@@ -7,7 +7,7 @@ import axios from "axios";
 const sendpulse = {
   user: "erim2222@gmail.com",
   pass: "BaH3KGjpEj",
-};
+} as const;
 
 export const sendEmail = (message: string, cb: () => void) => {
   console.log("");
@@ -33,12 +33,11 @@ export const ApikeyRouter = router({
     return data;
   }),
 
+  // * Keep this for any arbitary email
   sendEmailSMTP: vendorProcedure.mutation(async ({ ctx }) => {
-    const { vendorId, id } = ctx.session;
-
     const transporter = nodemailer.createTransport({
       host: "smtp-pulse.com",
-      port: 465, // 465 SSL • 587 TLS
+      port: 465, 
       secure: true,
       auth: {
         user: sendpulse.user,
@@ -102,9 +101,7 @@ export const ApikeyRouter = router({
           id: 13542,
           variables: {
             name: "burak",
-            ec_es_email_sender_company: "affitime - her hakki saklidir",
             current_year: "2023",
-            contact_us_url: "affitime.com/contact-us",
           },
         },
         from: {
@@ -113,8 +110,8 @@ export const ApikeyRouter = router({
         },
         to: [
           {
-            email: "erim2222@gmail.com",
-            name: "erim",
+            email: "qwaveapp@gmail.com",
+            name: "qwaveapp",
           },
         ],
       },
@@ -137,7 +134,6 @@ export const ApikeyRouter = router({
         data: creds,
       })
       .then((foo) => {
-        console.log(foo.data.access_token);
         axios
           .post("https://api.sendpulse.com/smtp/emails", withTemplate, {
             headers: {

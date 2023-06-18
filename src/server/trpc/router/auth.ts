@@ -6,6 +6,79 @@ import bcrypt from "bcrypt";
 import { comparePassword } from "../../../utils/comparePassword";
 import dayjs from "dayjs";
 import crypto from "crypto";
+import axios from "axios";
+import type { PulseTokenReturnType } from "../../../interface/email.interface";
+import { emailCreds } from "../../../config/constants";
+
+const emailTemplate = {
+  email: {
+    subject: "Sifre sifirla",
+    template: {
+      id: 13542,
+      variables: {
+        name: "burak",
+        current_year: "2023",
+      },
+    },
+    from: {
+      name: "Affitime",
+      email: "noreply@affitime.com",
+    },
+    to: [
+      {
+        email: "qwaveapp@gmail.com",
+        name: "qwaveapp",
+      },
+    ],
+  },
+};
+
+async function sendEmail(withTemplate: object) {
+  const pulseToken = await axios.request<PulseTokenReturnType>({
+    method: "post",
+    url: "https://api.sendpulse.com/oauth/access_token",
+    data: emailCreds,
+  });
+
+  const resp = await axios.post(
+    "https://api.sendpulse.com/smtp/emails",
+    withTemplate,
+    {
+      headers: {
+        Authorization: `Bearer ${pulseToken.data.access_token}`,
+        "Content-type": "application/json",
+      },
+    }
+  );
+
+  console.log(resp);
+
+  return resp;
+}
+
+async function XsendEmail2(withTemplate: Record<string, string>) {
+  axios
+    .request<PulseTokenReturnType>({
+      method: "post",
+      url: "https://api.sendpulse.com/oauth/access_token",
+      data: emailCreds,
+    })
+    .then((foo) => {
+      axios
+        .post("https://api.sendpulse.com/smtp/emails", withTemplate, {
+          headers: {
+            Authorization: `Bearer ${foo.data.access_token}`,
+            "Content-type": "application/json",
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        })
+        .catch((e) => {
+          console.error(e);
+        });
+    });
+}
 
 export const authRouter = router({
   getSessionUser: protectedProcedure.query(({ ctx }) => {
@@ -187,6 +260,41 @@ export const authRouter = router({
           });
         }
 
+        await ctx.prisma.user.findFirst({
+          where: {
+            email,
+          },
+          include: {
+            vendor: role === UserRoles.VENDOR,
+            partner: role === UserRoles.PARTNER,
+          },
+        });
+
+        const emailTemplate = {
+          email: {
+            subject: "Email onayi",
+            template: {
+              id: 13542,
+              variables: {
+                name: "burak",
+                current_year: "2023",
+              },
+            },
+            from: {
+              name: "Affitime",
+              email: "noreply@affitime.com",
+            },
+            to: [
+              {
+                email: email,
+                name: email,
+              },
+            ],
+          },
+        };
+
+        await sendEmail(emailTemplate)
+
         return await ctx.prisma.user.findFirst({
           where: {
             email,
@@ -196,6 +304,7 @@ export const authRouter = router({
             partner: role === UserRoles.PARTNER,
           },
         });
+
       } catch (error) {
         console.error(error);
       }

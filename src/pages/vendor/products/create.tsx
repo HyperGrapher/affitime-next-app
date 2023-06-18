@@ -383,7 +383,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
                 {edit ? null : <hr />}
 
-
                 <main className=''>
 
                     <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmit)} >
