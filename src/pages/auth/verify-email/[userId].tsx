@@ -47,7 +47,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         return {
             redirect: {
-                destination: `/${session.role.toLowerCase()}/dashboard`,
+                destination: `/${session.role.toLowerCase()}/dashboard?trial=true`,
                 permanent: false
             }
         }

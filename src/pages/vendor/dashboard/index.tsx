@@ -15,28 +15,15 @@ import classNames from "../../../utils/classnames";
 import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
 import { prisma } from "../../../server/db/client";
+import { useRouter } from 'next/router'
+
 
 const DashboardVendor = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
     const { data: session } = useSession()
-
-    // if (session) {
-
-    //     const userRegId = JSON.parse(localStorage.getItem('affiu') ?? '{ \"id\": \"0\" }') as { id: string }
-
-    //     if(userRegId.id === '0') {
-    //         console.log('<<<<<<<<< SIGNOUT 0 >>>>>>>>>>>>>>>>');
-    //         localStorage.setItem('affui', `${session.id}`)
-
-    //     }
-    //     if(userRegId.id === session.id) {
-    //         console.log('<<<<<<<<< SIGNOUT ID  Mismatch b >>>>>>>>>>>>>>>>');
-
-    //     }
-    //     console.log({ userRegId });
-
-    // }
+    const router = useRouter()
+    const newTrialStart = (router.query?.trial as string) === 'true';
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
@@ -88,8 +75,18 @@ const DashboardVendor = () => {
                     <small className="text-slate-400 text-sm">
                         Tüm affiliate bilgilerinizi bu sayfada görüntüleyebilirsiniz
                     </small>
+
                 </div>
 
+                {
+                    newTrialStart && (
+                        <div className="bg-green-400 py-1 px-2">
+                            <p className="text-green-900 font-bold">
+                                Email adresiniz onaylandı ve 14 günlük deneme süreniz başladı.
+                            </p>
+                        </div>
+                    )
+                }
                 <Tab.Group defaultIndex={0} selectedIndex={selectedIndex} onChange={setSelectedIndex}>
                     <Tab.List className={classNames(
                         "flexx hidden space-x-8 "

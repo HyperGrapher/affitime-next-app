@@ -14,11 +14,13 @@ import getClientIp from "../../../utils/getClientIp";
 import { trpc } from "../../../utils/trpc";
 import Head from "next/head";
 import { prisma } from "../../../server/db/client";
+import { useRouter } from 'next/router'
 
 
 const DashboardVendor = () => {
 
     const [selectedIndex, setSelectedIndex] = useState(0)
+    const router = useRouter()
 
     const updateIp = trpc.user.updateUserIp.useMutation()
     const createUserIp = trpc.ips.createIp.useMutation()
