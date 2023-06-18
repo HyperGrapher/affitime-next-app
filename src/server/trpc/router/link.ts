@@ -322,6 +322,22 @@ export const linkRouter = router({
         throw new TRPCError({ code: "NOT_FOUND", message: "IP not found" });
       // https://www.prisma.io/docs/concepts/components/prisma-client/crud#update-a-number-field
       try {
+        const link = await ctx.prisma.link.findUnique({
+          where: { id },
+          include: {
+            partner: {
+              include: { user: true },
+            },
+            vendor: true,
+          },
+        });
+
+        if (!link)
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Link not found",
+          });
+
         await ctx.prisma.link.update({
           where: { id },
           data: {
@@ -333,6 +349,32 @@ export const linkRouter = router({
               : LinkStatus.REQUEST_DENIED,
           },
         });
+
+        const template = {
+          email: {
+            subject: confirmed ? 'Kampanya başvurusu kabul edildi!' : 'Kampanya başvurusu red edildi!',
+            template: {
+              id: confirmed ? 13524 : 13540,
+              variables: {
+                firmaname: link?.vendor.brand,
+                name: link?.partner.username,
+                current_year: new Date().getUTCFullYear(),
+              },
+            },
+            from: {
+              name: "Affitime",
+              email: "noreply@affitime.com",
+            },
+            to: [
+              {
+                email: link?.partner?.user.email,
+                name: link?.partner.username,
+              },
+            ],
+          },
+        };
+      
+        await sendEmail(template);
 
         return { error: false, message: "ok" };
       } catch (error) {
