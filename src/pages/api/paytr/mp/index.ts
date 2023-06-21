@@ -18,6 +18,11 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
   if (callback.trans_ids) {
     // * Marketplace Paytr response
     console.log("Marketplace API Paytr response");
+
+    // ## trans_ids: Daha önce PayTR'a ilettiğiniz transfer taleplerinden tamamlanan transferlerin trans_id bilgilerini içeren JSON
+    // ## (trans_id bilgisi transfer talebi yaparken PayTR'a gönderdiğiniz her işlem için eşsiz değerdir)
+    // ## Örn: Burada trans_ids JSON verisini DECODE edip, çıktıdaki her bir trans_id ile veritabanınızdan transfer talebini tespit ederek ilgili kullanıcınıza bilgilendirme gönderebilirsiniz (email, sms vb.)
+    const processed_result = JSON.parse("{trans_ids: ''}");
   } else {
     // * Direct API Paytr response
     console.log("Direct API Paytr response");
@@ -143,7 +148,7 @@ success_callback:{
    test_mode: '1'
  }
 
- ? Axios callback: 
+ ? Axios callback 1: 
 
   {
    paytr_token: 'ln4s0QMYKV5UemWjKOpYAvy1xAXVioQ5d/lmYKSQFs4=',
@@ -173,5 +178,22 @@ success_callback:{
    merchant_id: '339896',
    test_mode: '1'
  }
+
+
+ ? axios callback 2 
+
+  {
+   paytr_token: 'JBMBdZRRNVwptFYo8ULgC9OfgkWa/OBSZVhObfwlvU0=',
+   transfer_iban: 'TR800011100000000056712834',
+   lng: 26
+ }
+ 200
+ {
+   status: 'error',
+   err_no: '007',
+   err_msg: 'merchant_oid bulundu ancak odeme henuz siteye bildirilmemis (MP1687384672126)'
+ }
+
+ merchant_oid bulundu ancak odeme henuz siteye bildirilmemis (MP1687384672126) 007
 
 */

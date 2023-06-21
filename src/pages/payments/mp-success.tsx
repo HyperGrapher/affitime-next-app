@@ -10,63 +10,6 @@ import { getSession } from "next-auth/react";
 import { prisma } from "../../server/db/client";
 import { sendEmail } from '../../utils/send-email';
 
-/* 
-export const getServerSideProps: GetServerSideProps = async (context) => {
-
-  const session = await getSession(context)
-
-  if (!session) return {
-    redirect: {
-      destination: AppRoutes.SIGNIN,
-      permanent: false
-    }
-  }
-
-  const user = await prisma.user.findUnique({
-    where: { id: session.id },
-    select: { vendor_username: true, email: true }
-  });
-
-  if (!user) {
-    return {
-      redirect: {
-        destination: AppRoutes.SIGNIN,
-        permanent: false
-      }
-    }
-
-  }
-
-  const template = {
-    email: {
-      subject: "Üyelik Ödemesi Başarılı!",
-      template: {
-        id: 13533,
-        variables: {
-          brand_name: user.vendor_username,
-          current_year: new Date().getUTCFullYear(),
-        },
-      },
-      from: {
-        name: "Affitime",
-        email: "noreply@affitime.com",
-      },
-      to: [
-        {
-          email: user?.email,
-          name: user.vendor_username,
-        },
-      ],
-    },
-  };
-
-  await sendEmail(template);
-
-
-  return { props: {} }
-
-}
- */
 
 const Success = () => {
   const { replace } = useRouter()

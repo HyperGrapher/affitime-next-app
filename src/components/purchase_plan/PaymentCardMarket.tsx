@@ -12,10 +12,8 @@ import { z } from 'zod';
 import Card from '../credit-card/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../error-messages/FormError';
 import { PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
-import { PRICING_ANNUALY, PRICING_MONTHLY } from '../../config/pricing';
 import type { ICreditCard, IPlanPaymentData } from "../../interface/payments.interface";
 import { IpSchema } from '../../interface/zod.schema';
-import InstallmentTable from '../../pages/payments/InstallmentTable';
 import classNames from "../../utils/classnames";
 import getClientIp from '../../utils/getClientIp';
 import { notifyError } from '../../utils/notifications';
@@ -223,7 +221,7 @@ const PaymentCardMarket = () => {
                     expiry_month: month,
                     expiry_year: year,
                     cvv: cardData.cvvNumber,
-                    merchant_ok_url: "https://affitime.com/payments/success",
+                    merchant_ok_url: "https://affitime.com/payments/mp-success",
                     merchant_fail_url: "https://affitime.com/payments/fail",
                     installment_count: "0", // isTaksit ? installmentAmount : "0",
                     card_type: selectedCard.value,
