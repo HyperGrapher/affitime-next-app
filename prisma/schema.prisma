@@ -120,6 +120,7 @@ enum LinkStatus {
   CANCELED_BY_PARTNER
   CANCELED_BY_ADMIN
   PRODUCT_DELETED
+  PRODUCT_NOT_ACTIVE // vendor not pro or trial
 }
 
 model PlanPayment {

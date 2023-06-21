@@ -196,6 +196,8 @@ const PaymentCard = () => {
         if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
         setBusy(true)
 
+        if(isTaksit && !selectedCard.value) return notifyError('Kart tipinizi seçin!')
+
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
 
