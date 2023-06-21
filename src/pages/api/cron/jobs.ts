@@ -2,38 +2,19 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { prisma } from "../../../server/db/client";
 import dayjs from "dayjs";
 import { sendEmail } from "../../../utils/send-email";
+import { EmailType } from "@prisma/client";
 
-function trialEnding(brand: string, email: string) {
+function getTemplate(
+  templateId: number,
+  subject: string,
+  brand: string,
+  email: string
+) {
   return {
     email: {
-      subject: "Deneme Süren Bitmek Üzere",
+      subject: subject,
       template: {
-        id: 13523,
-        variables: {
-          brand,
-          current_year: new Date().getUTCFullYear(),
-        },
-      },
-      from: {
-        name: "Affitime",
-        email: "noreply@affitime.com",
-      },
-      to: [
-        {
-          email: email,
-          name: brand,
-        },
-      ],
-    },
-  };
-}
-
-function trialEnded(brand: string, email: string) {
-  return {
-    email: {
-      subject: "Deneme Süren Bitti",
-      template: {
-        id: 13519,
+        id: templateId,
         variables: {
           brand,
           current_year: new Date().getUTCFullYear(),
@@ -63,8 +44,6 @@ async function updateEmailQueue(id: number) {
 }
 
 const action = async (req: NextApiRequest, res: NextApiResponse) => {
-  // await runMiddleware(req, res, cors)
-
   res.setHeader("Access-Control-Allow-Origin", "*");
 
   const mailQueue = await prisma.emailQueue.findMany({
@@ -85,14 +64,26 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
   try {
     for (const mq of mailQueue) {
       switch (mq.type) {
-        case "TRIAL_ENDING_SOON":
+        case EmailType.TRIAL_ENDING_SOON:
           await sendEmail(
-            trialEnding(mq.user?.vendor_username ?? "", mq.email)
+            getTemplate(
+              13523,
+              "Deneme Süren Bitmek Üzere",
+              mq.user?.vendor_username ?? "",
+              mq.email
+            )
           );
           await updateEmailQueue(mq.id);
           break;
-        case "TRIAL_ENDED":
-          await sendEmail(trialEnded(mq.user?.vendor_username ?? "", mq.email));
+        case EmailType.TRIAL_ENDED:
+          await sendEmail(
+            getTemplate(
+              13519,
+              "Deneme Süren Bitti",
+              mq.user?.vendor_username ?? "",
+              mq.email
+            )
+          );
           await updateEmailQueue(mq.id);
           break;
 
