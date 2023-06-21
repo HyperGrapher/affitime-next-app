@@ -6,9 +6,6 @@ export const categories = [
     name: "Elektronik"
   },
   {
-    name: "Giyim & Aksesuar"
-  },
-  {
     name: "Müzik aletleri"
   },
   {
