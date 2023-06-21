@@ -52,18 +52,23 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (token !== callback.hash) {
       console.log("---------> FAILED - token != callback.hash");
-      console.log("---------> callback.hash: ", callback.hash, "token created: ", token);
+      console.log(
+        "---------> callback.hash: ",
+        callback.hash,
+        "token created: ",
+        token
+      );
 
       await prisma.marketPayment.update({
         where: { merchant_oid: callback.merchant_oid },
         data: {
-            errorReason: 'BAD_HASH',
-            errorCode: 'CUSTOM',
-            payed_amount: callback.total_amount, 
-            payment_type: callback.payment_type,
-            test_mode: callback.test_mode,
-            success: false,
-        }
+          errorReason: "BAD_HASH",
+          errorCode: "CUSTOM",
+          payed_amount: callback.total_amount,
+          payment_type: callback.payment_type,
+          test_mode: callback.test_mode,
+          success: false,
+        },
       });
 
       return res.send("OK");
@@ -83,41 +88,38 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
 
     if (callback.status === "success") {
       // basarili
-      console.log( "---> cb.status == success | oid:", callback.merchant_oid);
+      console.log("---> cb.status == success | oid:", callback.merchant_oid);
       const nowDate = dayjs(new Date());
       const months = 2;
       const validFrom = dayjs(new Date()).toDate();
       const validTill = nowDate.add(months, "month").toDate();
 
-
       await prisma.marketPayment.update({
         where: { merchant_oid: callback.merchant_oid },
         data: {
-            validFrom, 
-            validTill, 
-            payed_amount: callback.total_amount, 
-            payment_type: callback.payment_type,
-            test_mode: callback.test_mode,
-            success: true,
-        }
+          validFrom,
+          validTill,
+          payed_amount: callback.total_amount,
+          payment_type: callback.payment_type,
+          test_mode: callback.test_mode,
+          success: true,
+        },
       });
-
     } else {
       /// basarisiz
-      console.log( "---> cb.status - basarisiz: ", callback.failed_reason_msg );
+      console.log("---> cb.status - basarisiz: ", callback.failed_reason_msg);
 
       await prisma.marketPayment.update({
         where: { merchant_oid: callback.merchant_oid },
         data: {
-            errorReason: callback.failed_reason_msg, 
-            errorCode: callback.failed_reason_code, 
-            payed_amount: callback.total_amount, 
-            payment_type: callback.payment_type,
-            test_mode: callback.test_mode,
-            success: false,
-        }
+          errorReason: callback.failed_reason_msg,
+          errorCode: callback.failed_reason_code,
+          payed_amount: callback.total_amount,
+          payment_type: callback.payment_type,
+          test_mode: callback.test_mode,
+          success: false,
+        },
       });
-
     }
 
     res.send("OK"); // Bildirimin alındığını PayTR sistemine bildir.
@@ -125,3 +127,51 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
 };
 
 export default action;
+
+/*
+
+success_callback:{
+   hash: 'FYwETRRvVB0KTNeERk2zzNpDi854uD2MaJgGHhLn0P8=',
+   merchant_oid: 'MP1687384672126',
+   status: 'success',
+   total_amount: '100000',
+   payment_type: 'card',
+   payment_amount: '100000',
+   currency: 'TL',
+   installment_count: '1',
+   merchant_id: '339896',
+   test_mode: '1'
+ }
+
+ ? Axios callback: 
+
+  {
+   paytr_token: 'ln4s0QMYKV5UemWjKOpYAvy1xAXVioQ5d/lmYKSQFs4=',
+   transfer_iban: 'TR800011100000000056712834',
+   lng: 26
+ }
+
+ 200
+
+ {
+   status: 'error',
+   err_no: '006',
+   err_msg: 'merchant_oid ile basarili odeme bulunamadi (get from db)'
+ }
+
+ merchant_oid ile basarili odeme bulunamadi (get from db) 006
+
+ [Object: null prototype] {
+   hash: 'FYwETRRvVB0KTNeERk2zzNpDi854uD2MaJgGHhLn0P8=',
+   merchant_oid: 'MP1687384672126',
+   status: 'success',
+   total_amount: '100000',
+   payment_type: 'card',
+   payment_amount: '100000',
+   currency: 'TL',
+   installment_count: '1',
+   merchant_id: '339896',
+   test_mode: '1'
+ }
+
+*/
