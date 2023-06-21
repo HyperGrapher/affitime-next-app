@@ -1,6 +1,5 @@
 import { type NextApiRequest, type NextApiResponse } from "next";
 import { prisma } from "../../../server/db/client";
-import dayjs from "dayjs";
 import { sendEmail } from "../../../utils/send-email";
 import { EmailType } from "@prisma/client";
 
