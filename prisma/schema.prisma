@@ -204,14 +204,36 @@ model Taxinfo {
   @@map("taxinfo")
 }
 
+enum EmailType {
+  TRIAL_ENDING_SOON
+  PLAN_ENDING_SOON
+  TRIAL_ENDED
+  PLAN_ENDED
+}
+
+// Queue for cron jobs
+model EmailQueue {
+  id               Int       @id @default(autoincrement())
+  user             User      @relation(fields: [email], references: [email])
+  email            String
+  type             EmailType
+  sent             Boolean   @default(false)
+  trialOrValidTill DateTime
+  createdAt        DateTime  @default(now())
+
+  @@unique([trialOrValidTill, type]) // this two field being unique, it prevents creating new row for the same date and emailType
+  @@index([id, email])
+  @@map("email_queue")
+}
+
 model User {
   id               String        @id @default(cuid())
   fname            String?
   lname            String?
   email            String        @unique
-  prevEmail        String? 
-  nextEmail        String? 
-  confirmId        String? 
+  prevEmail        String?
+  nextEmail        String?
+  confirmId        String?
   password         String
   role             Role          @default(PARTNER)
   vendor_id        String?
@@ -224,13 +246,18 @@ model User {
   accounts         Account[]
   sessions         Session[]
   plan_payments    PlanPayment[]
+  sentEmails       EmailQueue[]
   taxinfo          Taxinfo?
   vendor           Vendor?
   partner          Partner?
   active           Boolean       @default(true)
   trial            Boolean       @default(true)
-  trialTill        DateTime? 
+  // trialEndedMail   Boolean       @default(false)
+  // trialEndSoonMail Boolean       @default(false)
+  trialTill        DateTime?
   pro              Boolean       @default(false)
+  // proEndedMail     Boolean       @default(false)
+  // proEndSoonMail   Boolean       @default(false)
   packageType      PackageType?  @default(TRIAL)
   validFrom        DateTime? // if pro is true then plan is valid from 
   validTill        DateTime? // if pro is true then plan is valid until 
@@ -256,7 +283,7 @@ model Vendor {
   notifications Notification[]
   visits        Visit[]
   apiKey        ApiKey?
-  apiKeyId      String? 
+  apiKeyId      String?
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 
