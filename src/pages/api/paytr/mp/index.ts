@@ -2,12 +2,8 @@ import { type NextApiRequest, type NextApiResponse } from "next";
 import { prisma } from "../../../../server/db/client";
 import dayjs from "dayjs";
 import crypto from "node:crypto";
+import { PAYTR_MARKETPLACE } from "../../../../config/constants";
 
-const PAYTR_MARKETPLACE = {
-  merchant_id: 339896,
-  merchant_key: "bfqaRWT9ZGMw3HC4",
-  merchant_salt: "ejRTNLhidiGwJn53",
-};
 
 const action = async (req: NextApiRequest, res: NextApiResponse) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
@@ -15,6 +11,7 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
   const callback = req.body;
   console.log(callback);
 
+  // !  https://dev.paytr.com/platform-transfer-talebi/transfer-talimatinin-sonucunun-alinmasi
   if (callback.trans_ids) {
     // * Marketplace Paytr response
     console.log("Marketplace API Paytr response");
@@ -53,7 +50,7 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
       .update(paytr_token)
       .digest("base64");
 
-    const test_mode = Number(callback.test_mode); // 0 or 1
+    // const test_mode = Number(callback.test_mode); // 0 or 1
 
     if (token !== callback.hash) {
       console.log("---------> FAILED - token != callback.hash");
@@ -71,7 +68,7 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
           errorCode: "CUSTOM",
           payed_amount: callback.total_amount,
           payment_type: callback.payment_type,
-          test_mode: callback.test_mode,
+          test_mode: Boolean(Number(callback.test_mode)),
           success: false,
         },
       });
@@ -104,9 +101,10 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
         data: {
           validFrom,
           validTill,
-          payed_amount: callback.total_amount,
+          payed_amount: Number(callback.total_amount),
+          payment_amount: Number(callback.payment_amount),
           payment_type: callback.payment_type,
-          test_mode: callback.test_mode,
+          test_mode: Boolean(Number(callback.test_mode)),
           success: true,
         },
       });
@@ -119,9 +117,9 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
         data: {
           errorReason: callback.failed_reason_msg,
           errorCode: callback.failed_reason_code,
-          payed_amount: callback.total_amount,
+          payed_amount: Number(callback.total_amount),
           payment_type: callback.payment_type,
-          test_mode: callback.test_mode,
+          test_mode: Boolean(Number(callback.test_mode)),
           success: false,
         },
       });
@@ -134,6 +132,24 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
 export default action;
 
 /*
+
+! ERROR START
+ PrismaClientValidationError: Argument payed_amount: Got invalid value '100000' on prisma.updateOneMarketPayment. Provided String, expected Float or NullableFloatFieldUpdateOperationsInput or Null.
+ Argument test_mode: Got invalid value '1' on prisma.updateOneMarketPayment. Provided String, expected Boolean or NullableBoolFieldUpdateOperationsInput or Null.
+     at Document.validate (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:32560:20)
+     at serializationFn (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:36149:19)
+     at runInChildSpan (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:25582:12)
+     at PrismaClient._executeRequest (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:36156:31)
+     at applyQueryExtensions (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:34486:19)
+     at consumer (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:36080:18)
+     at /home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:36085:51
+     at AsyncResource.runInAsyncScope (node:async_hooks:203:9)
+     at /home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:36085:29
+     at runInChildSpan (/home/burak/apps/affinext/node_modules/@prisma/client/runtime/index.js:25582:12) {
+   clientVersion: '4.8.1'
+ }
+
+! ERROR END
 
 success_callback:{
    hash: 'FYwETRRvVB0KTNeERk2zzNpDi854uD2MaJgGHhLn0P8=',

@@ -59,7 +59,7 @@ export const marketPlaceRouter = router({
         });
 
       const marketPayment = await ctx.prisma.marketPayment.findFirst({
-        where: { vendorId : vendorId },
+        where: { vendorId: vendorId },
       });
 
       if (!marketPayment)
@@ -67,6 +67,8 @@ export const marketPlaceRouter = router({
           code: "NOT_FOUND",
           message: "Session vendor not found",
         });
+
+      // !  https://dev.paytr.com/platform-transfer-talebi/transfer-talimatinin-sonucunun-alinmasi
 
       const merchant_id = PAYTR_MARKETPLACE.merchant_id;
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
@@ -87,6 +89,7 @@ export const marketPlaceRouter = router({
 
       const start_date = nd.format("YYYY-MM-DD HH:mm:ss");
       const end_date = ed.format("YYYY-MM-DD HH:mm:ss");
+      // paytr_token_for_geri_donen - https://dev.paytr.com/platform-transfer-talebi/geri-donen-odemeleri-listele
       const paytr_token_for_geri_donen = crypto
         .createHmac("sha256", merchant_key)
         .update(merchant_id + start_date + end_date + merchant_salt)
