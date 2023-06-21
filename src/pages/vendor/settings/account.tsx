@@ -58,13 +58,13 @@ const Account = () => {
                     )}>
                         <TabItem id="0" title="Hesap Bilgileri" selected={selectedIndex} query="0" />
                         <TabItem id="1" title="Parola Yenile" selected={selectedIndex} query="1" />
-                        {/* <TabItem id="2" title="Third" selected={selectedIndex} query="2" /> */}
+                        <TabItem id="2" title="Email Değiştir" selected={selectedIndex} query="2" />
 
                     </Tab.List>
                     <Tab.Panels>
                         <Tab.Panel>{selectedIndex === 0 && <VendorAccountInfo />}</Tab.Panel>
                         <Tab.Panel>{selectedIndex === 1 && <UpdatePassword />}</Tab.Panel>
-                        {/* <Tab.Panel>{selectedIndex === 2 && <div id="3" />}</Tab.Panel> */}
+                        <Tab.Panel>{selectedIndex === 2 && <EmailChange />}</Tab.Panel>
                     </Tab.Panels>
                 </Tab.Group>
 
@@ -80,56 +80,29 @@ export default Account
 
 
 interface IVendorAccountInfoFormData {
-    email: string;
     fname: string;
     lname: string;
     brand: string;
     website: string;
     phone: string;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    // image: any;
-
 
 }
-const MAX_FILE_SIZE = 100000;
-const ACCEPTED_IMAGE_TYPES = ["image/jpeg", "image/jpg", "image/png", "image/webp"];
-
-// const MB_BYTES = 1000000; // Number of bytes in a megabyte.
-// const ACCEPTED_MIME_TYPES = ["image/gif", "image/jpeg", "image/png"];
 
 const vendorAccountValidationSchema = z.object({
-    email: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
     fname: z.string().trim().min(3, "En az 3 karakter olmalı!"),
     lname: z.string().trim().min(2, "En az 2 karakter olmalı!"),
     brand: z.string().trim().min(5, "En az 5 karakter olmalı!"),
     website: z.string().trim().url("Geçerli bir adres giriniz!"),
     phone: z.string().trim().min(10, "En az 10 haneli numaranızı giriniz"),
-    // image: z.string().optional()
 }).required();
 
-
-
-
-interface ImageUploadData {
-    name: string;
-    data: string;
-}
-
-const imageUploadSchema = z.object({
-    name: z.string(),
-    data: z.string(),
-});
 
 const VendorAccountInfo = () => {
 
     const [busy, setBusy] = useState(false)
-    const [uploading, setUploading] = useState(false)
-    // const [imgErr, setImgErr] = useState('')
-    const [selectedImg, setSelectedImg] = useState("")
-    const [selectedFile, setSelectedFile] = useState<File>()
     const setupdate = useNavbarStore(store => store.setupdate)
 
-    const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IVendorAccountInfoFormData>({
         resolver: zodResolver(vendorAccountValidationSchema),
         reValidateMode: 'onBlur',
         mode: 'onBlur',
@@ -138,38 +111,14 @@ const VendorAccountInfo = () => {
     const updateVendorAccount = trpc.user.updateVendorAccount.useMutation()
     trpc.user.getVendorAccount.useQuery(undefined, {
         onSuccess(data) {
-            setValue("email", data?.email ?? "")
             setValue("fname", data?.fname ?? "")
             setValue("lname", data?.lname ?? "")
-            setSelectedImg(data?.image ? `${AVATAR_URL}/${data?.image}`  : "")
             setValue("phone", data?.vendor?.phone ?? "")
             setValue("brand", data?.vendor?.brand ?? "")
             setValue("website", data?.vendor?.website ?? "")
         }
     })
 
-
-    const handleImageUpload = async () => {
-        if (!selectedFile) return notifyError('Foto seçiniz')
-
-        setUploading(true)
-
-        try {
-            const fd = new FormData()
-            fd.append('image', selectedFile)
-            const { data } = await axios.post('/api/image', fd)
-            localStorage.setItem("image", JSON.stringify(data.path))
-            setupdate(data.path)
-            notifySuccessBR('Başarıyla yüklendi')
-
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.log(error.response?.data);
-
-        }
-
-        setUploading(false)
-    }
 
 
     const onSubmit: SubmitHandler<IVendorAccountInfoFormData> = async (data) => {
@@ -194,122 +143,16 @@ const VendorAccountInfo = () => {
     }
 
 
-    const convertToBase64 = async (file: File) => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(file);
-
-            return new Promise<ImageUploadData>((resolve, reject) => {
-                reader.onload = () => {
-                    const base64String = reader.result?.toString()?.split(',')[1]?.replace(/\s/g, '');
-                    console.log({ name: file.name });
-
-                    const imageData = {
-                        name: file.name,
-                        data: base64String || '',
-                    };
-                    try {
-                        imageUploadSchema.parse(imageData);
-                        resolve(imageData);
-                    } catch (err) {
-                        console.error(err);
-                        reject(err);
-                    }
-                };
-
-                reader.onerror = () => {
-                    reject(reader.error);
-                };
-            });
-        } catch (err) {
-            console.error(err);
-            throw err;
-        }
-    }
 
 
     return (
         <PageCard>
-            {(busy || uploading) && <TopBarProgress />}
+            {busy && <TopBarProgress />}
             <h2 className="text-center text-lg font-bold text-slate-500">Bilgilerinizi Güncelleyin</h2>
 
             <div className="w-64 flex flex-col gap-4 mx-auto">
 
                 <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
-
-
-                   {/*  <FormFieldWrapper>
-
-                        <Image className='object-cover self-center mb-2' width={50} height={50} src={selectedImg ? selectedImg : profileImg} alt='avatar' />
-                        
-
-                        <label
-                            className={classNames(
-                                "font-medium text-sm w-full bg-violet-100/50",
-                                'w-full h-16 flex flex-col items-center justify-center',
-                                'cursor-pointer border-2 border-dashed'
-                            )}
-                        >
-                            <IcUpload className='w-16 h-16 text-slate-500' height={42} width={42} />
-                            <div>Foto Seçin</div>
-                            <input
-                                type='file'
-                                hidden
-                                onChange={({ target }) => {
-                                    if (target.files) {
-                                        const file = target.files[0]
-                                        setSelectedFile(file)
-                                        if (file) setSelectedImg(URL.createObjectURL(file))
-                                        else notifyError('Foto yüklenemedi')
-                                    }
-
-
-                                }}
-
-                            />
-                        </label>
-
-                        <div className={classNames(
-                            "bg-violet-600 text-white ",
-                            'px-4 py-1 rounded-md',
-                            'flex justify-center',
-                            'mt-2 cursor-pointer',
-                            `${selectedFile ? "" : 'bg-violet-400'}`,
-                            `${uploading ? "bg-violet-400" : 'bg-violet-600'}`
-
-                        )}
-                            onClick={handleImageUpload}
-                        >Yükle</div>
-
-
-                    </FormFieldWrapper> */}
-
-
-                    <FormFieldWrapper>
-
-                        <label
-                            className={classNames(
-                                "font-medium text-sm pl-2 "
-                            )}
-                            htmlFor="email">
-                            Email adresiniz
-                        </label>
-
-                        <input
-                            className={classNames(
-                                'disabled:bg-slate-200 block w-full',
-                                'rounded-md border-gray-300 shadow-sm ',
-                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
-                            )}
-                            disabled={busy}
-                            type="email"
-                            placeholder='Email Adresi'
-                            {...register("email", { required: true })}
-                        />
-
-                        <FormFieldError state={!!errors.email} message={errors.email?.message} />
-
-                    </FormFieldWrapper>
 
                     <FormFieldWrapper>
 
@@ -446,6 +289,142 @@ const VendorAccountInfo = () => {
                 </form>
 
 
+
+            </div>
+        </PageCard>
+    )
+}
+
+
+interface IEmailFormData {
+    currentEmail: string;
+    nextEmail: string;
+}
+
+const emailValidationSchema = z.object({
+    currentEmail: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
+    nextEmail: z.string().trim().email("Lütfen geçerli bir email giriniz!"),
+}).required();
+
+const EmailChange = () => {
+
+    const [busy, setBusy] = useState(false)
+    const [success, setSuccess] = useState(false)
+
+    const { register, handleSubmit, setValue, setError, formState: { errors } } = useForm<IEmailFormData>({
+        resolver: zodResolver(emailValidationSchema),
+        reValidateMode: 'onBlur',
+        mode: 'onBlur',
+    });
+
+    const updateVendorAccount = trpc.user.attemptUpdateEmail.useMutation()
+    const { data: userInfo } = trpc.user.getVendorAccount.useQuery(undefined, {
+        onSuccess(data) {
+            setValue("currentEmail", data?.email ?? "")
+
+        }
+    })
+
+
+
+    const onSubmit: SubmitHandler<IEmailFormData> = async (data) => {
+
+        setBusy(true)
+        updateVendorAccount.mutate(data, {
+            onSuccess: () => {
+                notifySuccessBR("Onay E-postası gönderildi!")
+                setSuccess(true)
+            },
+            onError(error) {
+                console.error(error)
+                notifyError(error.message ?? 'Hata. Bilgileriniz Güncellenemedi!')
+            },
+            onSettled: () => {
+
+                setBusy(false)
+            }
+        })
+
+    }
+
+
+    return (
+        <PageCard>
+            {busy && <TopBarProgress />}
+            <h2 className="text-center text-lg font-bold text-slate-500">E-posta Adresinizi Güncelleyin</h2>
+
+            {success &&
+                <div className="bg-yellow-50 px-2 py-3 my-2 ">
+                    <p className="font-medium text-sm text-center">
+                        E-posta adresinize ({userInfo?.email}) gelen linke tıklayarak yeni email adresinizi onaylayın
+                    </p>
+                </div>
+            }
+
+            <div className="w-64 flex flex-col gap-4 mx-auto">
+
+                <form className='flex flex-col gap-10 my-12' onSubmit={handleSubmit(onSubmit)}>
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="email">
+                            Email adresiniz
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="email"
+                            placeholder='Email Adresi'
+                            {...register("currentEmail", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.currentEmail} message={errors.currentEmail?.message} />
+
+                    </FormFieldWrapper>
+
+
+                    <FormFieldWrapper>
+
+                        <label
+                            className={classNames(
+                                "font-medium text-sm pl-2 "
+                            )}
+                            htmlFor="email">
+                            Yeni Email adresiniz
+                        </label>
+
+                        <input
+                            className={classNames(
+                                'disabled:bg-slate-200 block w-full',
+                                'rounded-md border-gray-300 shadow-sm ',
+                                'focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm'
+                            )}
+                            disabled={busy}
+                            type="email"
+                            placeholder='Email Adresi'
+                            {...register("nextEmail", { required: true })}
+                        />
+
+                        <FormFieldError state={!!errors.nextEmail} message={errors.nextEmail?.message} />
+
+                    </FormFieldWrapper>
+
+
+                    <IconButton
+                        icon={<HiPencil color="white" size={"16px"} />}
+                        title="Güncelle"
+                        disabled={busy}
+                        fn={() => null} />
+                </form>
 
             </div>
         </PageCard>

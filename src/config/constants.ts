@@ -30,8 +30,6 @@ export const POLL_CATEGORIES = {
   cat10: "Takı, Mücevher & Altın",
 };
 
-
-
 export interface IAppPaymentRequiredType {
   NONE: string;
   END_OF_TRIAL: string;
@@ -52,7 +50,7 @@ export interface IUserPlanCheck {
   packageType: string;
 }
 
-export const emailCreds = {
+export const sendPulseCreds = {
   grant_type: "client_credentials",
   client_id: "227943d8a153c1713d3fd8c7d97b1e63",
   client_secret: "cd11fe04653031b9f60787f61170ecf6",

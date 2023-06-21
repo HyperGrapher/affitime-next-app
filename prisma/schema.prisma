@@ -204,34 +204,39 @@ model Taxinfo {
 }
 
 model User {
-  id            String        @id @default(cuid())
-  fname         String?
-  lname         String?
-  email         String        @unique
-  password      String
-  role          Role          @default(PARTNER)
-  vendor_id     String?
-  partner_id    String?
-  emailVerified DateTime?
-  image         String?       @db.Text
-  notes         String?       @db.Text // * new
-  accounts      Account[]
-  sessions      Session[]
-  plan_payments PlanPayment[]
-  taxinfo       Taxinfo?
-  vendor        Vendor?
-  partner       Partner?
-  active        Boolean       @default(true)
-  trial         Boolean       @default(true)
-  trialTill     DateTime? // * new
-  pro           Boolean       @default(false)
-  packageType   PackageType?  @default(TRIAL)
-  validFrom     DateTime? // if pro is true then plan is valid from // * new
-  validTill     DateTime? // if pro is true then plan is valid until // * new kinda
-  proDetails    Json?
-  ipdata        Json?
-  createdAt     DateTime      @default(now())
-  updatedAt     DateTime      @updatedAt
+  id               String        @id @default(cuid())
+  fname            String?
+  lname            String?
+  email            String        @unique
+  prevEmail        String? 
+  nextEmail        String? 
+  confirmId        String? 
+  password         String
+  role             Role          @default(PARTNER)
+  vendor_id        String?
+  vendor_username  String? // * new
+  partner_username String? // * new
+  partner_id       String?
+  emailVerified    DateTime?
+  image            String?       @db.Text
+  notes            String?       @db.Text
+  accounts         Account[]
+  sessions         Session[]
+  plan_payments    PlanPayment[]
+  taxinfo          Taxinfo?
+  vendor           Vendor?
+  partner          Partner?
+  active           Boolean       @default(true)
+  trial            Boolean       @default(true)
+  trialTill        DateTime? 
+  pro              Boolean       @default(false)
+  packageType      PackageType?  @default(TRIAL)
+  validFrom        DateTime? // if pro is true then plan is valid from 
+  validTill        DateTime? // if pro is true then plan is valid until 
+  proDetails       Json?
+  ipdata           Json?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
 
   @@index([id, email])
   @@map("user")
@@ -250,7 +255,7 @@ model Vendor {
   notifications Notification[]
   visits        Visit[]
   apiKey        ApiKey?
-  apiKeyId      String? // id of table (only one)
+  apiKeyId      String? 
   createdAt     DateTime       @default(now())
   updatedAt     DateTime       @updatedAt
 

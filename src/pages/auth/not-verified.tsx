@@ -17,7 +17,7 @@ const NotVerified = () => {
         <div className='grid place-items-center h-screen bg-slate-100'>
 
 
-            <div className="px-4 bg-white rounded-lg max-w-xl w-full py-4 shadow-md border">
+            <div className="px-4 bg-white rounded-xl max-w-xl w-full py-6 shadow-md border">
 
                 <div className="mx-auto">
                     <Image
@@ -28,12 +28,13 @@ const NotVerified = () => {
                         height={60}
                     />
                 </div>
-                <h3 className='font-bold text-lg text-center mb-4'>E-posta adresini doğrulayın</h3>
+                <h3 className='font-bold text-xl text-slate-500 text-center mb-4'>
+                    E-posta adresini doğrulayın
+                </h3>
                 <p className='text-base text-center'>
                     <Balancer>
-                        Kayıtlı E-posta adresinize gonderilen linke tıklayarak
-                        E-posta adresinizi doğrulayın
-
+                        Kayıtlı E-posta adresinize gönderilen linke tıklayarak
+                        E-posta adresinizi doğrulayın.
                     </Balancer>
                 </p>
             </div>
@@ -58,7 +59,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const user = await prisma.user.findUnique({
         where: { id: session.id },
-        select: { emailVerified: true, email: true, createdAt: true }
+        select: { emailVerified: true }
     });
 
     if (user?.emailVerified) {

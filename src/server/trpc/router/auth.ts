@@ -251,15 +251,15 @@ export const authRouter = router({
       })
     )
     .mutation(async ({ ctx, input }) => {
-      const { email } = ctx.session;
+      const { id } = ctx.session;
       const { password1, password2, oldPassword } = input;
 
-      if (!email) throw new Error("Kullanıcı sezonu sonlanmış");
+      if (!id) throw new Error("Kullanıcı sezonu sonlanmış");
 
       if (password1 !== password2) throw new Error("Şifre tekrarı aynı olmalı");
 
       const user = await ctx.prisma.user.findFirst({
-        where: { email: email },
+        where: { id: id },
         include: { vendor: true, partner: true },
       });
 
@@ -274,7 +274,7 @@ export const authRouter = router({
 
       return ctx.prisma.user.update({
         where: {
-          email,
+          id,
         },
         data: {
           password: hashedPassword,

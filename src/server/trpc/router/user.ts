@@ -6,6 +6,8 @@ import {
   partnerProcedure,
 } from "../trpc";
 import { z } from "zod";
+import crypto from "node:crypto";
+import { sendEmail } from "../../../utils/send-email";
 
 export const userRouter = router({
   getUserByEmail: protectedProcedure
@@ -104,7 +106,6 @@ export const userRouter = router({
   updateVendorAccount: vendorProcedure
     .input(
       z.object({
-        email: z.string().trim().email().optional(),
         fname: z.string().trim().optional(),
         lname: z.string().trim().optional(),
         brand: z.string().trim().optional(),
@@ -116,9 +117,7 @@ export const userRouter = router({
     .mutation(async ({ ctx, input }) => {
       const id = ctx.session.id;
       const vendorId = ctx.session.vendorId;
-      const { email, fname, lname, brand, website, phone, image } = input;
-
-      console.log(image?.length);
+      const { fname, lname, brand, website, phone, image } = input;
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
@@ -127,7 +126,6 @@ export const userRouter = router({
         await ctx.prisma.user.update({
           where: { id },
           data: {
-            email,
             fname,
             lname,
             image,
@@ -150,10 +148,97 @@ export const userRouter = router({
       }
     }),
 
+  attemptUpdateEmail: protectedProcedure
+    .input(
+      z.object({
+        currentEmail: z.string().trim().email(),
+        nextEmail: z.string().trim().email(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const id = ctx.session.id;
+      const role = ctx.session.role;
+      const { currentEmail, nextEmail } = input;
+
+      if (!id)
+        throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
+
+      const user = await ctx.prisma.user.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          email: true,
+          vendor: role === "VENDOR",
+          partner: role === "PARTNER",
+        },
+      });
+
+      if (user?.email === nextEmail)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Yeni email adresiniz onceki ile ayni olamaz",
+        });
+
+      const confirmId = crypto
+        .randomBytes(24)
+        .toString("hex")
+        .replace(/^a-zA-Z0-9 ]/g, "");
+
+      try {
+        await ctx.prisma.user.update({
+          where: { id },
+          data: {
+            nextEmail,
+            confirmId,
+          },
+        });
+
+        const template = {
+          email: {
+            subject: "E-Posta Değişikliğini Onaylayın!",
+            template: {
+              id: 13542,
+              variables: {
+                name:
+                  role === "VENDOR"
+                    ? user?.vendor?.brand
+                    : user?.partner?.username,
+                next_email: nextEmail,
+                confirm_url: `auth/change-email/${confirmId}`,
+                current_year: new Date().getUTCFullYear(),
+              },
+            },
+            from: {
+              name: "Affitime",
+              email: "noreply@affitime.com",
+            },
+            to: [
+              {
+                email: currentEmail,
+                name:
+                  role === "VENDOR"
+                    ? user?.vendor?.brand
+                    : user?.partner?.username,
+              },
+            ],
+          },
+        };
+
+        await sendEmail(template);
+
+        return { error: false, message: "ok" };
+      } catch (error) {
+        console.error(error);
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Something went wrong",
+        });
+      }
+    }),
+
   updatePartnerAccount: partnerProcedure
     .input(
       z.object({
-        email: z.string().trim().email().optional(),
         fname: z.string().trim().optional(),
         lname: z.string().trim().optional(),
         image: z.string().trim().optional(),
@@ -163,9 +248,7 @@ export const userRouter = router({
     .mutation(async ({ ctx, input }) => {
       const id = ctx.session.id;
       const partnerId = ctx.session.partnerId;
-      const { email, fname, lname, phone, image } = input;
-
-      console.log(image?.length);
+      const { fname, lname, phone, image } = input;
 
       if (!id)
         throw new TRPCError({ code: "NOT_FOUND", message: "ID not found" });
@@ -174,7 +257,6 @@ export const userRouter = router({
         await ctx.prisma.user.update({
           where: { id },
           data: {
-            email,
             fname,
             lname,
             image,
@@ -236,6 +318,7 @@ export const userRouter = router({
         partner: {
           select: {
             phone: true,
+            username: true,
           },
         },
       },
