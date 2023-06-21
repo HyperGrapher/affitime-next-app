@@ -14,7 +14,7 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
   // !  https://dev.paytr.com/platform-transfer-talebi/transfer-talimatinin-sonucunun-alinmasi
   if (callback.trans_ids) {
     // * Marketplace Paytr response
-    console.log("Marketplace API Paytr response");
+    console.log("Marketplace Paytr response", 'callback.trans_ids');
 
     // ## trans_ids: Daha önce PayTR'a ilettiğiniz transfer taleplerinden tamamlanan transferlerin trans_id bilgilerini içeren JSON
     // ## (trans_id bilgisi transfer talebi yaparken PayTR'a gönderdiğiniz her işlem için eşsiz değerdir)

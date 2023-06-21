@@ -76,8 +76,8 @@ export const marketPlaceRouter = router({
 
       const merchant_oid = marketPayment.merchant_oid; // "MP" + Date.now(); // En fazla 64 karakter, Alfa numerik
       const trans_id = "TRANS" + Date.now(); // En fazla 60 karakter, Alfa numerik
-      const submerchant_amount = 7000; // 70tl -> 7000
-      const total_amount = 10000; // 100tl -> 10000
+      const submerchant_amount = 70000; // 70tl -> 7000
+      const total_amount = 100000; // 100tl -> 10000
       const transfer_name = "ragip adiguzel"; // 100tl -> 10000
       const transfer_iban = "TR 80 0011 1000 0000 0056 7128 34".replace(
         /\s+/g,
@@ -85,7 +85,7 @@ export const marketPlaceRouter = router({
       );
 
       const nd = dayjs(new Date());
-      const ed = nd.add(1, "month");
+      const ed = nd.add(2, "month");
 
       const start_date = nd.format("YYYY-MM-DD HH:mm:ss");
       const end_date = ed.format("YYYY-MM-DD HH:mm:ss");
