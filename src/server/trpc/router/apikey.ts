@@ -2,16 +2,11 @@ import { TRPCError } from "@trpc/server";
 import crypto from "node:crypto";
 import { router, vendorProcedure } from "../trpc";
 import nodemailer from "nodemailer";
-import axios from "axios";
 
 const sendpulse = {
   user: "erim2222@gmail.com",
   pass: "BaH3KGjpEj",
 } as const;
-
-export const sendEmail = (message: string, cb: () => void) => {
-  console.log("");
-};
 
 export const ApikeyRouter = router({
   getApikey: vendorProcedure.query(({ ctx }) => {
@@ -33,7 +28,7 @@ export const ApikeyRouter = router({
     return data;
   }),
 
-  // * Keep this for any arbitary email
+  // * Keep this for any no-template emails
   sendEmailSMTP: vendorProcedure.mutation(async ({ ctx }) => {
     const transporter = nodemailer.createTransport({
       host: "smtp-pulse.com",
@@ -83,68 +78,6 @@ export const ApikeyRouter = router({
         return { error: false, message: "Email success" };
       }
     });
-  }),
-
-  sendEmail: vendorProcedure.mutation(async ({ ctx }) => {
-    const { vendorId, id } = ctx.session;
-
-    const creds = {
-      grant_type: "client_credentials",
-      client_id: "227943d8a153c1713d3fd8c7d97b1e63",
-      client_secret: "cd11fe04653031b9f60787f61170ecf6",
-    };
-
-    const withTemplate = {
-      email: {
-        subject: "Sifre sifirla",
-        template: {
-          id: 13542,
-          variables: {
-            name: "burak",
-            current_year: "2023",
-          },
-        },
-        from: {
-          name: "Affitime",
-          email: "noreply@affitime.com",
-        },
-        to: [
-          {
-            email: "qwaveapp@gmail.com",
-            name: "qwaveapp",
-          },
-        ],
-      },
-    };
-
-    type PulseTokenReturnType = {
-      access_token: string;
-      token_type: string;
-      expires_in: number;
-    };
-    type PulseEmailReturnType = {
-      id: string;
-      result: boolean;
-    };
-
-    axios
-      .request<PulseTokenReturnType>({
-        method: "post",
-        url: "https://api.sendpulse.com/oauth/access_token",
-        data: creds,
-      })
-      .then((foo) => {
-        axios
-          .post("https://api.sendpulse.com/smtp/emails", withTemplate, {
-            headers: {
-              Authorization: `Bearer ${foo.data.access_token}`,
-              "Content-type": "application/json",
-            },
-          })
-          .then((res) => {
-            console.log(res);
-          });
-      });
   }),
 
   upsertApikey: vendorProcedure.mutation(async ({ ctx }) => {

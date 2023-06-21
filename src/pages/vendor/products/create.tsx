@@ -137,7 +137,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
     const createProduct = trpc.product.createProduct.useMutation()
     const updateProduct = trpc.product.updateProduct.useMutation()
     const updateKey = trpc.apikey.upsertApikey.useMutation()
-    const send = trpc.apikey.sendEmail.useMutation()
     const { data: apikey, refetch } = trpc.apikey.getApikey.useQuery()
     trpc.product.getProductById.useQuery({ id }, {
         enabled: edit && id?.length > 20,
@@ -164,19 +163,6 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
 
         }
     })
-
-    const onSendEmail = () => {
-        send.mutate(undefined, {
-            onSuccess: (data) => {
-                notifySuccessTC("Email Conn başarılı!: ", true)
-            },
-            onError(error) {
-                console.error(error)
-                notifyError('Email Hata!')
-                setBusy(false)
-            },
-        })
-    }
 
     const onSubmit: SubmitHandler<IProductFormData> = async (data) => {
 
@@ -317,26 +303,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                             </span>
                         </button>
 
-                        <button
-                            onClick={onSendEmail}
-                            className={
-                                classNames(
-                                    `bg-green-600 hover:bg-green-700 text-white text-sm transition`,
-                                    `flex items-center justify-center flex-nowrap space-x-2`,
-                                    `shadow-sm hover:shadow-lg rounded-md `,
-                                    `py-1 px-4 whitespace-nowrap ml-auto w-32`,
-                                    `disabled:bg-orange-400 disabled:shadow-none`,
-                                    `aria-disabled:bg-orange-400 aria-disabled:shadow-none`,
-                                )}>
-
-                            <IcRefresh />
-
-                            <span className={classNames(
-                                "text-slate-50 text-xs font-medium tracking-wide text-center",
-
-                            )}> Test Email
-                            </span>
-                        </button>
+                        
                     </div>
 
                     <button

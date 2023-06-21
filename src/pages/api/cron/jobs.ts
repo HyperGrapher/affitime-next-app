@@ -3,6 +3,13 @@ import { prisma } from "../../../server/db/client";
 import { sendEmail } from "../../../utils/send-email";
 import { EmailType } from "@prisma/client";
 
+/*
+var: brand,
+var: campaign_name
+subject:Kampanyasının süresi biti.
+id: 13532
+*/
+
 function getTemplate(
   templateId: number,
   subject: string,
