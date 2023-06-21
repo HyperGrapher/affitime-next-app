@@ -129,6 +129,7 @@ export const userRouter = router({
             fname,
             lname,
             image,
+            vendor_username: brand,
           },
         });
 

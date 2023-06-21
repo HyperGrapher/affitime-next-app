@@ -171,6 +171,7 @@ export const authRouter = router({
             data: {
               vendor_id: vendor.id,
               trialTill,
+              vendor_username: brand,
             },
           });
         } else if (role === UserRoles.PARTNER) {
@@ -188,6 +189,7 @@ export const authRouter = router({
             where: { id: user.id },
             data: {
               partner_id: partner.id,
+              partner_username: username,
             },
           });
         }
