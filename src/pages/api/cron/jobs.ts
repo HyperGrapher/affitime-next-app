@@ -78,7 +78,7 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
     },
   });
 
-  if (!mailQueue) {
+  if (mailQueue.length === 0) {
     return res.status(200).json({ error: false, message: "no email queue" });
   }
 
