@@ -289,7 +289,7 @@ const PaymentCardMarket = () => {
             <input type="hidden" name="paytr_token" value={payData?.paytr_token} />
             <input type="hidden" name="non3d_test_failed" value={payData?.non3d_test_failed} />
             <input type="hidden" name="installment_count" value={payData?.installment_count} />
-            {/* <input type="hidden" name="card_type" value={payData?.card_type} /> */}
+            <input type="hidden" name="card_type" value={payData?.card_type} />
 
             <button id="post" ref={buttonRef}>c</button>
         </form>

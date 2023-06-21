@@ -162,7 +162,7 @@ export const marketPlaceRouter = router({
         input;
       const payment_type = "card";
       const paytr_post_url = "https://www.paytr.com/odeme";
-      const merchant_ok_url = "http://affitime.com/payments/success";
+      const merchant_ok_url = "http://affitime.com/payments/mp-success";
       const merchant_fail_url = "http://affitime.com/payments/fail";
 
       const debug_on = 1;

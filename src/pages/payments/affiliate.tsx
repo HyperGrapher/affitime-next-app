@@ -32,7 +32,7 @@ const DynamicPaymentCardMarket = dynamic(() => import('../../components/purchase
 // "@types/payment": "^2.1.3",
 // https://www.npmjs.com/package/payment
 
-const Purchase = () => {
+const PayAffiliate = () => {
 
     const { back, query } = useRouter()
     const [busy, setBusy] = useState(false)
@@ -40,7 +40,7 @@ const Purchase = () => {
     return (
         <div className='containerx mx-auto px-0 md:px-6 sm:px-24 mt-24 max-w-[1280px] pb-16 '>
             <Head>
-                <title>Affitime | Market Ödeme Yapın</title>
+                <title>Affitime | Affiliate Ödemesi Yapın</title>
             </Head>
             <PageCard>
                 <div className="flex items-start px-2">
@@ -79,6 +79,6 @@ const Purchase = () => {
     )
 }
 
-export default Purchase
+export default PayAffiliate
 
 
