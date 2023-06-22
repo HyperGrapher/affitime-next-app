@@ -3,6 +3,7 @@ export const pathsToExludeSidenav = [
   "/r/",
   '/admin',
   '/auth/not-verified',
+  '/auth/forgot-password',
   "/payments/mp-success",
   AppRoutes.BLOG,
   AppRoutes.PRICING,

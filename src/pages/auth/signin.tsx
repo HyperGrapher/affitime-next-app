@@ -149,7 +149,7 @@ const Signin: NextPage = (): JSX.Element => {
 
                     <Link
                         className='text-right text-sm text-blue-500 mt-6'
-                        href={'#'} >
+                        href={'/auth/forgot-password'} >
                         Şifremi unuttum
                     </Link>
 

@@ -283,6 +283,129 @@ export const authRouter = router({
         },
       });
     }),
+
+  resetPassword: publicProcedure
+    .input(
+      z.object({
+        password1: z.string().min(8),
+        password2: z.string().min(8),
+        passResetId: z.string(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { password1, password2, passResetId } = input;
+
+      if (password1 !== password2)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Şifre tekrarı aynı olmalı",
+          cause: "error",
+        });
+
+      const user = await ctx.prisma.user.findFirst({
+        where: { passResetId },
+      });
+
+      if (!user)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Kullanici bulunamadi",
+          cause: "error",
+        });
+
+      const salt = await bcrypt.genSalt(10);
+      const hashedPassword = await bcrypt.hash(password1, salt);
+
+      try {
+        await ctx.prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            password: hashedPassword,
+            passResetId: null,
+          },
+        });
+
+        return { message: "ok" };
+      } catch (error) {
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Bir hata var!",
+          cause: "error",
+        });
+      }
+    }),
+
+  sendResetPasswordEmail: publicProcedure
+    .input(
+      z.object({
+        email: z.string().email(),
+      })
+    )
+    .mutation(async ({ ctx, input }) => {
+      const { email } = input;
+
+      const user = await ctx.prisma.user.findFirst({
+        where: { email },
+      });
+
+      if (!user)
+        throw new TRPCError({
+          code: "NOT_FOUND",
+          message: "Bu e-posta adresi ile kayıtlı kullanıcı bulunmuyor",
+          cause: "error",
+        });
+
+      const token = crypto
+        .randomBytes(32)
+        .toString("base64url")
+        .replace(/^a-zA-Z0-9 ]/g, "");
+
+      try {
+        await ctx.prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            passResetId: token,
+          },
+        });
+
+        const template = {
+          email: {
+            subject: "Şifre Yenileme",
+            template: {
+              id: 33630,
+              variables: {
+                name: user.email,
+                confirm_url: `auth/reset-password/${token}`,
+                current_year: new Date().getUTCFullYear(),
+              },
+            },
+            from: {
+              name: "Affitime",
+              email: "noreply@affitime.com",
+            },
+            to: [
+              {
+                email: user.email,
+                name: "",
+              },
+            ],
+          },
+        };
+
+        await sendEmail(template);
+        return { message: "ok" };
+      } catch (error) {
+        throw new TRPCError({
+          code: "INTERNAL_SERVER_ERROR",
+          message: "Bir hata var!",
+          cause: "error",
+        });
+      }
+    }),
   deleteSession: protectedProcedure.mutation(async ({ ctx }) => {
     const userId = ctx.session.id;
 
