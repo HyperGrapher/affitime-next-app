@@ -152,7 +152,7 @@ const SignUp: NextPage = (): JSX.Element => {
                         <div className="scale-90 flex mx-auto border-2 border-violet-600 rounded overflow-hidden mt-2">
                             <button
                                 onClick={() => setIsVendor(true)}
-                                className={` ${isVendor ? "bg-violet-600  text-white" : ""} py-1 px-4 focus:outline-none`}>Vendor</button>
+                                className={` ${isVendor ? "bg-violet-600  text-white" : ""} py-1 px-4 focus:outline-none`}>Firma</button>
                             <button
                                 onClick={() => setIsVendor(false)}
                                 className={`${isVendor ? "" : "bg-violet-600  text-white"}  py-1 px-4 focus:outline-none`}>Affiliate</button>

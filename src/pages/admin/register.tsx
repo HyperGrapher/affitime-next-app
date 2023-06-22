@@ -71,11 +71,8 @@ const AdminSignUp: NextPage = (): JSX.Element => {
 
 
 
-
-
     return (
         <div className='flex justify-center pt-24'>
-
             <Head>
                 <title>Affitime Admin Kayıt</title>
             </Head>
