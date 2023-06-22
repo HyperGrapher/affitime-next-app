@@ -18,7 +18,7 @@ const NonAuthNavbar = () => {
 
     return session ? null : (
         <nav className={classNames(
-            'flex items-center h-20 my-auto',
+            'flex items-center h-16 ',
             'bg-white font-medium text-violet-800',
             'px-4 md:px-0'
         )}>
@@ -47,8 +47,6 @@ const NonAuthNavbar = () => {
 
 
                 </div>
-
-
 
 
                 <MobileView />

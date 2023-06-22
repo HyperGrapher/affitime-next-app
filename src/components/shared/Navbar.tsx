@@ -52,7 +52,7 @@ const Navbar: React.FC = () => {
 
   }
 
-  if (pathname === '/') return null
+  if (pathname === '/' || !session?.email) return null
 
   for (const excluded of pathsToExlude) {
 
@@ -246,6 +246,19 @@ const Navbar: React.FC = () => {
                               )}
                             </Menu.Item>
 
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.BLOG}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                  )}>
+                                  Blog
+                                </Link>
+                              )}
+                            </Menu.Item>
+
 
                           </> : (<>
                             <Menu.Item>
@@ -309,6 +322,19 @@ const Navbar: React.FC = () => {
                                     'block w-full px-4 py-2 text-left text-sm text-gray-700'
                                   )}>
                                   Hesap Ayarlari
+                                </Link>
+                              )}
+                            </Menu.Item>
+
+                            <Menu.Item>
+                              {({ active }) => (
+                                <Link
+                                  href={AppRoutes.BLOG}
+                                  className={classNames(
+                                    active ? 'bg-gray-100' : '',
+                                    'block w-full px-4 py-2 text-left text-sm text-gray-700'
+                                  )}>
+                                  Blog
                                 </Link>
                               )}
                             </Menu.Item>

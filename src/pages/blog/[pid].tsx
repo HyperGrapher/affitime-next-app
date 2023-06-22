@@ -62,7 +62,7 @@ const BlogDetail: NextPage<IServerSideProps> = ({ post }) => {
 
 
     return (
-        <div className='blog-detail mt-[68px] prose mx-auto'>
+        <div className='blog-detail mx-auto'>
             <Head>
                 <title>Affitime | {post.frontmatter.title}</title>
             </Head>
