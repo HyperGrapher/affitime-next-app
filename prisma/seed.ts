@@ -9,7 +9,7 @@ import dayjs from "dayjs";
 const createCategories = async () => {
   const c = await prisma.category.count();
 
-  if (c > 1) {
+  if (c > 0) {
     console.log(`Already have ${c} categories. Skipping...`);
     return;
   }
@@ -39,7 +39,7 @@ const seedProductsForQwave = async () => {
     {
       title: "LG 38 inch Ultrawide Monitor",
       desc: "LG 38 inch Ultrawide Monitor",
-      price: 20000,
+      price: 50000,
       perClick: 3,
       perClickType: CommissionType.CASH,
       perSale: 12,
@@ -55,8 +55,8 @@ const seedProductsForQwave = async () => {
     {
       title: "1974 Fender Stratocaster, Sunburst",
       desc: "Wonderful 1974 Fender Stratocaster in three-tone Sunburst, with Rosewood fingerboard, large headstock, bullet trussrod, staggered pole pickups all in excellent condition complete with bridge cover and tremolo arm at a good price thanks to a replacement neck pickup.",
-      price: 1000,
-      perClick: 1,
+      price: 250000,
+      perClick: 10,
       perClickType: CommissionType.CASH,
       perSale: 8,
       perSaleType: CommissionType.PERC,
@@ -73,7 +73,7 @@ const seedProductsForQwave = async () => {
       title: "Philips Hue",
       desc: "Philips Hue White and Color ambiance Play lamba ikili paket",
       price: 1000,
-      perClick: 1,
+      perClick: 10,
       perClickType: CommissionType.CASH,
       perSale: 10,
       perSaleType: CommissionType.PERC,
@@ -90,7 +90,7 @@ const seedProductsForQwave = async () => {
       title: "Delonghi Dedica Manuel Espresso Makinesi",
       desc: "Delonghi Dedica Manuel Espresso Makinesi, 15 cm Genişlik, 1 L Kapasite, 1350W, 15 Bar Basınç, Paslanmaz Çelik (EC 685.M).",
       price: 1000,
-      perClick: 1,
+      perClick: 10,
       perClickType: CommissionType.CASH,
       perSale: 7,
       perSaleType: CommissionType.PERC,
@@ -124,7 +124,7 @@ const seedProductsForQwave = async () => {
       title: "Philips Tar4406/12 Alarmlı Saatli Radyo",
       desc: "Philips TAR4406/12 alarmlı saat/kronometre Dijital çalar saat Beyaz",
       price: 1000,
-      perClick: 1,
+      perClick: 10,
       perClickType: CommissionType.CASH,
       perSale: 16,
       perSaleType: CommissionType.PERC,
@@ -141,7 +141,7 @@ const seedProductsForQwave = async () => {
       title: "Caterpillar Kadın Bej Colorado Bot",
       desc: "Kadın Bot",
       price: 2000.0,
-      perClick: 1,
+      perClick: 10,
       perClickType: CommissionType.PERC,
       perSale: 8,
       perSaleType: CommissionType.PERC,
@@ -156,7 +156,7 @@ const seedProductsForQwave = async () => {
     },
   ];
 
-  if (!c) return;
+  if (!c) return console.log(`No category found. Canceling...`);
 
   for (const p of prods) {
     await prisma.product.create({
