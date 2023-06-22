@@ -1,6 +1,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
+import { useEffect } from "react"
 import FLogo from '../../assets/footer/logo-footer.png'
 import MSStartup from '../../assets/footer/ms-startup-badge.png'
 import partnerMicro from '../../assets/footer/partner-microsoft.png'
@@ -10,8 +11,48 @@ import SocFB from '../../assets/footer/social-facebook.png'
 import SocIns from '../../assets/footer/social-instagram.png'
 import SocLinkd from '../../assets/footer/social-linkedin.png'
 import { AppRoutes } from "../../config/appRoutes"
+import { USER_IP_SESSION_STORAGE } from "../../config/constants";
+import { IpSchema } from "../../interface/zod.schema"
+import getClientIp from "../../utils/getClientIp";
+import { trpc } from "../../utils/trpc";
 
 const Footer = () => {
+
+    const updateIp = trpc.user.updateUserIp.useMutation()
+    const createUserIp = trpc.ips.createIp.useMutation()
+
+    const setUserIp = async () => {
+
+        const saved = sessionStorage.getItem(USER_IP_SESSION_STORAGE)
+
+        if (!saved) {
+            try {
+                const userIp = await getClientIp()
+                const ipData = IpSchema.parse(userIp)
+                await updateIp.mutateAsync(ipData)
+
+                createUserIp.mutate({
+                    ip: ipData.ip,
+                    country: ipData?.country ?? "unknown",
+                    ipInfo: ipData
+                }, {
+                    onSuccess() {
+                        sessionStorage.setItem(USER_IP_SESSION_STORAGE, "true")
+
+                    },
+                })
+
+
+            } catch (error) {
+                console.error(error);
+            }
+        }
+
+
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    useEffect(() => { setUserIp() }, [])
 
     return <footer className="bg-white py-28 px-1 lg:px-36 relative z-50">
 
