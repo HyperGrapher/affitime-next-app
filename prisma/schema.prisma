@@ -248,7 +248,7 @@ model User {
   nextEmail        String?
   confirmId        String?
   password         String
-  passResetId      String?
+  passResetId      String?       @db.Text
   role             Role          @default(PARTNER)
   vendor_id        String?
   vendor_username  String? // * new

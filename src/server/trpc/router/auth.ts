@@ -302,6 +302,13 @@ export const authRouter = router({
           cause: "error",
         });
 
+      if (!passResetId)
+        throw new TRPCError({
+          code: "BAD_REQUEST",
+          message: "Reset id bulunamadi",
+          cause: "error",
+        });
+
       const user = await ctx.prisma.user.findFirst({
         where: { passResetId },
       });
@@ -358,15 +365,14 @@ export const authRouter = router({
         });
 
       const token = crypto
-        .randomBytes(32)
+        .randomBytes(12)
         .toString("base64url")
         .replace(/^a-zA-Z0-9 ]/g, "");
 
       try {
+    
         await ctx.prisma.user.update({
-          where: {
-            id: user.id,
-          },
+          where: { email },
           data: {
             passResetId: token,
           },
