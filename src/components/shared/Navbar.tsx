@@ -20,7 +20,7 @@ const pathsToExlude = [
   '/auth/',
   '/rules-and-policies',
   '/pricing',
-  '/blog',
+  // '/blog',
   '/contact-us',
 ]
 
@@ -84,13 +84,16 @@ const Navbar: React.FC = () => {
                 <div className='flex flex-shrink-0 items-center absolute top-0 left-0 w-64 h-full bg-violetx-400'>
 
                   <div className="mx-auto">
-                    <Image
-                      className='h-8 w-auto'
-                      src="/logo-sm.png"
-                      alt='Affitime Logo'
-                      width={220}
-                      height={60}
-                    />
+                    <Link href={'/'}>
+
+                      <Image
+                        className='h-8 w-auto'
+                        src="/logo-sm.png"
+                        alt='Affitime Logo'
+                        width={220}
+                        height={60}
+                      />
+                    </Link>
                   </div>
 
                 </div>
