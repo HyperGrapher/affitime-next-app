@@ -32,12 +32,12 @@ const Navbar: React.FC = () => {
   const deleteUserSession = trpc.auth.deleteSession.useMutation()
   const update = useNavbarStore(store => store.update)
 
-  const { data, refetch } = trpc.user.getAccountImage.useQuery(undefined, {
-    enabled: !!session
-  })
+  // const { data, refetch } = trpc.user.getAccountImage.useQuery(undefined, {
+  //   enabled: session !== null
+  // })
 
   useEffect(() => {
-    refetch()
+    // refetch()
   }, [update])
 
   const logUserOut = () => {
