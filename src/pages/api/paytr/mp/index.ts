@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import crypto from "node:crypto";
 import { PAYTR_MARKETPLACE } from "../../../../config/constants";
 
-
 const action = async (req: NextApiRequest, res: NextApiResponse) => {
   res.setHeader("Access-Control-Allow-Origin", "*");
 
@@ -14,7 +13,7 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
   // !  https://dev.paytr.com/platform-transfer-talebi/transfer-talimatinin-sonucunun-alinmasi
   if (callback.trans_ids) {
     // * Marketplace Paytr response
-    console.log("Marketplace Paytr response", 'callback.trans_ids');
+    console.log("Marketplace Paytr response", "callback.trans_ids");
 
     // ## trans_ids: Daha önce PayTR'a ilettiğiniz transfer taleplerinden tamamlanan transferlerin trans_id bilgilerini içeren JSON
     // ## (trans_id bilgisi transfer talebi yaparken PayTR'a gönderdiğiniz her işlem için eşsiz değerdir)
@@ -165,7 +164,7 @@ success_callback:{
  }
 
  ? Axios callback 1: 
-
+ ! wrong merchant_oid gonderildi
   {
    paytr_token: 'ln4s0QMYKV5UemWjKOpYAvy1xAXVioQ5d/lmYKSQFs4=',
    transfer_iban: 'TR800011100000000056712834',
@@ -198,6 +197,7 @@ success_callback:{
 
  ? axios callback 2 
 
+ ! callback api didn't respond with 'ok'
   {
    paytr_token: 'JBMBdZRRNVwptFYo8ULgC9OfgkWa/OBSZVhObfwlvU0=',
    transfer_iban: 'TR800011100000000056712834',
@@ -211,5 +211,23 @@ success_callback:{
  }
 
  merchant_oid bulundu ancak odeme henuz siteye bildirilmemis (MP1687384672126) 007
+
+
+
+ ? axios callback 3
+
+ 
+ {
+   paytr_token: 'DvTiyUk3fGthm54xyx1rCh0tKg9d0TBzv/yHeIOvS6Q=',
+   transfer_iban: 'TR800011100000000056712834',
+   lng: 26
+ }
+ 200
+ {
+   status: 'error',
+   err_no: '008',
+   err_msg: 'valor tarihi (22.06.2023) gecmeden transfer yapilamaz, 22.06.2023 sonrasi tekrar deneyin (MP1687384672126)'
+ }
+ valor tarihi (22.06.2023) gecmeden transfer yapilamaz, 22.06.2023 sonrasi tekrar deneyin (MP1687384672126) 008
 
 */

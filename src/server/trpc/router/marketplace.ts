@@ -211,7 +211,6 @@ export const marketPlaceRouter = router({
       const merchant_key = PAYTR_MARKETPLACE.merchant_key;
       const merchant_salt = PAYTR_MARKETPLACE.merchant_salt;
 
-      const hashSTRI = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
       const hashSTR = `${merchant_id}${user_ip}${merchant_oid}${email}${payment_amount}${payment_type}${installment_count}${currency}${test_mode}${non_3d}`;
       const paytr_token = hashSTR + merchant_salt;
 

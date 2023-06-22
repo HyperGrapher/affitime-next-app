@@ -810,7 +810,7 @@ const ProductCreate = ({ cats }: InferGetServerSidePropsType<typeof getServerSid
                             mp.mutate({ pid: "1" }, {
 
                                 onSuccess() {
-                                    console.log('helllo');
+                                    console.log('transfer request sent');
 
                                 }
                             }

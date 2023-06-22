@@ -154,6 +154,18 @@ model PlanPayment {
   @@map("plan_payment")
 }
 
+// TODO ...
+model PaymentTransfer {
+  id             String   @id @default(cuid())
+  merchant_oid   String   @unique()
+  payment_amount Float
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([id])
+  @@map("payment_tranfer")
+}
+
 model MarketPayment {
   id                String    @id @default(cuid())
   vendorUserId      String
