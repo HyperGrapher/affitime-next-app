@@ -18,8 +18,7 @@ import { trpc } from "../../utils/trpc";
 
 const Footer = () => {
 
-    const updateIp = trpc.user.updateUserIp.useMutation()
-    const createUserIp = trpc.ips.createIp.useMutation()
+    const createPublicUserIp = trpc.ips.createPublicIp.useMutation()
 
     const setUserIp = async () => {
 
@@ -29,9 +28,8 @@ const Footer = () => {
             try {
                 const userIp = await getClientIp()
                 const ipData = IpSchema.parse(userIp)
-                await updateIp.mutateAsync(ipData)
 
-                createUserIp.mutate({
+                createPublicUserIp.mutate({
                     ip: ipData.ip,
                     country: ipData?.country ?? "unknown",
                     ipInfo: ipData
