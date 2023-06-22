@@ -226,7 +226,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     // TODO: auto false with sql stored prodocure in 36h
     // TODO: belirli test email ile girenler icin de
-    const a = link.isTemp
+    const a = false // link.isTemp
 
 
     return { props: { a } }
