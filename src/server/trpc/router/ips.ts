@@ -77,7 +77,8 @@ export const userIpsRouter = router({
                     data: {
                         ip: input.ip,
                         country: input.country,
-                        ipInfo: input.ipInfo
+                        ipInfo: input.ipInfo,
+                        public: true
 
                     },
                 });

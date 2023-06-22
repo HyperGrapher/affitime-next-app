@@ -449,6 +449,7 @@ model UserIps {
   ip         String
   country    String
   partner_id String?
+  public     Boolean  @default(false) 
   vendor_id  String?
   ipInfo     Json?
   createdAt  DateTime @default(now())
