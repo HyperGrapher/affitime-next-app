@@ -12,13 +12,16 @@ import { z } from 'zod';
 import Card from '../credit-card/card/Card';
 import { FormFieldError, FormFieldWrapper } from '../error-messages/FormError';
 import { PAYTR_PLAN_PAYMENT_URL } from '../../config/constants';
-import type { ICreditCard, IPlanPaymentData } from "../../interface/payments.interface";
-import { IpSchema } from '../../interface/zod.schema';
+import type { IBillingFormData, ICreditCard, IPlanPaymentData } from "../../interface/payments.interface";
+import { IpSchema, taxinfoValidationSchema } from '../../interface/zod.schema';
 import classNames from "../../utils/classnames";
 import getClientIp from '../../utils/getClientIp';
 import { notifyError } from '../../utils/notifications';
 import { trpc } from '../../utils/trpc';
 import CardSelector from '../credit-card/CardSelector';
+import PageCard from '../card/Card';
+import { HiArrowLeft as BackIcon, HiPlus } from 'react-icons/hi';
+
 
 type InstProps = {
     setIsTaksit: React.Dispatch<React.SetStateAction<boolean>>
@@ -132,10 +135,10 @@ const validationSchema = z.object({
     });
 
 
-    /*
-        ONCE direct api ile odeme alini
-        Sonra partner'e odeme yapilacagi zaman transfer_iban vb ile istek gonderilir
-    */
+/*
+    ONCE direct api ile odeme alini
+    Sonra partner'e odeme yapilacagi zaman transfer_iban vb ile istek gonderilir
+*/
 
 const PaymentCardMarket = () => {
     const { query } = useRouter()
@@ -173,38 +176,37 @@ const PaymentCardMarket = () => {
         mode: 'onBlur',
     });
 
-    const getTaxInfo = useMemo(() => {
+    // const getTaxInfo = useMemo(() => {
 
-        const tax = localStorage.getItem("taxinfo")
-        if (!tax) return null
-        return JSON.parse(tax)
-    }, [])
+    //     const tax = localStorage.getItem("taxinfo")
+    //     if (!tax) return null
+    //     return JSON.parse(tax)
+    // }, [])
 
     const puchase = trpc.marketplace.createCampaignPayment.useMutation()
+    const { data: tax } = trpc.payments.getTaxInfo.useQuery()
     // const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
 
     const onSubmit: SubmitHandler<ICardFormData> = async (cardData) => {
         console.log({ cardData });
 
 
-        if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
+        if (!tax) return notifyError('Adres bilgisi bulunamadi!')
         // setBusy(true)
 
         const ipData = await getClientIp()
         const userIp = IpSchema.parse(ipData)
 
-
-
         const purchaseData = {
             user_ip: userIp.ip,
             currency: 'TL',
-            user_address: getTaxInfo.address,
+            user_address: tax.address,
             installment_count: isTaksit ? installmentAmount : "0",
             card_type: selectedCard.value
         }
 
         // return console.log({purchaseData, cardData});
-        
+
 
 
         puchase.mutate(purchaseData, {
@@ -495,4 +497,361 @@ const PaymentCardMarket = () => {
 }
 
 export default PaymentCardMarket
+/*
+* ASAGIDAKI TAX YENI
+    eger tax data toksa arayuze eklenmeli
 
+*/
+type TaxProps = {
+    setStep: (step: string) => void
+}
+const TaxInfo: React.FC<TaxProps> = ({ setStep }) => {
+
+    const [busy, setBusy] = useState(false)
+    const { register, handleSubmit, setValue, formState: { errors } } = useForm<IBillingFormData>({
+        resolver: zodResolver(taxinfoValidationSchema),
+        reValidateMode: 'onBlur',
+        mode: 'onBlur',
+    });
+
+    const upsertTaxInfo = trpc.purchase.upsertTaxInfo.useMutation()
+
+    trpc.purchase.getTaxInfo.useQuery(undefined, {
+
+        onSuccess(data) {
+            setValue("fname", data?.fname ?? '')
+            setValue("lname", data?.lname ?? '')
+            setValue("title", data?.title ?? '')
+            setValue("vkn", data?.vkn ?? '')
+            setValue("tckn", data?.tckn ?? '')
+            setValue("taxOffice", data?.taxOffice ?? '')
+            setValue("address", data?.address ?? '')
+        }
+    })
+
+
+
+    const onSubmitTaxInfo: SubmitHandler<IBillingFormData> = async (data) => {
+        setBusy(true)
+        localStorage.setItem("taxinfo", JSON.stringify(data))
+
+        upsertTaxInfo.mutate(data, {
+
+            onError(error) {
+                console.error(error)
+                notifyError('Hata. Vergi bilgileri eklenmedi')
+            },
+            onSettled() {
+                setBusy(false)
+                setStep("1")
+
+            }
+        })
+
+
+    }
+
+
+    return (
+        <PageCard>
+            <h1 className="text-base md:text-xl font-bold mb-4 text-slate-500">
+                Fatura Bilgileri
+            </h1>
+
+            <div className="px-2">
+
+                <form className="flex flex-col space-y-4" onSubmit={handleSubmit(onSubmitTaxInfo)} >
+
+
+                    {/*  ISIM  */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-2 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 xspace-y-2 pb-8 ",
+                        'flex flex-col md:flex-row items-center gap-8 md:gap-2'
+
+                    )}>
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="title">
+                                Ünvan
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full ',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='Ünvan'
+                                {...register("title", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.title} message={errors.title?.message} />
+
+
+                        </FormFieldWrapper>
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="fname">
+                                Ad
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full ',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='Ad'
+                                {...register("fname", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.fname} message={errors.fname?.message} />
+
+
+                        </FormFieldWrapper>
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="lname">
+                                Soyad
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full ',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='Soyad'
+                                {...register("lname", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.lname} message={errors.lname?.message} />
+
+
+                        </FormFieldWrapper>
+
+
+                    </section>
+
+
+                    {/*  VKN/TCKN  */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-2 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 pb-8 ",
+                        'flex flex-col md:flex-row items-center gap-2 md:gap-2'
+
+                    )}>
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="title">
+                                VKN
+                            </label>
+
+
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full xl:w-80',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='Vergi Kimlik No'
+                                {...register("vkn", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.vkn} message={errors.vkn?.message} />
+
+
+                        </FormFieldWrapper>
+
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="title">
+                                TCKN
+                            </label>
+
+
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full xl:w-80',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='TC no'
+                                {...register("tckn", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.tckn} message={errors.tckn?.message} />
+
+
+                        </FormFieldWrapper>
+
+
+                    </section>
+
+
+
+                    {/*  VKN/TCKN  */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-2 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 space-y-2 pb-8 "
+
+                    )}>
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="title">
+                                Vergi dairesi
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full xl:w-80',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='Vergi Dairesi'
+                                {...register("taxOffice", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.taxOffice} message={errors.taxOffice?.message} />
+
+
+                        </FormFieldWrapper>
+
+
+                    </section>
+
+                    {/*  VKN/TCKN  */}
+                    <section className={classNames(
+                        "bg-slate-100 hover:bg-slate-50",
+                        "w-full rounded-md  py-2 px-2   ",
+                        "shadow hover:shadow-md shadow-slate-300 transition-all",
+                        "border hover:border-black/5 space-y-2 pb-8 "
+
+                    )}>
+
+                        <FormFieldWrapper>
+
+
+                            <label
+                                className={classNames(
+                                    "font-medium text-sm pl-2 mb-4"
+                                )}
+                                htmlFor="title">
+                                Adres
+                            </label>
+
+                            <input
+                                className={classNames(
+                                    'block rounded-md shadow-sm sm:text-sm w-full',
+                                    'disabled:bg-slate-200 border-gray-300 transition-colors',
+                                    'focus:border-indigo-500 focus:ring-indigo-500'
+                                )}
+                                type="text"
+                                disabled={busy}
+                                placeholder='Adres'
+                                {...register("address", { required: true })}
+                            />
+
+                            <FormFieldError state={!!errors.address} message={errors.address?.message} />
+
+
+                        </FormFieldWrapper>
+
+
+                    </section>
+
+
+
+
+
+                    {/* Submit */}
+                    <button
+                        disabled={busy}
+                        onClick={() => {
+                            // console.log(selectedCat);
+
+
+                        }}
+                        type='submit'
+                        className={classNames(
+                            "bg-violet-600 hover:bg-violet-700 transition-colors",
+                            "flex items-center justify-center flex-nowrap space-x-2",
+                            "shadow-sm hover:shadow-lg rounded-md ",
+                            "py-2 px-8",
+                            "disabled:bg-violet-400 disabled:shadow-none"
+                        )}
+
+                    >
+
+                        <HiPlus color="white" size="16px" />
+
+                        <span className="text-slate-50 text-xs font-medium tracking-wide text-center">
+                            Sonraki
+                        </span>
+                    </button>
+
+
+                </form>
+            </div>
+
+
+        </PageCard>
+    )
+}

@@ -179,12 +179,15 @@ const PaymentCard = () => {
         mode: 'onBlur',
     });
 
-    const getTaxInfo = useMemo(() => {
+    const { data: tax } = trpc.payments.getTaxInfo.useQuery()
 
-        const tax = localStorage.getItem("taxinfo")
-        if (!tax) return null
-        return JSON.parse(tax)
-    }, [])
+
+    // const tax = useMemo(() => {
+
+    //     const tax = localStorage.getItem("taxinfo")
+    //     if (!tax) return null
+    //     return JSON.parse(tax)
+    // }, [])
 
     const puchase = trpc.purchase.purchasePack.useMutation()
     const { data: tx } = trpc.purchase.getInstallmentInfo.useQuery()
@@ -193,7 +196,7 @@ const PaymentCard = () => {
         console.log({ cardData });
 
 
-        if (!getTaxInfo) return notifyError('Adres bilgisi bulunamadi!')
+        if (!tax) return notifyError('Vergi adres bilgisi bulunamadi!')
         setBusy(true)
 
         if(isTaksit && !selectedCard.value) return notifyError('Kart tipinizi seçin!')
@@ -210,7 +213,7 @@ const PaymentCard = () => {
         const purchaseData = {
             user_ip: userIp.ip,
             currency: 'TL',
-            user_address: getTaxInfo.address,
+            user_address: tax.address,
             plan,
             annual,
             installment_count: isTaksit ? installmentAmount : "0",

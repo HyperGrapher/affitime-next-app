@@ -58,6 +58,7 @@ export const marketPlaceRouter = router({
           message: "Session vendor not found",
         });
 
+      // ! TODO - not ok
       const marketPayment = await ctx.prisma.marketPayment.findFirst({
         where: { vendorId: vendorId },
       });

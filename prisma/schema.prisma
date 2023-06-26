@@ -154,47 +154,6 @@ model PlanPayment {
   @@map("plan_payment")
 }
 
-// TODO ...
-model PaymentTransfer {
-  id             String   @id @default(cuid())
-  merchant_oid   String   @unique()
-  payment_amount Float
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-
-  @@index([id])
-  @@map("payment_tranfer")
-}
-
-model MarketPayment {
-  id                String    @id @default(cuid())
-  vendorUserId      String
-  merchant_oid      String    @unique()
-  // vendor              Vendor         @relation(fields: [vendorId], references: [id])
-  vendorId          String
-  user_basket       String
-  user_phone        String
-  user_name         String
-  user_address      String
-  payment_type      String?
-  payment_amount    Float
-  payed_amount      Float? // express
-  installment_count Int       @default(0)
-  card_type         String?
-  validFrom         DateTime? // express
-  validTill         DateTime? // express
-  success           Boolean?
-  seen              Boolean?  @default(false)
-  errorCode         String?
-  errorReason       String?
-  test_mode         Boolean? // express
-  createdAt         DateTime  @default(now())
-  updatedAt         DateTime  @updatedAt
-
-  @@index([id])
-  @@map("market_payment")
-}
-
 model Taxinfo {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [user_id], references: [id])
@@ -285,21 +244,22 @@ model User {
 }
 
 model Vendor {
-  id            String         @id @default(cuid())
-  user          User           @relation(fields: [userId], references: [id])
-  userId        String         @unique
-  brand         String         @unique
-  phone         String?
-  website       String         @unique
-  image         String?        @db.Text
-  products      Product[]
-  links         Link[]
-  notifications Notification[]
-  visits        Visit[]
-  apiKey        ApiKey?
-  apiKeyId      String?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
+  id             String          @id @default(cuid())
+  user           User            @relation(fields: [userId], references: [id])
+  userId         String          @unique
+  brand          String          @unique
+  phone          String?
+  website        String          @unique
+  image          String?         @db.Text
+  products       Product[]
+  links          Link[]
+  notifications  Notification[]
+  visits         Visit[]
+  marketPayments MarketPayment[]
+  apiKey         ApiKey?
+  apiKeyId       String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 
   @@index([id, userId])
   @@map("user_vendor")
@@ -325,6 +285,50 @@ model Partner {
   @@map("user_partner")
 }
 
+// TODO ...
+// for each vendor/iban
+model PaymentTransfer {
+  id             String   @id @default(cuid())
+  merchant_oid   String   @unique()
+  iban           String
+  payment_amount Float
+  createdAt      DateTime @default(now())
+
+  @@index([id])
+  @@map("payment_tranfer")
+}
+
+model MarketPayment {
+  id                String   @id @default(cuid())
+  vendorUserId      String
+  merchant_oid      String   @unique()
+  vendor            Vendor   @relation(fields: [vendorId], references: [id])
+  vendorId          String
+  product           Product  @relation(fields: [productId], references: [id])
+  productId         String   @unique // * new
+  user_basket       String
+  user_phone        String
+  user_name         String
+  user_address      String
+  payment_type      String?
+  payment_amount    Float
+  payed_amount      Float? // express
+  installment_count Int      @default(0)
+  card_type         String?
+  success           Boolean?
+  seen              Boolean? @default(false) // admin
+  errorCode         String?
+  errorReason       String?
+  test_mode         Boolean? // express
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  // validFrom         DateTime? // express
+  // validTill         DateTime? // express
+
+  @@index([id])
+  @@map("market_payment")
+}
+
 model Product {
   id                String           @id @default(cuid())
   title             String?          @db.Text
@@ -347,7 +351,13 @@ model Product {
   categoryId        Int
   published         Boolean?         @default(true)
   active            Boolean?         @default(true)
-  extra_info        Json?
+  extra_info        Json? // optional arbitrary data
+  hasPayment        Boolean?         @default(false) // marketplace // * new
+  completed         Boolean?         @default(false) // * new
+  campaignLife      Int              @default(7) // days // * new
+  completesAt       DateTime? // * new
+  marketPayment     MarketPayment?
+  marketPaymentId   String? // odeme sonrasi girilir // * new
   createdAt         DateTime         @default(now())
   updatedAt         DateTime         @updatedAt
 
@@ -449,7 +459,7 @@ model UserIps {
   ip         String
   country    String
   partner_id String?
-  public     Boolean  @default(false) 
+  public     Boolean  @default(false)
   vendor_id  String?
   ipInfo     Json?
   createdAt  DateTime @default(now())

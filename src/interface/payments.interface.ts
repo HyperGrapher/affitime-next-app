@@ -68,3 +68,13 @@ export interface Oranlar {
 export interface Tumu {
   tek_cekim: string;
 }
+
+export interface IBillingFormData {
+  vkn: string;
+  tckn: string;
+  title: string;
+  fname: string;
+  lname: string;
+  taxOffice: string;
+  address: string;
+}

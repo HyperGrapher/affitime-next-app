@@ -42,6 +42,23 @@ export const PaymentsRouter = router({
     };
   }),
 
+  getTaxInfo: vendorProcedure.query(async ({ ctx }) => {
+    const { id } = ctx.session;
+
+    try {
+      return await ctx.prisma.taxinfo.findFirst({
+        where: {
+          user_id: id,
+        },
+      });
+    } catch (error) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Vergi bilgisi bulunamadi",
+      });
+    }
+  }),
+
   // * vendor/payments-awaitingPayments [DONE]
   getUnpaidForPartner: partnerProcedure.query(async ({ ctx }) => {
     const { partnerId } = ctx.session;
@@ -92,7 +109,7 @@ export const PaymentsRouter = router({
   }),
 
   // * vendor/payments-awaitingPayments [NOT_DONE]
-  getUnpaidForProjects: partnerProcedure.query(async ({ ctx }) => {
+  getUnpaidProjects: partnerProcedure.query(async ({ ctx }) => {
     const { partnerId } = ctx.session;
 
     const visits = await ctx.prisma.visit.findMany({
@@ -377,6 +394,6 @@ export const PaymentsRouter = router({
         message: "Partner not found",
       });
 
-    return partner.iban as {iban: string, fname: string, lname: string};
+    return partner.iban as { iban: string; fname: string; lname: string };
   }),
 });
