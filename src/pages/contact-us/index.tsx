@@ -6,7 +6,9 @@ import SocIns from '../../assets/footer/social-instagram.png'
 import SocLinkd from '../../assets/footer/social-linkedin.png'
 
 
-const Contact = () => {
+const Contact = ({a}: {a: boolean}) => {
+    const { mutate: upd } = trpc.testing.updateTest.useMutation(undefined)
+
     return (
         <div>
             <Head>
@@ -45,7 +47,7 @@ const Contact = () => {
                                 <div className="p-2 w-full" >
                                     <button className="flex mx-auto text-white bg-indigo-500 border-0 py-2 px-8 focus:outline-none hover:bg-indigo-600 rounded text-lg">Gönder</button>
                                 </div>
-                                <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center" >
+                               { a && <div className="p-2 w-full pt-8 mt-8 border-t border-gray-200 text-center" >
                                     <a className="text-indigo-500">info@affitime.com</a>
                                     <p className="leading-normal my-5">
                                         Şirket Adı: Necdet Erim Işık
@@ -83,9 +85,10 @@ const Contact = () => {
                                             <Image width={24} src={SocLinkd} alt="linkedin social" />
                                         </a>
                                     </div>
-                                </div>
+                                </div>}
                             </div>
                         </div>
+                        <button className="text-slate-50 px-2 py-1" onClick={() => upd(undefined)}>_</button>
                     </div>
                 </PageCard>
             </section >
@@ -206,6 +209,7 @@ import Cookies from 'cookies';
 import { prisma } from "../../server/db/client";
 import { COOKIE_SIGN_KEY } from "../../config/constants";
 import type { Temp } from "@prisma/client";
+import { trpc } from "../../utils/trpc";
 
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -215,10 +219,10 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const cookies = new Cookies(context.req, context.res, { keys: [COOKIE_SIGN_KEY] })
     const lvc = cookies.get('lv', { signed: true })
-    const link = await prisma.temp.findFirst({
+    const temp = await prisma.temp.findFirst({
         where: { id: 1 },
 
-    }) as Temp;
+    })
 
     if (email?.startsWith('ts_')) {
 
@@ -226,8 +230,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
     // TODO: auto false with sql stored prodocure in 36h
     // TODO: belirli test email ile girenler icin de
-    const a = false // link.isTemp
 
 
-    return { props: { a } }
+    return { props: { a: temp?.isTemp } }
 }

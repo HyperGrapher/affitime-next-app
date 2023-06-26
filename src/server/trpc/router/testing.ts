@@ -1,4 +1,9 @@
-import { router, vendorProcedure, protectedProcedure } from "../trpc";
+import {
+  router,
+  vendorProcedure,
+  protectedProcedure,
+  publicProcedure,
+} from "../trpc";
 import { z } from "zod";
 import crypto from "node:crypto";
 import axios from "axios";
@@ -82,6 +87,23 @@ export const TestingRouter = router({
         });
       }
     }),
+  updateTest: publicProcedure.mutation(async ({ ctx }) => {
+    const existing = await ctx.prisma.temp.findFirst();
+
+    try {
+      return await ctx.prisma.temp.update({
+        where: { id: 1 },
+        data: {
+          isTemp: !existing?.isTemp,
+        },
+      });
+    } catch (error) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Product ID not found",
+      });
+    }
+  }),
   purchasePackForTest: vendorProcedure
     .input(
       z.object({
@@ -174,7 +196,7 @@ export const TestingRouter = router({
         });
 
         await ctx.prisma.product.updateMany({
-          where: {vendor_profile_id: vendor.id },
+          where: { vendor_profile_id: vendor.id },
           data: {
             published: true,
           },
@@ -221,7 +243,7 @@ export const TestingRouter = router({
       data: {
         trialTill: nowDate,
         pro: false,
-        trial: true
+        trial: true,
       },
     });
   }),
