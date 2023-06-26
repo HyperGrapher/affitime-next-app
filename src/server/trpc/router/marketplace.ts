@@ -110,27 +110,24 @@ export const marketPlaceRouter = router({
 
       console.log({ paytr_token, transfer_iban, lng: transfer_iban.length });
       // Transfer Talimatının Verilmesi
-
       const data = await axios.request({
         url: PAYTR_MARKETPLACE_URL,
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
         data: {
-          merchant_id: merchant_id,
-          merchant_oid: merchant_oid,
-          trans_id: trans_id,
-          submerchant_amount: submerchant_amount,
-          total_amount: total_amount,
-          transfer_name: transfer_name,
-          transfer_iban: transfer_iban,
-          paytr_token: paytr_token,
+          merchant_id,
+          merchant_oid,
+          trans_id,
+          submerchant_amount,
+          total_amount,
+          transfer_name,
+          transfer_iban,
+          paytr_token,
         },
       });
       // merchant_oid ile basarili odeme bulunamadi (MP1682864464175) err_no: 006
       if (data) {
         console.log(data.status); // hata olsa da 200
-        console.log(data.data);
-
         if (data.data.status === "error") {
           console.log(data.data.err_msg, data.data.err_no);
 

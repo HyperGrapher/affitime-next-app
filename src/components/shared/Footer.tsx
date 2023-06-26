@@ -29,6 +29,8 @@ const Footer = () => {
                 const userIp = await getClientIp()
                 const ipData = IpSchema.parse(userIp)
 
+                if (ipData.country === "US") return
+
                 createPublicUserIp.mutate({
                     ip: ipData.ip,
                     country: ipData?.country ?? "unknown",

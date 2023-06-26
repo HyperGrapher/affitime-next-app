@@ -131,6 +131,29 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
 export default action;
 
 /*
+* TRANSFER TALEBI -  SUCCESS 
+ {
+   paytr_token: 'Kcr7Y0/ao6D6s4ws8gLrcUv7UbDu6oOQ+eevlsIpGvM=',
+   transfer_iban: 'TR800011100000000056712834',
+   lng: 26
+ }
+ 200
+ {
+   x_status: 'success',
+   x_merchant_amount: 270.1,
+   x_submerchant_amount: 700,
+   x_trans_id: 'TRANS1687780164841',
+   x_reference: '25FF4D',
+   x_merchant_oid: 'MP1687384672126'
+ }
+ {
+   x_status: 'success',
+   x_merchant_amount: 270.1,
+   x_submerchant_amount: 700,
+   x_trans_id: 'TRANS1687780164841',
+   x_reference: '25FF4D',
+   x_merchant_oid: 'MP1687384672126'
+ }
 
 ! ERROR START
  PrismaClientValidationError: Argument payed_amount: Got invalid value '100000' on prisma.updateOneMarketPayment. Provided String, expected Float or NullableFloatFieldUpdateOperationsInput or Null.
