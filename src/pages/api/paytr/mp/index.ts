@@ -18,7 +18,6 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
     // ## trans_ids: Daha önce PayTR'a ilettiğiniz transfer taleplerinden tamamlanan transferlerin trans_id bilgilerini içeren JSON
     // ## (trans_id bilgisi transfer talebi yaparken PayTR'a gönderdiğiniz her işlem için eşsiz değerdir)
     // ## Örn: Burada trans_ids JSON verisini DECODE edip, çıktıdaki her bir trans_id ile veritabanınızdan transfer talebini tespit ederek ilgili kullanıcınıza bilgilendirme gönderebilirsiniz (email, sms vb.)
-    const processed_result = JSON.parse("{trans_ids: ''}");
   } else {
     // * Direct API Paytr response
     console.log("Direct API Paytr response");
@@ -88,18 +87,15 @@ const action = async (req: NextApiRequest, res: NextApiResponse) => {
     //  }
 
     if (callback.status === "success") {
-      // basarili
       console.log("---> cb.status == success | oid:", callback.merchant_oid);
       const nowDate = dayjs(new Date());
       const months = 2;
-      const validFrom = dayjs(new Date()).toDate();
-      const validTill = nowDate.add(months, "month").toDate();
+      // const validFrom = dayjs(new Date()).toDate();
+      // const validTill = nowDate.add(months, "month").toDate();
 
       await prisma.marketPayment.update({
         where: { merchant_oid: callback.merchant_oid },
         data: {
-          validFrom,
-          validTill,
           payed_amount: Number(callback.total_amount),
           payment_amount: Number(callback.payment_amount),
           payment_type: callback.payment_type,
