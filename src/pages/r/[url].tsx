@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     });
 
-    
+
     if (link?.vendor.user.trial === false && link?.vendor.user.pro === false) {
 
         // user plan ended
@@ -80,13 +80,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 // TODO
                 // await axios.post(`${link.product.product_url}?err=true&msg=eop`)
             }
-            
-            
+
+
             // send error "Kullanim suresi sona erdi"
         } else {
             //  user trial ended
             if (link?.product.product_url) {
-                
+
                 // TODO
                 // await axios.post(`${link.product.product_url}?err=true&msg=eot`)
             }
@@ -95,9 +95,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
         }
 
-        return { 
-            redirect: { 
-    destination: `/r/not-found/${url}?trial=${link?.vendor.user.trial.valueOf()}&pro=${link?.vendor.user.pro.valueOf()}&err=100`, permanent: false } }
+        return {
+            redirect: {
+                destination: `/r/not-found/${url}?trial=${link?.vendor.user.trial.valueOf()}&pro=${link?.vendor.user.pro.valueOf()}&err=100`, permanent: false
+            }
+        }
 
 
     }
@@ -105,7 +107,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!link) return { redirect: { destination: `/r/not-found/${url}?err=105-no-link`, permanent: false } }
 
     if (!link.vendor.apiKey?.installed) {
-        
+
 
         // send get request to store link url with error qs
 
