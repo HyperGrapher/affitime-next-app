@@ -28,6 +28,8 @@ export const visitRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { visitId, ipInfo } = input;
+      // for testing this is required, needs to be a function to discriminate a developer
+      if (ipInfo.city === "Adana") return { success: true, error: false };
 
       try {
         await ctx.prisma.visit.update({
@@ -83,7 +85,7 @@ export const visitRouter = router({
       });
 
       if (!key) return { error: true, message: "Token not found!" };
-      
+
       try {
         await ctx.prisma.apiKey.update({
           where: {
