@@ -28,7 +28,7 @@ export const visitRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { visitId, ipInfo } = input;
-      // for testing this is required, needs to be a function to discriminate a developer
+      // TODO for testing this is required, needs to be a function to discriminate the developer
       if (ipInfo.city === "Adana") return { success: true, error: false };
 
       try {

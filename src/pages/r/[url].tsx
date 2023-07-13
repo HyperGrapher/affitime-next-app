@@ -17,6 +17,7 @@ import { prisma } from "../../server/db/client";
 import getClientIp from "../../utils/getClientIp";
 import { trpc } from '../../utils/trpc';
 import axios from 'axios';
+import getParsedClientIp from '../../utils/request-client-ip';
 
 /*
 import { Base64 } from 'js-base64';
@@ -52,7 +53,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     cookies.set('lv', JSON.stringify(ckData), cookieOpts)
     const xForwardedFor = context.req.headers['x-forwarded-for']
     const referer = context.req.headers['referer']
-    console.log({ referer, queryRef: query.referer as string, xForwardedFor, ...ipwareObj });
     const osRegexArray = agentObj.source.match(/(?<=\().*?(?=;)/)
     context.res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=6000')
 
@@ -69,15 +69,28 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     });
 
+    /* 
+    
+        there is a db procedure that checks trial and pro ..till dates in every 30 sec
+        and switches trial or pro to false if date-time is past.
+        so you shouldn't compare dates, just check trial and pro, 
+        precedure also de-activates products of the clients and makes 
+        them invisible or passive for the partner 
+        according to the page they are looking at and their relation with client. 
+
+        any non-trial and non-pro user's product link would be directed to "404" not found page
+        other cases document itself. 
+
+    */
 
     if (link?.vendor.user.trial === false && link?.vendor.user.pro === false) {
 
-        // user plan ended
+        // user plan is ended
         if (link?.vendor.user.validTill) {
 
             if (link.product.product_url) {
 
-                // TODO
+                // TODO magaza pluginlerinin tamamlanmasi gerekli
                 // await axios.post(`${link.product.product_url}?err=true&msg=eop`)
             }
 
@@ -87,7 +100,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             //  user trial ended
             if (link?.product.product_url) {
 
-                // TODO
+                // TODO magaza pluginlerinin tamamlanmasi gerekli
                 // await axios.post(`${link.product.product_url}?err=true&msg=eot`)
             }
 
@@ -109,13 +122,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!link.vendor.apiKey?.installed) {
 
 
-        // send get request to store link url with error qs
+        // todo send get request to store with error qs
 
         return { redirect: { destination: `/r/not-found/${url}&err=112-no-install`, permanent: false } }
     }
     if (!link.active) {
 
-        // send get request to store with error
+        // todo send get request to store with error
 
         return { redirect: { destination: `/r/not-found/${url}?err=118-not-active`, permanent: false } }
 
@@ -218,10 +231,7 @@ const AffiProduct: NextPage = ({
     const updateVisit = trpc.visit.updateVisit.useMutation()
 
     const setUserIp = async () => {
-        const userIp = await getClientIp()
-        const ipData = IpSchema.parse(userIp)
-
-        if (typeof visitId !== 'string') return;
+        const ipData = await getParsedClientIp()
 
         updateVisit.mutate(
             {
@@ -234,7 +244,7 @@ const AffiProduct: NextPage = ({
                 },
 
                 onSettled: () => {
-                    console.log(product_url, isBot);
+                    console.log('settled');
 
                 }
             })
