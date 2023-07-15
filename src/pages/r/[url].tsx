@@ -20,18 +20,9 @@ import axios from 'axios';
 import getParsedClientIp from '../../utils/request-client-ip';
 
 /*
-import { Base64 } from 'js-base64';
-Base64.toBase64('')
-Base64.formBase64('')
-*/
-// import { BlockList } from "net"
-// https://www.npmjs.com/package/user-agents
-// https://www.npmjs.com/package/keygrip for checking .sig cookie value
-/*
-me: '176.33.101.203'
 twitter: '199.16.157.183' -> bot: true
 twitter: '34.82.121.157' -> bot: false postladiktan sonra
-twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor bot false
+twitter '34.82.121.157' ipsi ile farkli cihazlarla ve browserlarla req yapiyor
 */
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -69,20 +60,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
         }
     });
 
-    /* 
-    
-        there is a db procedure that checks trial and pro ..till dates in every 30 sec
-        and switches trial or pro to false if date-time is past.
-        so you shouldn't compare dates, just check trial and pro, 
-        precedure also de-activates products of the clients and makes 
-        them invisible or passive for the partner 
-        according to the page they are looking at and their relation with client. 
-
-        any non-trial and non-pro user's product link would be directed to "404" not found page
-        other cases document itself. 
-
-    */
-
     if (link?.vendor.user.trial === false && link?.vendor.user.pro === false) {
 
         // user plan is ended
@@ -93,7 +70,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
                 // TODO magaza pluginlerinin tamamlanmasi gerekli
                 // await axios.post(`${link.product.product_url}?err=true&msg=eop`)
             }
-
 
             // send error "Kullanim suresi sona erdi"
         } else {
@@ -122,13 +98,11 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     if (!link.vendor.apiKey?.installed) {
 
 
-        // todo send get request to store with error qs
 
         return { redirect: { destination: `/r/not-found/${url}&err=112-no-install`, permanent: false } }
     }
     if (!link.active) {
 
-        // todo send get request to store with error
 
         return { redirect: { destination: `/r/not-found/${url}?err=118-not-active`, permanent: false } }
 

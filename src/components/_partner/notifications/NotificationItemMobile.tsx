@@ -94,6 +94,7 @@ const NotificationItemMobile: React.FC<ItemProps> = ({ link, refetch }) => {
 
 
                         <b className="text-xs font-bold whitespace-nowrap">
+                        {/* better then useeffect and usestate, much more performant */}
 
                             {link.status === LinkStatus.REQUEST_DENIED && "İptal Edilidi"}
                             {link.status === LinkStatus.CANCELED_BY_VENDOR && "İptal Edilidi"}

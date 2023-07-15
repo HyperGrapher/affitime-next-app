@@ -11,8 +11,6 @@ import Head from "next/head";
 import { prisma } from "../../../server/db/client";
 
 
-
-// https://mantine.dev/hooks/use-pagination/
 export const getServerSideProps: GetServerSideProps = async (context) => {
 
     const session = await getSession(context)

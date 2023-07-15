@@ -22,11 +22,6 @@ const ProductListHeader: React.FC = () => {
             <div className=" ml-20 flex gap-4 items-center justify-between">
 
 
-                {/* <b className="text-xs w-12 min-w-[32px]" >
-                    Foto
-                </b> */}
-
-
 
                 {/* TITLE */}
                 <div className="min-w-[20ch] h-full">
@@ -41,11 +36,6 @@ const ProductListHeader: React.FC = () => {
 
 
 
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
-
-
                 {/* COMMISSON */}
                 <div className="bg-purplex-200 xmin-w-[18ch]">
 
@@ -56,12 +46,6 @@ const ProductListHeader: React.FC = () => {
                 </div>
 
 
-
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
-
-
                 {/* PRODUCT LINK */}
                 <div className=" translate-x-8">
 
@@ -69,11 +53,6 @@ const ProductListHeader: React.FC = () => {
                         Hedef Ürün Linki
                     </b>
                 </div>
-
-
-                {/* DIVIDER */}
-                {/* <div className="w-[1px] bg-zinc-400 pr-[1px] h-8 " /> */}
-
 
                 {/* EDIT BUTTONS */}
                 <div className="">

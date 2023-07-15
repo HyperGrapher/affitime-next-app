@@ -17,7 +17,7 @@ const Pager = () => {
                     </p>
                 </div>
                 <div>
-                    <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
+                    <nav className="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="">
                         <a href="#" className="relative inline-flex items-center rounded-l-md border border-gray-300 bg-white px-2 py-2 text-sm font-medium text-gray-500 hover:bg-gray-50 focus:z-20">
                             <span className="sr-only">Önceki</span>
                             {/* <!-- Heroicon name: mini/chevron-left --> */}

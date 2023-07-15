@@ -14,7 +14,6 @@ const Main = () => {
 
     const { data: calculated, isLoading: ld1 } = trpc.dashboardPartner.calculateLinksAndPayments.useQuery()
     const { data: linkStats, isLoading: ld2 } = trpc.dashboardPartner.getLinkStats.useQuery()
-    // const { data: partnerLinks, isLoading: ld3 } = trpc.dashboardPartner.getPartnerAndLinks.useQuery()
 
     return (
         <div className="">
@@ -106,44 +105,6 @@ const Main = () => {
 
 export default Main
 
-
-
-type PartnerItemProps = {
-    pl: IPartnerAndLinks;
-
-};
-
-
-const PartnerItem: React.FC<PartnerItemProps> = ({ pl }) => {
-
-    // useEffect(() => {
-
-    // }, [pl])
-
-    const pc = useMemo(() => {
-        const p = pl.partner_links.map(x => x)
-        const act = pl.partner_links.filter(x => x.active)
-        const unique = [...new Set(p.map(x => x.product_id))]
-        return { products: unique.length, active: act.length, links: p.length }
-
-    }, [pl])
-    return (
-        <div
-            className="">
-
-            <div className="flex items-center justify-between">
-                <b className="text-blue-500">{pl.username}</b>
-
-                <p>Link Sayısı: {String(pc.links)}</p>
-                <p>Ürün Sayısı: {String(pc.products)}</p>
-                <p>Aktif: {String(pc.active)}</p>
-
-                <Link href={'/'}>Detaylar</Link>
-            </div>
-
-        </div>
-    )
-}
 
 const Title: React.FC<TitleProps> = ({ children }) => <h1
     className="mt- text-xl font-bold text-slate-600">
