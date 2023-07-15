@@ -198,6 +198,7 @@ const PaymentCardMarket = () => {
         const userIp = IpSchema.parse(ipData)
 
         const purchaseData = {
+            productId: userIp.ip, // TODO: ! Get product id
             user_ip: userIp.ip,
             currency: 'TL',
             user_address: tax.address,

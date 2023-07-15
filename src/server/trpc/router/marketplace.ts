@@ -151,6 +151,7 @@ export const marketPlaceRouter = router({
     .input(
       z.object({
         user_ip: z.string(),
+        productId: z.string(),
         currency: z.string(),
         user_address: z.string(),
         installment_count: z.string(),
@@ -159,7 +160,7 @@ export const marketPlaceRouter = router({
     )
     .mutation(async ({ ctx, input }) => {
       const { vendorId, id } = ctx.session;
-      const { user_ip, currency, user_address, installment_count, card_type } =
+      const { user_ip, currency, user_address, installment_count, card_type, productId } =
         input;
       const payment_type = "card";
       const paytr_post_url = "https://www.paytr.com/odeme";
@@ -222,6 +223,7 @@ export const marketPlaceRouter = router({
           data: {
             vendorUserId: vendor.userId,
             vendorId,
+            productId,
             merchant_oid,
             user_basket,
             user_phone,
