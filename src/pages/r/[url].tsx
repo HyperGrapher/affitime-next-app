@@ -68,7 +68,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             if (link.product.product_url) {
 
                 // TODO magaza pluginlerinin tamamlanmasi gerekli
-                // await axios.post(`${link.product.product_url}?err=true&msg=eop`)
+                await axios.get(`${link.product.product_url}?affi=true&err=true&msg=eop`)
             }
 
             // send error "Kullanim suresi sona erdi"
@@ -77,7 +77,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
             if (link?.product.product_url) {
 
                 // TODO magaza pluginlerinin tamamlanmasi gerekli
-                // await axios.post(`${link.product.product_url}?err=true&msg=eot`)
+                await axios.get(`${link.product.product_url}?affi=true&err=true&msg=eot`)
             }
 
             // send error "Deneme suresi sona erdi"
