@@ -2,6 +2,7 @@ import "server-only";
 import { dehydrate, HydrationBoundary, type FetchQueryOptions } from "@tanstack/react-query";
 import { createTRPCOptionsProxy } from "@trpc/tanstack-react-query";
 import { headers } from "next/headers";
+import { notFound } from "next/navigation";
 import { cache, type ReactNode } from "react";
 import { createContext } from "@/server/trpc/init";
 import { appRouter } from "@/server/trpc/root";
@@ -24,4 +25,15 @@ export function HydrateClient({ children }: { children: ReactNode }) {
 export function prefetch(...queries: { queryKey: readonly unknown[] }[]) {
   const qc = getQueryClient();
   return Promise.allSettled(queries.map((q) => qc.prefetchQuery(q as unknown as FetchQueryOptions)));
+}
+
+/** Like prefetch, but a NOT_FOUND (missing row or someone else's row) becomes a real 404 instead of an error page. */
+export async function prefetchOrNotFound(query: { queryKey: readonly unknown[] }) {
+  try {
+    await getQueryClient().fetchQuery(query as unknown as FetchQueryOptions);
+  } catch (error) {
+    const code = (error as { code?: string; data?: { code?: string } }).code ?? (error as { data?: { code?: string } }).data?.code;
+    if (code === "NOT_FOUND") notFound();
+    throw error;
+  }
 }

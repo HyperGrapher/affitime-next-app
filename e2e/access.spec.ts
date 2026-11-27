@@ -42,6 +42,9 @@ test("tRPC enforces authentication, role and ownership", async ({ browser, reque
   const other = await newPage(browser);
   await demoLogin(other.page, "Marka · Deneme");
   expect((await trpcQuery(other.page, "links.detail", { id: linkId })).status()).toBe(404);
+  // …and the page itself is a proper 404, not a crash
+  const page404 = await other.page.goto(`/vendor/links/${linkId}`);
+  expect(page404?.status()).toBe(404);
   await Promise.all([partner.ctx.close(), pro.ctx.close(), other.ctx.close()]);
 });
 
