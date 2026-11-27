@@ -29,7 +29,6 @@ const rnd = () => {
   return seedState / 4294967296;
 };
 const pick = <T,>(arr: readonly T[]): T => arr[Math.floor(rnd() * arr.length)] as T;
-const chance = (p: number) => rnd() < p;
 
 function makeTrIban(accountDigits: string): string {
   const bban = `00062${"0"}${accountDigits.padStart(16, "0")}`; // 5 bank + 1 reserve + 16 account

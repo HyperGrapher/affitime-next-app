@@ -18,7 +18,7 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
     <article className="mx-auto max-w-3xl px-4 py-20 sm:px-6">
       <p className="text-sm text-muted">{post.meta.date}</p>
       <h1 className="mt-2 font-display text-h1 font-extrabold">{post.meta.title}</h1>
-      <div className="prose prose-neutral mt-8 max-w-none dark:prose-invert prose-a:text-primary" dangerouslySetInnerHTML={{ __html: post.html }} />
+      <div className="article mt-8" dangerouslySetInnerHTML={{ __html: post.html }} />
     </article>
   );
 }

@@ -1,0 +1,4 @@
+{
+  "ignores": ["@tailwindcss/postcss", "tailwindcss", "postcss", "@types/pg", "@types/react-dom", "@testing-library/jest-dom", "tsx"],
+  "ignore-patterns": ["src/generated"]
+}

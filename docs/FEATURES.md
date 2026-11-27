@@ -8,43 +8,43 @@ Old = Pages-Router tree (git history before the modernisation commits). New rout
 
 | Old page | New route | Outcome | Notes | Done |
 |---|---|---|---|---|
-| `index.tsx` landing | `/` | R | Fully redesigned (how it works, features, pricing, FAQ, CTA) | [ ] |
-| `pricing.tsx` | `/pricing` | I | One pricing config, monthly/annual toggle | [ ] |
-| `blog/index`, `blog/[pid]` | `/blog`, `/blog/[slug]` | I | Markdown via gray-matter + markdown-it, statically generated | [ ] |
-| `contact-us` | `/contact` | I | Old page was wired to the junk `testing` router; now stores a `ContactMessage`, visible in admin | [ ] |
-| `rules-and-policies` | `/legal/[doc]` | P | Texts moved verbatim (not re-translated) | [ ] |
-| `welcome` (onboarding poll) | `/partner/onboarding` | I | Interests + socials wizard, skippable, reachable later from settings | [ ] |
-| `auth/signin` | `/signin` | I | Adds demo-login role switcher (env gated) | [ ] |
-| `auth/signup` | `/signup` | I | Role tabs, server-validated uniqueness, trial starts for vendors | [ ] |
-| `auth/forgot-password`, `auth/reset-password/[id]` | `/forgot-password`, `/reset-password` | I | Token links via Outbox | [ ] |
-| `auth/verify-email/[userId]` | `/verify-email` | I | Old link used the raw userId (guessable!) → signed token | [ ] |
-| `auth/not-verified` | `/not-verified` | P | | [ ] |
-| `auth/change-email/[confirmId]` | `/change-email` | I | Token flow | [ ] |
-| `admin/register` | – | R | Public admin registration was a security hole (shared "adminpass"). Admin is seeded / `npm run admin:create` | [ ] |
-| `admin/dashboard` | `/admin/dashboard` | I | Real platform KPIs | [ ] |
-| `vendor/dashboard` (+`dashboard-ex`) | `/vendor/dashboard` | I | `dashboard-ex.tsx` removed (dead). Charts, KPIs, partner table | [ ] |
-| `vendor/products` + `create` | `/vendor/products`, `/new`, `/[id]/edit` | I | Server pagination; edit page added (old `updateProduct` had no UI/auth) | [ ] |
-| `products/detail/[prid]` | `/products/[id]` | I | Public product page + request-link CTA | [ ] |
-| `vendor/links`, `detail/[linkid]`, `create` | `/vendor/links`, `/vendor/links/[id]` | I | Approve / deny / pause / cancel with state machine. `create` merged into product page | [ ] |
-| `vendor/payments`, `payments/detail/[partnerId]` | `/vendor/payments`, `/vendor/payments/[partnerId]` | I | Unpaid commissions per partner; pay (simulated) | [ ] |
-| `vendor/notifications` | `/vendor/notifications` | P | Shared component | [ ] |
-| `vendor/store-api/api-keys` | `/vendor/store-api` | I | Key shown once, hashed at rest | [ ] |
-| `vendor/settings/account` | `/vendor/settings` | I | Profile, avatar, password, change email, tax info | [ ] |
-| `partner/dashboard` | `/partner/dashboard` | I | | [ ] |
-| `partner/products` | `/partner/products` | I | Marketplace browse with filters | [ ] |
-| `partner/links`, `detail/[linkid]` | `/partner/links`, `/partner/links/[id]` | I | | [ ] |
-| `partner/payments`, `detail/[partnerId]` | `/partner/payments` | I | Awaiting + paid payouts | [ ] |
-| `partner/notifications` | `/partner/notifications` | P | | [ ] |
-| `partner/settings/account` | `/partner/settings` | I | IBAN, interests, socials, profile | [ ] |
-| `payments/purchase` | `/billing/checkout` | R | Simulated hosted checkout | [ ] |
-| `payments/payment-required` | `/billing/payment-required` | P | Paywall when trial/plan ended | [ ] |
-| `payments/success`, `fail`, `failing`, `mp-success` | `/billing/result` | R | One result page with reason codes | [ ] |
-| `payments/InstallmentTable` | in checkout | I | Instalment table from config | [ ] |
-| `payments/affiliate` | `/vendor/payments/[partnerId]/pay` | R | Payout flow (was an empty page wrapping a card form) | [ ] |
-| `r/[url]` | `/r/[code]` route handler | R | Redirect handler, no HTML page | [ ] |
-| `r/not-found/[url]` | `/r/unavailable` | P | Error landing | [ ] |
+| `index.tsx` landing | `/` | R | Fully redesigned (how it works, features, pricing, FAQ, CTA) | [x] |
+| `pricing.tsx` | `/pricing` | I | One pricing config, monthly/annual toggle | [x] |
+| `blog/index`, `blog/[pid]` | `/blog`, `/blog/[slug]` | I | Markdown via gray-matter + markdown-it, statically generated | [x] |
+| `contact-us` | `/contact` | I | Old page was wired to the junk `testing` router; now stores a `ContactMessage`, visible in admin | [x] |
+| `rules-and-policies` | `/legal/[doc]` | P | Texts moved verbatim (not re-translated) | [x] |
+| `welcome` (onboarding poll) | `/partner/onboarding` | I | Interests + socials wizard, skippable, reachable later from settings | [x] |
+| `auth/signin` | `/signin` | I | Adds demo-login role switcher (env gated) | [x] |
+| `auth/signup` | `/signup` | I | Role tabs, server-validated uniqueness, trial starts for vendors | [x] |
+| `auth/forgot-password`, `auth/reset-password/[id]` | `/forgot-password`, `/reset-password` | I | Token links via Outbox | [x] |
+| `auth/verify-email/[userId]` | `/verified` (+ Better Auth `/api/auth/verify-email`) | I | Old link used the raw userId (guessable!) → single-use signed token | [x] |
+| `auth/not-verified` | `/not-verified` | P | | [x] |
+| `auth/change-email/[confirmId]` | `/change-email` | I | Token flow | [x] |
+| `admin/register` | – | R | Public admin registration was a security hole (shared "adminpass"). Admin is seeded / `npm run admin:create` | [x] |
+| `admin/dashboard` | `/admin/dashboard` | I | Real platform KPIs | [x] |
+| `vendor/dashboard` (+`dashboard-ex`) | `/vendor/dashboard` | I | `dashboard-ex.tsx` removed (dead). Charts, KPIs, partner table | [x] |
+| `vendor/products` + `create` | `/vendor/products`, `/new`, `/[id]/edit` | I | Server pagination; edit page added (old `updateProduct` had no UI/auth) | [x] |
+| `products/detail/[prid]` | `/products/[id]` | I | Public product page + request-link CTA | [x] |
+| `vendor/links`, `detail/[linkid]`, `create` | `/vendor/links`, `/vendor/links/[id]` | I | Approve / deny / pause / cancel with state machine. `create` merged into product page | [x] |
+| `vendor/payments`, `payments/detail/[partnerId]` | `/vendor/payments`, `/vendor/payments/[partnerId]` | I | Unpaid commissions per partner; pay (simulated) | [x] |
+| `vendor/notifications` | `/vendor/notifications` | P | Shared component | [x] |
+| `vendor/store-api/api-keys` | `/vendor/store-api` | I | Key shown once, hashed at rest | [x] |
+| `vendor/settings/account` | `/vendor/settings` | I | Profile, avatar, password, change email, tax info | [x] |
+| `partner/dashboard` | `/partner/dashboard` | I | | [x] |
+| `partner/products` | `/partner/products` | I | Marketplace browse with filters | [x] |
+| `partner/links`, `detail/[linkid]` | `/partner/links`, `/partner/links/[id]` | I | | [x] |
+| `partner/payments`, `detail/[partnerId]` | `/partner/payments` | I | Awaiting + paid payouts | [x] |
+| `partner/notifications` | `/partner/notifications` | P | | [x] |
+| `partner/settings/account` | `/partner/settings` | I | IBAN, interests, socials, profile | [x] |
+| `payments/purchase` | `/billing/checkout` | R | Simulated hosted checkout | [x] |
+| `payments/payment-required` | `/billing/payment-required` | P | Paywall when trial/plan ended | [x] |
+| `payments/success`, `fail`, `failing`, `mp-success` | `/billing/result` | R | One result page with reason codes | [x] |
+| `payments/InstallmentTable` | in checkout | I | Instalment table from config | [x] |
+| `payments/affiliate` | `/vendor/payments/[partnerId]/pay` | R | Payout flow (was an empty page wrapping a card form) | [x] |
+| `r/[url]` | `/r/[code]` route handler | R | Redirect handler, no HTML page | [x] |
+| `r/not-found/[url]` | `/r/unavailable` | P | Error landing | [x] |
 | `testpage.tsx`, `components/shared/Ex.tsx`, `dashboard-ex.tsx`, `image copy.ts` | – | X | Dead code | [x] |
-| `welcome.test.tsx` | – | R | Vitest suite | [ ] |
+| `welcome.test.tsx` | – | R | Vitest suite | [x] |
 
 ## 2. tRPC procedures (old routers)
 
@@ -118,3 +118,10 @@ Old = Pages-Router tree (git history before the modernisation commits). New rout
 | Admin: overview, users, outbox, FAQ, contact messages | I (new) |
 | Paywall when plan ended; links to ended-plan vendors stop tracking & notify store (`eop`/`eot`) | I |
 | Fraud rules on visit: bot, self-click (partner/vendor/admin), repeat IP, cookie repeat | P |
+
+## 5. Notes on coverage
+
+- **Sale commissions**: the legacy app stored `perSale`/`perSaleType` but never tracked sales (store plugins were a TODO). They are still captured, snapshotted on links and displayed; computing/paying sale commissions is listed as *Proposed, not built* in `DECISIONS.md`.
+- **Removed (dead/junk)**: `testpage.tsx`, `dashboard-ex.tsx`, `components/shared/Ex.tsx`, `pages/api/image copy.ts`, `testing.ts` router, `examples.ts`/`restricted.ts` API stubs, `Temp` model, `payments/failing.tsx`, `apikey.sendEmailSMTP`.
+- **Removed (worse than absence)**: public admin registration, `getUserByEmail/getUserById`, public `visit.updateVisit`, server-side pinging of vendor URLs.
+- Every item above is exercised by the demo seed; the main path is covered by Playwright (`e2e/`).

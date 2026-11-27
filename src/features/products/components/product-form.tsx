@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Field, Input, Select, Textarea } from "@/components/ui/input";
@@ -26,12 +26,12 @@ export function ProductForm({ id, initial }: { id?: string; initial?: ProductInp
   const router = useRouter();
   const qc = useQueryClient();
   const categories = useQuery(trpc.catalog.categories.queryOptions());
-  const { register, control, handleSubmit, watch, formState: { errors } } = useForm<ProductFormValues, unknown, ProductInput>({ resolver: zodResolver(productInput), defaultValues: initial ?? DEFAULTS });
+  const { register, control, handleSubmit, formState: { errors } } = useForm<ProductFormValues, unknown, ProductInput>({ resolver: zodResolver(productInput), defaultValues: initial ?? DEFAULTS });
   const done = (msg: string) => { notifySuccess(msg); void qc.invalidateQueries({ queryKey: trpc.products.pathKey() }); router.push(routes.vendor.products); router.refresh(); };
   const create = useMutation(trpc.products.create.mutationOptions({ onSuccess: () => done("Ürün oluşturuldu"), onError: (e) => notifyError(errorMessage(e)) }));
   const update = useMutation(trpc.products.update.mutationOptions({ onSuccess: () => done("Ürün güncellendi"), onError: (e) => notifyError(errorMessage(e)) }));
   const pending = create.isPending || update.isPending;
-  const v = watch();
+  const v = useWatch({ control }) as ProductFormValues;
   const earning = clickEarning({ clickCommission: Number(v.clickCommission) || 0, clickCommissionType: v.clickCommissionType, productPrice: Number(v.price) || 0 });
 
   return (

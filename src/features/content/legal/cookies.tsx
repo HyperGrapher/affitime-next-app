@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities -- legal copy is ported verbatim from the previous site and intentionally not re-typed */
 
 const CookiePolicy = () => {
     return (

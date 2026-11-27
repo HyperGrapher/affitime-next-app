@@ -1,0 +1,56 @@
+name: CI
+
+on:
+  push:
+    branches: [dev, main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  DATABASE_URL: postgresql://affitime:affitime@localhost:5432/affitime
+  DIRECT_URL: postgresql://affitime:affitime@localhost:5432/affitime
+  BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+  PAYMENT_WEBHOOK_SECRET: ci-payment-secret
+  CRON_SECRET: ci-cron-secret
+  NEXT_PUBLIC_APP_URL: http://localhost:3000
+  DEMO_MODE: "true"
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: affitime
+          POSTGRES_PASSWORD: affitime
+          POSTGRES_DB: affitime
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U affitime"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run db:setup
+      - run: npm test
+      - run: npm run build
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - uses: actions/upload-artifact@v5
+        if: failure()
+        with:
+          name: playwright-report
+          path: playwright-report
+          retention-days: 7

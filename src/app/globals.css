@@ -1,5 +1,4 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 /* ── Design tokens ─────────────────────────────────────────────────────────
    One palette, defined once, flipped for dark mode. Components only use semantic
@@ -147,3 +146,17 @@
 }
 
 .recharts-surface:focus, .recharts-wrapper:focus { outline: none; }
+
+/* Blog article typography (replaces @tailwindcss/typography to keep the dependency tree small). */
+.article { line-height: 1.8; color: var(--foreground); }
+.article > * + * { margin-top: 1.1em; }
+.article h2 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 2em; }
+.article h3 { font-size: 1.2rem; font-weight: 700; margin-top: 1.6em; }
+.article a { color: var(--primary); text-decoration: underline; text-underline-offset: 3px; }
+.article ul, .article ol { padding-left: 1.4em; }
+.article ul { list-style: disc; }
+.article ol { list-style: decimal; }
+.article li + li { margin-top: 0.4em; }
+.article blockquote { border-left: 3px solid var(--primary); padding: 0.2em 0 0.2em 1em; color: var(--muted); font-style: italic; }
+.article code { background: var(--surface-2); padding: 0.15em 0.4em; border-radius: 6px; font-size: 0.9em; }
+.article strong { font-weight: 700; }

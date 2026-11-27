@@ -9,10 +9,6 @@ import { sendTemplatedEmail } from "@/server/services/email";
 
 interface Job { userId: string; kind: EmailKind; refDate: Date; meta: Record<string, string>; notification: NotificationType; href: string }
 
-const NOTIFICATION: Partial<Record<EmailKind, NotificationType>> = {
-  TRIAL_ENDING_SOON: "TRIAL_ENDING_SOON", TRIAL_ENDED: "TRIAL_ENDED", PLAN_ENDING_SOON: "PLAN_ENDING_SOON", PLAN_ENDED: "PLAN_ENDED", CAMPAIGN_ENDED: "CAMPAIGN_ENDED",
-};
-
 /** Insert-if-absent. Returns true only for the run that really created the row → notifications are sent once. */
 async function enqueue(db: Db, job: Job): Promise<boolean> {
   const res = await db.emailQueue.createMany({ data: [{ userId: job.userId, kind: job.kind, refDate: job.refDate, meta: job.meta as Prisma.InputJsonValue }], skipDuplicates: true });

@@ -79,7 +79,7 @@ export function IbanForm() {
         <form noValidate onSubmit={handleSubmit((v) => save.mutate(v))} className="grid gap-4 sm:grid-cols-2">
           <Field label="Hesap sahibi" htmlFor="ibanHolder" error={errors.ibanHolder?.message}><Input id="ibanHolder" autoComplete="name" {...register("ibanHolder")} /></Field>
           <Field label="IBAN" htmlFor="iban" error={errors.iban?.message}><Input id="iban" placeholder="TR00 0000 0000 0000 0000 0000 00" {...register("iban")} /></Field>
-          <div className="sm:col-span-2"><Button type="submit" disabled={save.isPending}>IBAN'ı kaydet</Button></div>
+          <div className="sm:col-span-2"><Button type="submit" disabled={save.isPending}>IBAN&apos;ı kaydet</Button></div>
         </form>
       </CardContent>
     </Card>

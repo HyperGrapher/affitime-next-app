@@ -23,10 +23,22 @@ Branch: all work is committed on `dev` (instruction from the owner overrides the
 | Visit geo | Country from `x-vercel-ip-country` / `cf-ipcountry`; no third-party lookups | Hot path |
 | Admin sign-up | Removed | Public admin creation was a vulnerability |
 | Visit IP storage | Stored as a salted SHA-256 hash plus truncated display value | Privacy (KVKK) |
+| Typography | Own `.article` CSS instead of `@tailwindcss/typography` | One fewer dependency (and its audit advisory) |
+| Marketing header | Auth state read in a client island | Keeps marketing pages statically cached on Vercel |
+| Store notification | Stores poll `GET /api/store/v1/status` (returns `eop`/`eot` codes) instead of the server calling vendor URLs | The legacy server-side GET to vendor URLs was an SSRF vector |
+| Visit billing | Only unique, unflagged visits are billable; repeat visits inside cookie life are recorded but unpaid | Legacy paid every non-"dubious" visit, including repeats |
+| Payout | Visits are reserved (stamped with the payment id) when a payout starts and released on failure | Prevents double payment under concurrency |
+| Plan limits | Basic 10 products / Pro 50 / Ultimate unlimited; trial = Pro limits | Missing safeguard; numbers in `domain/pricing.ts` |
+| Link terms | Commission terms are snapshotted on the link at request time | Editing a product must not silently change agreed terms |
+| Paywall | Expired vendors may use billing, settings, payments, notifications and dashboard only; their links are suspended (`PRODUCT_NOT_ACTIVE`) and restored automatically on renewal | Legacy needed manual flag flips |
+| Public sign-up verification | E-mail verification gates every area (`/not-verified`); in demo mode a button jumps to the Outbox link | Matches legacy behaviour; keeps the demo usable |
 | Tests | Vitest for services; Playwright for e2e | Brief |
 
 ## Proposed, not built
 - Real PSP / e-mail adapters (PayTR, SendPulse) – interface ready.
-- Conversion (sale) tracking via store API postbacks – the schema has `Conversion`, only the endpoint skeleton exists.
+- Sale/conversion tracking via store-API postbacks (sale commission is stored and displayed; only click commissions are computed and paid today). Needs a `Conversion` model and a signed postback endpoint.
 - Marketplace campaign auto-expiry notifications beyond the daily job.
 - English translation of the UI and legal text.
+
+## Environment note
+The CI/cloud shell this was built in exports a `DATABASE_URL` that points at a remote Neon database. `dotenv` does not override existing variables, so the app, seed and tests all guard against it: the seed needs `--yes` for non-local databases and integration tests skip unless the URL is local. All development here used the local Postgres.

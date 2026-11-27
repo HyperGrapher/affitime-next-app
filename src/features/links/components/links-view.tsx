@@ -28,7 +28,7 @@ const TABS: { key: Group; label: string }[] = [
   { key: undefined, label: "Tümü" }, { key: "pending", label: "Bekleyen" }, { key: "live", label: "Aktif" }, { key: "closed", label: "Kapalı" },
 ];
 
-const detailHref = (role: Role, id: string) => (role === "VENDOR" ? routes.vendor.link(id) : role === "PARTNER" ? routes.partner.link(id) : `${routes.admin.links}?focus=${id}`);
+const detailHref = (role: Role, id: string) => (role === "VENDOR" ? routes.vendor.link(id) : role === "PARTNER" ? routes.partner.link(id) : `${routes.admin.links}/${id}`);
 
 export function LinksView({ role, initialGroup }: { role: Role; initialGroup?: Group }) {
   const trpc = useTRPC();
