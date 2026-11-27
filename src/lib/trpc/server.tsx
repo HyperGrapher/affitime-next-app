@@ -32,7 +32,9 @@ export async function prefetchOrNotFound(query: { queryKey: readonly unknown[] }
   try {
     await getQueryClient().fetchQuery(query as unknown as FetchQueryOptions);
   } catch (error) {
-    const code = (error as { code?: string; data?: { code?: string } }).code ?? (error as { data?: { code?: string } }).data?.code;
+    // TRPCError (direct) or TRPCClientError wrapping it (server-side proxy): look at every place the code can live.
+    const e = error as { code?: string; data?: { code?: string }; cause?: { code?: string } };
+    const code = e.code ?? e.data?.code ?? e.cause?.code;
     if (code === "NOT_FOUND") notFound();
     throw error;
   }

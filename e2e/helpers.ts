@@ -28,10 +28,11 @@ export function trackErrors(page: Page) {
 export const UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36";
 export const randomIp = () => `198.51.100.${Math.floor(Math.random() * 240) + 10}`;
 
-/** First tracking code + link id of the signed-in partner's live link. */
-export async function firstLiveLink(page: Page) {
+/** First tracking code + link id of a seeded live link of the signed-in partner (default: the Pro vendor Gamepad). */
+export async function firstLiveLink(page: Page, productText = "Gamepad") {
   await page.goto("/partner/links?group=live");
-  const href = await page.locator('ul > li a[href^="/partner/links/"]').first().getAttribute("href");
+  // pick a seeded Nova Elektronik (Pro vendor) link: other tests create links for the same partner
+  const href = await page.locator("ul > li").filter({ hasText: productText }).locator('a[href^="/partner/links/"]').first().getAttribute("href");
   const id = href!.split("/").pop()!;
   await page.goto(`/partner/links/${id}`);
   const url = (await page.locator("code").first().innerText()).trim();
