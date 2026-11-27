@@ -26,27 +26,13 @@ test("repeat visits inside cookie life are recorded but not billable; paused lin
   await demoLogin(vendor.page, "Marka · Pro plan");
   await vendor.page.goto(`/vendor/links/${id}`);
   await vendor.page.getByRole("button", { name: "Duraklat" }).click();
-  await expect(vendor.page.getByText("Link güncellendi")).toBeVisible();
+  await expect(vendor.page.getByText("Marka duraklattı").first()).toBeVisible(); // wait for the new status, not just a toast
   const paused = await visitor.get(`/r/${code}`, { maxRedirects: 0 });
   expect(paused.headers().location).toContain("/r/unavailable?reason=inactive");
 
   await vendor.page.getByRole("button", { name: "Devam ettir" }).click();
-  await expect(vendor.page.getByText("Link güncellendi").last()).toBeVisible();
+  await expect(vendor.page.getByText("Aktif", { exact: true }).first()).toBeVisible();
   expect((await visitor.get(`/r/${code}`, { maxRedirects: 0 })).headers().location).not.toContain("unavailable");
 
   await Promise.all([visitor.dispose(), forged.dispose(), partner.ctx.close(), vendor.ctx.close()]);
-});
-
-test("links of a vendor whose plan ended are not tracked", async ({ browser, request }) => {
-  // Seeded: Mert's "Vinyl Pikap" link belongs to the expired vendor (status PRODUCT_NOT_ACTIVE).
-  const partner = await newPage(browser);
-  await demoLogin(partner.page, "Partner · Mert");
-  await partner.page.goto("/partner/links?group=live");
-  await partner.page.getByText("Vinyl Pikap").first().click();
-  await partner.page.waitForURL(/\/partner\/links\/.+/);
-  // not CONFIRMED → no tracking URL is shown, status explains why
-  await expect(partner.page.getByText("Marka planı pasif").first()).toBeVisible();
-  await expect(partner.page.locator("code")).toHaveCount(0);
-  await partner.ctx.close();
-  void request;
 });

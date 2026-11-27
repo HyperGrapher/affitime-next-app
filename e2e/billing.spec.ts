@@ -1,7 +1,21 @@
-import { expect, test } from "@playwright/test";
-import { demoLogin } from "./helpers";
+import { expect, test, type Browser } from "@playwright/test";
+import { demoLogin, newPage } from "./helpers";
 
-test("expired vendor is paywalled, buys a plan through the simulated checkout and is unlocked", async ({ page }) => {
+async function mertPikapStatus(browser: Browser, expected: string, trackingShown: boolean) {
+  const partner = await newPage(browser);
+  await demoLogin(partner.page, "Partner · Mert");
+  await partner.page.goto("/partner/links?group=live");
+  await partner.page.getByText("Vinyl Pikap").first().click();
+  await partner.page.waitForURL(/\/partner\/links\/.+/);
+  await expect(partner.page.getByText(expected, { exact: true }).first()).toBeVisible({ timeout: 15_000 });
+  await expect(partner.page.locator("code")).toHaveCount(trackingShown ? 1 : 0);
+  await partner.ctx.close();
+}
+
+test("expired vendor is paywalled, buys a plan through the simulated checkout and is unlocked", async ({ page, browser }) => {
+  // while the vendor's plan is expired its partners' links are suspended and show no tracking URL
+  await mertPikapStatus(browser, "Marka planı pasif", false);
+
   await demoLogin(page, "Marka · Süresi dolmuş");
   await page.goto("/vendor/products");
   await page.waitForURL("**/billing/payment-required");
@@ -30,6 +44,9 @@ test("expired vendor is paywalled, buys a plan through the simulated checkout an
   await page.waitForURL("**/vendor/dashboard");
   await page.goto("/vendor/products");
   await expect(page.getByRole("heading", { name: "Ürünlerim" })).toBeVisible();
+
+  // renewal restores the suspended links automatically
+  await mertPikapStatus(browser, "Aktif", true);
 });
 
 test("payment callback rejects forged signatures", async ({ request }) => {

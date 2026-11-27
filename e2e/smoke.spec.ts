@@ -68,7 +68,7 @@ test("sign-in rejects a wrong password and sign-up rejects an existing e-mail", 
   await page.getByLabel("E-posta").fill("ayse@partner.test");
   await page.getByLabel("Şifre").fill("wrong-password");
   await page.getByRole("button", { name: "Giriş yap", exact: true }).click();
-  await expect(page.getByRole("alert")).toContainText("hatalı");
+  await expect(page.locator("form [role=alert]")).toContainText("hatalı");
 
   await page.goto("/signup?role=partner");
   await page.getByLabel("Kullanıcı adı").fill(`dup_${Date.now().toString(36)}`);

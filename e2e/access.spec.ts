@@ -43,8 +43,9 @@ test("tRPC enforces authentication, role and ownership", async ({ browser, reque
   await demoLogin(other.page, "Marka · Deneme");
   expect((await trpcQuery(other.page, "links.detail", { id: linkId })).status()).toBe(404);
   // …and the page itself is a proper 404, not a crash
-  const page404 = await other.page.goto(`/vendor/links/${linkId}`);
-  expect(page404?.status()).toBe(404);
+  await other.page.goto(`/vendor/links/${linkId}`); // streamed response: status is already 200, the not-found UI is what matters
+  await expect(other.page.getByText("Sayfa bulunamadı")).toBeVisible();
+  await expect(other.page.getByText("Nova Oyun")).toHaveCount(0);
   await Promise.all([partner.ctx.close(), pro.ctx.close(), other.ctx.close()]);
 });
 
