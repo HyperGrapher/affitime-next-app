@@ -1,114 +1,40 @@
-// COMMANDS
-// npx prisma migrate dev --name init
-// npx prisma format
-// npx prisma db push  (If you are prototyping)
-// npx prisma generate
-// npx prisma studio
-// npx prisma migrate reset (Reset DB)
-
-// prisma db pull //make sure that your Prisma schema is up-to-date
-// https://www.prisma.io/docs/guides/database/developing-with-prisma-migrate/add-prisma-migrate-to-a-project
+// Affitime data model (PostgreSQL).
+// Workflow: `npm run db:migrate` (dev) · `npm run db:deploy` (prod/Neon) · `npm run db:seed`.
+// Connection strings live in env: DATABASE_URL (pooled) and DIRECT_URL (migrations). See prisma.config.ts.
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
-  // url      = "[removed old one]"
+  provider = "postgresql"
 }
 
-// Necessary for Next auth
-model Account {
-  id                String  @id @default(cuid())
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String? @db.Text
-  access_token      String? @db.Text
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String? @db.Text
-  session_state     String?
-  user              User    @relation(fields: [userId], references: [id])
-
-  @@unique([provider, providerAccountId])
-  @@index([userId])
-  @@map("account")
-}
+// ───────────────────────── Enums ─────────────────────────
 
 enum Role {
-  PARTNER
   VENDOR
+  PARTNER
   ADMIN
   MODERATOR
 }
 
-enum PackageType {
-  NONE
+enum PlanType {
+  TRIAL
   BASIC
   PRO
   ULTIMATE
-  TRIAL
-  FREE
-  OTHER
-  PARTNER // * new
-}
-
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id])
-
-  @@index([userId])
-  @@map("session")
-}
-
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
-
-  @@unique([identifier, token])
-  @@map("verification_token")
 }
 
 enum CommissionType {
-  NONE
   CASH
-  PERC
+  PERCENT
 }
 
-model Tag {
-  id       Int              @id @default(autoincrement())
-  name     String
-  products TagsOnProducts[]
-
-  @@map("tag")
-}
-
-model Category {
-  id       Int       @id @default(autoincrement())
-  name     String
-  products Product[]
-  links    Link[]
-
-  @@map("category")
-}
-
-model TagsOnProducts {
-  product   Product @relation(fields: [productId], references: [id])
-  productId String
-  tag       Tag     @relation(fields: [tagId], references: [id])
-  tagId     Int
-
-  @@id([productId, tagId])
-  @@map("tags_on_products")
+enum ProductStatus {
+  ACTIVE
+  ARCHIVED
 }
 
 enum LinkStatus {
@@ -119,389 +45,525 @@ enum LinkStatus {
   CANCELED_BY_VENDOR
   CANCELED_BY_PARTNER
   CANCELED_BY_ADMIN
-  PRODUCT_DELETED
-  PRODUCT_NOT_ACTIVE // vendor not pro or trial
+  PRODUCT_ARCHIVED
+  PRODUCT_NOT_ACTIVE // vendor trial/plan ended
 }
 
-model PlanPayment {
-  id                String       @id @default(cuid())
-  merchant_oid      String       @unique()
-  user              User         @relation(fields: [userId], references: [id])
-  userId            String
-  vendorId          String
-  user_basket       String
-  user_phone        String
-  user_name         String
-  user_address      String
-  payment_type      String?
-  payment_amount    Float
-  payed_amount      Float? // express
-  installment_count Int          @default(0)
-  card_type         String?
-  packageType       PackageType? @default(PRO)
-  validFrom         DateTime? // express
-  validTill         DateTime? // express
-  annual            Boolean      @default(false)
-  success           Boolean?
-  seen              Boolean?     @default(false)
-  errorCode         String?
-  errorReason       String?
-  test_mode         Boolean? // express
-  createdAt         DateTime     @default(now())
-  updatedAt         DateTime     @updatedAt
-
-  @@index([id, userId])
-  @@map("plan_payment")
+enum VisitFlag {
+  BOT
+  NO_USER_AGENT
+  SELF_PARTNER
+  SELF_VENDOR
+  STAFF
+  KNOWN_IP
 }
 
-model Taxinfo {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [user_id], references: [id])
-  user_id   String   @unique
+enum PaymentKind {
+  PLAN
+  CAMPAIGN
+  PAYOUT
+}
+
+enum PaymentStatus {
+  PENDING
+  SUCCEEDED
+  FAILED
+}
+
+enum CampaignStatus {
+  ACTIVE
+  ENDED
+}
+
+enum NotificationType {
+  WELCOME
+  LINK_REQUESTED
+  LINK_APPROVED
+  LINK_DENIED
+  LINK_PAUSED
+  LINK_RESUMED
+  LINK_CANCELED
+  PRODUCT_ARCHIVED
+  PAYOUT_SENT
+  PAYOUT_RECEIVED
+  PLAN_ACTIVATED
+  PLAN_ENDING_SOON
+  PLAN_ENDED
+  TRIAL_ENDING_SOON
+  TRIAL_ENDED
+  CAMPAIGN_STARTED
+  CAMPAIGN_ENDED
+}
+
+enum EmailKind {
+  VERIFY_EMAIL
+  RESET_PASSWORD
+  CHANGE_EMAIL
+  LINK_REQUESTED
+  LINK_APPROVED
+  LINK_DENIED
+  TRIAL_ENDING_SOON
+  TRIAL_ENDED
+  PLAN_ENDING_SOON
+  PLAN_ENDED
+  CAMPAIGN_ENDED
+  PAYMENT_RECEIPT
+  PAYOUT_RECEIVED
+  CONTACT_RECEIPT
+}
+
+// ───────────────────────── Auth (Better Auth) ─────────────────────────
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  emailVerified Boolean  @default(false)
+  image         String?
+  role          Role     @default(PARTNER)
+  active        Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  sessions      Session[]
+  accounts      Account[]
+  vendor        Vendor?
+  partner       Partner?
+  notifications Notification[]
+  knownIps      KnownIp[]
+  emailQueue    EmailQueue[]
+
+  @@index([role])
+  @@map("user")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  token     String   @unique
+  expiresAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id @default(cuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id @default(cuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model RateLimit {
+  id          String @id
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+
+  @@map("rate_limit")
+}
+
+// ───────────────────────── Profiles ─────────────────────────
+
+model Vendor {
+  id            String    @id @default(cuid())
+  userId        String    @unique
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  brand         String    @unique
+  website       String    @unique
+  phone         String?
+  logo          String?
+  plan          PlanType  @default(TRIAL)
+  trialEndsAt   DateTime
+  planValidTill DateTime? // set when a paid plan is active
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  products  Product[]
+  links     Link[]
+  visits    Visit[]
+  payments  Payment[]
+  campaigns Campaign[]
+  apiKey    ApiKey?
+  taxInfo   TaxInfo?
+
+  @@map("vendor")
+}
+
+model Partner {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  username   String   @unique
+  phone      String?
+  avatar     String?
+  ibanHolder String?
+  iban       String?
+  interests  String[]
+  socials    Json     @default("[]") // [{ platform, handle }]
+  onboarded  Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  links   Link[]
+  visits  Visit[]
+  payouts Payment[]
+
+  @@map("partner")
+}
+
+model TaxInfo {
+  id        String   @id @default(cuid())
+  vendorId  String   @unique
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
   title     String? // unvan
-  fname     String?
-  lname     String?
+  firstName String
+  lastName  String
   tckn      String?
   vkn       String?
   taxOffice String?
   address   String
   city      String?
-  country   String   @default("turkiye")
-  code      String   @default("tr")
+  country   String   @default("TR")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([id, user_id])
-  @@map("taxinfo")
-}
-
-enum EmailType {
-  CAMPAIGN_ENDED
-  TRIAL_ENDING_SOON
-  TRIAL_ENDED
-  PLAN_ENDING_SOON
-  PLAN_ENDED
-}
-
-// Queue for cron jobs
-model EmailQueue {
-  id               Int       @id @default(autoincrement())
-  user             User      @relation(fields: [email], references: [email])
-  email            String
-  type             EmailType
-  sent             Boolean   @default(false)
-  trialOrValidTill DateTime
-  createdAt        DateTime  @default(now())
-
-  @@unique([trialOrValidTill, type]) // this two field being unique, it prevents creating new row for the same date and emailType
-  @@index([id, email])
-  @@map("email_queue")
-}
-
-model User {
-  id               String        @id @default(cuid())
-  fname            String?
-  lname            String?
-  email            String        @unique
-  prevEmail        String?
-  nextEmail        String?
-  confirmId        String?
-  password         String
-  passResetId      String?       @db.Text
-  role             Role          @default(PARTNER)
-  vendor_id        String?
-  vendor_username  String? // * new
-  partner_username String? // * new
-  partner_id       String?
-  emailVerified    DateTime?
-  image            String?       @db.Text
-  notes            String?       @db.Text
-  accounts         Account[]
-  sessions         Session[]
-  plan_payments    PlanPayment[]
-  sentEmails       EmailQueue[]
-  taxinfo          Taxinfo?
-  vendor           Vendor?
-  partner          Partner?
-  active           Boolean       @default(true)
-  trial            Boolean       @default(true)
-  // trialEndedMail   Boolean       @default(false)
-  // trialEndSoonMail Boolean       @default(false)
-  trialTill        DateTime?
-  pro              Boolean       @default(false)
-  // proEndedMail     Boolean       @default(false)
-  // proEndSoonMail   Boolean       @default(false)
-  packageType      PackageType?  @default(TRIAL)
-  validFrom        DateTime? // if pro is true then plan is valid from 
-  validTill        DateTime? // if pro is true then plan is valid until 
-  proDetails       Json?
-  ipdata           Json?
-  createdAt        DateTime      @default(now())
-  updatedAt        DateTime      @updatedAt
-
-  @@index([id, email])
-  @@map("user")
-}
-
-model Vendor {
-  id             String          @id @default(cuid())
-  user           User            @relation(fields: [userId], references: [id])
-  userId         String          @unique
-  brand          String          @unique
-  phone          String?
-  website        String          @unique
-  image          String?         @db.Text
-  products       Product[]
-  links          Link[]
-  notifications  Notification[]
-  visits         Visit[]
-  marketPayments MarketPayment[]
-  apiKey         ApiKey?
-  apiKeyId       String?
-  createdAt      DateTime        @default(now())
-  updatedAt      DateTime        @updatedAt
-
-  @@index([id, userId])
-  @@map("user_vendor")
-}
-
-model Partner {
-  id            String         @id @default(cuid())
-  user          User           @relation(fields: [userId], references: [id])
-  userId        String         @unique
-  username      String         @unique
-  phone         String?
-  image         String?        @db.Text
-  links         Link[]
-  notifications Notification[]
-  visits        Visit[]
-  iban          Json? // {iban, fullname, banka}
-  interests     Json?
-  socials       Json?
-  createdAt     DateTime       @default(now())
-  updatedAt     DateTime       @updatedAt
-
-  @@index([id, userId])
-  @@map("user_partner")
-}
-
-// TODO ...
-// for each vendor/iban
-model PaymentTransfer {
-  id             String   @id @default(cuid())
-  merchant_oid   String   @unique()
-  iban           String
-  payment_amount Float
-  createdAt      DateTime @default(now())
-
-  @@index([id])
-  @@map("payment_tranfer")
-}
-
-model MarketPayment {
-  id                String   @id @default(cuid())
-  vendorUserId      String
-  merchant_oid      String   @unique()
-  vendor            Vendor   @relation(fields: [vendorId], references: [id])
-  vendorId          String
-  product           Product  @relation(fields: [productId], references: [id])
-  productId         String   @unique // * new
-  user_basket       String
-  user_phone        String
-  user_name         String
-  user_address      String
-  payment_type      String?
-  payment_amount    Float
-  payed_amount      Float? // express
-  installment_count Int      @default(0)
-  card_type         String?
-  success           Boolean?
-  seen              Boolean? @default(false) // admin
-  errorCode         String?
-  errorReason       String?
-  test_mode         Boolean? // express
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  // validFrom         DateTime? // express
-  // validTill         DateTime? // express
-
-  @@index([id])
-  @@map("market_payment")
-}
-
-model Product {
-  id                String           @id @default(cuid())
-  title             String?          @db.Text
-  desc              String?          @db.Text
-  fullDesc          String?          @db.Text
-  price             Float?
-  cookieLife        Int              @default(60)
-  perClick          Float?
-  perClickType      CommissionType   @default(CASH)
-  perSale           Float?
-  perSaleType       CommissionType   @default(CASH)
-  vendor            Vendor           @relation(fields: [vendor_profile_id], references: [id])
-  vendor_profile_id String
-  vendor_user_id    String?
-  product_url       String?          @db.Text
-  image             String?          @db.Text
-  links             Link[]           @relation("ProductLinks")
-  tags              TagsOnProducts[]
-  category          Category         @relation(fields: [categoryId], references: [id])
-  categoryId        Int
-  published         Boolean?         @default(true)
-  active            Boolean?         @default(true)
-  extra_info        Json? // optional arbitrary data
-  hasPayment        Boolean?         @default(false) // marketplace // * new
-  completed         Boolean?         @default(false) // * new
-  campaignLife      Int              @default(7) // days // * new
-  completesAt       DateTime? // * new
-  marketPayment     MarketPayment?
-  marketPaymentId   String? // odeme sonrasi girilir // * new
-  createdAt         DateTime         @default(now())
-  updatedAt         DateTime         @updatedAt
-
-  @@index([id, vendor_profile_id])
-  @@map("product")
-}
-
-model Visit {
-  id           String         @id @default(cuid())
-  link         Link           @relation("LinkVisits", fields: [link_id], references: [id])
-  link_id      String
-  vendor       Vendor         @relation(fields: [vendor_id], references: [id])
-  vendor_id    String
-  partner      Partner        @relation(fields: [partner_id], references: [id])
-  partner_id   String
-  productId    String // * new - added as index
-  ipapi        String? // from client
-  country      String         @default("-") // from client
-  ipInfo       Json? // from client
-  ipware       String? // from server
-  hasCookie    Boolean
-  cookie       Json?
-  prevIp       String?
-  sold         Boolean        @default(false)
-  vpn          Boolean        @default(false)
-  unique       Boolean        @default(true)
-  params       String? // query extras
-  dubious      Boolean?
-  cause        String?
-  isPartner    Boolean?
-  isVendor     Boolean?
-  paid         Boolean?
-  os           String?        @default("-")
-  agent        String?        @db.Text
-  bot          Boolean?
-  uaFamily     String?
-  referer      String?
-  uaMajor      String?
-  storePrice   Float? // * New for express api
-  price        Float?
-  perClick     Float?
-  perClickType CommissionType @default(CASH)
-  perSale      Float?
-  perSaleType  CommissionType @default(CASH)
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
-
-  @@index([id, link_id, productId])
-  @@map("visit")
+  @@map("tax_info")
 }
 
 model ApiKey {
-  id        String   @id @default(cuid())
-  apikey    String   @unique()
-  installed Boolean  @default(false)
-  vendor    Vendor?  @relation(fields: [vendorId], references: [id])
-  vendorId  String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id          String    @id @default(cuid())
+  vendorId    String    @unique
+  vendor      Vendor    @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  keyHash     String    @unique // sha256 of the secret; the secret is shown once
+  prefix      String // first chars, for display
+  installedAt DateTime?
+  lastUsedAt  DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
 
-  @@index([id, apikey])
   @@map("api_key")
 }
 
-model Link {
-  id               String         @id @default(cuid())
-  product          Product        @relation("ProductLinks", fields: [product_id], references: [id])
-  product_id       String
-  partner          Partner        @relation(fields: [partner_id], references: [id])
-  partner_id       String
-  partner_user_id  String?
-  vendor           Vendor         @relation(fields: [vendor_id], references: [id])
-  vendor_id        String
-  vendor_user_id   String?
-  category         Category       @relation(fields: [categoryId], references: [id])
-  categoryId       Int
-  url              String         @unique()
-  platform         String?
-  visits           Visit[]        @relation("LinkVisits")
-  status           LinkStatus
-  active           Boolean? // vendor active/pasif yapabilir. partner pasif hale alabilir ama tekrar active yapamaz
-  vendor_notified  Boolean        @default(false)
-  partner_notified Boolean        @default(false)
-  cookieLife       Int            @default(60)
-  price            Float?
-  perClick         Float?
-  perClickType     CommissionType @default(CASH)
-  perSale          Float?
-  perSaleType      CommissionType @default(CASH)
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime       @updatedAt
+// ───────────────────────── Catalogue ─────────────────────────
 
-  @@index([id, product_id, url])
+model Category {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  slug     String    @unique
+  products Product[]
+
+  @@map("category")
+}
+
+model Tag {
+  id       Int          @id @default(autoincrement())
+  name     String       @unique
+  slug     String       @unique
+  products ProductTag[]
+
+  @@map("tag")
+}
+
+model ProductTag {
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  tagId     Int
+  tag       Tag     @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([productId, tagId])
+  @@index([tagId])
+  @@map("product_tag")
+}
+
+model Product {
+  id                  String         @id @default(cuid())
+  vendorId            String
+  vendor              Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  categoryId          Int
+  category            Category       @relation(fields: [categoryId], references: [id])
+  title               String
+  summary             String
+  description         String?
+  image               String?
+  productUrl          String
+  price               Decimal        @db.Decimal(12, 2)
+  cookieDays          Int            @default(30)
+  clickCommission     Decimal        @default(0) @db.Decimal(12, 2)
+  clickCommissionType CommissionType @default(CASH)
+  saleCommission      Decimal        @default(0) @db.Decimal(12, 2)
+  saleCommissionType  CommissionType @default(PERCENT)
+  status              ProductStatus  @default(ACTIVE)
+  createdAt           DateTime       @default(now())
+  updatedAt           DateTime       @updatedAt
+
+  tags      ProductTag[]
+  links     Link[]
+  visits    Visit[]
+  campaigns Campaign[]
+  payments  Payment[]
+
+  @@index([vendorId, status, createdAt])
+  @@index([categoryId, status])
+  @@index([status, createdAt])
+  @@map("product")
+}
+
+// A paid "marketplace" campaign: pushes a product to the top of the partner marketplace.
+model Campaign {
+  id        String         @id @default(cuid())
+  productId String
+  product   Product        @relation(fields: [productId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor         @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  paymentId String         @unique
+  payment   Payment        @relation(fields: [paymentId], references: [id])
+  days      Int
+  startsAt  DateTime
+  endsAt    DateTime
+  status    CampaignStatus @default(ACTIVE)
+  createdAt DateTime       @default(now())
+
+  @@index([status, endsAt])
+  @@index([productId])
+  @@index([vendorId])
+  @@map("campaign")
+}
+
+// ───────────────────────── Tracking ─────────────────────────
+
+model Link {
+  id            String      @id @default(cuid())
+  code          String      @unique // public tracking code used in /r/[code]
+  productId     String
+  product       Product     @relation(fields: [productId], references: [id], onDelete: Cascade)
+  partnerId     String
+  partner       Partner     @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  vendorId      String
+  vendor        Vendor      @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  status        LinkStatus  @default(AWAITING)
+  suspendedFrom LinkStatus? // status to restore when the vendor plan becomes active again
+  platform      String?
+
+  // Terms snapshot taken at request time
+  cookieDays          Int
+  clickCommission     Decimal        @db.Decimal(12, 2)
+  clickCommissionType CommissionType
+  saleCommission      Decimal        @db.Decimal(12, 2)
+  saleCommissionType  CommissionType
+  productPrice        Decimal        @db.Decimal(12, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  visits Visit[]
+
+  @@unique([productId, partnerId])
+  @@index([vendorId, status])
+  @@index([partnerId, status])
   @@map("link")
 }
 
-model UserIps {
-  id         Int      @id @default(autoincrement())
-  ip         String
-  country    String
-  partner_id String?
-  public     Boolean  @default(false)
-  vendor_id  String?
-  ipInfo     Json?
-  createdAt  DateTime @default(now())
+model Visit {
+  id        String   @id @default(cuid())
+  linkId    String
+  link      Link     @relation(fields: [linkId], references: [id], onDelete: Cascade)
+  vendorId  String
+  vendor    Vendor   @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  partnerId String
+  partner   Partner  @relation(fields: [partnerId], references: [id], onDelete: Cascade)
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
 
-  @@index([id, ip])
-  @@map("user_ip")
+  ipHash     String
+  ipMasked   String?
+  country    String     @default("-")
+  userAgent  String?
+  browser    String?
+  os         String?
+  referer    String?
+  params     String?
+  hasCookie  Boolean    @default(false)
+  isUnique   Boolean    @default(true)
+  flag       VisitFlag?
+  // billable = unique, not flagged. Snapshot of what this click earns the partner.
+  billable   Boolean    @default(false)
+  commission Decimal    @default(0) @db.Decimal(12, 2)
+  payoutId   String?
+  payout     Payment?   @relation(fields: [payoutId], references: [id])
+
+  @@index([linkId, createdAt])
+  @@index([vendorId, createdAt])
+  @@index([partnerId, createdAt])
+  @@index([vendorId, partnerId, billable, payoutId])
+  @@index([payoutId])
+  @@map("visit")
 }
 
-model Notification {
-  id         Int      @id @default(autoincrement())
-  message    String   @db.Text
-  type       String? // * make enum after types are clarified
-  action     String?
-  for        Role     @default(PARTNER)
-  read       Boolean  @default(false)
-  partner    Partner  @relation(fields: [partner_id], references: [id])
-  partner_id String
-  vendor     Vendor   @relation(fields: [vendor_id], references: [id])
-  vendor_id  String
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+// IPs seen when partners/vendors/admins sign in; clicks from them are flagged as self-clicks.
+model KnownIp {
+  id         String   @id @default(cuid())
+  ipHash     String
+  userId     String
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lastSeenAt DateTime @default(now())
 
-  @@index([id])
+  @@unique([ipHash, userId])
+  @@index([ipHash])
+  @@map("known_ip")
+}
+
+// ───────────────────────── Payments ─────────────────────────
+
+// One table for the three flows: PLAN (vendor → platform), CAMPAIGN (vendor → platform),
+// PAYOUT (vendor → partner commissions). Provider specifics live in `providerData` only.
+model Payment {
+  id            String        @id @default(cuid())
+  ref           String        @unique // merchant order reference (merchant_oid)
+  kind          PaymentKind
+  status        PaymentStatus @default(PENDING)
+  vendorId      String
+  vendor        Vendor        @relation(fields: [vendorId], references: [id], onDelete: Cascade)
+  amount        Decimal       @db.Decimal(12, 2)
+  paidAmount    Decimal?      @db.Decimal(12, 2) // incl. instalment surcharge
+  currency      String        @default("TRY")
+  installments  Int           @default(1)
+  cardBrand     String?
+  testMode      Boolean       @default(true)
+  description   String
+  failureCode   String?
+  failureReason String?
+  providerData  Json?
+  buyerName     String
+  buyerPhone    String?
+  buyerAddress  String?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  completedAt   DateTime?
+
+  // PLAN
+  plan         PlanType?
+  annual       Boolean?
+  validFrom    DateTime?
+  validTill    DateTime?
+  // CAMPAIGN
+  productId    String?
+  product      Product?  @relation(fields: [productId], references: [id])
+  campaign     Campaign?
+  campaignDays Int?
+  // PAYOUT
+  partnerId    String?
+  partner      Partner?  @relation(fields: [partnerId], references: [id])
+  ibanHolder   String?
+  iban         String?
+  visits       Visit[]
+
+  @@index([vendorId, kind, createdAt])
+  @@index([partnerId, createdAt])
+  @@index([status, createdAt])
+  @@map("payment")
+}
+
+// ───────────────────────── Messaging ─────────────────────────
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type      NotificationType
+  data      Json             @default("{}") // { linkId, productTitle, partner, amount, ... } – text is rendered from i18n
+  href      String?
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+
+  @@index([userId, readAt, createdAt])
   @@map("notification")
+}
+
+model SentEmail {
+  id        String    @id @default(cuid())
+  kind      EmailKind
+  to        String
+  toName    String?
+  subject   String
+  html      String
+  text      String
+  createdAt DateTime  @default(now())
+
+  @@index([createdAt])
+  @@index([to])
+  @@map("sent_email")
+}
+
+// Scheduled e-mails produced by the daily cron. (userId, kind, refDate) makes the job idempotent.
+model EmailQueue {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  kind      EmailKind
+  refDate   DateTime // the trial / plan / campaign end this mail is about
+  meta      Json? // template variables (product title, plan name…)
+  sentAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  @@unique([userId, kind, refDate])
+  @@index([sentAt])
+  @@map("email_queue")
 }
 
 model Faq {
   id        Int      @id @default(autoincrement())
-  quest     String   @db.Text
+  question  String
+  answer    String
+  position  Int      @default(0)
   active    Boolean  @default(true)
-  answer    String   @db.Text
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@index([id])
+  @@index([active, position])
   @@map("faq")
 }
 
-// !! testing
-model Temp {
-  id     Int     @unique @default(1)
-  isTemp Boolean @default(true)
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String
+  handled   Boolean  @default(false)
+  createdAt DateTime @default(now())
 
-  @@map("temp")
+  @@index([handled, createdAt])
+  @@map("contact_message")
 }

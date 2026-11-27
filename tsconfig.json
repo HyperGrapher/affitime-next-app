@@ -1,27 +1,22 @@
 {
   "compilerOptions": {
-    "target": "es2017",
+    "target": "ES2022",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "allowJs": true,
+    "allowJs": false,
     "skipLibCheck": true,
     "strict": true,
-    "forceConsistentCasingInFileNames": true,
+    "noUncheckedIndexedAccess": true,
     "noEmit": true,
     "esModuleInterop": true,
     "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "incremental": true,
-    "noUncheckedIndexedAccess": true
+    "plugins": [{ "name": "next" }],
+    "paths": { "@/*": ["./src/*"] }
   },
-  "ts-node": {
-    // ? Required to run prisma.seed file ? //
-    "compilerOptions": {
-      "module": "commonjs"
-    }
-  },
-  "include": ["next-env.d.ts", "prisma/**.ts", "types/**/*.ts", "**/*.ts", "**/*.tsx", "**/*.cjs", "**/*.mjs", "src/components/buttons"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", ".next/dev/types/**/*.ts"],
   "exclude": ["node_modules"]
 }
