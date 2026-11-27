@@ -1,0 +1,349 @@
+name: Dependency updates
+
+# Keeps main up to date automatically.
+#   1. plan       – checks the npm registry and splits the available updates into candidates
+#                   (minor/patch per lockstep group, minor/patch of everything else, one per major, lockfile refresh).
+#   2. candidate  – every candidate is applied on top of main and tested on its own, in parallel
+#                   (type check, lint, integration tests incl. schema-drift guard, end-to-end tests).
+#   3. merge      – all candidates that passed are combined, the combination is tested once more and, if green,
+#                   committed straight to main (falls back to a PR with auto-merge if main is protected).
+#                   Majors that break the tests are left out and reported; they are not retried until a newer
+#                   version of that package is released (or you run this workflow with "retry_failed").
+# Pushes made with GITHUB_TOKEN do not start the CI workflow (the tree was just tested) but do notify Vercel,
+# which then deploys the new main to production.
+# Settings: scripts/deps/config.json (lockstep groups, ignored packages). Schedule: the cron line below.
+
+on:
+  schedule:
+    - cron: '23 4 * * *' # every day 04:23 UTC. Weekly instead: '23 4 * * 1' (Mondays)
+  workflow_dispatch:
+    inputs:
+      majors:
+        description: Also try major version updates
+        type: boolean
+        default: true
+      retry_failed:
+        description: Retry updates that failed before with the same versions
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dependency-updates
+  cancel-in-progress: false
+
+env:
+  NEXT_TELEMETRY_DISABLED: '1'
+  # Throwaway database + dummy credentials for every test job (see .github/actions/verify).
+  DATABASE_URL: postgresql://affitime:affitime@localhost:5432/affitime
+  DIRECT_URL: postgresql://affitime:affitime@localhost:5432/affitime
+  BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
+  PAYMENT_WEBHOOK_SECRET: ci-payment-secret
+  CRON_SECRET: ci-cron-secret
+  NEXT_PUBLIC_APP_URL: http://localhost:3000
+  DEMO_MODE: 'true'
+
+jobs:
+  plan:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    outputs:
+      count: ${{ steps.plan.outputs.count }}
+      matrix: ${{ steps.plan.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: ./.github/actions/setup
+
+      - name: Restore the list of updates that failed before
+        if: ${{ !inputs.retry_failed }}
+        uses: actions/cache/restore@v4
+        with:
+          path: deps-failed.json
+          key: deps-failed-none
+          restore-keys: deps-failed-
+
+      - name: Find available updates
+        id: plan
+        env:
+          NO_MAJOR: ${{ github.event_name == 'workflow_dispatch' && !inputs.majors && '--no-major' || '' }}
+        run: node scripts/deps/plan.mjs --check-lockfile --failed deps-failed.json --out deps-plan.json $NO_MAJOR
+
+      - uses: actions/upload-artifact@v5
+        with:
+          name: deps-plan
+          path: deps-plan.json
+          retention-days: 7
+
+  candidate:
+    name: test ${{ matrix.id }}
+    needs: plan
+    if: ${{ needs.plan.outputs.count != '0' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # A failing candidate is an expected outcome, not a failed run: it is reported in the summary/issue instead.
+    continue-on-error: true
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: affitime
+          POSTGRES_PASSWORD: affitime
+          POSTGRES_DB: affitime
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U affitime"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - uses: ./.github/actions/setup
+
+      - name: Apply ${{ matrix.id }}
+        env:
+          PACKAGES: ${{ matrix.packages }}
+          KIND: ${{ matrix.kind }}
+        run: |
+          node scripts/deps/apply.mjs "$PACKAGES"
+          if [ "$KIND" = "lockfile" ]; then
+            npm update
+          else
+            npm install
+          fi
+
+      - uses: ./.github/actions/verify
+
+      - name: Record result
+        if: always()
+        env:
+          RESULT: ${{ job.status }}
+          ID: ${{ matrix.id }}
+        run: |
+          # One file per candidate: the merge job downloads all result artifacts into one folder.
+          mkdir -p result
+          printf '{"id":"%s","status":"%s"}\n' "$ID" "$RESULT" > "result/$ID.json"
+
+      - uses: actions/upload-artifact@v5
+        if: always()
+        with:
+          name: result-${{ matrix.id }}
+          path: result/${{ matrix.id }}.json
+          retention-days: 7
+
+      - name: Upload test artifacts
+        if: failure()
+        uses: actions/upload-artifact@v5
+        with:
+          name: playwright-artifacts-${{ matrix.id }}
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
+          retention-days: 7
+
+  merge:
+    needs: [plan, candidate]
+    if: ${{ always() && needs.plan.result == 'success' && needs.plan.outputs.count != '0' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+      issues: write
+      pull-requests: write
+
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: affitime
+          POSTGRES_PASSWORD: affitime
+          POSTGRES_DB: affitime
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U affitime"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      GH_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: main
+
+      - name: Remember the commit the candidates were tested on
+        id: base
+        run: echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+      - uses: ./.github/actions/setup
+
+      - uses: actions/download-artifact@v5
+        with:
+          name: deps-plan
+
+      - uses: actions/download-artifact@v5
+        with:
+          pattern: result-*
+          merge-multiple: true
+          path: results
+
+      - name: Combine results
+        id: combine
+        run: node scripts/deps/combine.mjs --plan deps-plan.json --results results
+
+      - name: Remember failures (so they are not retried until a newer version appears)
+        uses: actions/cache/save@v4
+        with:
+          path: deps-failed.json
+          key: deps-failed-${{ github.run_id }}-${{ github.run_attempt }}
+
+      # --- all passing candidates together ---------------------------------------------------------
+      - name: Apply all passing updates
+        if: steps.combine.outputs.any_passed == 'true'
+        env:
+          PACKAGES: ${{ steps.combine.outputs.packages }}
+          LOCKFILE: ${{ steps.combine.outputs.lockfile }}
+        run: |
+          node scripts/deps/apply.mjs "$PACKAGES"
+          npm install
+          if [ "$LOCKFILE" = "true" ]; then npm update; fi
+
+      - name: Test the combination
+        id: full
+        if: steps.combine.outputs.any_passed == 'true'
+        continue-on-error: true
+        uses: ./.github/actions/verify
+
+      # --- fallback: if a combination with majors fails, retry without the majors -----------------
+      - name: Fallback – apply minor/patch updates only
+        id: fallback_apply
+        if: steps.full.outcome == 'failure' && steps.combine.outputs.has_majors == 'true'
+        env:
+          PACKAGES: ${{ steps.combine.outputs.safe_packages }}
+          LOCKFILE: ${{ steps.combine.outputs.safe_lockfile }}
+        run: |
+          git checkout -- package.json package-lock.json
+          node scripts/deps/apply.mjs "$PACKAGES"
+          npm install
+          if [ "$LOCKFILE" = "true" ]; then npm update; fi
+
+      - name: Fallback – test minor/patch updates only
+        id: fallback
+        if: steps.fallback_apply.outcome == 'success'
+        continue-on-error: true
+        uses: ./.github/actions/verify
+
+      # --- publish ---------------------------------------------------------------------------------
+      - name: Commit to main
+        id: publish
+        if: steps.full.outcome == 'success' || steps.fallback.outcome == 'success'
+        env:
+          BASE_SHA: ${{ steps.base.outputs.sha }}
+        run: |
+          git add package.json package-lock.json
+          if git diff --cached --quiet; then
+            echo "Nothing to commit."
+            echo "result=unchanged" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -q -m "chore(deps): update dependencies" -m "$(cat deps-commit-body.txt)"
+
+          if git push origin HEAD:main; then
+            echo "result=pushed" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          git fetch -q origin main
+          if [ "$(git rev-parse origin/main)" != "$BASE_SHA" ]; then
+            echo "::warning::main moved while the tests ran; the update was not pushed and will be retried on the next run."
+            echo "result=main-moved" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          # main did not move, so the push was refused (branch protection): open a pull request with auto-merge instead.
+          branch="deps/auto-update"
+          git push --force origin "HEAD:refs/heads/$branch"
+          url=$(gh pr list --head "$branch" --state open --json url --jq '.[0].url')
+          if [ -z "$url" ]; then
+            url=$(gh pr create --base main --head "$branch" \
+              --title "chore(deps): update dependencies" \
+              --body "$(printf 'Automated dependency update. The exact tree was tested by the Dependency updates workflow.\n\n%s\n' "$(cat deps-commit-body.txt)")") || url=""
+          fi
+          if [ -n "$url" ]; then
+            gh pr merge "$url" --auto --squash || echo "::warning::Could not enable auto-merge on $url (enable it in the repository settings)."
+            echo "result=pull-request" >> "$GITHUB_OUTPUT"
+          else
+            echo "::error::Could not push to main or open a pull request (check branch protection and 'Allow GitHub Actions to create pull requests')."
+            echo "result=blocked" >> "$GITHUB_OUTPUT"
+          fi
+
+      # --- report ----------------------------------------------------------------------------------
+      - name: Summary
+        if: always()
+        env:
+          FULL: ${{ steps.full.outcome }}
+          FALLBACK: ${{ steps.fallback.outcome }}
+          PUBLISH: ${{ steps.publish.outputs.result }}
+        run: |
+          {
+            cat deps-summary.md 2>/dev/null || true
+            echo
+            if [ "$FULL" = "failure" ]; then
+              echo "**The combination of all passing updates failed its tests.**"
+              if [ -n "$FALLBACK" ] && [ "$FALLBACK" != "skipped" ]; then echo "Minor/patch updates only: $FALLBACK."; fi
+              echo
+            fi
+            echo "Publish result: \`${PUBLISH:-nothing to publish}\`"
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Open or close the "dependency updates need attention" issue
+        if: always()
+        env:
+          ANY_FAILED: ${{ steps.combine.outputs.any_failed }}
+          FULL: ${{ steps.full.outcome }}
+          PUBLISH: ${{ steps.publish.outputs.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          title="Dependency updates need attention"
+          number=$(gh issue list --state open --search "\"$title\" in:title" --json number,title --jq "map(select(.title == \"$title\"))[0].number // empty" || true)
+          problem=false
+          if [ "$ANY_FAILED" = "true" ] || [ "$FULL" = "failure" ] || [ "$PUBLISH" = "blocked" ]; then problem=true; fi
+
+          if [ "$problem" = "true" ]; then
+            {
+              echo "The latest **Dependency updates** run could not apply everything: $RUN_URL"
+              echo
+              echo "Updates whose tests failed are not applied and are not retried until a newer version is published"
+              echo "(or until the workflow is run manually with *retry_failed*). Details are in the run summary:"
+              echo
+              cat deps-summary.md 2>/dev/null || true
+            } > issue-body.md
+            if [ -n "$number" ]; then
+              gh issue edit "$number" --body-file issue-body.md
+            else
+              gh issue create --title "$title" --body-file issue-body.md || echo "::warning::Could not create the issue."
+            fi
+          elif [ -n "$number" ]; then
+            gh issue close "$number" --comment "The latest run applied everything. Closing. ($RUN_URL)" || true
+          fi

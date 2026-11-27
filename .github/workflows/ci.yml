@@ -1,15 +1,24 @@
 name: CI
 
+# Runs on pull requests (so a change is tested BEFORE it reaches main, which Vercel deploys to production),
+# on pushes to main/dev, and manually. Needs no secrets: tests use a throwaway Postgres service container.
+# The steps live in .github/actions/{setup,verify} and are shared with the dependency-update workflow.
+# To block merging untested code, mark the "test" check as required in Settings -> Branches (main).
 on:
-  push:
-    branches: [dev, main]
   pull_request:
+  push:
+    branches: [main, dev]
+  workflow_dispatch:
+
+permissions:
+  contents: read
 
 concurrency:
-  group: ci-${{ github.ref }}
+  group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
 env:
+  NEXT_TELEMETRY_DISABLED: "1"
   DATABASE_URL: postgresql://affitime:affitime@localhost:5432/affitime
   DIRECT_URL: postgresql://affitime:affitime@localhost:5432/affitime
   BETTER_AUTH_SECRET: ci-secret-ci-secret-ci-secret-ci-secret
@@ -19,8 +28,9 @@ env:
   DEMO_MODE: "true"
 
 jobs:
-  verify:
+  test:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     services:
       postgres:
         image: postgres:16
@@ -36,21 +46,14 @@ jobs:
           --health-retries 10
     steps:
       - uses: actions/checkout@v5
-      - uses: actions/setup-node@v5
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run lint
-      - run: npm run typecheck
-      - run: npm run db:setup
-      - run: npm test
-      - run: npm run build
-      - run: npx playwright install --with-deps chromium
-      - run: npm run test:e2e
+      - uses: ./.github/actions/setup
+      - uses: ./.github/actions/verify
       - uses: actions/upload-artifact@v5
         if: failure()
         with:
-          name: playwright-report
-          path: playwright-report
+          name: playwright-artifacts
+          path: |
+            test-results/
+            playwright-report/
+          if-no-files-found: ignore
           retention-days: 7
