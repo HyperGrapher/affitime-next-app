@@ -54,7 +54,7 @@ jobs:
       count: ${{ steps.plan.outputs.count }}
       matrix: ${{ steps.plan.outputs.matrix }}
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: main
 
@@ -62,7 +62,7 @@ jobs:
 
       - name: Restore the list of updates that failed before
         if: ${{ !inputs.retry_failed }}
-        uses: actions/cache/restore@v4
+        uses: actions/cache/restore@v6
         with:
           path: deps-failed.json
           key: deps-failed-none
@@ -74,7 +74,7 @@ jobs:
           NO_MAJOR: ${{ github.event_name == 'workflow_dispatch' && !inputs.majors && '--no-major' || '' }}
         run: node scripts/deps/plan.mjs --check-lockfile --failed deps-failed.json --out deps-plan.json $NO_MAJOR
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         with:
           name: deps-plan
           path: deps-plan.json
@@ -109,7 +109,7 @@ jobs:
           --health-retries 10
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: main
 
@@ -139,7 +139,7 @@ jobs:
           mkdir -p result
           printf '{"id":"%s","status":"%s"}\n' "$ID" "$RESULT" > "result/$ID.json"
 
-      - uses: actions/upload-artifact@v5
+      - uses: actions/upload-artifact@v7
         if: always()
         with:
           name: result-${{ matrix.id }}
@@ -148,7 +148,7 @@ jobs:
 
       - name: Upload test artifacts
         if: failure()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-artifacts-${{ matrix.id }}
           path: |
@@ -186,7 +186,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
 
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           ref: main
 
@@ -196,11 +196,11 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           name: deps-plan
 
-      - uses: actions/download-artifact@v5
+      - uses: actions/download-artifact@v8
         with:
           pattern: result-*
           merge-multiple: true
@@ -211,7 +211,7 @@ jobs:
         run: node scripts/deps/combine.mjs --plan deps-plan.json --results results
 
       - name: Remember failures (so they are not retried until a newer version appears)
-        uses: actions/cache/save@v4
+        uses: actions/cache/save@v6
         with:
           path: deps-failed.json
           key: deps-failed-${{ github.run_id }}-${{ github.run_attempt }}

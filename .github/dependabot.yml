@@ -1,8 +1,0 @@
-# npm dependencies are updated by .github/workflows/dependency-updates.yml (tested, then merged to main automatically).
-# Dependabot only keeps the GitHub Actions versions fresh.
-version: 2
-updates:
-  - package-ecosystem: github-actions
-    directory: /
-    schedule:
-      interval: monthly
