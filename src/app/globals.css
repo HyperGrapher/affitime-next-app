@@ -1,0 +1,149 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* ── Design tokens ─────────────────────────────────────────────────────────
+   One palette, defined once, flipped for dark mode. Components only use semantic
+   tokens (bg-surface, text-muted, border-border …) – never raw colours. */
+:root {
+  --background: oklch(0.985 0.004 85);
+  --surface: oklch(1 0 0);
+  --surface-2: oklch(0.965 0.006 85);
+  --foreground: oklch(0.2 0.02 285);
+  --muted: oklch(0.52 0.02 285);
+  --border: oklch(0.92 0.008 85);
+  --ring: oklch(0.55 0.22 285);
+
+  --primary: oklch(0.52 0.24 282);
+  --primary-foreground: oklch(0.99 0 0);
+  --primary-soft: oklch(0.95 0.035 285);
+  --accent: oklch(0.72 0.19 38);
+  --accent-soft: oklch(0.95 0.04 45);
+
+  --success: oklch(0.62 0.16 155);
+  --success-soft: oklch(0.95 0.045 155);
+  --warning: oklch(0.72 0.15 75);
+  --warning-soft: oklch(0.96 0.05 90);
+  --danger: oklch(0.6 0.22 25);
+  --danger-soft: oklch(0.96 0.03 25);
+
+  --chart-1: oklch(0.52 0.24 282);
+  --chart-2: oklch(0.72 0.19 38);
+  --chart-3: oklch(0.62 0.16 155);
+  --chart-4: oklch(0.72 0.15 75);
+  --chart-5: oklch(0.6 0.12 220);
+
+  --radius: 0.875rem;
+  --shadow-card: 0 1px 2px oklch(0.2 0.02 285 / 0.04), 0 8px 24px -12px oklch(0.2 0.02 285 / 0.1);
+  color-scheme: light;
+}
+
+.dark {
+  --background: oklch(0.15 0.02 285);
+  --surface: oklch(0.19 0.022 285);
+  --surface-2: oklch(0.23 0.024 285);
+  --foreground: oklch(0.96 0.005 285);
+  --muted: oklch(0.7 0.02 285);
+  --border: oklch(0.3 0.025 285);
+  --ring: oklch(0.7 0.19 285);
+
+  --primary: oklch(0.7 0.19 285);
+  --primary-foreground: oklch(0.15 0.02 285);
+  --primary-soft: oklch(0.28 0.07 285);
+  --accent: oklch(0.76 0.17 45);
+  --accent-soft: oklch(0.3 0.06 45);
+
+  --success: oklch(0.74 0.17 155);
+  --success-soft: oklch(0.28 0.06 155);
+  --warning: oklch(0.8 0.14 85);
+  --warning-soft: oklch(0.3 0.06 85);
+  --danger: oklch(0.72 0.19 25);
+  --danger-soft: oklch(0.29 0.07 25);
+
+  --chart-1: oklch(0.72 0.17 285);
+  --chart-2: oklch(0.78 0.16 45);
+  --chart-3: oklch(0.76 0.16 155);
+  --chart-4: oklch(0.82 0.13 85);
+  --chart-5: oklch(0.74 0.11 220);
+
+  --shadow-card: 0 1px 2px oklch(0 0 0 / 0.3), 0 8px 24px -12px oklch(0 0 0 / 0.5);
+  color-scheme: dark;
+}
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-foreground: var(--foreground);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-ring: var(--ring);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-soft: var(--primary-soft);
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-success: var(--success);
+  --color-success-soft: var(--success-soft);
+  --color-warning: var(--warning);
+  --color-warning-soft: var(--warning-soft);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+
+  --radius-sm: calc(var(--radius) - 6px);
+  --radius-md: calc(var(--radius) - 3px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 6px);
+  --radius-2xl: calc(var(--radius) + 14px);
+
+  --shadow-card: var(--shadow-card);
+
+  --font-sans: ui-sans-serif, "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-display: ui-sans-serif, "Inter", system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  --text-display: clamp(2.5rem, 6vw, 4.75rem);
+  --text-display--line-height: 1.02;
+  --text-display--letter-spacing: -0.035em;
+  --text-h1: clamp(1.75rem, 3.2vw, 2.5rem);
+  --text-h1--line-height: 1.1;
+  --text-h1--letter-spacing: -0.025em;
+
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-float: float 7s ease-in-out infinite;
+  --animate-marquee: marquee 40s linear infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@keyframes marquee {
+  to { transform: translateX(-50%); }
+}
+
+@layer base {
+  * { border-color: var(--border); }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body { background: var(--background); color: var(--foreground); font-family: var(--font-sans); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; }
+  :focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; border-radius: var(--radius-sm); }
+  ::selection { background: var(--primary-soft); }
+}
+
+/* Reduced motion: no decorative animation, no smooth scroll. */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation-duration: 0.001ms !important; animation-iteration-count: 1 !important; transition-duration: 0.001ms !important; }
+}
+
+.recharts-surface:focus, .recharts-wrapper:focus { outline: none; }

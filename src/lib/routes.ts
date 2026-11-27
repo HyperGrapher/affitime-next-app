@@ -11,7 +11,7 @@ export const routes = {
   signup: (role?: "vendor" | "partner") => (role ? `/signup?role=${role}` : "/signup"),
   forgotPassword: "/forgot-password",
   resetPassword: "/reset-password",
-  verifyEmail: "/verify-email",
+  verified: "/verified",
   notVerified: "/not-verified",
   changeEmail: "/change-email",
   product: (id: string) => `/products/${id}`,

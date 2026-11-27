@@ -20,7 +20,7 @@ const t = initTRPC.context<TRPCContext>().create({
   errorFormatter({ shape, error }) {
     return {
       ...shape,
-      data: { ...shape.data, zodError: error.cause instanceof ZodError ? error.cause.flatten() : null },
+      data: { ...shape.data, zodError: error.cause instanceof ZodError ? error.cause.flatten() : null, field: (error.cause as { field?: string } | undefined)?.field ?? null },
     };
   },
 });

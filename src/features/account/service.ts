@@ -34,7 +34,7 @@ export async function register(db: Db, headers: Headers, input: RegisterInput, n
   }
 
   const name = input.role === "VENDOR" ? input.brand : input.username;
-  const created = await auth.api.signUpEmail({ body: { name, email, password: input.password }, headers });
+  const created = await auth.api.signUpEmail({ body: { name, email, password: input.password, callbackURL: routes.verified }, headers });
   const userId = created.user.id;
 
   try {
